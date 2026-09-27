@@ -1,5 +1,0 @@
-<Solution>
-  <Project Path="coneccion/coneccion.vbproj" />
-  <Project Path="datos/datos.vbproj" />
-  <Project Path="formularios/formularios.vbproj" />
-</Solution>
