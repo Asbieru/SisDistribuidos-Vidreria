@@ -25,12 +25,12 @@ Partial Class InicioSesion
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(InicioSesion))
         Me.PictureBox1 = New System.Windows.Forms.PictureBox()
         Me.pnlLogin = New System.Windows.Forms.Panel()
-        Me.msj = New System.Windows.Forms.Label()
         Me.btnIngresar = New System.Windows.Forms.Button()
         Me.txtContrasena = New System.Windows.Forms.TextBox()
         Me.Label3 = New System.Windows.Forms.Label()
         Me.txtUsuario = New System.Windows.Forms.TextBox()
         Me.Label2 = New System.Windows.Forms.Label()
+        Me.msj = New System.Windows.Forms.Label()
         Me.lbl1 = New System.Windows.Forms.Label()
         Me.Label1 = New System.Windows.Forms.Label()
         Me.chbMostrar = New System.Windows.Forms.CheckBox()
@@ -49,9 +49,10 @@ Partial Class InicioSesion
         '
         Me.PictureBox1.BackgroundImage = CType(resources.GetObject("PictureBox1.BackgroundImage"), System.Drawing.Image)
         Me.PictureBox1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom
-        Me.PictureBox1.Location = New System.Drawing.Point(12, 12)
+        Me.PictureBox1.Location = New System.Drawing.Point(16, 15)
+        Me.PictureBox1.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.PictureBox1.Name = "PictureBox1"
-        Me.PictureBox1.Size = New System.Drawing.Size(88, 88)
+        Me.PictureBox1.Size = New System.Drawing.Size(117, 108)
         Me.PictureBox1.TabIndex = 0
         Me.PictureBox1.TabStop = False
         '
@@ -63,39 +64,32 @@ Partial Class InicioSesion
         Me.pnlLogin.Controls.Add(Me.Label3)
         Me.pnlLogin.Controls.Add(Me.txtUsuario)
         Me.pnlLogin.Controls.Add(Me.Label2)
-        Me.pnlLogin.Location = New System.Drawing.Point(29, 126)
+        Me.pnlLogin.Location = New System.Drawing.Point(39, 155)
+        Me.pnlLogin.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.pnlLogin.Name = "pnlLogin"
-        Me.pnlLogin.Size = New System.Drawing.Size(316, 166)
+        Me.pnlLogin.Size = New System.Drawing.Size(421, 204)
         Me.pnlLogin.TabIndex = 0
-        '
-        'msj
-        '
-        Me.msj.BackColor = System.Drawing.Color.Transparent
-        Me.msj.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.msj.ForeColor = System.Drawing.Color.Red
-        Me.msj.Location = New System.Drawing.Point(32, 306)
-        Me.msj.Name = "msj"
-        Me.msj.Size = New System.Drawing.Size(307, 23)
-        Me.msj.TabIndex = 0
         '
         'btnIngresar
         '
         Me.btnIngresar.BackColor = System.Drawing.Color.White
         Me.btnIngresar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.btnIngresar.ForeColor = System.Drawing.Color.Black
-        Me.btnIngresar.Location = New System.Drawing.Point(101, 125)
+        Me.btnIngresar.Location = New System.Drawing.Point(135, 154)
+        Me.btnIngresar.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.btnIngresar.Name = "btnIngresar"
-        Me.btnIngresar.Size = New System.Drawing.Size(115, 28)
+        Me.btnIngresar.Size = New System.Drawing.Size(153, 34)
         Me.btnIngresar.TabIndex = 3
         Me.btnIngresar.Text = "Ingresar"
         Me.btnIngresar.UseVisualStyleBackColor = False
         '
         'txtContrasena
         '
-        Me.txtContrasena.Location = New System.Drawing.Point(20, 97)
+        Me.txtContrasena.Location = New System.Drawing.Point(27, 119)
+        Me.txtContrasena.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.txtContrasena.Name = "txtContrasena"
         Me.txtContrasena.PasswordChar = Global.Microsoft.VisualBasic.ChrW(42)
-        Me.txtContrasena.Size = New System.Drawing.Size(274, 20)
+        Me.txtContrasena.Size = New System.Drawing.Size(364, 22)
         Me.txtContrasena.TabIndex = 2
         '
         'Label3
@@ -104,17 +98,19 @@ Partial Class InicioSesion
         Me.Label3.BackColor = System.Drawing.Color.Transparent
         Me.Label3.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label3.ForeColor = System.Drawing.Color.White
-        Me.Label3.Location = New System.Drawing.Point(16, 74)
+        Me.Label3.Location = New System.Drawing.Point(21, 91)
+        Me.Label3.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label3.Name = "Label3"
-        Me.Label3.Size = New System.Drawing.Size(102, 20)
+        Me.Label3.Size = New System.Drawing.Size(124, 25)
         Me.Label3.TabIndex = 0
         Me.Label3.Text = "Contraseña"
         '
         'txtUsuario
         '
-        Me.txtUsuario.Location = New System.Drawing.Point(20, 38)
+        Me.txtUsuario.Location = New System.Drawing.Point(27, 47)
+        Me.txtUsuario.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.txtUsuario.Name = "txtUsuario"
-        Me.txtUsuario.Size = New System.Drawing.Size(274, 20)
+        Me.txtUsuario.Size = New System.Drawing.Size(364, 22)
         Me.txtUsuario.TabIndex = 1
         '
         'Label2
@@ -123,20 +119,33 @@ Partial Class InicioSesion
         Me.Label2.BackColor = System.Drawing.Color.Transparent
         Me.Label2.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label2.ForeColor = System.Drawing.Color.White
-        Me.Label2.Location = New System.Drawing.Point(16, 15)
+        Me.Label2.Location = New System.Drawing.Point(21, 18)
+        Me.Label2.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label2.Name = "Label2"
-        Me.Label2.Size = New System.Drawing.Size(71, 20)
+        Me.Label2.Size = New System.Drawing.Size(86, 25)
         Me.Label2.TabIndex = 0
         Me.Label2.Text = "Usuario"
+        '
+        'msj
+        '
+        Me.msj.BackColor = System.Drawing.Color.Transparent
+        Me.msj.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.msj.ForeColor = System.Drawing.Color.Red
+        Me.msj.Location = New System.Drawing.Point(43, 377)
+        Me.msj.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.msj.Name = "msj"
+        Me.msj.Size = New System.Drawing.Size(409, 28)
+        Me.msj.TabIndex = 0
         '
         'lbl1
         '
         Me.lbl1.AutoSize = True
         Me.lbl1.Font = New System.Drawing.Font("Microsoft Sans Serif", 20.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.lbl1.ForeColor = System.Drawing.Color.White
-        Me.lbl1.Location = New System.Drawing.Point(152, 31)
+        Me.lbl1.Location = New System.Drawing.Point(203, 38)
+        Me.lbl1.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.lbl1.Name = "lbl1"
-        Me.lbl1.Size = New System.Drawing.Size(153, 31)
+        Me.lbl1.Size = New System.Drawing.Size(189, 39)
         Me.lbl1.TabIndex = 0
         Me.lbl1.Text = "INICIO DE"
         '
@@ -145,9 +154,10 @@ Partial Class InicioSesion
         Me.Label1.AutoSize = True
         Me.Label1.Font = New System.Drawing.Font("Microsoft Sans Serif", 20.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label1.ForeColor = System.Drawing.Color.White
-        Me.Label1.Location = New System.Drawing.Point(199, 63)
+        Me.Label1.Location = New System.Drawing.Point(265, 78)
+        Me.Label1.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(123, 31)
+        Me.Label1.Size = New System.Drawing.Size(153, 39)
         Me.Label1.TabIndex = 0
         Me.Label1.Text = "SESIÓN"
         '
@@ -155,9 +165,10 @@ Partial Class InicioSesion
         '
         Me.chbMostrar.AutoSize = True
         Me.chbMostrar.ForeColor = System.Drawing.Color.White
-        Me.chbMostrar.Location = New System.Drawing.Point(29, 343)
+        Me.chbMostrar.Location = New System.Drawing.Point(39, 422)
+        Me.chbMostrar.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.chbMostrar.Name = "chbMostrar"
-        Me.chbMostrar.Size = New System.Drawing.Size(121, 17)
+        Me.chbMostrar.Size = New System.Drawing.Size(152, 20)
         Me.chbMostrar.TabIndex = 4
         Me.chbMostrar.Text = "Cambiar Contraseña"
         Me.chbMostrar.UseVisualStyleBackColor = True
@@ -170,9 +181,10 @@ Partial Class InicioSesion
         Me.pnlCambio.Controls.Add(Me.txtRespuesta)
         Me.pnlCambio.Controls.Add(Me.txtPregunta)
         Me.pnlCambio.Controls.Add(Me.Label4)
-        Me.pnlCambio.Location = New System.Drawing.Point(29, 366)
+        Me.pnlCambio.Location = New System.Drawing.Point(39, 450)
+        Me.pnlCambio.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.pnlCambio.Name = "pnlCambio"
-        Me.pnlCambio.Size = New System.Drawing.Size(316, 171)
+        Me.pnlCambio.Size = New System.Drawing.Size(421, 210)
         Me.pnlCambio.TabIndex = 0
         Me.pnlCambio.Visible = False
         '
@@ -181,9 +193,10 @@ Partial Class InicioSesion
         Me.msj2.BackColor = System.Drawing.Color.Transparent
         Me.msj2.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.msj2.ForeColor = System.Drawing.Color.Red
-        Me.msj2.Location = New System.Drawing.Point(9, 139)
+        Me.msj2.Location = New System.Drawing.Point(12, 171)
+        Me.msj2.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.msj2.Name = "msj2"
-        Me.msj2.Size = New System.Drawing.Size(297, 23)
+        Me.msj2.Size = New System.Drawing.Size(396, 28)
         Me.msj2.TabIndex = 0
         '
         'btnCambio
@@ -191,25 +204,28 @@ Partial Class InicioSesion
         Me.btnCambio.BackColor = System.Drawing.Color.White
         Me.btnCambio.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.btnCambio.ForeColor = System.Drawing.Color.Black
-        Me.btnCambio.Location = New System.Drawing.Point(101, 99)
+        Me.btnCambio.Location = New System.Drawing.Point(96, 133)
+        Me.btnCambio.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.btnCambio.Name = "btnCambio"
-        Me.btnCambio.Size = New System.Drawing.Size(193, 28)
+        Me.btnCambio.Size = New System.Drawing.Size(257, 34)
         Me.btnCambio.TabIndex = 7
         Me.btnCambio.Text = "Cambiar Contraseña"
         Me.btnCambio.UseVisualStyleBackColor = False
         '
         'txtRespuesta
         '
-        Me.txtRespuesta.Location = New System.Drawing.Point(20, 71)
+        Me.txtRespuesta.Location = New System.Drawing.Point(27, 87)
+        Me.txtRespuesta.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.txtRespuesta.Name = "txtRespuesta"
-        Me.txtRespuesta.Size = New System.Drawing.Size(274, 20)
+        Me.txtRespuesta.Size = New System.Drawing.Size(364, 22)
         Me.txtRespuesta.TabIndex = 6
         '
         'txtPregunta
         '
-        Me.txtPregunta.Location = New System.Drawing.Point(20, 15)
+        Me.txtPregunta.Location = New System.Drawing.Point(27, 18)
+        Me.txtPregunta.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.txtPregunta.Name = "txtPregunta"
-        Me.txtPregunta.Size = New System.Drawing.Size(274, 20)
+        Me.txtPregunta.Size = New System.Drawing.Size(364, 22)
         Me.txtPregunta.TabIndex = 5
         '
         'Label4
@@ -218,18 +234,19 @@ Partial Class InicioSesion
         Me.Label4.BackColor = System.Drawing.Color.Transparent
         Me.Label4.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label4.ForeColor = System.Drawing.Color.White
-        Me.Label4.Location = New System.Drawing.Point(16, 43)
+        Me.Label4.Location = New System.Drawing.Point(21, 53)
+        Me.Label4.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label4.Name = "Label4"
-        Me.Label4.Size = New System.Drawing.Size(96, 20)
+        Me.Label4.Size = New System.Drawing.Size(114, 25)
         Me.Label4.TabIndex = 0
         Me.Label4.Text = "Respuesta"
         '
         'InicioSesion
         '
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.Color.Black
-        Me.ClientSize = New System.Drawing.Size(378, 549)
+        Me.ClientSize = New System.Drawing.Size(504, 676)
         Me.Controls.Add(Me.msj)
         Me.Controls.Add(Me.pnlCambio)
         Me.Controls.Add(Me.chbMostrar)
@@ -239,6 +256,7 @@ Partial Class InicioSesion
         Me.Controls.Add(Me.PictureBox1)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
+        Me.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.Name = "InicioSesion"
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "InicioSesion"

@@ -6,7 +6,7 @@ Public Class InicioSesion
     Private Sub chbMostrar_CheckedChanged(sender As Object, e As EventArgs) Handles chbMostrar.CheckedChanged
         pnlCambio.Visible = chbMostrar.Checked
         Try
-            If chkRecordar.Checked Then
+            If chbMostrar.Checked Then
                 If txtUsuario.Text.Trim.Length = 0 Then
                     msj.Text = "Ingrese nombre de usario!"
                     txtUsuario.Focus()
@@ -68,10 +68,10 @@ Public Class InicioSesion
                 txtUsuario.Focus()
                 Return
             End If
-            If objUsuario.validarRespuesta(txtUsuario.Text, txtRespuesta.Text) Then
+            If objUsu.validarRespuesta(txtUsuario.Text, txtRespuesta.Text) Then
                 MessageBox.Show("Bienvenido al Sistema!", "MENSAJE", MessageBoxButtons.OK, MessageBoxIcon.Information)
-                'objCambio.txtUsuario.Text = Me.txtUsuario.Text
-                'objCambio.txtContraseña.Focus()
+                objCambio.txtUsuario.Text = Me.txtUsuario.Text
+                objCambio.txtContraseña.Focus()
                 objCambio.ShowDialog()
             Else
                 msj2.Text = "Respuesta incorrecta, intente nuevamente!"
