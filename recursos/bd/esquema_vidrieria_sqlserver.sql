@@ -148,7 +148,7 @@ CREATE TABLE inventario_piezas (
     CONSTRAINT fk_pieza_variante FOREIGN KEY (id_variante)
         REFERENCES producto_variante(id_variante) ON DELETE NO ACTION,
     CONSTRAINT fk_pieza_origen FOREIGN KEY (id_pieza_origen)
-        REFERENCES inventario_piezas(id_pieza) ON DELETE SET NULL,
+        REFERENCES inventario_piezas(id_pieza) ON DELETE NO ACTION,
     CONSTRAINT fk_pieza_compra_detalle FOREIGN KEY (id_compra_detalle)
         REFERENCES compra_detalle(id_compra_detalle) ON DELETE SET NULL
 );
@@ -255,5 +255,11 @@ GO
 -- "pedidos" se crea después de "compras" en este script.
 ALTER TABLE compras
     ADD CONSTRAINT fk_compra_pedido_origen FOREIGN KEY (id_pedido_origen)
-        REFERENCES pedidos(id_pedido) ON DELETE SET NULL;
+        REFERENCES pedidos(id_pedido) ON DELETE NO ACTION;
+GO
+
+
+INSERT INTO usuarios (nombre, correo, contrasena_hash, pregunta_seguridad, respuesta_hash, rol)
+VALUES
+('admin',  'admin@vidrieria.com',  '123456', '¿Nombre de tu mascota?',       'firulais', 'ADMINISTRADOR');
 GO
