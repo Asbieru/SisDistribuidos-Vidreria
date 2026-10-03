@@ -71,4 +71,30 @@ Public Class Usuario
             Throw New Exception("Error al modificar contraseña!")
         End Try
     End Sub
+
+    ' Preferencias
+    Public Function Obtener(idUsuario As Integer) As DataTable
+        Return objMan.listarComando("select * from usuario_preferencias where id_usuario=" & idUsuario)
+    End Function
+
+    Public Sub Guardar(idUsuario As Integer, tema As String, fuente As String)
+        Dim dt As DataTable = Obtener(idUsuario)
+        If dt.Rows.Count > 0 Then
+            objMan.ejecutarComando("update usuario_preferencias set tema='" & Esc(tema) & "', fuente='" & Esc(fuente) & "' where id_usuario=" & idUsuario)
+        Else
+            objMan.ejecutarComando("insert into usuario_preferencias (id_usuario, tema, fuente) values (" & idUsuario & ",'" & Esc(tema) & "','" & Esc(fuente) & "')")
+        End If
+    End Sub
+
+    ' Mensaje destacados
+    Public Function YaDescartado(idUsuario As Integer, idMensaje As Integer) As Boolean
+        Dim dt As DataTable = objMan.listarComando("select * from usuario_mensajes_descartados where id_usuario=" & idUsuario & " and id_mensaje=" & idMensaje)
+        Return dt.Rows.Count > 0
+    End Function
+
+    Public Sub Descartar(idUsuario As Integer, idMensaje As Integer)
+        If Not YaDescartado(idUsuario, idMensaje) Then
+            objMan.ejecutarComando("insert into usuario_mensajes_descartados (id_usuario, id_mensaje) values (" & idUsuario & "," & idMensaje & ")")
+        End If
+    End Sub
 End Class
