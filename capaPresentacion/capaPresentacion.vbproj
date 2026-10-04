@@ -85,6 +85,18 @@
     <Compile Include="InicioSesion.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="MensajePersonalizado.Designer.vb">
+      <DependentUpon>MensajePersonalizado.vb</DependentUpon>
+    </Compile>
+    <Compile Include="MensajePersonalizado.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MenuInicio.Designer.vb">
+      <DependentUpon>MenuInicio.vb</DependentUpon>
+    </Compile>
+    <Compile Include="MenuInicio.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
       <AutoGen>True</AutoGen>
@@ -111,6 +123,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="InicioSesion.resx">
       <DependentUpon>InicioSesion.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MensajePersonalizado.resx">
+      <DependentUpon>MensajePersonalizado.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MenuInicio.resx">
+      <DependentUpon>MenuInicio.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="My Project\Resources.resx">
       <Generator>VbMyResourcesResXFileCodeGenerator</Generator>

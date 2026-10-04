@@ -5,14 +5,10 @@ Public Class Usuario
 
     Public Function iniciarSesion(usu As String, con As String) As Boolean
         Dim dt As New DataTable
-        strCon = "select * from usuarios where nombre='" & usu & "' and contrasena_hash='" & con & "'"
+        strCon = "select * from usuarios where nombre='" & usu & "' and contrasena='" & con & "'"
         Try
             dt = objMan.listarComando(strCon)
-            If dt.Rows.Count > 0 Then
-                Return True
-            Else
-                Return False
-            End If
+            Return dt.Rows.Count > 0
         Catch ex As Exception
             Throw New Exception("Error al iniciar sesión!")
         End Try
@@ -23,11 +19,7 @@ Public Class Usuario
         strCon = "select * from usuarios where nombre='" & usu & "'"
         Try
             dt = objMan.listarComando(strCon)
-            If dt.Rows.Count > 0 Then
-                Return True
-            Else
-                Return False
-            End If
+            Return dt.Rows.Count > 0
         Catch ex As Exception
             Throw New Exception("Error al validar nombre de usuario!")
         End Try
@@ -50,21 +42,17 @@ Public Class Usuario
 
     Public Function validarRespuesta(usu As String, res As String) As Boolean
         Dim dt As New DataTable
-        strCon = "select respuesta_hash from usuarios where nombre='" & usu & "'"
+        strCon = "select respuesta from usuarios where nombre='" & usu & "'"
         Try
             dt = objMan.listarComando(strCon)
-            If dt.Rows.Count > 0 AndAlso dt.Rows(0).Item(0).ToString.Equals(res) Then
-                Return True
-            Else
-                Return False
-            End If
+            Return dt.Rows.Count > 0 AndAlso dt.Rows(0).Item(0).ToString.Equals(res)
         Catch ex As Exception
             Throw New Exception("Error al validar respuesta!")
         End Try
     End Function
 
     Public Sub cambiarContraseña(usu As String, con As String)
-        strCon = "update usuarios set contrasena_hash='" & con & "' where nombre='" & usu & "'"
+        strCon = "update usuarios set contrasena='" & con & "' where nombre='" & usu & "'"
         Try
             objMan.ejecutarComando(strCon)
         Catch ex As Exception
@@ -72,12 +60,19 @@ Public Class Usuario
         End Try
     End Sub
 
-    ' Preferencias
-    Public Function Obtener(idUsuario As Integer) As DataTable
-        Return objMan.listarComando("select * from usuario_preferencias where id_usuario=" & idUsuario)
+    Public Function obtenerIDUsuario(usu As String) As Integer
+        Dim dt As New DataTable
+        strCon = "select id_usuario from usuarios where nombre='" & usu & "'"
+        dt = objMan.listarComando(strCon)
+        Return Integer.Parse(dt.Rows(0).Item(0))
     End Function
 
-    Public Sub Guardar(idUsuario As Integer, tema As String, fuente As String)
+    ' Preferencias
+    Public Function obtenerPreferencia(idUsuario As Integer) As DataTable
+        Return objMan.listarComando("select tema, fuente from usuario_preferencias where id_usuario=" & idUsuario)
+    End Function
+
+    Public Sub guardarPreferencia(idUsuario As Integer, tema As String, fuente As String)
         Dim dt As DataTable = Obtener(idUsuario)
         If dt.Rows.Count > 0 Then
             objMan.ejecutarComando("update usuario_preferencias set tema='" & Esc(tema) & "', fuente='" & Esc(fuente) & "' where id_usuario=" & idUsuario)
@@ -87,13 +82,24 @@ Public Class Usuario
     End Sub
 
     ' Mensaje destacados
-    Public Function YaDescartado(idUsuario As Integer, idMensaje As Integer) As Boolean
+    Public Function mensajeYaDescartado(idUsuario As Integer, idMensaje As Integer) As Boolean
         Dim dt As DataTable = objMan.listarComando("select * from usuario_mensajes_descartados where id_usuario=" & idUsuario & " and id_mensaje=" & idMensaje)
         Return dt.Rows.Count > 0
     End Function
 
-    Public Sub Descartar(idUsuario As Integer, idMensaje As Integer)
-        If Not YaDescartado(idUsuario, idMensaje) Then
+    Public Function obtenerMensaje(idMensaje As Integer) As DataTable
+        Return objMan.listarComando("select titulo, texto from tipos_mensaje where id_mensaje=" & idMensaje)
+    End Function
+
+    Public Function obtenerIDMensaje(cod As String) As Integer
+        Dim dt As New DataTable
+        strCon = "select id_mensaje from tipos_mensaje where codigo='" & cod & "'"
+        dt = objMan.listarComando(strCon)
+        Return Integer.Parse(dt.Rows(0).Item(0))
+    End Function
+
+    Public Sub descartarMensaje(idUsuario As Integer, idMensaje As Integer)
+        If Not mensajeYaDescartado(idUsuario, idMensaje) Then
             objMan.ejecutarComando("insert into usuario_mensajes_descartados (id_usuario, id_mensaje) values (" & idUsuario & "," & idMensaje & ")")
         End If
     End Sub

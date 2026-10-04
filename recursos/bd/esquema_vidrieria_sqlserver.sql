@@ -18,11 +18,11 @@ GO
 
 CREATE TABLE usuarios (
     id_usuario          INT IDENTITY(1,1) PRIMARY KEY,
-    nombre              NVARCHAR(150) NOT NULL,
+    nombre              NVARCHAR(150) NOT NULL UNIQUE,
     correo              NVARCHAR(150) NOT NULL UNIQUE,
-    contrasena_hash     NVARCHAR(255) NOT NULL,
+    contrasena          NVARCHAR(255) NOT NULL,
     pregunta_seguridad  NVARCHAR(255) NOT NULL,
-    respuesta_hash      NVARCHAR(255) NOT NULL,  -- hashear igual que la contraseña, no guardar en texto plano
+    respuesta           NVARCHAR(255) NOT NULL,  -- hashear igual que la contraseña, no guardar en texto plano
     rol                 NVARCHAR(20) NOT NULL DEFAULT 'VENDEDOR'  -- VENDEDOR = Trabajador, ADMINISTRADOR = Jefe
         CHECK (rol IN ('VENDEDOR','ADMINISTRADOR')),
     activo              BIT NOT NULL DEFAULT 1,
@@ -40,8 +40,9 @@ CREATE TABLE usuario_preferencias (
 
 CREATE TABLE tipos_mensaje (
     id_mensaje   INT IDENTITY(1,1) PRIMARY KEY,
-    codigo       NVARCHAR(50) NOT NULL UNIQUE,
-    descripcion  NVARCHAR(255)
+    codigo       NVARCHAR(50)  NOT NULL UNIQUE,
+    titulo       NVARCHAR(255) NOT NULL,
+    texto  NVARCHAR(255)
 );
 
 CREATE TABLE usuario_mensajes_descartados (

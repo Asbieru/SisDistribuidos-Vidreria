@@ -45,7 +45,10 @@ Public Class InicioSesion
                 Return
             End If
             If objUsu.iniciarSesion(txtUsuario.Text, txtContrasena.Text) Then
-                MessageBox.Show("Bienvenido al Sistema!", "MENSAJE", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                Dim objMn As New MenuInicio
+                objMn.Show()
+
+                Dispose()
             Else
                 msj.Text = "Contraseña incorrecta!"
                 intentos -= 1
