@@ -1,4 +1,4 @@
-Imports System.Data
+Imports capaDatos
 Imports System.Linq
 Imports System.Collections.Generic
 
@@ -20,9 +20,8 @@ Public Class Pago
     Public Function RegistrarConReparto(idPedido As Integer, metodosYMontos As Dictionary(Of Integer, Decimal)) As Integer
         Dim montoTotal As Decimal = metodosYMontos.Values.Sum()
         Dim idPago As Integer = Insertar(idPedido, montoTotal)
-        Dim objDetalle As New DetallePago
         For Each par In metodosYMontos
-            objDetalle.Insertar(idPago, par.Key, par.Value)
+            InsertarDetallePago(idPago, par.Key, par.Value)
         Next
         Return idPago
     End Function
@@ -35,7 +34,7 @@ Public Class Pago
         Return objMan.listarComando(sql)
     End Function
 
-    Public Function Insertar(idPago As Integer, idMetodoPago As Integer, monto As Decimal) As Integer
+    Public Function InsertarDetallePago(idPago As Integer, idMetodoPago As Integer, monto As Decimal) As Integer
         Dim sql As String = "insert into detalle_pago (id_pago, id_metodo_pago, monto) values (" &
             idPago & "," & idMetodoPago & "," & Num(monto) & "); select scope_identity() as id"
         Dim dt As DataTable = objMan.listarComando(sql)

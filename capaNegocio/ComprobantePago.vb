@@ -1,4 +1,5 @@
-Imports System.Data
+Imports capaDatos
+
 
 Public Class ComprobantePago
     Dim objMan As New clsMantenimiento

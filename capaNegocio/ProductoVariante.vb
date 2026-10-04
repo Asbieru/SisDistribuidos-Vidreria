@@ -1,4 +1,4 @@
-Imports System.Data
+Imports capaDatos
 
 Public Class ProductoVariante
     Dim objMan As New clsMantenimiento

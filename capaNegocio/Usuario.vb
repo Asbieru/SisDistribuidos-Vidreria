@@ -73,7 +73,7 @@ Public Class Usuario
     End Function
 
     Public Sub guardarPreferencia(idUsuario As Integer, tema As String, fuente As String)
-        Dim dt As DataTable = Obtener(idUsuario)
+        Dim dt As DataTable = obtenerPreferencia(idUsuario)
         If dt.Rows.Count > 0 Then
             objMan.ejecutarComando("update usuario_preferencias set tema='" & Esc(tema) & "', fuente='" & Esc(fuente) & "' where id_usuario=" & idUsuario)
         Else

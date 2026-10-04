@@ -1,4 +1,4 @@
-Imports System.Data
+Imports capaDatos
 
 Public Class Pedido
     Dim objMan As New clsMantenimiento
