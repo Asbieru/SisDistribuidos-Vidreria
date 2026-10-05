@@ -46,9 +46,9 @@ Public Class InicioSesion
             End If
             If objUsu.iniciarSesion(txtUsuario.Text, txtContrasena.Text) Then
                 Dim objMn As New MenuInicio
-                objMn.Show()
                 objMn.txtUsuario.Text = txtUsuario.Text
-                Dispose()
+                objMn.Show()
+                Me.Close()
             Else
                 msj.Text = "Contraseña incorrecta!"
                 intentos -= 1

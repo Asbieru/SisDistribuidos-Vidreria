@@ -76,7 +76,7 @@ Public Class MenuInicio
                 temaColor()
             End If
         Catch ex As Exception
-            MessageBox.Show("Error al iniciar Menu", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show("Error al iniciar Menu: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
     End Sub
 
