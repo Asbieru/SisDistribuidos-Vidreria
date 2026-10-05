@@ -1,34 +1,25 @@
 ﻿Imports capaNegocio
 Public Class MensajePersonalizado
-    Dim respuesta As Boolean
-    Dim tema As String = "CLARO"
-    Dim idUsuario As Integer
-    Dim idMensaje As Integer
+    Public respuesta As Boolean
+    Public tema As String = "CLARO"
+    Public idUsuario As Integer = 0
+    Dim idMensaje As Integer = 0
     Dim objUsuario As New Usuario
 
-    Private Sub temaColor()
-        If tema.Equals("CLARO") Then
-            BackColor = Color.White
-            lblTitulo.ForeColor = Color.Black
-            lblContenido.ForeColor = Color.Black
-            btnAceptar.ForeColor = Color.Black
-            btnAceptar.BackColor = Color.Gainsboro
-            btnCancelar.ForeColor = Color.Black
-            btnCancelar.BackColor = Color.Gainsboro
-            chbNMostrar.ForeColor = Color.DarkBlue
-        ElseIf tema.Equals("OSCURO") Then
-            BackColor = Color.White
-            lblTitulo.ForeColor = Color.White
-            lblContenido.ForeColor = Color.White
-            btnAceptar.ForeColor = Color.White
-            btnAceptar.BackColor = Color.Gray
-            btnCancelar.ForeColor = Color.White
-            btnCancelar.BackColor = Color.Gray
-            chbNMostrar.ForeColor = Color.LightBlue
-        End If
+    Public Sub temaColor()
+        Dim p As Paleta = Temas.Obtener(tema)
+        BackColor = p.Fondo
+        For Each lbl As Label In New Label() {lblTitulo, lblContenido}
+            lbl.ForeColor = p.Texto
+        Next
+        For Each btn As Button In New Button() {btnAceptar, btnCancelar}
+            btn.ForeColor = p.BotonTexto
+            btn.BackColor = p.BotonFondo
+        Next
+        chbNMostrar.ForeColor = p.Acento
     End Sub
 
-    Private Sub modoError()
+    Public Sub modoError()
         temaColor()
         If tema.Equals("CLARO") Then
             lblTitulo.ForeColor = Color.DarkRed
@@ -39,30 +30,42 @@ Public Class MensajePersonalizado
         btnCancelar.Text = "Cerrar"
     End Sub
 
-    Private Sub modoInformacion()
+    Public Sub modoInformacion()
         temaColor()
         btnAceptar.Visible = False
         btnCancelar.Text = "Cerrar"
     End Sub
 
-    Private Sub llenarDatos(cod As String)
+    Public Sub llenarDatos(codigo As String)
         Dim dt As New DataTable
         Try
-            idMensaje = objUsuario.obtenerIDMensaje(cod)
+            idMensaje = objUsuario.obtenerIDMensaje(codigo)
             dt = objUsuario.obtenerMensaje(idMensaje)
             lblTitulo.Text = dt.Rows(0).Item(0).ToString
             lblContenido.Text = dt.Rows(0).Item(1).ToString
         Catch ex As Exception
-
+            MessageBox.Show("Error al encontrar Datos", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
+    End Sub
+
+    Private Sub descarteMensaje()
+        If chbNMostrar.Checked Then
+            Try
+                objUsuario.descartarMensaje(idUsuario, idMensaje)
+            Catch ex As Exception
+                MessageBox.Show("Error al descartar mensaje", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            End Try
+        End If
     End Sub
 
     Private Sub btnAceptar_Click(sender As Object, e As EventArgs) Handles btnAceptar.Click
         respuesta = True
+        descarteMensaje()
         Dispose()
     End Sub
     Private Sub btnCancelar_Click(sender As Object, e As EventArgs) Handles btnCancelar.Click
         respuesta = False
+        descarteMensaje()
         Dispose()
     End Sub
 End Class

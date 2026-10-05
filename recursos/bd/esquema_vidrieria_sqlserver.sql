@@ -264,3 +264,7 @@ INSERT INTO usuarios (nombre, correo, contrasena_hash, pregunta_seguridad, respu
 VALUES
 ('admin',  'admin@vidrieria.com',  '123456', '¿Nombre de tu mascota?',       'firulais', 'ADMINISTRADOR');
 GO
+
+INSERT INTO tipos_mensaje (codigo, titulo, texto)
+VALUES ('CERRARSESION', 'Cerrar sesión', '¿Seguro que deseas cerrar sesión?');
+GO

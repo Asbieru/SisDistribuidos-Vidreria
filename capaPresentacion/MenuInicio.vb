@@ -1,12 +1,107 @@
-﻿Public Class MenuInicio
+﻿Imports System.IO
+Imports capaNegocio
+
+Public Class MenuInicio
+    Dim tema As String = "CLARO"
+    Dim objUsu As New Usuario
+
+    Private Sub temaColor()
+        Dim p As Paleta = Temas.Obtener(tema)
+        ' Menú y submenús (recursivo)
+        menu.BackColor = p.Fondo
+        AplicarTemaMenu(menu.Items, p)
+        ' ToolStrip, incluyendo cambio de íconos
+        toolBarra.BackColor = p.Fondo
+        AplicarTemaToolStrip(toolBarra.Items, p)
+        ' Imagen de fondo según el tema
+        Dim sufijo As String = If(tema.Equals("OSCURO"), "Oscuro", "Claro")
+        Dim rutaFondo As String = Path.Combine(Application.StartupPath, "Fondos", "fondoInicio" & sufijo & ".jpg")
+        If File.Exists(rutaFondo) Then
+            Dim fondoViejo As Image = Me.BackgroundImage
+            Me.BackgroundImage = Image.FromFile(rutaFondo)
+            Me.BackgroundImageLayout = ImageLayout.Stretch
+            If fondoViejo IsNot Nothing Then fondoViejo.Dispose()  ' libera el fondo anterior
+        End If
+    End Sub
+
+    Private Sub AplicarTemaMenu(items As ToolStripItemCollection, p As Paleta)
+        For Each item As ToolStripItem In items
+            item.ForeColor = p.Texto
+            item.BackColor = p.Fondo
+            Dim menuItem As ToolStripMenuItem = TryCast(item, ToolStripMenuItem)
+            If menuItem IsNot Nothing AndAlso menuItem.HasDropDownItems Then
+                AplicarTemaMenu(menuItem.DropDownItems, p)  ' entra al submenú
+            End If
+        Next
+    End Sub
+
+    Private Sub AplicarTemaToolStrip(items As ToolStripItemCollection, p As Paleta)
+        Dim carpeta As String = If(tema.Equals("OSCURO"), "Oscuro", "Claro")
+        For Each item As ToolStripItem In items
+            item.ForeColor = p.Texto
+            item.BackColor = p.Fondo
+
+            Dim nombreIcono As String = If(item.Tag IsNot Nothing, item.Tag.ToString(), item.Name)
+            If Not String.IsNullOrEmpty(nombreIcono) Then
+                Dim ruta As String = Path.Combine(Application.StartupPath, "IconosExtras", carpeta, nombreIcono & ".png")
+                If File.Exists(ruta) Then
+                    Dim imgVieja As Image = item.Image
+                    item.Image = Image.FromFile(ruta)
+                    If imgVieja IsNot Nothing Then imgVieja.Dispose()  ' libera la imagen anterior de memoria
+                End If
+            End If
+        Next
+    End Sub
+
     Private Sub mnCerrarS_Click(sender As Object, e As EventArgs) Handles mnCerrarS.Click
-        Dim res As Integer
-        res = MessageBox.Show("¿Desea Cerrar Sesión?", "CONFIRMACIÓN", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
-        If res = 7 Then
+        Dim objMsj As New MensajePersonalizado
+        objMsj.idUsuario = Integer.Parse(txtID.Text)
+        objMsj.tema = tema
+        objMsj.llenarDatos("CERRARSESION")
+        objMsj.ShowDialog()
+        If Not objMsj.respuesta Then
             Return
         End If
         Dim objIncio As New InicioSesion
         objIncio.Show()
         Dispose()
+    End Sub
+
+    Private Sub MenuInicio_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        Try
+            txtID.Text = objUsu.obtenerIDUsuario(txtUsuario.Text)
+            Dim dt As DataTable = objUsu.obtenerPreferencia(Integer.Parse(txtID.Text))
+            If dt.Rows.Count > 0 Then
+                tema = dt.Rows(0).Item(0).ToString
+                temaColor()
+            End If
+        Catch ex As Exception
+            MessageBox.Show("Error al iniciar Menu", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
+    End Sub
+
+    Private Sub GuardarTema(color As String)
+        Try
+            objUsu.guardarPreferencia(Integer.Parse(txtID.Text), color, "Arial")
+        Catch ex As Exception
+            MessageBox.Show("Error al guardar tema", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
+    End Sub
+
+    Private Sub ClaroToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ClaroToolStripMenuItem.Click
+        tema = "CLARO"
+        GuardarTema(tema)
+        temaColor()
+    End Sub
+
+    Private Sub OscuroToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles OscuroToolStripMenuItem.Click
+        tema = "OSCURO"
+        GuardarTema(tema)
+        temaColor()
+    End Sub
+
+    Private Sub toolCotizar_Click(sender As Object, e As EventArgs) Handles toolCotizar.Click
+        Dim objMsj As New frmCotizarVentana
+        objMsj.Show()
     End Sub
 End Class
