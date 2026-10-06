@@ -91,10 +91,22 @@
     <Compile Include="frmEditarPieza.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="frmListadoClientes.Designer.vb">
+      <DependentUpon>frmListadoClientes.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmListadoClientes.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="frmMovimientoCajas.Designer.vb">
       <DependentUpon>frmMovimientoCajas.vb</DependentUpon>
     </Compile>
     <Compile Include="frmMovimientoCajas.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmRegistrarClientes.Designer.vb">
+      <DependentUpon>frmRegistrarClientes.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmRegistrarClientes.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="frmRegistrarPieza.Designer.vb">
