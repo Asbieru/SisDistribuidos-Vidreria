@@ -124,6 +124,11 @@ Public Class MenuInicio
         objMsj.Show()
     End Sub
 
+    Private Sub toolInventario_Click(sender As Object, e As EventArgs) Handles toolInventario.Click, smnVInventario.Click
+        Dim objInv As New frmVerInventario With {.idUsuario = Integer.Parse(txtID.Text), .tema = tema}
+        objInv.Show()
+    End Sub
+
     Private Sub smnUsuarios_Click(sender As Object, e As EventArgs) Handles smnUsuarios.Click
         Dim frm As New frmRegistrarUsuarios
         frm.Show()
