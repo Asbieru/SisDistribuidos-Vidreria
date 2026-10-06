@@ -260,7 +260,7 @@ ALTER TABLE compras
 GO
 
 
-INSERT INTO usuarios (nombre, correo, contrasena_hash, pregunta_seguridad, respuesta_hash, rol)
+INSERT INTO usuarios (nombre, correo, contrasena, pregunta_seguridad, respuesta, rol)
 VALUES
 ('admin',  'admin@vidrieria.com',  '123456', '¿Nombre de tu mascota?',       'firulais', 'ADMINISTRADOR');
 GO

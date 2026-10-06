@@ -27,6 +27,7 @@ Partial Class MenuInicio
         Me.mnProcesos = New System.Windows.Forms.ToolStripMenuItem()
         Me.smnRCompra = New System.Windows.Forms.ToolStripMenuItem()
         Me.smnRPedido = New System.Windows.Forms.ToolStripMenuItem()
+        Me.smnRPago = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnReportes = New System.Windows.Forms.ToolStripMenuItem()
         Me.smnVCompra = New System.Windows.Forms.ToolStripMenuItem()
         Me.smnVVenta = New System.Windows.Forms.ToolStripMenuItem()
@@ -45,7 +46,6 @@ Partial Class MenuInicio
         Me.toolCotizar = New System.Windows.Forms.ToolStripButton()
         Me.ToolStripSeparator1 = New System.Windows.Forms.ToolStripSeparator()
         Me.toolInventario = New System.Windows.Forms.ToolStripButton()
-        Me.smnRPago = New System.Windows.Forms.ToolStripMenuItem()
         Me.menu.SuspendLayout()
         Me.stripDatos.SuspendLayout()
         Me.toolBarra.SuspendLayout()
@@ -70,14 +70,20 @@ Partial Class MenuInicio
         'smnRCompra
         '
         Me.smnRCompra.Name = "smnRCompra"
-        Me.smnRCompra.Size = New System.Drawing.Size(180, 22)
+        Me.smnRCompra.Size = New System.Drawing.Size(166, 22)
         Me.smnRCompra.Text = "Registrar Compra"
         '
         'smnRPedido
         '
         Me.smnRPedido.Name = "smnRPedido"
-        Me.smnRPedido.Size = New System.Drawing.Size(180, 22)
+        Me.smnRPedido.Size = New System.Drawing.Size(166, 22)
         Me.smnRPedido.Text = "Regitrar Pedido"
+        '
+        'smnRPago
+        '
+        Me.smnRPago.Name = "smnRPago"
+        Me.smnRPago.Size = New System.Drawing.Size(166, 22)
+        Me.smnRPago.Text = "Registro Pago"
         '
         'mnReportes
         '
@@ -182,11 +188,13 @@ Partial Class MenuInicio
         '
         'toolCotizar
         '
+        Me.toolCotizar.BackColor = System.Drawing.Color.White
         Me.toolCotizar.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
         Me.toolCotizar.Image = CType(resources.GetObject("toolCotizar.Image"), System.Drawing.Image)
         Me.toolCotizar.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.toolCotizar.Name = "toolCotizar"
         Me.toolCotizar.Size = New System.Drawing.Size(23, 22)
+        Me.toolCotizar.Tag = "CotizarVentana"
         Me.toolCotizar.Text = "Cotizar Ventana"
         '
         'ToolStripSeparator1
@@ -196,18 +204,14 @@ Partial Class MenuInicio
         '
         'toolInventario
         '
+        Me.toolInventario.BackColor = System.Drawing.Color.White
         Me.toolInventario.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
         Me.toolInventario.Image = CType(resources.GetObject("toolInventario.Image"), System.Drawing.Image)
         Me.toolInventario.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.toolInventario.Name = "toolInventario"
         Me.toolInventario.Size = New System.Drawing.Size(23, 22)
+        Me.toolInventario.Tag = "Inventario"
         Me.toolInventario.Text = "Inventario"
-        '
-        'smnRPago
-        '
-        Me.smnRPago.Name = "smnRPago"
-        Me.smnRPago.Size = New System.Drawing.Size(180, 22)
-        Me.smnRPago.Text = "Registro Pago"
         '
         'MenuInicio
         '
@@ -219,6 +223,7 @@ Partial Class MenuInicio
         Me.Controls.Add(Me.toolBarra)
         Me.Controls.Add(Me.stripDatos)
         Me.Controls.Add(Me.menu)
+        Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.IsMdiContainer = True
         Me.MainMenuStrip = Me.menu
         Me.Name = "MenuInicio"

@@ -8,7 +8,9 @@ Public Class clsConectaBD
     Sub New()
         cn = New SqlConnection
         'BDLocal - Autenticaciòn windows
-        cn.ConnectionString = "data source=(localdb)\MSSQLLocalDB;Initial catalog=vidrieria;integrated security=SSPI;language=spanish"
+        'cn.ConnectionString = "data source=(localdb)\MSSQLLocalDB;Initial catalog=vidrieria;integrated security=SSPI;language=spanish"
+        cn.ConnectionString = "data source=DESKTOP-BPJRUBO;Initial catalog=vidrieria;integrated security=SSPI;language=spanish"
+
         'BDLocal - Autenticaciòn SQL Server
 
         'cn.ConnectionString = "data source=(local);Initial catalog=BDSistema;user id=sa;password='USAT2024'"
@@ -65,7 +67,8 @@ Public Class clsConectaBD
         Try
             'transaccion = False
             If cn.State <> Data.ConnectionState.Open Then ' SI EL ESTADO DE  LA CONEXION ES DIFERENTE DE ABIERTO ENTONCES ABRE LA CONEXION
-                cn.ConnectionString = "data source=(localdb)\MSSQLLocalDB;Initial catalog=vidrieria;integrated security=SSPI;language=spanish"
+                'cn.ConnectionString = "data source=(localdb)\MSSQLLocalDB;Initial catalog=vidrieria;integrated security=SSPI;language=spanish"
+                cn.ConnectionString = "data source=DESKTOP-BPJRUBO;Initial catalog=vidrieria;integrated security=SSPI;language=spanish"
                 cn.Open()
             End If
         Catch Ex As Exception

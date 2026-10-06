@@ -3,7 +3,7 @@ Public Class MensajePersonalizado
     Public respuesta As Boolean
     Public tema As String = "CLARO"
     Public idUsuario As Integer = 0
-    Dim idMensaje As Integer = 0
+    Public idMensaje As Integer = 0
     Dim objUsuario As New Usuario
 
     Public Sub temaColor()
@@ -36,10 +36,9 @@ Public Class MensajePersonalizado
         btnCancelar.Text = "Cerrar"
     End Sub
 
-    Public Sub llenarDatos(codigo As String)
+    Public Sub llenarDatos()
         Dim dt As New DataTable
         Try
-            idMensaje = objUsuario.obtenerIDMensaje(codigo)
             dt = objUsuario.obtenerMensaje(idMensaje)
             lblTitulo.Text = dt.Rows(0).Item(0).ToString
             lblContenido.Text = dt.Rows(0).Item(1).ToString

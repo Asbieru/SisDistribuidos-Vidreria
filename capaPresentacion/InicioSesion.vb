@@ -27,6 +27,29 @@ Public Class InicioSesion
         End Try
     End Sub
 
+    Private Sub btnCambio_Click(sender As Object, e As EventArgs) Handles btnCambio.Click
+        Dim objCambio As New CambiarContraseña
+        Try
+            If txtUsuario.Text.Trim.Length = 0 Then
+                msj2.Text = "Ingrese nombre de usario!"
+                txtUsuario.Focus()
+                Return
+            End If
+            If objUsu.validarRespuesta(txtUsuario.Text, txtRespuesta.Text) Then
+                MessageBox.Show("Bienvenido al Sistema!", "MENSAJE", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                objCambio.txtUsuario.Text = Me.txtUsuario.Text
+                objCambio.txtContraseña.Focus()
+                objCambio.ShowDialog()
+            Else
+                msj2.Text = "Respuesta incorrecta, intente nuevamente!"
+                txtRespuesta.Clear()
+                txtRespuesta.Focus()
+            End If
+        Catch ex As Exception
+            msj2.Text = ex.Message
+        End Try
+    End Sub
+
     Private Sub btnIngresar_Click(sender As Object, e As EventArgs) Handles btnIngresar.Click
         Try
             If txtUsuario.Text.Trim.Length = 0 Then
@@ -63,26 +86,7 @@ Public Class InicioSesion
         End Try
     End Sub
 
-    Private Sub btnCambio_Click(sender As Object, e As EventArgs) Handles btnCambio.Click
-        Dim objCambio As New CambiarContraseña
-        Try
-            If txtUsuario.Text.Trim.Length = 0 Then
-                msj2.Text = "Ingrese nombre de usario!"
-                txtUsuario.Focus()
-                Return
-            End If
-            If objUsu.validarRespuesta(txtUsuario.Text, txtRespuesta.Text) Then
-                MessageBox.Show("Bienvenido al Sistema!", "MENSAJE", MessageBoxButtons.OK, MessageBoxIcon.Information)
-                objCambio.txtUsuario.Text = Me.txtUsuario.Text
-                objCambio.txtContraseña.Focus()
-                objCambio.ShowDialog()
-            Else
-                msj2.Text = "Respuesta incorrecta, intente nuevamente!"
-                txtRespuesta.Clear()
-                txtRespuesta.Focus()
-            End If
-        Catch ex As Exception
-            msj2.Text = ex.Message
-        End Try
+    Private Sub btnSalir_Click(sender As Object, e As EventArgs) Handles btnSalir.Click
+        Application.Exit()
     End Sub
 End Class

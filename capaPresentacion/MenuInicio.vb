@@ -13,9 +13,12 @@ Public Class MenuInicio
         ' ToolStrip, incluyendo cambio de íconos
         toolBarra.BackColor = p.Fondo
         AplicarTemaToolStrip(toolBarra.Items, p)
+        ' Status strip
+        stripDatos.BackColor = p.Fondo
+        AplicarStatusStrip(stripDatos.Items, p)
         ' Imagen de fondo según el tema
         Dim sufijo As String = If(tema.Equals("OSCURO"), "Oscuro", "Claro")
-        Dim rutaFondo As String = Path.Combine(Application.StartupPath, "Fondos", "fondoInicio" & sufijo & ".jpg")
+        Dim rutaFondo As String = Path.Combine(Application.StartupPath, "Imagenes", "Fondos", "fondoInicio" & sufijo & ".jpg")
         If File.Exists(rutaFondo) Then
             Dim fondoViejo As Image = Me.BackgroundImage
             Me.BackgroundImage = Image.FromFile(rutaFondo)
@@ -35,6 +38,13 @@ Public Class MenuInicio
         Next
     End Sub
 
+    Private Sub AplicarStatusStrip(items As ToolStripItemCollection, p As Paleta)
+        For Each item As ToolStripItem In items
+            item.ForeColor = p.Texto
+            item.BackColor = p.Fondo
+        Next
+    End Sub
+
     Private Sub AplicarTemaToolStrip(items As ToolStripItemCollection, p As Paleta)
         Dim carpeta As String = If(tema.Equals("OSCURO"), "Oscuro", "Claro")
         For Each item As ToolStripItem In items
@@ -43,7 +53,7 @@ Public Class MenuInicio
 
             Dim nombreIcono As String = If(item.Tag IsNot Nothing, item.Tag.ToString(), item.Name)
             If Not String.IsNullOrEmpty(nombreIcono) Then
-                Dim ruta As String = Path.Combine(Application.StartupPath, "IconosExtras", carpeta, nombreIcono & ".png")
+                Dim ruta As String = Path.Combine(Application.StartupPath, "Imagenes", "Iconos", carpeta, nombreIcono & ".png")
                 If File.Exists(ruta) Then
                     Dim imgVieja As Image = item.Image
                     item.Image = Image.FromFile(ruta)
@@ -54,17 +64,26 @@ Public Class MenuInicio
     End Sub
 
     Private Sub mnCerrarS_Click(sender As Object, e As EventArgs) Handles mnCerrarS.Click
-        Dim objMsj As New MensajePersonalizado
-        objMsj.idUsuario = Integer.Parse(txtID.Text)
-        objMsj.tema = tema
-        objMsj.llenarDatos("CERRARSESION")
-        objMsj.ShowDialog()
-        If Not objMsj.respuesta Then
-            Return
-        End If
-        Dim objIncio As New InicioSesion
-        objIncio.Show()
-        Dispose()
+        Dim codigo As String = "CERRARSESION"
+        Try
+            Dim idMs As Integer = objUsu.obtenerIDMensaje(codigo)
+            If objUsu.mensajeYaDescartado(Integer.Parse(txtID.Text), idMs) Then
+                Dim objIncio As New InicioSesion
+                objIncio.Show()
+                Dispose()
+            Else
+                Dim objMsj As New MensajePersonalizado With {.idUsuario = Integer.Parse(txtID.Text), .tema = tema, .idMensaje = idMs}
+                objMsj.llenarDatos()
+                objMsj.ShowDialog()
+                If objMsj.respuesta Then
+                    Dim objIncio As New InicioSesion
+                    objIncio.Show()
+                    Dispose()
+                End If
+            End If
+        Catch ex As Exception
+            MessageBox.Show("Error mensaje: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
     End Sub
 
     Private Sub MenuInicio_Load(sender As Object, e As EventArgs) Handles MyBase.Load

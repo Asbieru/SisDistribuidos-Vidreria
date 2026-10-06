@@ -165,5 +165,13 @@
       <Name>capaNegocio</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="Imagenes\Fondos\fondoInicioClaro.jpg" />
+    <Content Include="Imagenes\Fondos\fondoInicioOscuro.jpg" />
+    <Content Include="Imagenes\Iconos\Oscuro\CotizarVentana.png" />
+    <Content Include="Imagenes\Iconos\Oscuro\Inventario.png" />
+    <Content Include="Imagenes\Iconos\Claro\CotizarVentana.png" />
+    <Content Include="Imagenes\Iconos\Claro\Inventario.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
 </Project>
