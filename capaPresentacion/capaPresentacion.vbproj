@@ -85,6 +85,54 @@
     <Compile Include="frmCotizarVentana.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="frmEditarPieza.Designer.vb">
+      <DependentUpon>frmEditarPieza.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmEditarPieza.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmMovimientoCajas.Designer.vb">
+      <DependentUpon>frmMovimientoCajas.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmMovimientoCajas.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmRegistrarPieza.Designer.vb">
+      <DependentUpon>frmRegistrarPieza.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmRegistrarPieza.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmStockMinimo.Designer.vb">
+      <DependentUpon>frmStockMinimo.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmStockMinimo.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmVerCajas.Designer.vb">
+      <DependentUpon>frmVerCajas.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmVerCajas.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmVerInventario.Designer.vb">
+      <DependentUpon>frmVerInventario.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmVerInventario.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmVerKardex.Designer.vb">
+      <DependentUpon>frmVerKardex.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmVerKardex.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmVerPiezas.Designer.vb">
+      <DependentUpon>frmVerPiezas.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmVerPiezas.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="InicioSesion.Designer.vb">
       <DependentUpon>InicioSesion.vb</DependentUpon>
     </Compile>
@@ -120,6 +168,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="Temas.vb" />
+    <Compile Include="UtilFormularios.vb" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="CambiarContraseña.es-PE.resx">
@@ -130,6 +179,30 @@
     </EmbeddedResource>
     <EmbeddedResource Include="frmCotizarVentana.resx">
       <DependentUpon>frmCotizarVentana.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmEditarPieza.resx">
+      <DependentUpon>frmEditarPieza.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmMovimientoCajas.resx">
+      <DependentUpon>frmMovimientoCajas.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmRegistrarPieza.resx">
+      <DependentUpon>frmRegistrarPieza.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmStockMinimo.resx">
+      <DependentUpon>frmStockMinimo.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmVerCajas.resx">
+      <DependentUpon>frmVerCajas.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmVerInventario.resx">
+      <DependentUpon>frmVerInventario.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmVerKardex.resx">
+      <DependentUpon>frmVerKardex.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmVerPiezas.resx">
+      <DependentUpon>frmVerPiezas.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="InicioSesion.resx">
       <DependentUpon>InicioSesion.vb</DependentUpon>

@@ -68,6 +68,7 @@
     <Compile Include="Cliente.vb" />
     <Compile Include="Compra.vb" />
     <Compile Include="ComprobantePago.vb" />
+    <Compile Include="Inventario.vb" />
     <Compile Include="InventarioCaja.vb" />
     <Compile Include="InventarioPieza.vb" />
     <Compile Include="MetodoPago.vb" />

@@ -123,4 +123,9 @@ Public Class MenuInicio
         Dim objMsj As New frmCotizarVentana
         objMsj.Show()
     End Sub
+
+    Private Sub toolInventario_Click(sender As Object, e As EventArgs) Handles toolInventario.Click, smnVInventario.Click
+        Dim objInv As New frmVerInventario With {.idUsuario = Integer.Parse(txtID.Text), .tema = tema}
+        objInv.Show()
+    End Sub
 End Class
