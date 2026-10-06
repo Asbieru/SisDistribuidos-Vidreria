@@ -85,6 +85,18 @@
     <Compile Include="frmCotizarVentana.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="frmListadoUsuarios.Designer.vb">
+      <DependentUpon>frmListadoUsuarios.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmListadoUsuarios.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmRegistrarUsuarios.Designer.vb">
+      <DependentUpon>frmRegistrarUsuarios.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmRegistrarUsuarios.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="InicioSesion.Designer.vb">
       <DependentUpon>InicioSesion.vb</DependentUpon>
     </Compile>
@@ -130,6 +142,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="frmCotizarVentana.resx">
       <DependentUpon>frmCotizarVentana.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmListadoUsuarios.resx">
+      <DependentUpon>frmListadoUsuarios.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmRegistrarUsuarios.resx">
+      <DependentUpon>frmRegistrarUsuarios.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="InicioSesion.resx">
       <DependentUpon>InicioSesion.vb</DependentUpon>

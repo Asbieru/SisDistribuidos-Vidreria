@@ -67,6 +67,11 @@ Public Class InicioSesion
                 txtUsuario.Focus()
                 Return
             End If
+            If Not objUsu.usuarioActivo(txtUsuario.Text) Then
+                msj.Text = "Usuario dado de baja, comuníquese con el administrador!"
+                txtUsuario.Focus()
+                Return
+            End If
             If objUsu.iniciarSesion(txtUsuario.Text, txtContrasena.Text) Then
                 Dim objMn As New MenuInicio
                 objMn.txtUsuario.Text = txtUsuario.Text

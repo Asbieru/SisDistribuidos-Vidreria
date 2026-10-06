@@ -123,4 +123,9 @@ Public Class MenuInicio
         Dim objMsj As New frmCotizarVentana
         objMsj.Show()
     End Sub
+
+    Private Sub smnUsuarios_Click(sender As Object, e As EventArgs) Handles smnUsuarios.Click
+        Dim frm As New frmRegistrarUsuarios
+        frm.Show()
+    End Sub
 End Class
