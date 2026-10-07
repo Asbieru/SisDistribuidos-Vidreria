@@ -28,6 +28,7 @@ Partial Class frmListadoClientes
         Me.btnEliminar = New System.Windows.Forms.Button()
         Me.btnSeleccionar = New System.Windows.Forms.Button()
         Me.btnCerrar = New System.Windows.Forms.Button()
+        Me.btnHistorial = New System.Windows.Forms.Button()
         Me.Panel2.SuspendLayout()
         CType(Me.dgvClientes, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
@@ -47,6 +48,7 @@ Partial Class frmListadoClientes
         Me.Panel2.Controls.Add(Me.btnEliminar)
         Me.Panel2.Controls.Add(Me.btnSeleccionar)
         Me.Panel2.Controls.Add(Me.btnCerrar)
+        Me.Panel2.Controls.Add(Me.btnHistorial)
         Me.Panel2.Dock = System.Windows.Forms.DockStyle.Fill
         Me.Panel2.Name = "Panel2"
         Me.Panel2.TabIndex = 0
@@ -140,6 +142,14 @@ Partial Class frmListadoClientes
         Me.btnCerrar.Text = "CERRAR"
         Me.btnCerrar.UseVisualStyleBackColor = True
 
+        Me.btnHistorial.Anchor = System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left
+        Me.btnHistorial.Location = New System.Drawing.Point(402, 477)
+        Me.btnHistorial.Name = "btnHistorial"
+        Me.btnHistorial.Size = New System.Drawing.Size(150, 34)
+        Me.btnHistorial.Text = "VER HISTORIAL"
+        Me.btnHistorial.TabIndex = 12
+        Me.btnHistorial.UseVisualStyleBackColor = True
+
         Me.CancelButton = Me.btnCerrar
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
@@ -169,4 +179,5 @@ Partial Class frmListadoClientes
     Friend WithEvents btnEliminar As System.Windows.Forms.Button
     Friend WithEvents btnSeleccionar As System.Windows.Forms.Button
     Friend WithEvents btnCerrar As System.Windows.Forms.Button
+    Friend WithEvents btnHistorial As System.Windows.Forms.Button
 End Class

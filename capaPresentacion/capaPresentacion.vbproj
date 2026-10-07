@@ -106,6 +106,12 @@
     <Compile Include="frmListadoClientes.Designer.vb">
       <DependentUpon>frmListadoClientes.vb</DependentUpon>
     </Compile>
+    <Compile Include="frmHistorialClientes.Designer.vb">
+      <DependentUpon>frmHistorialClientes.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmHistorialClientes.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="frmListadoClientes.vb">
       <SubType>Form</SubType>
     </Compile>
