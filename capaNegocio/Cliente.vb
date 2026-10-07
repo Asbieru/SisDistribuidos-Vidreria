@@ -2,6 +2,8 @@ Option Strict On
 Imports capaDatos
 Imports System.Data
 Imports System.Collections.Generic
+Imports System.Text.RegularExpressions
+Imports System.Linq
 
 Public Class Cliente
     Private ReadOnly objMan As New clsMantenimiento
@@ -31,9 +33,53 @@ Public Class Cliente
 
     Public Sub Actualizar(idCliente As Integer, nombre As String,
                           documento As String, telefono As String, direccion As String)
-        ValidarID(idCliente)
-        Guardar(idCliente, nombre, documento, telefono, direccion)
+        ' Compatibilidad con llamadas antiguas. Los formularios deben pasar
+        ' la version que leyeron al abrirse mediante la sobrecarga siguiente.
+        Dim dt As DataTable = Obtener(idCliente)
+        If dt.Rows.Count = 0 Then Throw New Exception("El cliente ya no existe. Actualice el listado.")
+        Actualizar(idCliente, nombre, documento, telefono, direccion,
+                   DirectCast(dt.Rows(0)("version_cliente"), Byte()))
     End Sub
+
+    Public Sub Actualizar(idCliente As Integer, nombre As String,
+                          documento As String, telefono As String, direccion As String,
+                          versionOriginal As Byte())
+        ValidarID(idCliente)
+        If versionOriginal Is Nothing OrElse versionOriginal.Length <> 8 Then
+            Throw New Exception("Recargue el cliente antes de guardar sus cambios.")
+        End If
+        Guardar(idCliente, nombre, documento, telefono, direccion, versionOriginal)
+    End Sub
+
+    Public Function DocumentoCoincidente(documento As String,
+                                         Optional idExcluir As Integer = 0) As DataTable
+        documento = Normalizar(documento)
+        ValidarLongitud(documento, 20, "El documento")
+        If idExcluir < 0 Then Throw New Exception("El ID del cliente no es válido.")
+        Return objMan.listarProcedimiento("dbo.sp_cli_documento_coincidente",
+            New Dictionary(Of String, Object) From {
+                {"documento", documento}, {"id_excluir", idExcluir}})
+    End Function
+
+    Public Function Historial(idCliente As Integer, Optional estado As String = Nothing) As DataTable
+        ValidarID(idCliente)
+        estado = Normalizar(estado)
+        If estado IsNot Nothing Then
+            estado = estado.ToUpperInvariant()
+            If Not {"PENDIENTE", "PARCIAL", "PAGADO", "CANCELADO"}.Contains(estado) Then
+                Throw New Exception("Seleccione un estado válido.")
+            End If
+        End If
+        Return objMan.listarProcedimiento("dbo.sp_cli_historial",
+            New Dictionary(Of String, Object) From {{"id_cliente", idCliente}, {"estado", estado}})
+    End Function
+
+    Public Function PagosDePedido(idCliente As Integer, idPedido As Integer) As DataTable
+        ValidarID(idCliente)
+        If idPedido <= 0 Then Throw New Exception("Seleccione un pedido válido.")
+        Return objMan.listarProcedimiento("dbo.sp_cli_pagos_pedido",
+            New Dictionary(Of String, Object) From {{"id_cliente", idCliente}, {"id_pedido", idPedido}})
+    End Function
 
     Public Function TienePedidos(idCliente As Integer) As Boolean
         ValidarID(idCliente)
@@ -51,7 +97,7 @@ Public Class Cliente
 
     Private Function Guardar(idCliente As Integer, nombre As String,
                              documento As String, telefono As String,
-                             direccion As String) As Integer
+                             direccion As String, Optional versionOriginal As Byte() = Nothing) As Integer
         nombre = Normalizar(nombre)
         documento = Normalizar(documento)
         telefono = Normalizar(telefono)
@@ -61,11 +107,17 @@ Public Class Cliente
         ValidarLongitud(documento, 20, "El documento")
         ValidarLongitud(telefono, 20, "El teléfono")
         ValidarLongitud(direccion, 255, "La dirección")
-        Dim dt As DataTable = objMan.listarProcedimiento("dbo.sp_cli_guardar",
-            New Dictionary(Of String, Object) From {
-                {"id_cliente", idCliente}, {"nombre", nombre},
-                {"documento", documento}, {"telefono", telefono},
-                {"direccion", direccion}})
+        If telefono IsNot Nothing AndAlso
+           (Not Regex.IsMatch(telefono, "^[0-9+() \-]+$") OrElse Not Regex.IsMatch(telefono, "[0-9]")) Then
+            Throw New Exception("El teléfono debe contener números; puede incluir espacios, +, paréntesis y guiones.")
+        End If
+        Dim parametros As New Dictionary(Of String, Object) From {
+            {"id_cliente", idCliente}, {"nombre", nombre},
+            {"documento", documento}, {"telefono", telefono}, {"direccion", direccion}}
+        ' En altas se omite el parametro binario para usar su NULL SQL por defecto.
+        ' La utilidad compartida infiere un tipo textual cuando recibe Nothing.
+        If versionOriginal IsNot Nothing Then parametros.Add("version_original", versionOriginal)
+        Dim dt As DataTable = objMan.listarProcedimiento("dbo.sp_cli_guardar", parametros)
         Return CInt(dt.Rows(0)("id_cliente"))
     End Function
 
