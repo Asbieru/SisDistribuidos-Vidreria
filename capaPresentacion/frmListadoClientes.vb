@@ -63,6 +63,7 @@ Public Class frmListadoClientes
         btnModificar.Enabled = haySeleccion
         btnEliminar.Enabled = haySeleccion
         btnSeleccionar.Enabled = haySeleccion
+        btnHistorial.Enabled = haySeleccion
     End Sub
 
     Private Sub dgvClientes_SelectionChanged(sender As Object, e As EventArgs) Handles dgvClientes.SelectionChanged
@@ -87,6 +88,14 @@ Public Class frmListadoClientes
 
     Private Sub btnNuevo_Click(sender As Object, e As EventArgs) Handles btnNuevo.Click
         abrirRegistro(0)
+    End Sub
+
+    Private Sub btnHistorial_Click(sender As Object, e As EventArgs) Handles btnHistorial.Click
+        Dim id As Integer = idSeleccionado()
+        If id = 0 Then Return
+        Using formulario As New frmHistorialClientes With {.idCliente = id, .tema = tema}
+            formulario.ShowDialog(Me)
+        End Using
     End Sub
 
     Private Sub btnModificar_Click(sender As Object, e As EventArgs) Handles btnModificar.Click
