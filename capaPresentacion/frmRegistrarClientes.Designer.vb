@@ -30,6 +30,7 @@ Partial Class frmRegistrarClientes
         Me.txtDireccion = New System.Windows.Forms.TextBox()
         Me.btnGuardar = New System.Windows.Forms.Button()
         Me.btnCancelar = New System.Windows.Forms.Button()
+        Me.btnRecargar = New System.Windows.Forms.Button()
         Me.Panel2.SuspendLayout()
         Me.SuspendLayout()
 
@@ -50,6 +51,7 @@ Partial Class frmRegistrarClientes
         Me.Panel2.Controls.Add(Me.txtDireccion)
         Me.Panel2.Controls.Add(Me.btnGuardar)
         Me.Panel2.Controls.Add(Me.btnCancelar)
+        Me.Panel2.Controls.Add(Me.btnRecargar)
         Me.Panel2.Dock = System.Windows.Forms.DockStyle.Fill
         Me.Panel2.Name = "Panel2"
         Me.Panel2.TabIndex = 0
@@ -144,6 +146,15 @@ Partial Class frmRegistrarClientes
         Me.btnCancelar.Text = "CANCELAR"
         Me.btnCancelar.UseVisualStyleBackColor = True
 
+        Me.btnRecargar.Anchor = System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right
+        Me.btnRecargar.Location = New System.Drawing.Point(270, 372)
+        Me.btnRecargar.Name = "btnRecargar"
+        Me.btnRecargar.Size = New System.Drawing.Size(120, 34)
+        Me.btnRecargar.TabIndex = 14
+        Me.btnRecargar.Text = "RECARGAR"
+        Me.btnRecargar.Visible = False
+        Me.btnRecargar.UseVisualStyleBackColor = True
+
         Me.AcceptButton = Me.btnGuardar
         Me.CancelButton = Me.btnCancelar
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
@@ -178,4 +189,5 @@ Partial Class frmRegistrarClientes
     Friend WithEvents txtDireccion As System.Windows.Forms.TextBox
     Friend WithEvents btnGuardar As System.Windows.Forms.Button
     Friend WithEvents btnCancelar As System.Windows.Forms.Button
+    Friend WithEvents btnRecargar As System.Windows.Forms.Button
 End Class
