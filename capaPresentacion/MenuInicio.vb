@@ -163,4 +163,25 @@ Public Class MenuInicio
         Dim nuevoListado As New frmListadoCompras()
         nuevoListado.Show()
     End Sub
+
+    Private Sub smnClientes_Click(sender As Object, e As EventArgs) Handles smnClientes.Click
+        Try
+            For Each formulario As Form In Application.OpenForms
+                If TypeOf formulario Is frmListadoClientes Then
+                    Dim listado As frmListadoClientes = DirectCast(formulario, frmListadoClientes)
+                    If Not listado.modoSeleccion Then
+                        listado.WindowState = FormWindowState.Normal
+                        listado.cargarLista()
+                        listado.BringToFront()
+                        Return
+                    End If
+                End If
+            Next
+            Dim nuevoListado As New frmListadoClientes With {.tema = tema}
+            nuevoListado.Show(Me)
+        Catch ex As Exception
+            MessageBox.Show(ex.Message, "Clientes", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
+    End Sub
+
 End Class
