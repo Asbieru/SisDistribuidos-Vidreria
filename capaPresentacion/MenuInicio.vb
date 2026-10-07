@@ -120,7 +120,7 @@ Public Class MenuInicio
     End Sub
 
     Private Sub toolCotizar_Click(sender As Object, e As EventArgs) Handles toolCotizar.Click
-        Dim objMsj As New frmCotizarVentana
+        Dim objMsj As New frmCotizarVentana With {.tema = tema}
         objMsj.Show()
     End Sub
 
