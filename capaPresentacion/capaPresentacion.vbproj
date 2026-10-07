@@ -79,6 +79,18 @@
     <Compile Include="CambiarContraseña.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="frmRegistrarCompras.Designer.vb">
+      <DependentUpon>frmRegistrarCompras.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmRegistrarCompras.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmListadoCompras.Designer.vb">
+      <DependentUpon>frmListadoCompras.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmListadoCompras.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="frmCotizarVentana.Designer.vb">
       <DependentUpon>frmCotizarVentana.vb</DependentUpon>
     </Compile>
@@ -201,11 +213,17 @@
     <EmbeddedResource Include="CambiarContraseña.resx">
       <DependentUpon>CambiarContraseña.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="frmRegistrarCompras.resx">
+      <DependentUpon>frmRegistrarCompras.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="frmCotizarVentana.resx">
       <DependentUpon>frmCotizarVentana.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmEditarPieza.resx">
       <DependentUpon>frmEditarPieza.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmListadoCompras.resx">
+      <DependentUpon>frmListadoCompras.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmMovimientoCajas.resx">
       <DependentUpon>frmMovimientoCajas.vb</DependentUpon>

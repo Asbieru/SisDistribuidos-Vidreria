@@ -133,4 +133,34 @@ Public Class MenuInicio
         Dim frm As New frmRegistrarUsuarios
         frm.Show()
     End Sub
+
+    Private Sub smnRCompra_Click(sender As Object, e As EventArgs) Handles smnRCompra.Click
+        For Each formulario As Form In Application.OpenForms
+            If TypeOf formulario Is frmRegistrarCompras Then
+                formulario.WindowState = FormWindowState.Normal
+                formulario.BringToFront()
+                Return
+            End If
+        Next
+
+        Dim registro As New frmRegistrarCompras()
+        registro.Show()
+    End Sub
+
+    Private Sub smnVCompra_Click(sender As Object, e As EventArgs) Handles smnVCompra.Click
+        For Each formulario As Form In Application.OpenForms
+            If TypeOf formulario Is frmListadoCompras Then
+                Dim listado As frmListadoCompras =
+                    DirectCast(formulario, frmListadoCompras)
+
+                listado.cargarLista()
+                listado.WindowState = FormWindowState.Normal
+                listado.BringToFront()
+                Return
+            End If
+        Next
+
+        Dim nuevoListado As New frmListadoCompras()
+        nuevoListado.Show()
+    End Sub
 End Class
