@@ -24,6 +24,11 @@ Partial Class frmCotizarVentana
     Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmCotizarVentana))
         Me.Panel1 = New System.Windows.Forms.Panel()
+        Me.PanelCliente = New System.Windows.Forms.Panel()
+        Me.lblCliente = New System.Windows.Forms.Label()
+        Me.txtCliente = New System.Windows.Forms.TextBox()
+        Me.btnBuscarCliente = New System.Windows.Forms.Button()
+        Me.btnHistorialCliente = New System.Windows.Forms.Button()
         Me.Label7 = New System.Windows.Forms.Label()
         Me.cmbPedido = New System.Windows.Forms.ComboBox()
         Me.Label4 = New System.Windows.Forms.Label()
@@ -74,7 +79,7 @@ Partial Class frmCotizarVentana
         Me.Panel1.Controls.Add(Me.Label3)
         Me.Panel1.Controls.Add(Me.Label2)
         Me.Panel1.Controls.Add(Me.Label1)
-        Me.Panel1.Location = New System.Drawing.Point(12, 12)
+        Me.Panel1.Location = New System.Drawing.Point(12, 108)
         Me.Panel1.Name = "Panel1"
         Me.Panel1.Size = New System.Drawing.Size(431, 178)
         Me.Panel1.TabIndex = 0
@@ -205,7 +210,7 @@ Partial Class frmCotizarVentana
         Me.Panel2.Controls.Add(Me.Label9)
         Me.Panel2.Controls.Add(Me.txtAncho)
         Me.Panel2.Controls.Add(Me.Label8)
-        Me.Panel2.Location = New System.Drawing.Point(12, 197)
+        Me.Panel2.Location = New System.Drawing.Point(12, 293)
         Me.Panel2.Name = "Panel2"
         Me.Panel2.Size = New System.Drawing.Size(431, 108)
         Me.Panel2.TabIndex = 0
@@ -252,7 +257,7 @@ Partial Class frmCotizarVentana
         '
         'btnCancelar
         '
-        Me.btnCancelar.Location = New System.Drawing.Point(368, 463)
+        Me.btnCancelar.Location = New System.Drawing.Point(368, 559)
         Me.btnCancelar.Name = "btnCancelar"
         Me.btnCancelar.Size = New System.Drawing.Size(75, 23)
         Me.btnCancelar.TabIndex = 11
@@ -261,7 +266,7 @@ Partial Class frmCotizarVentana
         '
         'btnLlevarPedido
         '
-        Me.btnLlevarPedido.Location = New System.Drawing.Point(254, 463)
+        Me.btnLlevarPedido.Location = New System.Drawing.Point(254, 559)
         Me.btnLlevarPedido.Name = "btnLlevarPedido"
         Me.btnLlevarPedido.Size = New System.Drawing.Size(108, 23)
         Me.btnLlevarPedido.TabIndex = 10
@@ -302,7 +307,7 @@ Partial Class frmCotizarVentana
         Me.Label13.AutoSize = True
         Me.Label13.BackColor = System.Drawing.Color.Transparent
         Me.Label13.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label13.Location = New System.Drawing.Point(19, 330)
+        Me.Label13.Location = New System.Drawing.Point(19, 426)
         Me.Label13.Name = "Label13"
         Me.Label13.Size = New System.Drawing.Size(182, 16)
         Me.Label13.TabIndex = 0
@@ -311,7 +316,7 @@ Partial Class frmCotizarVentana
         'txtPreciomaterial
         '
         Me.txtPreciomaterial.Enabled = False
-        Me.txtPreciomaterial.Location = New System.Drawing.Point(223, 328)
+        Me.txtPreciomaterial.Location = New System.Drawing.Point(223, 424)
         Me.txtPreciomaterial.Name = "txtPreciomaterial"
         Me.txtPreciomaterial.Size = New System.Drawing.Size(200, 20)
         Me.txtPreciomaterial.TabIndex = 0
@@ -321,7 +326,7 @@ Partial Class frmCotizarVentana
         Me.Label14.AutoSize = True
         Me.Label14.BackColor = System.Drawing.Color.Transparent
         Me.Label14.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label14.Location = New System.Drawing.Point(127, 356)
+        Me.Label14.Location = New System.Drawing.Point(127, 452)
         Me.Label14.Name = "Label14"
         Me.Label14.Size = New System.Drawing.Size(74, 16)
         Me.Label14.TabIndex = 0
@@ -330,7 +335,7 @@ Partial Class frmCotizarVentana
         'txtExtra
         '
         Me.txtExtra.Enabled = False
-        Me.txtExtra.Location = New System.Drawing.Point(223, 353)
+        Me.txtExtra.Location = New System.Drawing.Point(223, 449)
         Me.txtExtra.Name = "txtExtra"
         Me.txtExtra.Size = New System.Drawing.Size(200, 20)
         Me.txtExtra.TabIndex = 8
@@ -338,7 +343,7 @@ Partial Class frmCotizarVentana
         'txtManoObra
         '
         Me.txtManoObra.Enabled = False
-        Me.txtManoObra.Location = New System.Drawing.Point(223, 379)
+        Me.txtManoObra.Location = New System.Drawing.Point(223, 475)
         Me.txtManoObra.Name = "txtManoObra"
         Me.txtManoObra.Size = New System.Drawing.Size(200, 20)
         Me.txtManoObra.TabIndex = 9
@@ -348,7 +353,7 @@ Partial Class frmCotizarVentana
         Me.Label15.AutoSize = True
         Me.Label15.BackColor = System.Drawing.Color.Transparent
         Me.Label15.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label15.Location = New System.Drawing.Point(80, 381)
+        Me.Label15.Location = New System.Drawing.Point(80, 477)
         Me.Label15.Name = "Label15"
         Me.Label15.Size = New System.Drawing.Size(121, 16)
         Me.Label15.TabIndex = 0
@@ -357,7 +362,7 @@ Partial Class frmCotizarVentana
         'txtTotal
         '
         Me.txtTotal.Enabled = False
-        Me.txtTotal.Location = New System.Drawing.Point(223, 405)
+        Me.txtTotal.Location = New System.Drawing.Point(223, 501)
         Me.txtTotal.Name = "txtTotal"
         Me.txtTotal.Size = New System.Drawing.Size(200, 20)
         Me.txtTotal.TabIndex = 0
@@ -368,7 +373,7 @@ Partial Class frmCotizarVentana
         Me.Label16.AutoSize = True
         Me.Label16.BackColor = System.Drawing.Color.Transparent
         Me.Label16.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label16.Location = New System.Drawing.Point(133, 405)
+        Me.Label16.Location = New System.Drawing.Point(133, 501)
         Me.Label16.Name = "Label16"
         Me.Label16.Size = New System.Drawing.Size(68, 16)
         Me.Label16.TabIndex = 0
@@ -376,7 +381,7 @@ Partial Class frmCotizarVentana
         '
         'btnDuplicar
         '
-        Me.btnDuplicar.Location = New System.Drawing.Point(12, 463)
+        Me.btnDuplicar.Location = New System.Drawing.Point(12, 559)
         Me.btnDuplicar.Name = "btnDuplicar"
         Me.btnDuplicar.Size = New System.Drawing.Size(108, 23)
         Me.btnDuplicar.TabIndex = 12
@@ -386,7 +391,39 @@ Partial Class frmCotizarVentana
         'frmCotizarVentana
         '
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None
-        Me.ClientSize = New System.Drawing.Size(455, 491)
+        Me.PanelCliente.Location = New System.Drawing.Point(12, 12)
+        Me.PanelCliente.Name = "PanelCliente"
+        Me.PanelCliente.Size = New System.Drawing.Size(431, 90)
+        Me.PanelCliente.TabIndex = 0
+        Me.PanelCliente.Controls.Add(Me.lblCliente)
+        Me.PanelCliente.Controls.Add(Me.txtCliente)
+        Me.PanelCliente.Controls.Add(Me.btnBuscarCliente)
+        Me.PanelCliente.Controls.Add(Me.btnHistorialCliente)
+        Me.lblCliente.AutoSize = True
+        Me.lblCliente.Location = New System.Drawing.Point(8, 12)
+        Me.lblCliente.Name = "lblCliente"
+        Me.lblCliente.Text = "Cliente:"
+        Me.txtCliente.Location = New System.Drawing.Point(70, 8)
+        Me.txtCliente.Name = "txtCliente"
+        Me.txtCliente.ReadOnly = True
+        Me.txtCliente.Size = New System.Drawing.Size(350, 20)
+        Me.txtCliente.TabIndex = 0
+        Me.txtCliente.TabStop = False
+        Me.btnBuscarCliente.Location = New System.Drawing.Point(8, 40)
+        Me.btnBuscarCliente.Name = "btnBuscarCliente"
+        Me.btnBuscarCliente.Size = New System.Drawing.Size(170, 32)
+        Me.btnBuscarCliente.TabIndex = 1
+        Me.btnBuscarCliente.Text = "SELECCIONAR CLIENTE"
+        Me.btnBuscarCliente.UseVisualStyleBackColor = True
+        Me.btnHistorialCliente.Location = New System.Drawing.Point(190, 40)
+        Me.btnHistorialCliente.Name = "btnHistorialCliente"
+        Me.btnHistorialCliente.Size = New System.Drawing.Size(170, 32)
+        Me.btnHistorialCliente.TabIndex = 2
+        Me.btnHistorialCliente.Text = "VER HISTORIAL"
+        Me.btnHistorialCliente.Enabled = False
+        Me.btnHistorialCliente.UseVisualStyleBackColor = True
+        Me.ClientSize = New System.Drawing.Size(455, 587)
+        Me.Controls.Add(Me.PanelCliente)
         Me.Controls.Add(Me.btnDuplicar)
         Me.Controls.Add(Me.txtTotal)
         Me.Controls.Add(Me.Label16)
@@ -413,6 +450,11 @@ Partial Class frmCotizarVentana
     End Sub
 
     Friend WithEvents Panel1 As Panel
+    Friend WithEvents PanelCliente As Panel
+    Friend WithEvents lblCliente As Label
+    Friend WithEvents txtCliente As TextBox
+    Friend WithEvents btnBuscarCliente As Button
+    Friend WithEvents btnHistorialCliente As Button
     Friend WithEvents Label3 As Label
     Friend WithEvents Label2 As Label
     Friend WithEvents Label1 As Label
