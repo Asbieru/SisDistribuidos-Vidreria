@@ -3,18 +3,19 @@
 ' VER: resumen de existencias de todos los productos (solo consulta).
 ' Desde aquí se abren los demás formularios del inventario.
 Public Class frmVerInventario
+    Implements IFormularioTema
     ' Los envía MenuInicio al abrir el formulario
     Public idUsuario As Integer? = Nothing
-    Public tema As String = "CLARO"
+    Public Property tema As String = "CLARO" Implements IFormularioTema.tema
 
     Dim objInv As New Inventario
     Dim cargando As Boolean = True
 
     Private Sub frmVerInventario_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        AplicarTema(Me, tema)
         cmbCategoria.Items.Add(TODOS)
         cmbCategoria.Items.AddRange(Inventario.Categorias)
         cmbCategoria.SelectedIndex = 0
-        AplicarTema(Me, tema)
         lblAlerta.ForeColor = ColorAlerta(tema)
         cargando = False
         Cargar()

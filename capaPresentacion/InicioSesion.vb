@@ -8,17 +8,22 @@ Public Class InicioSesion
         Try
             If chbMostrar.Checked Then
                 If txtUsuario.Text.Trim.Length = 0 Then
-                    msj.Text = "Ingrese nombre de usario!"
-                    txtUsuario.Focus()
+                    msj.Text = "¡Ingrese nombre de usuario!"
+                ElseIf Not objUsu.validarNombreUsuario(txtUsuario.Text) Then
+                    msj.Text = "¡Usuario no encontrado!"
+                Else
+                    Me.Height = 549
+                    txtUsuario.Enabled = False
+                    txtPregunta.Text = objUsu.obtenerPregunta(txtUsuario.Text)
                     Return
                 End If
-                If Not objUsu.validarNombreUsuario(txtUsuario.Text) Then
-                    msj.Text = "Usuario no encontrado!"
-                    txtUsuario.Focus()
-                    Return
-                End If
-                txtPregunta.Text = objUsu.obtenerPregunta(txtUsuario.Text)
+                txtUsuario.Focus()
+                chbMostrar.Checked = False
+                pnlCambio.Visible = False
+                Me.Height = 375
             Else
+                Me.Height = 375
+                txtUsuario.Enabled = True
                 txtPregunta.Clear()
                 txtRespuesta.Clear()
             End If

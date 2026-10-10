@@ -24,6 +24,8 @@ Module UtilFormularios
                 dgv.EnableHeadersVisualStyles = False
             ElseIf TypeOf c Is Label OrElse TypeOf c Is CheckBox OrElse TypeOf c Is GroupBox Then
                 c.ForeColor = p.Texto
+            ElseIf TypeOf c Is Panel Then
+                c.BackColor = p.BotonFondo
             End If
             If c.HasChildren Then AplicarTemaControles(c.Controls, p)
         Next

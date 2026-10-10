@@ -3,9 +3,10 @@
 ' EDITAR: corta una pieza o cambia su estado (reservar, liberar, vender, defectuosa).
 ' Lo abre frmVerPiezas con la pieza seleccionada.
 Public Class frmEditarPieza
+    Implements IFormularioTema
     Public idPieza As Integer
     Public idUsuario As Integer? = Nothing
-    Public tema As String = "CLARO"
+    Public Property tema As String = "CLARO" Implements IFormularioTema.tema
 
     Dim objPieza As New InventarioPieza
 

@@ -1,9 +1,12 @@
 ﻿Imports capaNegocio
 Public Class frmRegistrarUsuarios
+    Implements IFormularioTema
+    Public Property tema As String = "CLARO" Implements IFormularioTema.tema
     Dim objUsu As New Usuario
     Dim idUsuario As Integer = 0   ' 0 = usuario nuevo, mayor a 0 = se está modificando ese usuario
 
     Private Sub frmRegistrarUsuarios_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        AplicarTema(Me, tema)
         cboRol.DropDownStyle = ComboBoxStyle.DropDownList
         cboRol.Items.Clear()
         cboRol.Items.AddRange(New String() {"VENDEDOR", "ADMINISTRADOR"})
@@ -131,7 +134,7 @@ Public Class frmRegistrarUsuarios
         ' Si el listado ya está abierto se trae al frente; si no, se abre uno nuevo
         Dim frm As frmListadoUsuarios = Application.OpenForms.OfType(Of frmListadoUsuarios)().FirstOrDefault()
         If frm Is Nothing Then
-            frm = New frmListadoUsuarios
+            frm = New frmListadoUsuarios With {.tema = tema}
             frm.Show()
         Else
             If frm.WindowState = FormWindowState.Minimized Then frm.WindowState = FormWindowState.Normal

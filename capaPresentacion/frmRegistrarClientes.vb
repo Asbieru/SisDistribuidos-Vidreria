@@ -2,7 +2,8 @@
 Imports System.Data
 
 Public Class frmRegistrarClientes
-    Public Property tema As String = "CLARO"
+    Implements IFormularioTema
+    Public Property tema As String = "CLARO" Implements IFormularioTema.tema
     Public Property idCliente As Integer = 0
     Public Property idClienteGuardado As Integer = 0
     Private ReadOnly objCliente As New Cliente
@@ -10,8 +11,9 @@ Public Class frmRegistrarClientes
 
     Private Sub frmRegistrarClientes_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         AplicarTema(Me, tema)
-        Panel2.BackColor = Temas.Obtener(tema).Fondo
-        lblModo.ForeColor = Temas.Obtener(tema).Acento
+        Dim p As Paleta = Temas.Obtener(tema)
+        Panel2.BackColor = p.Fondo
+        lblModo.ForeColor = p.Acento
         idClienteGuardado = 0
         Try
             If idCliente = 0 Then

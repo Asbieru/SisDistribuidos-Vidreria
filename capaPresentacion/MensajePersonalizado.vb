@@ -1,10 +1,15 @@
 ﻿Imports capaNegocio
 Public Class MensajePersonalizado
+    Implements IFormularioTema
     Public respuesta As Boolean
-    Public tema As String = "CLARO"
+    Public Property tema As String = "CLARO" Implements IFormularioTema.tema
     Public idUsuario As Integer = 0
     Public idMensaje As Integer = 0
     Dim objUsuario As New Usuario
+
+    Private Sub MensajePersonalizado_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        AplicarTema(Me, tema)
+    End Sub
 
     Public Sub temaColor()
         Dim p As Paleta = Temas.Obtener(tema)

@@ -3,8 +3,9 @@
 ' VER: stock de tornillos y tarugos (solo consulta).
 ' "Registrar movimiento" abre frmMovimientoCajas.
 Public Class frmVerCajas
+    Implements IFormularioTema
     Public idUsuario As Integer? = Nothing
-    Public tema As String = "CLARO"
+    Public Property tema As String = "CLARO" Implements IFormularioTema.tema
 
     Dim objCaja As New InventarioCaja
 

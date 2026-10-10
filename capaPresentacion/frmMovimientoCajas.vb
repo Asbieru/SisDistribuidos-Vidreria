@@ -3,11 +3,12 @@
 ' INGRESAR / EDITAR: registra una entrada, salida o ajuste de cajas (tornillos y tarugos).
 ' Lo abre frmVerCajas con el producto seleccionado.
 Public Class frmMovimientoCajas
+    Implements IFormularioTema
     Public idVariante As Integer
     Public producto As String = ""
     Public stockActual As Integer
     Public idUsuario As Integer? = Nothing
-    Public tema As String = "CLARO"
+    Public Property tema As String = "CLARO" Implements IFormularioTema.tema
 
     Dim objCaja As New InventarioCaja
 
@@ -18,11 +19,11 @@ Public Class frmMovimientoCajas
     Const AJUSTE_CONTEO As Integer = 3
 
     Private Sub frmMovimientoCajas_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        AplicarTema(Me, tema)
         lblProducto.Text = producto
         lblStock.Text = "Stock actual: " & stockActual & " cajas"
         cmbTipo.Items.AddRange(New String() {"Entrada (compra)", "Salida (venta)", "Salida por defecto", "Ajuste a conteo físico"})
         cmbTipo.SelectedIndex = ENTRADA_COMPRA
-        AplicarTema(Me, tema)
     End Sub
 
     ' En el ajuste se escribe cuántas cajas hay realmente, no cuántas entran o salen

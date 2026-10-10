@@ -2,11 +2,13 @@
 
 ' VER: kardex, el historial de entradas, salidas y cambios del inventario (solo consulta).
 Public Class frmVerKardex
-    Public tema As String = "CLARO"
+    Implements IFormularioTema
+    Public Property tema As String = "CLARO" Implements IFormularioTema.tema
 
     Dim objInv As New Inventario
 
     Private Sub frmVerKardex_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        AplicarTema(Me, tema)
         dtpDesde.Value = Date.Today.AddDays(-30)
         dtpHasta.Value = Date.Today
         Try
@@ -14,7 +16,6 @@ Public Class frmVerKardex
         Catch ex As Exception
             MostrarError(ex)
         End Try
-        AplicarTema(Me, tema)
         Cargar()
     End Sub
 

@@ -243,7 +243,7 @@ Partial Class InicioSesion
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.Color.Black
-        Me.ClientSize = New System.Drawing.Size(369, 549)
+        Me.ClientSize = New System.Drawing.Size(369, 375)
         Me.Controls.Add(Me.msj)
         Me.Controls.Add(Me.pnlCambio)
         Me.Controls.Add(Me.chbMostrar)

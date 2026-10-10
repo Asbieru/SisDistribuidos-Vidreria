@@ -3,14 +3,17 @@
 ' VER: listado de piezas de vidrio y aluminio (solo consulta).
 ' "Nueva pieza" abre frmRegistrarPieza; "Editar" abre frmEditarPieza.
 Public Class frmVerPiezas
+    Implements IFormularioTema
     Public idUsuario As Integer? = Nothing
-    Public tema As String = "CLARO"
+    Public Property tema As String = "CLARO" Implements IFormularioTema.tema
 
     Dim objInv As New Inventario
     Dim objPieza As New InventarioPieza
     Dim cargando As Boolean = True
 
     Private Sub frmVerPiezas_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        AplicarTema(Me, tema)
+        lblAyuda.ForeColor = Color.Gray
         Try
             cmbEstado.Items.Add(TODOS)
             cmbEstado.Items.AddRange(Inventario.EstadosPieza)
@@ -19,8 +22,6 @@ Public Class frmVerPiezas
         Catch ex As Exception
             MostrarError(ex)
         End Try
-        AplicarTema(Me, tema)
-        lblAyuda.ForeColor = Color.Gray
         cargando = False
         Cargar()
     End Sub

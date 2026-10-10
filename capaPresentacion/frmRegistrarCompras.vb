@@ -3,12 +3,15 @@ Imports System.Data
 Imports System.Windows.Forms
 
 Public Class frmRegistrarCompras
+    Implements IFormularioTema
+    Public Property tema As String = "CLARO" Implements IFormularioTema.tema
     Private objVariante As New ProductoVariante
     Private objCompra As New Compra
     Private detalle As DataTable
     Private idCompraActual As Integer = 0
     Private detalleEnEdicion As DataRow = Nothing
     Private Sub frmRegistrarCompras_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        AplicarTema(Me, tema)
         btnGuardar.Enabled = False
 
         Try
@@ -288,7 +291,7 @@ Public Class frmRegistrarCompras
         Next
 
         If listado Is Nothing Then
-            listado = New frmListadoCompras()
+            listado = New frmListadoCompras With {.tema = tema}
             listado.Show()
         Else
             listado.cargarLista()

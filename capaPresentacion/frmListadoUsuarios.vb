@@ -1,9 +1,12 @@
 ﻿Imports capaNegocio
 Public Class frmListadoUsuarios
+    Implements IFormularioTema
+    Public Property tema As String = "CLARO" Implements IFormularioTema.tema
     Dim objUsu As New Usuario
     Dim dtUsuarios As DataTable
 
     Private Sub frmListadoUsuarios_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        AplicarTema(Me, tema)
         dgvUsuarios.ReadOnly = True
         dgvUsuarios.SelectionMode = DataGridViewSelectionMode.FullRowSelect
         dgvUsuarios.MultiSelect = False
@@ -68,7 +71,7 @@ Public Class frmListadoUsuarios
         ' Si el formulario de registro ya está abierto se reutiliza; si está cerrado, se abre
         Dim frm As frmRegistrarUsuarios = Application.OpenForms.OfType(Of frmRegistrarUsuarios)().FirstOrDefault()
         If frm Is Nothing Then
-            frm = New frmRegistrarUsuarios
+            frm = New frmRegistrarUsuarios With {.tema = tema}
             frm.Show()
         Else
             If frm.WindowState = FormWindowState.Minimized Then frm.WindowState = FormWindowState.Normal

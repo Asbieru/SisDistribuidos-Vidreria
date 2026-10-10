@@ -2,7 +2,8 @@ Imports capaNegocio
 Imports System.Data
 
 Public Class frmListadoClientes
-    Public Property tema As String = "CLARO"
+    Implements IFormularioTema
+    Public Property tema As String = "CLARO" Implements IFormularioTema.tema
     ' False: mantenimiento. True: ShowDialog devuelve el cliente elegido.
     Public Property modoSeleccion As Boolean = False
     Public Property idClienteSeleccionado As Integer = 0
@@ -13,8 +14,9 @@ Public Class frmListadoClientes
 
     Private Sub frmListadoClientes_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         AplicarTema(Me, tema)
-        Panel2.BackColor = Temas.Obtener(tema).Fondo
-        lblTitulo.ForeColor = Temas.Obtener(tema).Acento
+        Dim p As Paleta = Temas.Obtener(tema)
+        Panel2.BackColor = p.Fondo
+        lblTitulo.ForeColor = p.Acento
         btnSeleccionar.Visible = modoSeleccion
         btnEliminar.Visible = Not modoSeleccion
         lblTitulo.Text = If(modoSeleccion, "SELECCIONAR CLIENTE", "LISTADO DE CLIENTES")

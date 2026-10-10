@@ -28,7 +28,7 @@ Partial Class MenuInicio
         Me.smnRCompra = New System.Windows.Forms.ToolStripMenuItem()
         Me.smnRPedido = New System.Windows.Forms.ToolStripMenuItem()
         Me.smnRPago = New System.Windows.Forms.ToolStripMenuItem()
-        Me.mnReportes = New System.Windows.Forms.ToolStripMenuItem()
+        Me.mnTablas = New System.Windows.Forms.ToolStripMenuItem()
         Me.smnVCompra = New System.Windows.Forms.ToolStripMenuItem()
         Me.smnVVenta = New System.Windows.Forms.ToolStripMenuItem()
         Me.smnVInventario = New System.Windows.Forms.ToolStripMenuItem()
@@ -38,6 +38,8 @@ Partial Class MenuInicio
         Me.OscuroToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnCerrarS = New System.Windows.Forms.ToolStripMenuItem()
         Me.MantenimientosToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.smnUsuarios = New System.Windows.Forms.ToolStripMenuItem()
+        Me.smnClientes = New System.Windows.Forms.ToolStripMenuItem()
         Me.stripDatos = New System.Windows.Forms.StatusStrip()
         Me.lblID = New System.Windows.Forms.ToolStripStatusLabel()
         Me.txtID = New System.Windows.Forms.ToolStripStatusLabel()
@@ -47,8 +49,7 @@ Partial Class MenuInicio
         Me.toolCotizar = New System.Windows.Forms.ToolStripButton()
         Me.ToolStripSeparator1 = New System.Windows.Forms.ToolStripSeparator()
         Me.toolInventario = New System.Windows.Forms.ToolStripButton()
-        Me.smnUsuarios = New System.Windows.Forms.ToolStripMenuItem()
-        Me.smnClientes = New System.Windows.Forms.ToolStripMenuItem()
+        Me.CerrarTodasLasVentanasToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.menu.SuspendLayout()
         Me.stripDatos.SuspendLayout()
         Me.toolBarra.SuspendLayout()
@@ -57,10 +58,11 @@ Partial Class MenuInicio
         'menu
         '
         Me.menu.ImageScalingSize = New System.Drawing.Size(20, 20)
-        Me.menu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnProcesos, Me.mnReportes, Me.mnConfiguracion, Me.mnCerrarS, Me.MantenimientosToolStripMenuItem})
+        Me.menu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnProcesos, Me.mnTablas, Me.MantenimientosToolStripMenuItem, Me.mnConfiguracion, Me.mnCerrarS})
         Me.menu.Location = New System.Drawing.Point(0, 0)
         Me.menu.Name = "menu"
-        Me.menu.Size = New System.Drawing.Size(1067, 28)
+        Me.menu.Padding = New System.Windows.Forms.Padding(4, 2, 0, 2)
+        Me.menu.Size = New System.Drawing.Size(675, 24)
         Me.menu.TabIndex = 0
         Me.menu.Text = "menu"
         '
@@ -68,106 +70,117 @@ Partial Class MenuInicio
         '
         Me.mnProcesos.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.smnRCompra, Me.smnRPedido, Me.smnRPago})
         Me.mnProcesos.Name = "mnProcesos"
-        Me.mnProcesos.Size = New System.Drawing.Size(81, 24)
+        Me.mnProcesos.Size = New System.Drawing.Size(66, 20)
         Me.mnProcesos.Text = "Procesos"
         '
         'smnRCompra
         '
         Me.smnRCompra.Name = "smnRCompra"
-        Me.smnRCompra.Size = New System.Drawing.Size(208, 26)
+        Me.smnRCompra.Size = New System.Drawing.Size(166, 22)
         Me.smnRCompra.Text = "Registrar Compra"
         '
         'smnRPedido
         '
         Me.smnRPedido.Name = "smnRPedido"
-        Me.smnRPedido.Size = New System.Drawing.Size(208, 26)
+        Me.smnRPedido.Size = New System.Drawing.Size(166, 22)
         Me.smnRPedido.Text = "Regitrar Pedido"
         '
         'smnRPago
         '
         Me.smnRPago.Name = "smnRPago"
-        Me.smnRPago.Size = New System.Drawing.Size(208, 26)
+        Me.smnRPago.Size = New System.Drawing.Size(166, 22)
         Me.smnRPago.Text = "Registro Pago"
         '
-        'mnReportes
+        'mnTablas
         '
-        Me.mnReportes.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.smnVCompra, Me.smnVVenta, Me.smnVInventario})
-        Me.mnReportes.Name = "mnReportes"
-        Me.mnReportes.Size = New System.Drawing.Size(82, 24)
-        Me.mnReportes.Text = "Reportes"
+        Me.mnTablas.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.smnVCompra, Me.smnVVenta, Me.smnVInventario})
+        Me.mnTablas.Name = "mnTablas"
+        Me.mnTablas.Size = New System.Drawing.Size(51, 20)
+        Me.mnTablas.Text = "Tablas"
         '
         'smnVCompra
         '
         Me.smnVCompra.Name = "smnVCompra"
-        Me.smnVCompra.Size = New System.Drawing.Size(183, 26)
+        Me.smnVCompra.Size = New System.Drawing.Size(180, 22)
         Me.smnVCompra.Text = "Ver Compras"
         '
         'smnVVenta
         '
         Me.smnVVenta.Name = "smnVVenta"
-        Me.smnVVenta.Size = New System.Drawing.Size(183, 26)
+        Me.smnVVenta.Size = New System.Drawing.Size(180, 22)
         Me.smnVVenta.Text = "Ver Ventas"
         '
         'smnVInventario
         '
         Me.smnVInventario.Name = "smnVInventario"
-        Me.smnVInventario.Size = New System.Drawing.Size(183, 26)
+        Me.smnVInventario.Size = New System.Drawing.Size(180, 22)
         Me.smnVInventario.Text = "Ver Inventario"
         '
         'mnConfiguracion
         '
-        Me.mnConfiguracion.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.TemaToolStripMenuItem})
+        Me.mnConfiguracion.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.TemaToolStripMenuItem, Me.CerrarTodasLasVentanasToolStripMenuItem})
         Me.mnConfiguracion.Name = "mnConfiguracion"
-        Me.mnConfiguracion.Size = New System.Drawing.Size(116, 24)
+        Me.mnConfiguracion.Size = New System.Drawing.Size(95, 20)
         Me.mnConfiguracion.Text = "Configuración"
         '
         'TemaToolStripMenuItem
         '
         Me.TemaToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ClaroToolStripMenuItem, Me.OscuroToolStripMenuItem})
         Me.TemaToolStripMenuItem.Name = "TemaToolStripMenuItem"
-        Me.TemaToolStripMenuItem.Size = New System.Drawing.Size(128, 26)
+        Me.TemaToolStripMenuItem.Size = New System.Drawing.Size(296, 22)
         Me.TemaToolStripMenuItem.Text = "Tema"
         '
         'ClaroToolStripMenuItem
         '
         Me.ClaroToolStripMenuItem.Name = "ClaroToolStripMenuItem"
-        Me.ClaroToolStripMenuItem.Size = New System.Drawing.Size(138, 26)
+        Me.ClaroToolStripMenuItem.Size = New System.Drawing.Size(112, 22)
         Me.ClaroToolStripMenuItem.Text = "Claro"
         '
         'OscuroToolStripMenuItem
         '
         Me.OscuroToolStripMenuItem.Name = "OscuroToolStripMenuItem"
-        Me.OscuroToolStripMenuItem.Size = New System.Drawing.Size(138, 26)
+        Me.OscuroToolStripMenuItem.Size = New System.Drawing.Size(112, 22)
         Me.OscuroToolStripMenuItem.Text = "Oscuro"
         '
         'mnCerrarS
         '
         Me.mnCerrarS.Name = "mnCerrarS"
-        Me.mnCerrarS.Size = New System.Drawing.Size(108, 24)
+        Me.mnCerrarS.Size = New System.Drawing.Size(87, 20)
         Me.mnCerrarS.Text = "Cerrar sesión"
         '
         'MantenimientosToolStripMenuItem
         '
         Me.MantenimientosToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.smnUsuarios, Me.smnClientes})
         Me.MantenimientosToolStripMenuItem.Name = "MantenimientosToolStripMenuItem"
-        Me.MantenimientosToolStripMenuItem.Size = New System.Drawing.Size(124, 24)
+        Me.MantenimientosToolStripMenuItem.Size = New System.Drawing.Size(101, 20)
         Me.MantenimientosToolStripMenuItem.Text = "Mantenimiento"
+        '
+        'smnUsuarios
+        '
+        Me.smnUsuarios.Name = "smnUsuarios"
+        Me.smnUsuarios.Size = New System.Drawing.Size(180, 22)
+        Me.smnUsuarios.Text = "Usuarios"
+        '
+        'smnClientes
+        '
+        Me.smnClientes.Name = "smnClientes"
+        Me.smnClientes.Size = New System.Drawing.Size(180, 22)
+        Me.smnClientes.Text = "Clientes"
         '
         'stripDatos
         '
         Me.stripDatos.ImageScalingSize = New System.Drawing.Size(20, 20)
         Me.stripDatos.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.lblID, Me.txtID, Me.lblUsuario, Me.txtUsuario})
-        Me.stripDatos.Location = New System.Drawing.Point(0, 449)
+        Me.stripDatos.Location = New System.Drawing.Point(0, 360)
         Me.stripDatos.Name = "stripDatos"
-        Me.stripDatos.Padding = New System.Windows.Forms.Padding(1, 0, 19, 0)
-        Me.stripDatos.Size = New System.Drawing.Size(1067, 26)
+        Me.stripDatos.Size = New System.Drawing.Size(675, 26)
         Me.stripDatos.TabIndex = 2
         Me.stripDatos.Text = "StatusStrip1"
         '
         'lblID
         '
         Me.lblID.Name = "lblID"
-        Me.lblID.Size = New System.Drawing.Size(27, 20)
+        Me.lblID.Size = New System.Drawing.Size(21, 21)
         Me.lblID.Text = "ID:"
         '
         'txtID
@@ -175,12 +188,12 @@ Partial Class MenuInicio
         Me.txtID.AutoSize = False
         Me.txtID.BackColor = System.Drawing.Color.Gainsboro
         Me.txtID.Name = "txtID"
-        Me.txtID.Size = New System.Drawing.Size(50, 20)
+        Me.txtID.Size = New System.Drawing.Size(50, 21)
         '
         'lblUsuario
         '
         Me.lblUsuario.Name = "lblUsuario"
-        Me.lblUsuario.Size = New System.Drawing.Size(136, 20)
+        Me.lblUsuario.Size = New System.Drawing.Size(109, 21)
         Me.lblUsuario.Text = "Usuario conectado:"
         '
         'txtUsuario
@@ -188,15 +201,15 @@ Partial Class MenuInicio
         Me.txtUsuario.AutoSize = False
         Me.txtUsuario.BackColor = System.Drawing.Color.Gainsboro
         Me.txtUsuario.Name = "txtUsuario"
-        Me.txtUsuario.Size = New System.Drawing.Size(150, 20)
+        Me.txtUsuario.Size = New System.Drawing.Size(150, 21)
         '
         'toolBarra
         '
         Me.toolBarra.ImageScalingSize = New System.Drawing.Size(20, 20)
         Me.toolBarra.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.toolCotizar, Me.ToolStripSeparator1, Me.toolInventario})
-        Me.toolBarra.Location = New System.Drawing.Point(0, 28)
+        Me.toolBarra.Location = New System.Drawing.Point(0, 24)
         Me.toolBarra.Name = "toolBarra"
-        Me.toolBarra.Size = New System.Drawing.Size(1067, 27)
+        Me.toolBarra.Size = New System.Drawing.Size(675, 27)
         Me.toolBarra.TabIndex = 4
         Me.toolBarra.Text = "ToolStrip1"
         '
@@ -207,7 +220,7 @@ Partial Class MenuInicio
         Me.toolCotizar.Image = CType(resources.GetObject("toolCotizar.Image"), System.Drawing.Image)
         Me.toolCotizar.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.toolCotizar.Name = "toolCotizar"
-        Me.toolCotizar.Size = New System.Drawing.Size(29, 24)
+        Me.toolCotizar.Size = New System.Drawing.Size(24, 24)
         Me.toolCotizar.Tag = "CotizarVentana"
         Me.toolCotizar.Text = "Cotizar Ventana"
         '
@@ -223,36 +236,31 @@ Partial Class MenuInicio
         Me.toolInventario.Image = CType(resources.GetObject("toolInventario.Image"), System.Drawing.Image)
         Me.toolInventario.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.toolInventario.Name = "toolInventario"
-        Me.toolInventario.Size = New System.Drawing.Size(29, 24)
+        Me.toolInventario.Size = New System.Drawing.Size(24, 24)
         Me.toolInventario.Tag = "Inventario"
         Me.toolInventario.Text = "Inventario"
         '
-        'smnUsuarios
+        'CerrarTodasLasVentanasToolStripMenuItem
         '
-        Me.smnUsuarios.Name = "smnUsuarios"
-        Me.smnUsuarios.Size = New System.Drawing.Size(224, 26)
-        Me.smnUsuarios.Text = "Usuarios"
-        '
-        'smnClientes
-        '
-        Me.smnClientes.Name = "smnClientes"
-        Me.smnClientes.Size = New System.Drawing.Size(224, 26)
-        Me.smnClientes.Text = "Clientes"
+        Me.CerrarTodasLasVentanasToolStripMenuItem.Name = "CerrarTodasLasVentanasToolStripMenuItem"
+        Me.CerrarTodasLasVentanasToolStripMenuItem.ShortcutKeys = CType(((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.Shift) _
+            Or System.Windows.Forms.Keys.W), System.Windows.Forms.Keys)
+        Me.CerrarTodasLasVentanasToolStripMenuItem.Size = New System.Drawing.Size(296, 22)
+        Me.CerrarTodasLasVentanasToolStripMenuItem.Text = "Cerrar todas las ventanas"
         '
         'MenuInicio
         '
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackgroundImage = CType(resources.GetObject("$this.BackgroundImage"), System.Drawing.Image)
         Me.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
-        Me.ClientSize = New System.Drawing.Size(1067, 475)
+        Me.ClientSize = New System.Drawing.Size(675, 386)
         Me.Controls.Add(Me.toolBarra)
         Me.Controls.Add(Me.stripDatos)
         Me.Controls.Add(Me.menu)
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.IsMdiContainer = True
         Me.MainMenuStrip = Me.menu
-        Me.Margin = New System.Windows.Forms.Padding(4)
         Me.Name = "MenuInicio"
         Me.Text = "Página de Incio"
         Me.WindowState = System.Windows.Forms.FormWindowState.Maximized
@@ -269,7 +277,7 @@ Partial Class MenuInicio
 
     Friend WithEvents menu As MenuStrip
     Friend WithEvents mnProcesos As ToolStripMenuItem
-    Friend WithEvents mnReportes As ToolStripMenuItem
+    Friend WithEvents mnTablas As ToolStripMenuItem
     Friend WithEvents mnConfiguracion As ToolStripMenuItem
     Friend WithEvents mnCerrarS As ToolStripMenuItem
     Friend WithEvents smnRCompra As ToolStripMenuItem
@@ -293,4 +301,5 @@ Partial Class MenuInicio
     Friend WithEvents MantenimientosToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents smnUsuarios As ToolStripMenuItem
     Friend WithEvents smnClientes As ToolStripMenuItem
+    Friend WithEvents CerrarTodasLasVentanasToolStripMenuItem As ToolStripMenuItem
 End Class

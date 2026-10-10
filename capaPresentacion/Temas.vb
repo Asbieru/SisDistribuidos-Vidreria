@@ -1,4 +1,11 @@
-﻿Module Temas
+﻿' Contrato para todos los formularios hijos de MenuInicio
+' (listados, registros, inventario, reportes, etc.).
+' El tema lo decide siempre el padre: los hijos solo lo reciben y lo aplican.
+Public Interface IFormularioTema
+    Property tema As String
+End Interface
+
+Module Temas
     Public Structure Paleta
         Public Fondo As Color
         Public Texto As Color

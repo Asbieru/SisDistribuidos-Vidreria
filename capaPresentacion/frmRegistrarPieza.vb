@@ -3,22 +3,23 @@
 ' INGRESAR: registra una pieza nueva de vidrio o aluminio (inventario inicial).
 ' Lo abre frmVerPiezas.
 Public Class frmRegistrarPieza
+    Implements IFormularioTema
     Public idUsuario As Integer? = Nothing
-    Public tema As String = "CLARO"
+    Public Property tema As String = "CLARO" Implements IFormularioTema.tema
     Public idVarianteInicial As Integer? = Nothing   ' producto que venía filtrado en frmVerPiezas
 
     Dim objInv As New Inventario
     Dim objPieza As New InventarioPieza
 
     Private Sub frmRegistrarPieza_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        AplicarTema(Me, tema)
+        lblNota.ForeColor = Color.Gray
         Try
             CargarComboVariantes(cmbVariante, objInv.ListarVariantes(True), False)
             If idVarianteInicial.HasValue Then cmbVariante.SelectedValue = idVarianteInicial.Value
         Catch ex As Exception
             MostrarError(ex)
         End Try
-        AplicarTema(Me, tema)
-        lblNota.ForeColor = Color.Gray
         ActualizarCampos()
     End Sub
 

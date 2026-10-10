@@ -2,15 +2,17 @@ Imports capaNegocio
 Imports System.Data
 
 Public Class frmHistorialClientes
-    Public Property tema As String = "CLARO"
+    Implements IFormularioTema
+    Public Property tema As String = "CLARO" Implements IFormularioTema.tema
     Public Property idCliente As Integer
     Private ReadOnly objCliente As New Cliente
     Private cargando As Boolean = True
 
     Private Sub frmHistorialClientes_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         AplicarTema(Me, tema)
-        Panel2.BackColor = Temas.Obtener(tema).Fondo
-        lblTitulo.ForeColor = Temas.Obtener(tema).Acento
+        Dim p As Paleta = Temas.Obtener(tema)
+        Panel2.BackColor = p.Fondo
+        lblTitulo.ForeColor = p.Acento
         cmbEstado.Items.AddRange(New Object() {TODOS, "PENDIENTE", "PARCIAL", "PAGADO", "CANCELADO"})
         cmbEstado.SelectedIndex = 0
         cargando = False

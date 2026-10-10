@@ -108,29 +108,45 @@ Public Class MenuInicio
     End Sub
 
     Private Sub ClaroToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ClaroToolStripMenuItem.Click
-        tema = "CLARO"
-        GuardarTema(tema)
-        temaColor()
+        CambiarTema("CLARO")
     End Sub
 
     Private Sub OscuroToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles OscuroToolStripMenuItem.Click
-        tema = "OSCURO"
+        CambiarTema("OSCURO")
+    End Sub
+
+    ' Cambia el tema del menú y lo propaga a todas las ventanas hijas abiertas.
+    ' Se recorren Application.OpenForms para cubrir también las ventanas que
+    ' no son MDI hijas directas (abiertas desde otros formularios).
+    Private Sub CambiarTema(nuevoTema As String)
+        tema = nuevoTema
         GuardarTema(tema)
         temaColor()
+        For Each f As Form In Application.OpenForms
+            Dim conTema As IFormularioTema = TryCast(f, IFormularioTema)
+            If conTema IsNot Nothing Then
+                conTema.tema = nuevoTema
+                AplicarTema(f, nuevoTema)
+                f.Refresh()
+            End If
+        Next
     End Sub
 
     Private Sub toolCotizar_Click(sender As Object, e As EventArgs) Handles toolCotizar.Click
         Dim objMsj As New frmCotizarVentana With {.tema = tema}
+        objMsj.MdiParent = Me
         objMsj.Show()
     End Sub
 
     Private Sub toolInventario_Click(sender As Object, e As EventArgs) Handles toolInventario.Click, smnVInventario.Click
         Dim objInv As New frmVerInventario With {.idUsuario = Integer.Parse(txtID.Text), .tema = tema}
+        objInv.MdiParent = Me
         objInv.Show()
     End Sub
 
     Private Sub smnUsuarios_Click(sender As Object, e As EventArgs) Handles smnUsuarios.Click
-        Dim frm As New frmRegistrarUsuarios
+        Dim frm As New frmRegistrarUsuarios With {.tema = tema}
+        frm.MdiParent = Me
         frm.Show()
     End Sub
 
@@ -143,7 +159,8 @@ Public Class MenuInicio
             End If
         Next
 
-        Dim registro As New frmRegistrarCompras()
+        Dim registro As New frmRegistrarCompras With {.tema = tema}
+        registro.MdiParent = Me
         registro.Show()
     End Sub
 
@@ -160,7 +177,8 @@ Public Class MenuInicio
             End If
         Next
 
-        Dim nuevoListado As New frmListadoCompras()
+        Dim nuevoListado As New frmListadoCompras With {.tema = tema}
+        nuevoListado.MdiParent = Me
         nuevoListado.Show()
     End Sub
 
@@ -178,10 +196,16 @@ Public Class MenuInicio
                 End If
             Next
             Dim nuevoListado As New frmListadoClientes With {.tema = tema}
-            nuevoListado.Show(Me)
+            nuevoListado.MdiParent = Me
+            nuevoListado.Show()
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Clientes", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
     End Sub
 
+    Private Sub CerrarTodasLasVentanasToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CerrarTodasLasVentanasToolStripMenuItem.Click
+        For Each f As Form In Me.MdiChildren
+            f.Close()
+        Next
+    End Sub
 End Class

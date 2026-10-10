@@ -3,20 +3,21 @@
 ' EDITAR: cambia el stock mínimo de un producto.
 ' Lo abre frmVerInventario con los datos de la fila seleccionada.
 Public Class frmStockMinimo
+    Implements IFormularioTema
     Public idVariante As Integer
     Public producto As String = ""
     Public existencias As Integer
     Public stockMinimo As Integer
-    Public tema As String = "CLARO"
+    Public Property tema As String = "CLARO" Implements IFormularioTema.tema
 
     Dim objInv As New Inventario
 
     Private Sub frmStockMinimo_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        AplicarTema(Me, tema)
+        lblNota.ForeColor = Color.Gray
         lblProducto.Text = producto
         lblExistencias.Text = "Existencias actuales: " & existencias
         nudMinimo.Value = Math.Min(nudMinimo.Maximum, stockMinimo)
-        AplicarTema(Me, tema)
-        lblNota.ForeColor = Color.Gray
     End Sub
 
     Private Sub btnGuardar_Click(sender As Object, e As EventArgs) Handles btnGuardar.Click

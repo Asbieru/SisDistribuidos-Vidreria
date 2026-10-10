@@ -1,9 +1,12 @@
 ﻿Imports capaNegocio
 
 Public Class frmListadoCompras
+    Implements IFormularioTema
+    Public Property tema As String = "CLARO" Implements IFormularioTema.tema
     Private objCompra As New Compra
 
     Private Sub frmListadoCompras_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        AplicarTema(Me, tema)
         dtpDesde.Value = New Date(Today.Year, Today.Month, 1)
         dtpHasta.Value = Today
         cargarLista()
@@ -65,7 +68,7 @@ Public Class frmListadoCompras
             End If
         Next
 
-        Dim registro As New frmRegistrarCompras()
+        Dim registro As New frmRegistrarCompras With {.tema = tema}
         registro.Show()
     End Sub
 
@@ -97,7 +100,7 @@ Public Class frmListadoCompras
                 "Confirmar", MessageBoxButtons.YesNo,
                 MessageBoxIcon.Question) <> DialogResult.Yes Then Return
         Else
-            registro = New frmRegistrarCompras()
+            registro = New frmRegistrarCompras With {.tema = tema}
             registro.Show()
         End If
 
