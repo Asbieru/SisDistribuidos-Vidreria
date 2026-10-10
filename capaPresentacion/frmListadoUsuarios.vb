@@ -17,7 +17,8 @@ Public Class frmListadoUsuarios
     End Sub
 
     ' Pública para que frmRegistrarUsuarios pueda refrescarla después de guardar
-    Public Sub cargarLista()
+    ' nombreReseleccionar: deja seleccionado al usuario recién guardado
+    Public Sub cargarLista(Optional nombreReseleccionar As String = "")
         Try
             dtUsuarios = objUsu.listarUsuarios()
             dgvUsuarios.DataSource = dtUsuarios
@@ -35,6 +36,16 @@ Public Class frmListadoUsuarios
             dgvUsuarios.Columns("fecha_creacion").HeaderText = "Fecha de registro"
 
             filtrar()
+
+            If nombreReseleccionar <> "" Then
+                For Each fila As DataGridViewRow In dgvUsuarios.Rows
+                    If fila.Cells("nombre").Value.ToString = nombreReseleccionar Then
+                        dgvUsuarios.CurrentCell = fila.Cells("nombre")
+                        Exit For
+                    End If
+                Next
+            End If
+
             actualizarBotonBaja()
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -64,20 +75,26 @@ Public Class frmListadoUsuarios
         Return CInt(dgvUsuarios.CurrentRow.Cells("id_usuario").Value)
     End Function
 
+    Private Sub btnNuevo_Click(sender As Object, e As EventArgs) Handles btnNuevo.Click
+        abrirRegistro(0)
+    End Sub
+
     Private Sub btnModificar_Click(sender As Object, e As EventArgs) Handles btnModificar.Click
         Dim id As Integer = idSeleccionado()
         If id = 0 Then Return
+        abrirRegistro(id)
+    End Sub
 
-        ' Si el formulario de registro ya está abierto se reutiliza; si está cerrado, se abre
-        Dim frm As frmRegistrarUsuarios = Application.OpenForms.OfType(Of frmRegistrarUsuarios)().FirstOrDefault()
-        If frm Is Nothing Then
-            frm = New frmRegistrarUsuarios With {.tema = tema}
-            frm.Show()
-        Else
-            If frm.WindowState = FormWindowState.Minimized Then frm.WindowState = FormWindowState.Normal
-            frm.BringToFront()
-        End If
-        frm.cargarUsuario(id)
+    ' ShowDialog abre el registro como ventana modal: mientras esté abierto
+    ' no se puede usar el listado; al cerrarlo, el código sigue en la línea siguiente
+    Private Sub abrirRegistro(id As Integer)
+        Using frm As New frmRegistrarUsuarios With {.idUsuario = id, .tema = tema}
+            If frm.ShowDialog(Me) = DialogResult.OK Then
+                ' La búsqueda podría ocultar al usuario recién guardado
+                txtBuscar.Clear()
+                cargarLista(frm.nombreGuardado)
+            End If
+        End Using
     End Sub
 
     ' Doble clic en una fila hace lo mismo que Modificar
@@ -135,9 +152,9 @@ Public Class frmListadoUsuarios
     Private Sub actualizarBotonBaja()
         If dgvUsuarios.CurrentRow Is Nothing OrElse Not dgvUsuarios.Columns.Contains("estado") Then Return
         If dgvUsuarios.CurrentRow.Cells("estado").Value.ToString = "INACTIVO" Then
-            btnDarBaja.Text = "Reactivar"
+            btnDarBaja.Text = "REACTIVAR"
         Else
-            btnDarBaja.Text = "Dar de baja"
+            btnDarBaja.Text = "DAR DE BAJA"
         End If
     End Sub
 

@@ -23,7 +23,6 @@ Partial Class frmRegistrarUsuarios
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Me.Panel2 = New System.Windows.Forms.Panel()
-        Me.btnVerLista = New System.Windows.Forms.Button()
         Me.btnCancelar = New System.Windows.Forms.Button()
         Me.btnGuardar = New System.Windows.Forms.Button()
         Me.chkActivo = New System.Windows.Forms.CheckBox()
@@ -48,7 +47,6 @@ Partial Class frmRegistrarUsuarios
         'Panel2
         '
         Me.Panel2.BackColor = System.Drawing.Color.White
-        Me.Panel2.Controls.Add(Me.btnVerLista)
         Me.Panel2.Controls.Add(Me.btnCancelar)
         Me.Panel2.Controls.Add(Me.btnGuardar)
         Me.Panel2.Controls.Add(Me.chkActivo)
@@ -72,22 +70,12 @@ Partial Class frmRegistrarUsuarios
         Me.Panel2.Size = New System.Drawing.Size(710, 450)
         Me.Panel2.TabIndex = 1
         '
-        'btnVerLista
-        '
-        Me.btnVerLista.Font = New System.Drawing.Font("Microsoft Sans Serif", 7.8!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnVerLista.Location = New System.Drawing.Point(477, 367)
-        Me.btnVerLista.Name = "btnVerLista"
-        Me.btnVerLista.Size = New System.Drawing.Size(102, 30)
-        Me.btnVerLista.TabIndex = 21
-        Me.btnVerLista.Text = "VER LISTA"
-        Me.btnVerLista.UseVisualStyleBackColor = True
-        '
         'btnCancelar
         '
         Me.btnCancelar.Font = New System.Drawing.Font("Microsoft Sans Serif", 7.8!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnCancelar.Location = New System.Drawing.Point(283, 367)
+        Me.btnCancelar.Location = New System.Drawing.Point(388, 385)
         Me.btnCancelar.Name = "btnCancelar"
-        Me.btnCancelar.Size = New System.Drawing.Size(102, 30)
+        Me.btnCancelar.Size = New System.Drawing.Size(122, 30)
         Me.btnCancelar.TabIndex = 20
         Me.btnCancelar.Text = "CANCELAR"
         Me.btnCancelar.UseVisualStyleBackColor = True
@@ -95,9 +83,9 @@ Partial Class frmRegistrarUsuarios
         'btnGuardar
         '
         Me.btnGuardar.Font = New System.Drawing.Font("Microsoft Sans Serif", 7.8!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnGuardar.Location = New System.Drawing.Point(102, 367)
+        Me.btnGuardar.Location = New System.Drawing.Point(207, 385)
         Me.btnGuardar.Name = "btnGuardar"
-        Me.btnGuardar.Size = New System.Drawing.Size(102, 30)
+        Me.btnGuardar.Size = New System.Drawing.Size(122, 30)
         Me.btnGuardar.TabIndex = 19
         Me.btnGuardar.Text = "GUARDAR"
         Me.btnGuardar.UseVisualStyleBackColor = True
@@ -259,6 +247,7 @@ Partial Class frmRegistrarUsuarios
         Me.ClientSize = New System.Drawing.Size(761, 508)
         Me.Controls.Add(Me.Panel2)
         Me.Name = "frmRegistrarUsuarios"
+        Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent
         Me.Text = "Registrar usuarios"
         Me.Panel2.ResumeLayout(False)
         Me.Panel2.PerformLayout()
@@ -284,6 +273,5 @@ Partial Class frmRegistrarUsuarios
     Friend WithEvents cboRol As ComboBox
     Friend WithEvents txtRespuesta As TextBox
     Friend WithEvents txtPregunta As TextBox
-    Friend WithEvents btnVerLista As Button
     Friend WithEvents btnCancelar As Button
 End Class

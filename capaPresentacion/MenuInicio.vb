@@ -145,9 +145,22 @@ Public Class MenuInicio
     End Sub
 
     Private Sub smnUsuarios_Click(sender As Object, e As EventArgs) Handles smnUsuarios.Click
-        Dim frm As New frmRegistrarUsuarios With {.tema = tema}
-        frm.MdiParent = Me
-        frm.Show()
+        Try
+            For Each formulario As Form In Application.OpenForms
+                If TypeOf formulario Is frmListadoUsuarios Then
+                    Dim listado As frmListadoUsuarios = DirectCast(formulario, frmListadoUsuarios)
+                    listado.WindowState = FormWindowState.Normal
+                    listado.cargarLista()
+                    listado.BringToFront()
+                    Return
+                End If
+            Next
+            Dim nuevoListado As New frmListadoUsuarios With {.tema = tema}
+            nuevoListado.MdiParent = Me
+            nuevoListado.Show()
+        Catch ex As Exception
+            MessageBox.Show(ex.Message, "Usuarios", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
     End Sub
 
     Private Sub smnRCompra_Click(sender As Object, e As EventArgs) Handles smnRCompra.Click
@@ -207,5 +220,23 @@ Public Class MenuInicio
         For Each f As Form In Me.MdiChildren
             f.Close()
         Next
+    End Sub
+
+    Private Sub smnProductos_Click(sender As Object, e As EventArgs) Handles smnProductos.Click
+        Try
+            For Each formulario As Form In Application.OpenForms
+                If TypeOf formulario Is frmListadoProductos Then
+                    formulario.WindowState = FormWindowState.Normal
+                    DirectCast(formulario, frmListadoProductos).cargarLista()
+                    formulario.BringToFront()
+                    Return
+                End If
+            Next
+            Dim nuevoListado As New frmListadoProductos With {.tema = tema}
+            nuevoListado.MdiParent = Me
+            nuevoListado.Show()
+        Catch ex As Exception
+            MessageBox.Show(ex.Message, "Productos", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
     End Sub
 End Class

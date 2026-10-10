@@ -79,6 +79,12 @@
     <Compile Include="CambiarContraseña.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="frmListadoProductos.Designer.vb">
+      <DependentUpon>frmListadoProductos.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmListadoProductos.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="frmRegistrarCompras.Designer.vb">
       <DependentUpon>frmRegistrarCompras.vb</DependentUpon>
     </Compile>
@@ -131,6 +137,12 @@
       <DependentUpon>frmRegistrarPieza.vb</DependentUpon>
     </Compile>
     <Compile Include="frmRegistrarPieza.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmRegistrarProductos.Designer.vb">
+      <DependentUpon>frmRegistrarProductos.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmRegistrarProductos.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="frmStockMinimo.Designer.vb">
@@ -219,6 +231,9 @@
     <EmbeddedResource Include="CambiarContraseña.resx">
       <DependentUpon>CambiarContraseña.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="frmListadoProductos.resx">
+      <DependentUpon>frmListadoProductos.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="frmRegistrarCompras.resx">
       <DependentUpon>frmRegistrarCompras.vb</DependentUpon>
     </EmbeddedResource>
@@ -236,6 +251,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="frmRegistrarPieza.resx">
       <DependentUpon>frmRegistrarPieza.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmRegistrarProductos.resx">
+      <DependentUpon>frmRegistrarProductos.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmStockMinimo.resx">
       <DependentUpon>frmStockMinimo.vb</DependentUpon>
