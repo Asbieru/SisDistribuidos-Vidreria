@@ -320,12 +320,24 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Imagenes\Fondos\fondoInicioClaro.jpg" />
-    <Content Include="Imagenes\Fondos\fondoInicioOscuro.jpg" />
-    <Content Include="Imagenes\Iconos\Oscuro\CotizarVentana.png" />
-    <Content Include="Imagenes\Iconos\Oscuro\Inventario.png" />
-    <Content Include="Imagenes\Iconos\Claro\CotizarVentana.png" />
-    <Content Include="Imagenes\Iconos\Claro\Inventario.png" />
+    <Content Include="Imagenes\Fondos\fondoInicioClaro.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Imagenes\Fondos\fondoInicioOscuro.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Imagenes\Iconos\Oscuro\CotizarVentana.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Imagenes\Iconos\Oscuro\Inventario.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Imagenes\Iconos\Claro\CotizarVentana.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Imagenes\Iconos\Claro\Inventario.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
 </Project>
