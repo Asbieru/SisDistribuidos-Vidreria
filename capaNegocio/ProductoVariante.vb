@@ -22,4 +22,63 @@ Public Class ProductoVariante
         Dim sql As String = "update producto_variante set unidad_costo='" & Esc(unidadCosto) & "', precio_unitario=" & Num(precioUnitario) & " where id_variante=" & idVariante
         objMan.ejecutarComando(sql)
     End Sub
+
+    Public Function ListarColoresAluminio() As List(Of String)
+        Dim objMan As New clsMantenimiento
+        Dim dt = objMan.listarProcedimiento("sp_ped_combo_colores_aluminio", Nothing)
+        Dim lista As New List(Of String)
+        For Each fila As DataRow In dt.Rows
+            lista.Add(fila("color").ToString())
+        Next
+        Return lista
+    End Function
+
+    Public Function ListarTiposAluminio(color As String) As List(Of String)
+        Dim objMan As New clsMantenimiento
+        Dim parametros As New Dictionary(Of String, Object) From {{"@color", color}}
+        Dim dt = objMan.listarProcedimiento("sp_ped_combo_tipos_aluminio", parametros)
+        Dim lista As New List(Of String)
+        For Each fila As DataRow In dt.Rows
+            lista.Add(fila("tipo").ToString())
+        Next
+        Return lista
+    End Function
+
+    Public Function ListarColoresVidrio() As List(Of String)
+        Dim objMan As New clsMantenimiento
+        Dim dt = objMan.listarProcedimiento("sp_ped_combo_colores_vidrio", Nothing)
+        Dim lista As New List(Of String)
+        For Each fila As DataRow In dt.Rows
+            lista.Add(fila("color_vidrio").ToString())
+        Next
+        Return lista
+    End Function
+
+    Public Function ListarEspesoresVidrio(colorVidrio As String) As List(Of Decimal)
+        Dim objMan As New clsMantenimiento
+        Dim parametros As New Dictionary(Of String, Object) From {{"@color_vidrio", colorVidrio}}
+        Dim dt = objMan.listarProcedimiento("sp_ped_combo_espesores_vidrio", parametros)
+        Dim lista As New List(Of Decimal)
+        For Each fila As DataRow In dt.Rows
+            lista.Add(CDec(fila("espesor_cm")))
+        Next
+        Return lista
+    End Function
+
+    Public Function ResolverVarianteVidrio(colorVidrio As String, espesorCm As Decimal) As (idVariante As Integer, precioUnitario As Decimal)
+        Dim objMan As New clsMantenimiento
+        Dim parametros As New Dictionary(Of String, Object) From {{"@color_vidrio", colorVidrio}, {"@espesor_cm", espesorCm}}
+        Dim dt = objMan.listarProcedimiento("sp_ped_resolver_variante_vidrio", parametros)
+        If dt.Rows.Count = 0 Then Throw New Exception("No existe una variante de vidrio con ese color y espesor.")
+        Return (CInt(dt.Rows(0)("id_variante")), CDec(dt.Rows(0)("precio_unitario")))
+    End Function
+
+    Public Function ResolverVarianteAluminio(color As String, tipo As String) As (idVariante As Integer, precioUnitario As Decimal)
+        Dim objMan As New clsMantenimiento
+        Dim parametros As New Dictionary(Of String, Object) From {{"@color", color}, {"@tipo", tipo}}
+        Dim dt = objMan.listarProcedimiento("sp_ped_resolver_variante_aluminio", parametros)
+        If dt.Rows.Count = 0 Then Throw New Exception("No existe una variante de aluminio con ese color y tipo.")
+        Return (CInt(dt.Rows(0)("id_variante")), CDec(dt.Rows(0)("precio_unitario")))
+    End Function
+
 End Class

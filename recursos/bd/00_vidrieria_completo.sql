@@ -247,6 +247,10 @@ CREATE TABLE dbo.pedido_item (
     estado       NVARCHAR(15) NOT NULL DEFAULT 'PENDIENTE'
         CONSTRAINT ck_item_estado CHECK (estado IN ('PENDIENTE','EN_PROCESO','COMPLETADO','CANCELADO')),
     subtotal     DECIMAL(10,2) NOT NULL DEFAULT 0,
+    precio_materiales DECIMAL(10,2) NULL,   -- suma de los pedido_detalle (vidrio + aluminio + tornillos)
+    costo_extra       DECIMAL(10,2) NOT NULL DEFAULT 0,  -- silicona+transporte, editable, precargado desde tarifas_ventana
+    mano_obra         DECIMAL(10,2) NOT NULL DEFAULT 0,  -- 100% manual, sin sugerencia
+    total             DECIMAL(10,2) NULL,
     CONSTRAINT fk_item_pedido FOREIGN KEY (id_pedido)
         REFERENCES dbo.pedidos(id_pedido) ON DELETE CASCADE
 );
@@ -286,6 +290,7 @@ CREATE TABLE dbo.pedido_detalle (
 );
 GO
 
+IF OBJECT_ID(N'dbo.pedido_detalle_medida', N'U') IS NULL
 CREATE TABLE dbo.pedido_detalle_medida (
     id_medida   INT IDENTITY(1,1) PRIMARY KEY,
     id_detalle  INT NOT NULL,
@@ -294,6 +299,24 @@ CREATE TABLE dbo.pedido_detalle_medida (
     CONSTRAINT fk_medida_detalle FOREIGN KEY (id_detalle)
         REFERENCES dbo.pedido_detalle(id_detalle) ON DELETE CASCADE
 );
+GO
+
+-- ------------------------------------------------------------
+-- Tarifas sugeridas de costo extra de una ventana (aluminio/silicona) por
+-- rango de perimetro. Solo sirve para PRECARGAR el campo "Extras" en el
+-- formulario; el monto final que se cobra queda editable y se guarda en
+-- pedido_item.costo_extra, no se vuelve a leer de aqui.
+-- ------------------------------------------------------------
+IF OBJECT_ID(N'dbo.tarifas_ventana', N'U') IS NULL
+CREATE TABLE dbo.tarifas_ventana (
+    id_tarifa         INT IDENTITY(1,1) PRIMARY KEY,
+    perimetro_min_cm  DECIMAL(10,2) NOT NULL,
+    perimetro_max_cm  DECIMAL(10,2) NOT NULL,
+    costo_aluminio    DECIMAL(10,2) NOT NULL,
+    costo_silicona    DECIMAL(10,2) NOT NULL,
+    CONSTRAINT ck_tarifa_rango CHECK (perimetro_max_cm > perimetro_min_cm)
+);
+GO
 
 -- ------------------------------------------------------------
 -- Kardex: historial de TODO lo que entra, sale o cambia en el inventario
@@ -493,6 +516,50 @@ SELECT m.id_movimiento,
 FROM dbo.movimientos_inventario m
 LEFT JOIN dbo.vw_inv_variantes v ON v.id_variante = m.id_variante
 LEFT JOIN dbo.usuarios u         ON u.id_usuario = m.id_usuario;
+GO
+
+-- ============================================================
+-- TIPOS DE TABLA (TVP) para registrar un pedido completo de una sola vez
+-- Nota: SQL Server no permite "CREATE OR ALTER TYPE". Si necesitas cambiar
+-- las columnas de alguno de estos tipos, primero hay que hacer
+-- DROP TYPE dbo.TVP_... (y recrear sp_ped_registrar, porque lo usa).
+-- ============================================================
+
+IF NOT EXISTS (SELECT 1 FROM sys.types WHERE name = 'TVP_PedidoItem' AND is_table_type = 1)
+CREATE TYPE dbo.TVP_PedidoItem AS TABLE (
+    id_temp            INT NOT NULL PRIMARY KEY,
+    tipo                NVARCHAR(20) NOT NULL,   -- VENTANA / MAMPARA / VIDRIO_SUELTO / CAJA
+    etiqueta            NVARCHAR(50) NULL,
+    ancho_cm            DECIMAL(10,2) NULL,
+    alto_cm             DECIMAL(10,2) NULL,
+    precio_materiales   DECIMAL(10,2) NULL,
+    costo_extra         DECIMAL(10,2) NOT NULL,
+    mano_obra           DECIMAL(10,2) NOT NULL,
+    total               DECIMAL(10,2) NULL
+);
+GO
+
+IF NOT EXISTS (SELECT 1 FROM sys.types WHERE name = 'TVP_PedidoDetalle' AND is_table_type = 1)
+CREATE TYPE dbo.TVP_PedidoDetalle AS TABLE (
+    id_temp         INT NOT NULL PRIMARY KEY,
+    id_item_temp    INT NOT NULL,
+    id_variante     INT NOT NULL,
+    accion          NVARCHAR(20) NOT NULL,   -- USA_EXISTENTE / CORTA_PIEZA / COMPRA_NUEVA
+    id_pieza        INT NULL,                -- pieza a usar o a cortar; NULL si es COMPRA_NUEVA
+    ancho_cm        DECIMAL(10,2) NULL,
+    alto_cm         DECIMAL(10,2) NULL,
+    largo_cm        DECIMAL(10,2) NULL,
+    cantidad_cajas  INT NULL,
+    subtotal        DECIMAL(10,2) NOT NULL
+);
+GO
+
+IF NOT EXISTS (SELECT 1 FROM sys.types WHERE name = 'TVP_PedidoMedida' AND is_table_type = 1)
+CREATE TYPE dbo.TVP_PedidoMedida AS TABLE (
+    id_detalle_temp INT NOT NULL,
+    etiqueta        NVARCHAR(20) NOT NULL,   -- ANCHO_SUP, ANCHO_INF, ALTO_IZQ, ALTO_DER
+    valor_cm        DECIMAL(10,2) NOT NULL
+);
 GO
 
 -- ============================================================
@@ -824,6 +891,143 @@ BEGIN
     END CATCH
 
     SELECT @nuevo AS stock_resultante;
+END
+GO
+
+-- ------------------------------------------------------------
+-- Registrar un pedido completo (uno o mas items: ventanas, mamparas,
+-- vidrios sueltos, cajas) en una sola transaccion: o se guarda todo
+-- (pedido + items + detalles + medidas + movimientos de inventario)
+-- o no se guarda nada.
+-- Cada fila de @Detalles resuelve su propia pieza segun @accion:
+--   USA_EXISTENTE  -> reserva/vende la pieza indicada en @id_pieza
+--   CORTA_PIEZA    -> corta @id_pieza y genera retazo(s) automaticamente
+--   COMPRA_NUEVA   -> no toca inventario; el item queda PENDIENTE hasta
+--                     que se registre la compra y se enlace despues
+-- Devuelve: @id_pedido
+-- ------------------------------------------------------------
+CREATE OR ALTER PROCEDURE dbo.sp_ped_registrar
+    @id_cliente INT,
+    @id_usuario INT,
+    @Items      dbo.TVP_PedidoItem    READONLY,
+    @Detalles   dbo.TVP_PedidoDetalle READONLY,
+    @Medidas    dbo.TVP_PedidoMedida  READONLY,
+    @id_pedido  INT OUTPUT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    DECLARE @tran_externa BIT = CASE WHEN @@TRANCOUNT > 0 THEN 1 ELSE 0 END;
+
+    IF NOT EXISTS (SELECT 1 FROM @Items)
+        THROW 50040, 'El pedido debe tener al menos un item (ventana, mampara, vidrio suelto o caja).', 1;
+
+    BEGIN TRY
+    IF @tran_externa = 0 BEGIN TRANSACTION; ELSE SAVE TRANSACTION sp_ped;
+
+        INSERT INTO dbo.pedidos (id_cliente, id_usuario, fecha, estado, total)
+        VALUES (@id_cliente, @id_usuario, SYSDATETIME(), 'PENDIENTE', 0);
+        SET @id_pedido = CONVERT(INT, SCOPE_IDENTITY());
+
+        -- mapeo id_temp (item) -> id real generado
+        DECLARE @MapItems TABLE (id_temp INT PRIMARY KEY, id_item INT);
+
+        DECLARE @id_temp INT, @tipo NVARCHAR(20), @etiqueta NVARCHAR(50),
+                @anchoI DECIMAL(10,2), @altoI DECIMAL(10,2),
+                @precio_mat DECIMAL(10,2), @extra DECIMAL(10,2), @mano DECIMAL(10,2), @totalI DECIMAL(10,2);
+
+        DECLARE cur_items CURSOR LOCAL FAST_FORWARD FOR
+            SELECT id_temp, tipo, etiqueta, ancho_cm, alto_cm, precio_materiales, costo_extra, mano_obra, total
+            FROM @Items;
+        OPEN cur_items;
+        FETCH NEXT FROM cur_items INTO @id_temp, @tipo, @etiqueta, @anchoI, @altoI, @precio_mat, @extra, @mano, @totalI;
+        WHILE @@FETCH_STATUS = 0
+        BEGIN
+            INSERT INTO dbo.pedido_item (id_pedido, tipo, descripcion, estado,
+                                          precio_materiales, costo_extra, mano_obra, total)
+            VALUES (@id_pedido, @tipo, @etiqueta, 'PENDIENTE',
+                    @precio_mat, @extra, @mano, @totalI);
+
+            INSERT INTO @MapItems VALUES (@id_temp, CONVERT(INT, SCOPE_IDENTITY()));
+
+            FETCH NEXT FROM cur_items INTO @id_temp, @tipo, @etiqueta, @anchoI, @altoI, @precio_mat, @extra, @mano, @totalI;
+        END
+        CLOSE cur_items; DEALLOCATE cur_items;
+
+        -- detalles: resuelve inventario (usa existente / corta / compra nueva) e inserta
+        DECLARE @MapDetalles TABLE (id_temp INT PRIMARY KEY, id_detalle INT);
+
+        DECLARE @id_det_temp INT, @id_item_temp INT, @id_variante INT, @accion NVARCHAR(20),
+                @id_pieza INT, @anchoD DECIMAL(10,2), @altoD DECIMAL(10,2), @largoD DECIMAL(10,2),
+                @cajas INT, @subtotal DECIMAL(10,2),
+                @id_item_real INT, @id_pieza_final INT, @precio_unit DECIMAL(10,2);
+
+        DECLARE cur_det CURSOR LOCAL FAST_FORWARD FOR
+            SELECT id_temp, id_item_temp, id_variante, accion, id_pieza, ancho_cm, alto_cm, largo_cm, cantidad_cajas, subtotal
+            FROM @Detalles;
+        OPEN cur_det;
+        FETCH NEXT FROM cur_det INTO @id_det_temp, @id_item_temp, @id_variante, @accion, @id_pieza, @anchoD, @altoD, @largoD, @cajas, @subtotal;
+        WHILE @@FETCH_STATUS = 0
+        BEGIN
+            SET @id_item_real = (SELECT id_item FROM @MapItems WHERE id_temp = @id_item_temp);
+            SET @id_pieza_final = @id_pieza;
+            SET @precio_unit = (SELECT precio_unitario FROM dbo.producto_variante WHERE id_variante = @id_variante);
+
+            IF @accion = 'CORTA_PIEZA'
+            BEGIN
+                EXEC dbo.sp_inv_cortar_pieza
+                     @id_pieza    = @id_pieza,
+                     @ancho_corte = @anchoD,
+                     @alto_corte  = @altoD,
+                     @largo_corte = @largoD,
+                     @id_usuario  = @id_usuario,
+                     @id_pedido   = @id_pedido;
+                SET @id_pieza_final = @id_pieza; -- la pieza original queda CONSUMIDA; esta linea registra lo que se uso de ella
+            END
+            ELSE IF @accion = 'USA_EXISTENTE'
+            BEGIN
+                EXEC dbo.sp_inv_cambiar_estado_pieza
+                     @id_pieza   = @id_pieza,
+                     @estado     = 'VENDIDA',
+                     @id_usuario = @id_usuario,
+                     @id_pedido  = @id_pedido;
+            END
+            -- COMPRA_NUEVA: @id_pieza_final queda NULL; se liga despues al registrar la compra
+
+            INSERT INTO dbo.pedido_detalle (id_item, id_variante, accion, id_pieza, estado,
+                                             cantidad_cajas, ancho_cm, alto_cm, largo_cm,
+                                             precio_unitario_aplicado, subtotal)
+            VALUES (@id_item_real, @id_variante, @accion, @id_pieza_final, 'ACTIVO',
+                    @cajas, @anchoD, @altoD, @largoD,
+                    @precio_unit, @subtotal);
+
+            INSERT INTO @MapDetalles VALUES (@id_det_temp, CONVERT(INT, SCOPE_IDENTITY()));
+
+            IF @accion = 'COMPRA_NUEVA'
+                UPDATE dbo.pedido_item SET estado = 'PENDIENTE' WHERE id_item = @id_item_real;
+
+            FETCH NEXT FROM cur_det INTO @id_det_temp, @id_item_temp, @id_variante, @accion, @id_pieza, @anchoD, @altoD, @largoD, @cajas, @subtotal;
+        END
+        CLOSE cur_det; DEALLOCATE cur_det;
+
+        -- medidas crudas (para el proveedor)
+        INSERT INTO dbo.pedido_detalle_medida (id_detalle, etiqueta, valor_cm)
+        SELECT md.id_detalle, m.etiqueta, m.valor_cm
+        FROM @Medidas m
+        INNER JOIN @MapDetalles md ON md.id_temp = m.id_detalle_temp;
+
+        UPDATE dbo.pedidos
+        SET total = (SELECT ISNULL(SUM(total), 0) FROM dbo.pedido_item WHERE id_pedido = @id_pedido)
+        WHERE id_pedido = @id_pedido;
+
+    IF @tran_externa = 0 COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        IF XACT_STATE() = -1 OR (XACT_STATE() = 1 AND @tran_externa = 0)
+            ROLLBACK TRANSACTION;
+        ELSE IF XACT_STATE() = 1
+            ROLLBACK TRANSACTION sp_ped;
+        THROW;
+    END CATCH
 END
 GO
 

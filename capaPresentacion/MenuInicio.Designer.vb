@@ -77,19 +77,19 @@ Partial Class MenuInicio
         'smnRCompra
         '
         Me.smnRCompra.Name = "smnRCompra"
-        Me.smnRCompra.Size = New System.Drawing.Size(180, 22)
+        Me.smnRCompra.Size = New System.Drawing.Size(166, 22)
         Me.smnRCompra.Text = "Registrar Compra"
         '
         'smnRPedido
         '
         Me.smnRPedido.Name = "smnRPedido"
-        Me.smnRPedido.Size = New System.Drawing.Size(180, 22)
+        Me.smnRPedido.Size = New System.Drawing.Size(166, 22)
         Me.smnRPedido.Text = "Regitrar Pedido"
         '
         'smnRPago
         '
         Me.smnRPago.Name = "smnRPago"
-        Me.smnRPago.Size = New System.Drawing.Size(180, 22)
+        Me.smnRPago.Size = New System.Drawing.Size(166, 22)
         Me.smnRPago.Text = "Registro Pago"
         '
         'mnTablas
@@ -102,19 +102,19 @@ Partial Class MenuInicio
         'smnVCompra
         '
         Me.smnVCompra.Name = "smnVCompra"
-        Me.smnVCompra.Size = New System.Drawing.Size(180, 22)
+        Me.smnVCompra.Size = New System.Drawing.Size(146, 22)
         Me.smnVCompra.Text = "Ver Compras"
         '
         'smnVVenta
         '
         Me.smnVVenta.Name = "smnVVenta"
-        Me.smnVVenta.Size = New System.Drawing.Size(180, 22)
+        Me.smnVVenta.Size = New System.Drawing.Size(146, 22)
         Me.smnVVenta.Text = "Ver Ventas"
         '
         'smnVInventario
         '
         Me.smnVInventario.Name = "smnVInventario"
-        Me.smnVInventario.Size = New System.Drawing.Size(180, 22)
+        Me.smnVInventario.Size = New System.Drawing.Size(146, 22)
         Me.smnVInventario.Text = "Ver Inventario"
         '
         'MantenimientosToolStripMenuItem
@@ -127,19 +127,19 @@ Partial Class MenuInicio
         'smnUsuarios
         '
         Me.smnUsuarios.Name = "smnUsuarios"
-        Me.smnUsuarios.Size = New System.Drawing.Size(180, 22)
+        Me.smnUsuarios.Size = New System.Drawing.Size(128, 22)
         Me.smnUsuarios.Text = "Usuarios"
         '
         'smnClientes
         '
         Me.smnClientes.Name = "smnClientes"
-        Me.smnClientes.Size = New System.Drawing.Size(180, 22)
+        Me.smnClientes.Size = New System.Drawing.Size(128, 22)
         Me.smnClientes.Text = "Clientes"
         '
         'smnProductos
         '
         Me.smnProductos.Name = "smnProductos"
-        Me.smnProductos.Size = New System.Drawing.Size(180, 22)
+        Me.smnProductos.Size = New System.Drawing.Size(128, 22)
         Me.smnProductos.Text = "Productos"
         '
         'mnConfiguracion
@@ -265,6 +265,7 @@ Partial Class MenuInicio
         Me.Controls.Add(Me.toolBarra)
         Me.Controls.Add(Me.stripDatos)
         Me.Controls.Add(Me.menu)
+        Me.ForeColor = System.Drawing.SystemColors.ControlText
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.IsMdiContainer = True
         Me.MainMenuStrip = Me.menu

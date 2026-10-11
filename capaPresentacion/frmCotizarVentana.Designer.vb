@@ -292,7 +292,7 @@ Partial Class frmCotizarVentana
         Me.Label13.AutoSize = True
         Me.Label13.BackColor = System.Drawing.Color.Transparent
         Me.Label13.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label13.Location = New System.Drawing.Point(19, 330)
+        Me.Label13.Location = New System.Drawing.Point(19, 355)
         Me.Label13.Name = "Label13"
         Me.Label13.Size = New System.Drawing.Size(182, 16)
         Me.Label13.TabIndex = 0
@@ -301,7 +301,7 @@ Partial Class frmCotizarVentana
         'txtPreciomaterial
         '
         Me.txtPreciomaterial.Enabled = False
-        Me.txtPreciomaterial.Location = New System.Drawing.Point(223, 328)
+        Me.txtPreciomaterial.Location = New System.Drawing.Point(223, 353)
         Me.txtPreciomaterial.Name = "txtPreciomaterial"
         Me.txtPreciomaterial.Size = New System.Drawing.Size(200, 20)
         Me.txtPreciomaterial.TabIndex = 0
@@ -311,7 +311,7 @@ Partial Class frmCotizarVentana
         Me.Label14.AutoSize = True
         Me.Label14.BackColor = System.Drawing.Color.Transparent
         Me.Label14.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label14.Location = New System.Drawing.Point(127, 356)
+        Me.Label14.Location = New System.Drawing.Point(127, 330)
         Me.Label14.Name = "Label14"
         Me.Label14.Size = New System.Drawing.Size(74, 16)
         Me.Label14.TabIndex = 0
@@ -319,7 +319,7 @@ Partial Class frmCotizarVentana
         '
         'txtExtra
         '
-        Me.txtExtra.Location = New System.Drawing.Point(223, 353)
+        Me.txtExtra.Location = New System.Drawing.Point(223, 327)
         Me.txtExtra.Name = "txtExtra"
         Me.txtExtra.Size = New System.Drawing.Size(200, 20)
         Me.txtExtra.TabIndex = 8

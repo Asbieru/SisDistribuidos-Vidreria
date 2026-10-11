@@ -320,12 +320,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Imagenes\Fondos\fondoInicioClaro.jpg" />
-    <Content Include="Imagenes\Fondos\fondoInicioOscuro.jpg" />
-    <Content Include="Imagenes\Iconos\Oscuro\CotizarVentana.png" />
-    <Content Include="Imagenes\Iconos\Oscuro\Inventario.png" />
-    <Content Include="Imagenes\Iconos\Claro\CotizarVentana.png" />
-    <Content Include="Imagenes\Iconos\Claro\Inventario.png" />
+    <Content Include="Imagenes\**\*.*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
 </Project>

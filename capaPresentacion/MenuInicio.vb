@@ -92,8 +92,8 @@ Public Class MenuInicio
             Dim dt As DataTable = objUsu.obtenerPreferencia(Integer.Parse(txtID.Text))
             If dt.Rows.Count > 0 Then
                 tema = dt.Rows(0).Item(0).ToString
-                temaColor()
             End If
+            temaColor()
         Catch ex As Exception
             MessageBox.Show("Error al iniciar Menu: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
@@ -241,7 +241,7 @@ Public Class MenuInicio
     End Sub
 
     Private Sub smnRPedido_Click(sender As Object, e As EventArgs) Handles smnRPedido.Click
-        Dim objFrm As New frmRegistrarPedido With {.tema = tema}
+        Dim objFrm As New frmRegistrarPedido With {.tema = tema, .idUsuario = Integer.Parse(txtID.Text)}
         objFrm.MdiParent = Me
         objFrm.Show()
     End Sub
