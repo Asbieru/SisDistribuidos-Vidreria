@@ -32,10 +32,15 @@ Public Class frmListadoClientes
             dtClientes = If(String.IsNullOrWhiteSpace(txtBuscar.Text),
                             objCliente.Listar(), objCliente.Buscar(txtBuscar.Text))
             dgvClientes.DataSource = dtClientes
-            Encabezados(dgvClientes, "nombre|Nombre", "documento|Documento",
+            Encabezados(dgvClientes, "nombre|Nombre / Razón social", "tipo_persona|Persona",
+                        "tipo_documento|Tipo documento", "documento|Número",
                         "telefono|Teléfono", "direccion|Dirección")
             dgvClientes.Columns("nombre").FillWeight = 180
-            dgvClientes.Columns("direccion").FillWeight = 220
+            dgvClientes.Columns("tipo_persona").FillWeight = 140
+            dgvClientes.Columns("tipo_persona").MinimumWidth = 125
+            dgvClientes.Columns("tipo_documento").FillWeight = 140
+            dgvClientes.Columns("tipo_documento").MinimumWidth = 125
+            dgvClientes.Columns("direccion").FillWeight = 160
             lblCantidad.Text = If(dtClientes.Rows.Count = 0, "No se encontraron clientes.",
                                  "Clientes encontrados: " & dtClientes.Rows.Count.ToString())
             For Each fila As DataGridViewRow In dgvClientes.Rows
