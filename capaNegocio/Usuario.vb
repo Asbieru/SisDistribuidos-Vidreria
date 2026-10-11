@@ -212,4 +212,22 @@ Public Class Usuario
             Throw New Exception("Error al validar estado del usuario!")
         End Try
     End Function
+
+    ' =========================================================
+    ' Roles: protección del último administrador
+    ' =========================================================
+
+    ' True si este usuario es el ÚNICO administrador activo:
+    ' no se le puede dar de baja, eliminar ni quitar el rol de administrador
+    Public Function esUltimoAdministrador(idUsuario As Integer) As Boolean
+        strCon = "select " &
+                 "(select count(*) from usuarios where id_usuario=" & idUsuario & " and rol='ADMINISTRADOR' and activo=1) as es_admin, " &
+                 "(select count(*) from usuarios where id_usuario<>" & idUsuario & " and rol='ADMINISTRADOR' and activo=1) as otros"
+        Try
+            Dim dt As DataTable = objMan.listarComando(strCon)
+            Return CInt(dt.Rows(0)("es_admin")) = 1 AndAlso CInt(dt.Rows(0)("otros")) = 0
+        Catch ex As Exception
+            Throw New Exception("Error al validar administradores!")
+        End Try
+    End Function
 End Class

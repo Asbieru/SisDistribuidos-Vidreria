@@ -89,6 +89,7 @@
     </Compile>
     <Compile Include="Pago.vb" />
     <Compile Include="Pedido.vb" />
+    <Compile Include="Permiso.vb" />
     <Compile Include="Producto.vb" />
     <Compile Include="ProductoVariante.vb" />
     <Compile Include="Usuario.vb" />

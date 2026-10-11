@@ -85,6 +85,12 @@
     <Compile Include="frmListadoProductos.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="frmPermisos.Designer.vb">
+      <DependentUpon>frmPermisos.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmPermisos.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="frmRegistrarCompras.Designer.vb">
       <DependentUpon>frmRegistrarCompras.vb</DependentUpon>
     </Compile>
@@ -239,6 +245,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="frmListadoProductos.resx">
       <DependentUpon>frmListadoProductos.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmPermisos.resx">
+      <DependentUpon>frmPermisos.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmRegistrarCompras.resx">
       <DependentUpon>frmRegistrarCompras.vb</DependentUpon>
