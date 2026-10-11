@@ -832,6 +832,37 @@ GO
 -- (incluye las versiones mas recientes de la ficha comercial)
 -- ============================================================
 
+-- INICIO ACTUALIZACION CLIENTES
+IF COL_LENGTH('dbo.clientes','version_cliente') IS NULL
+    ALTER TABLE dbo.clientes ADD version_cliente ROWVERSION NOT NULL;
+IF COL_LENGTH('dbo.clientes','tipo_persona') IS NULL
+    ALTER TABLE dbo.clientes ADD tipo_persona NVARCHAR(10) NULL;
+IF COL_LENGTH('dbo.clientes','tipo_documento') IS NULL
+    ALTER TABLE dbo.clientes ADD tipo_documento NVARCHAR(15) NULL;
+GO
+
+-- Los registros anteriores quedan sin clasificar y mantienen sus datos.
+IF NOT EXISTS (SELECT 1 FROM sys.check_constraints WHERE parent_object_id = OBJECT_ID('dbo.clientes') AND name = 'CK_clientes_identificacion')
+    ALTER TABLE dbo.clientes WITH CHECK ADD CONSTRAINT CK_clientes_identificacion CHECK (
+        (tipo_persona IS NULL AND tipo_documento IS NULL)
+        OR (tipo_persona IS NOT NULL AND tipo_documento IS NOT NULL AND (
+            (tipo_persona = N'NATURAL' AND tipo_documento IN (N'DNI',N'RUC',N'SIN DOCUMENTO'))
+            OR (tipo_persona = N'JURIDICA' AND tipo_documento = N'RUC'))));
+IF NOT EXISTS (SELECT 1 FROM sys.check_constraints WHERE parent_object_id = OBJECT_ID('dbo.clientes') AND name = 'CK_clientes_documento')
+    ALTER TABLE dbo.clientes WITH CHECK ADD CONSTRAINT CK_clientes_documento CHECK (
+        tipo_documento IS NULL
+        OR (tipo_documento = N'SIN DOCUMENTO' AND documento IS NULL)
+        OR (tipo_documento IN (N'DNI',N'RUC') AND documento IS NOT NULL
+            AND documento COLLATE Latin1_General_100_BIN2 NOT LIKE N'%[^0-9]%'
+            AND DATALENGTH(documento) = CASE WHEN tipo_documento = N'DNI' THEN 16 ELSE 22 END
+            AND (tipo_documento <> N'RUC'
+                OR (tipo_persona = N'JURIDICA' AND LEFT(documento,2) = N'20')
+                OR (tipo_persona = N'NATURAL' AND LEFT(documento,2) IN (N'10',N'15')))));
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE object_id = OBJECT_ID('dbo.clientes') AND name = 'UX_clientes_documento')
+    CREATE UNIQUE INDEX UX_clientes_documento ON dbo.clientes(tipo_documento,documento)
+    WHERE tipo_documento IS NOT NULL AND documento IS NOT NULL;
+GO
+
 CREATE OR ALTER PROCEDURE dbo.sp_cli_listar
     @texto NVARCHAR(150) = NULL
 AS
@@ -841,7 +872,9 @@ BEGIN
     DECLARE @patron NVARCHAR(604);
     SET @patron = N'%' + REPLACE(REPLACE(REPLACE(REPLACE(
         @texto, N'\', N'\\'), N'%', N'\%'), N'_', N'\_'), N'[', N'\[') + N'%';
-    SELECT id_cliente, nombre, documento, telefono, direccion, version_cliente
+    SELECT id_cliente, nombre, documento, telefono, direccion, version_cliente,
+           CASE tipo_persona WHEN N'NATURAL' THEN N'Natural' WHEN N'JURIDICA' THEN N'Jurídica' ELSE N'Por clasificar' END AS tipo_persona,
+           COALESCE(tipo_documento,N'Por clasificar') AS tipo_documento
     FROM dbo.clientes
     WHERE @texto IS NULL
        OR nombre LIKE @patron ESCAPE N'\'
@@ -858,7 +891,8 @@ BEGIN
     SET NOCOUNT ON;
     IF @id_cliente IS NULL OR @id_cliente <= 0
         THROW 50101, 'Seleccione un cliente valido.', 1;
-    SELECT id_cliente, nombre, documento, telefono, direccion, version_cliente
+    SELECT id_cliente, nombre, documento, telefono, direccion, version_cliente,
+           tipo_persona, tipo_documento
     FROM dbo.clientes WHERE id_cliente = @id_cliente;
 END;
 GO
@@ -869,7 +903,9 @@ CREATE OR ALTER PROCEDURE dbo.sp_cli_guardar
     @documento NVARCHAR(MAX) = NULL,
     @telefono NVARCHAR(MAX) = NULL,
     @direccion NVARCHAR(MAX) = NULL,
-    @version_original VARBINARY(8) = NULL
+    @version_original VARBINARY(8) = NULL,
+    @tipo_persona NVARCHAR(MAX) = NULL,
+    @tipo_documento NVARCHAR(MAX) = NULL
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -878,6 +914,8 @@ BEGIN
     SET @documento = NULLIF(LTRIM(RTRIM(@documento)), N'');
     SET @telefono = NULLIF(LTRIM(RTRIM(@telefono)), N'');
     SET @direccion = NULLIF(LTRIM(RTRIM(@direccion)), N'');
+    SET @tipo_persona = UPPER(NULLIF(LTRIM(RTRIM(@tipo_persona)), N''));
+    SET @tipo_documento = UPPER(NULLIF(LTRIM(RTRIM(@tipo_documento)), N''));
     IF @id_cliente IS NULL OR @id_cliente < 0
         THROW 50101, 'El ID del cliente no es valido.', 1;
     IF @nombre IS NULL
@@ -892,8 +930,14 @@ BEGIN
         THROW 50106, 'La direccion admite hasta 255 caracteres.', 1;
     IF @telefono IS NOT NULL AND (
         @telefono COLLATE Latin1_General_100_BIN2 LIKE N'%[^0-9+() -]%'
-        OR @telefono COLLATE Latin1_General_100_BIN2 NOT LIKE N'%[0-9]%')
-        THROW 50110, 'El telefono debe contener numeros; puede incluir espacios, +, parentesis y guiones.', 1;
+        OR CHARINDEX(N'+', SUBSTRING(@telefono,2,20)) > 0
+        OR LEN(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(@telefono,N' ',N''),N'+',N''),N'(',N''),N')',N''),N'-',N'')) NOT BETWEEN 7 AND 15)
+        THROW 50110, 'El telefono debe contener entre 7 y 15 digitos. El + solo se permite al inicio.', 1;
+    IF @telefono IS NOT NULL AND (
+        LEN(@telefono)-LEN(REPLACE(@telefono,N'(',N'')) <> LEN(@telefono)-LEN(REPLACE(@telefono,N')',N''))
+        OR LEN(@telefono)-LEN(REPLACE(@telefono,N'(',N'')) > 1
+        OR (CHARINDEX(N'(',@telefono) > 0 AND CHARINDEX(N'(',@telefono) > CHARINDEX(N')',@telefono)))
+        THROW 50110, 'Revise los parentesis del telefono; se permite un par alrededor del codigo de area.', 1;
     IF @id_cliente > 0 AND (@version_original IS NULL OR DATALENGTH(@version_original) <> 8)
         THROW 50109, 'Recargue el cliente antes de guardar sus cambios.', 1;
 
@@ -909,24 +953,52 @@ BEGIN
                 THROW 50107, 'El cliente ya no existe. Actualice el listado.', 1;
             IF @version_actual <> @version_original
                 THROW 50109, 'Otro trabajador modifico este cliente. Presione Recargar y revise los datos antes de guardar.', 1;
+            IF @tipo_persona IS NULL AND @tipo_documento IS NULL
+                SELECT @tipo_persona = tipo_persona, @tipo_documento = tipo_documento
+                FROM dbo.clientes WHERE id_cliente = @id_cliente;
         END;
+
+        IF NOT ((@tipo_persona IS NULL AND @tipo_documento IS NULL)
+            OR (@tipo_persona IS NOT NULL AND @tipo_documento IS NOT NULL AND (
+                (@tipo_persona = N'NATURAL' AND @tipo_documento IN (N'DNI',N'RUC',N'SIN DOCUMENTO'))
+                OR (@tipo_persona = N'JURIDICA' AND @tipo_documento = N'RUC'))))
+            THROW 50113, 'Seleccione un tipo de persona y documento compatibles. La persona juridica requiere RUC.', 1;
+        IF @tipo_documento = N'SIN DOCUMENTO' AND @documento IS NOT NULL
+            THROW 50114, 'Deje el numero vacio si selecciona Sin documento.', 1;
+        IF @tipo_documento IN (N'DNI',N'RUC') AND (
+            @documento IS NULL OR @documento COLLATE Latin1_General_100_BIN2 LIKE N'%[^0-9]%'
+            OR DATALENGTH(@documento) <> CASE WHEN @tipo_documento = N'DNI' THEN 16 ELSE 22 END)
+            THROW 50114, 'Ingrese 8 digitos para DNI u 11 digitos para RUC, sin espacios ni letras.', 1;
+        IF @tipo_documento = N'RUC' AND (
+            (@tipo_persona = N'JURIDICA' AND LEFT(@documento,2) <> N'20')
+            OR (@tipo_persona = N'NATURAL' AND LEFT(@documento,2) NOT IN (N'10',N'15')))
+            THROW 50114, 'El RUC debe empezar por 20 para persona juridica, o por 10 o 15 para natural.', 1;
+
+        IF @documento IS NOT NULL AND EXISTS (
+            SELECT 1 FROM dbo.clientes WITH (UPDLOCK,HOLDLOCK)
+            WHERE LTRIM(RTRIM(documento)) = @documento AND id_cliente <> @id_cliente
+              AND (@tipo_documento IS NULL OR tipo_documento IS NULL OR tipo_documento = @tipo_documento))
+            THROW 50115, 'El documento ya pertenece a otro cliente. Busque el registro existente.', 1;
 
         IF @id_cliente = 0
         BEGIN
-            INSERT INTO dbo.clientes (nombre, documento, telefono, direccion)
-            VALUES (@nombre, @documento, @telefono, @direccion);
+            INSERT INTO dbo.clientes (nombre, documento, telefono, direccion, tipo_persona, tipo_documento)
+            VALUES (@nombre, @documento, @telefono, @direccion, @tipo_persona, @tipo_documento);
             SET @id_cliente = CONVERT(INT, SCOPE_IDENTITY());
         END
         ELSE
             UPDATE dbo.clientes
             SET nombre = @nombre, documento = @documento,
-                telefono = @telefono, direccion = @direccion
+                telefono = @telefono, direccion = @direccion,
+                tipo_persona = @tipo_persona, tipo_documento = @tipo_documento
             WHERE id_cliente = @id_cliente;
         COMMIT TRANSACTION;
         SELECT @id_cliente AS id_cliente;
     END TRY
     BEGIN CATCH
         IF XACT_STATE() <> 0 ROLLBACK TRANSACTION;
+        IF ERROR_NUMBER() IN (2601,2627)
+            THROW 50115, 'El documento ya pertenece a otro cliente. Busque el registro existente.', 1;
         THROW;
     END CATCH;
 END;
@@ -975,24 +1047,29 @@ GO
 
 CREATE OR ALTER PROCEDURE dbo.sp_cli_documento_coincidente
     @documento NVARCHAR(20),
-    @id_excluir INT = 0
+    @id_excluir INT = 0,
+    @tipo_documento NVARCHAR(15) = NULL
 AS
 BEGIN
     SET NOCOUNT ON;
     SET @documento = NULLIF(LTRIM(RTRIM(@documento)), N'');
+    SET @tipo_documento = UPPER(NULLIF(LTRIM(RTRIM(@tipo_documento)), N''));
     IF @id_excluir IS NULL OR @id_excluir < 0
         THROW 50101, 'El ID del cliente no es valido.', 1;
     SELECT id_cliente, nombre
     FROM dbo.clientes
     WHERE @documento IS NOT NULL AND LTRIM(RTRIM(documento)) = @documento
       AND id_cliente <> @id_excluir
+      AND (@tipo_documento IS NULL OR tipo_documento IS NULL OR tipo_documento = @tipo_documento)
     ORDER BY nombre, id_cliente;
 END;
 GO
 
 CREATE OR ALTER PROCEDURE dbo.sp_cli_historial
     @id_cliente INT,
-    @estado NVARCHAR(15) = NULL
+    @estado NVARCHAR(15) = NULL,
+    @desde DATE = NULL,
+    @hasta DATE = NULL
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -1001,6 +1078,8 @@ BEGIN
     SET @estado = NULLIF(LTRIM(RTRIM(@estado)), N'');
     IF @estado IS NOT NULL AND @estado NOT IN ('PENDIENTE','PARCIAL','PAGADO','CANCELADO')
         THROW 50111, 'El estado del pedido no es valido.', 1;
+    IF @desde > @hasta
+        THROW 50116, 'La fecha Desde no puede ser posterior a Hasta.', 1;
 
     -- Agrupar cabeceras de pagos ANTES de unirlas: ni detalles ni metodos
     -- multiplican el total del pedido o el dinero registrado.
@@ -1019,6 +1098,8 @@ BEGIN
         FROM dbo.pagos GROUP BY id_pedido
     ) a ON a.id_pedido = p.id_pedido
     WHERE p.id_cliente = @id_cliente AND (@estado IS NULL OR p.estado = @estado)
+      AND (@desde IS NULL OR CONVERT(DATE,p.fecha) >= @desde)
+      AND (@hasta IS NULL OR CONVERT(DATE,p.fecha) <= @hasta)
     ORDER BY p.fecha DESC, p.id_pedido DESC;
 END;
 GO
@@ -1048,6 +1129,7 @@ END;
 GO
 
 -- ============================================================
+-- FIN ACTUALIZACION CLIENTES
 -- 3) INSERT DE DATOS
 -- ============================================================
 

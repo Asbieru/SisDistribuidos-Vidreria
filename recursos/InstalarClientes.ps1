@@ -32,13 +32,27 @@ try {
         @(Compare-Object $esperadosClientes $encontradosClientes).Count -ne 0) {
         throw 'El script consolidado no contiene los ocho procedimientos esperados de Clientes.'
     }
+    $actualizacionClientes = [regex]::Match($sqlClientes,
+        '(?s)-- INICIO ACTUALIZACION CLIENTES\s*(.*?)-- FIN ACTUALIZACION CLIENTES')
+    if (-not $actualizacionClientes.Success) { throw 'No se encontró la actualización de Clientes.' }
+    $lotesClientes = [regex]::Split($actualizacionClientes.Groups[1].Value, '(?im)^\s*GO\s*$')
     $comandoClientes.CommandTimeout = 60
-    $comandoClientes.CommandText = "IF COL_LENGTH('dbo.clientes','version_cliente') IS NULL ALTER TABLE dbo.clientes ADD version_cliente ROWVERSION NOT NULL;"
-    [void]$comandoClientes.ExecuteNonQuery()
-    foreach ($procedimientoClientes in $procedimientosClientes) {
-        $comandoClientes.CommandText = $procedimientoClientes.Value
-        [void]$comandoClientes.ExecuteNonQuery()
-        Write-Output ('Aplicado: ' + $procedimientoClientes.Groups[1].Value)
+    $transaccionClientes = $cnClientes.BeginTransaction()
+    $comandoClientes.Transaction = $transaccionClientes
+    try {
+        foreach ($loteClientes in $lotesClientes) {
+            if ([string]::IsNullOrWhiteSpace($loteClientes)) { continue }
+            $comandoClientes.CommandText = $loteClientes
+            [void]$comandoClientes.ExecuteNonQuery()
+        }
+        $transaccionClientes.Commit()
+    }
+    catch {
+        $transaccionClientes.Rollback()
+        throw
+    }
+    finally {
+        $transaccionClientes.Dispose()
     }
     Write-Output ('Clientes instalado en ' + $Servidor + ' / ' + $BaseDatos + '. Los datos existentes se conservaron.')
 }
