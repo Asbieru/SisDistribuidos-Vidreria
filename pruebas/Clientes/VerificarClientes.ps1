@@ -150,7 +150,7 @@ try {
 
     SqlPruebaClientes ('CREATE DATABASE [' + $basePruebaClientes + '];') 'master' | Out-Null
     $baseCreadaClientes = $true
-    $esquemaClientes = [IO.File]::ReadAllText((Join-Path $repositorioClientes 'recursos/bd/esquema_vidrieria_sqlserver.sql'))
+    $esquemaClientes = [IO.File]::ReadAllText((Join-Path $repositorioClientes 'recursos/bd/00_vidrieria_completo.sql'))
     $esquemaClientes = $esquemaClientes.Replace("N'vidrieria'", ("N'" + $basePruebaClientes + "'"))
     $esquemaClientes = $esquemaClientes.Replace('CREATE DATABASE vidrieria;', ('CREATE DATABASE [' + $basePruebaClientes + '];'))
     $esquemaClientes = $esquemaClientes.Replace('USE vidrieria;', ('USE [' + $basePruebaClientes + '];'))
@@ -158,8 +158,10 @@ try {
         if (-not [string]::IsNullOrWhiteSpace($lote)) { SqlPruebaClientes $lote | Out-Null }
     }
     $instaladorClientes = Join-Path $repositorioClientes 'recursos/InstalarClientes.ps1'
-    & $instaladorClientes -Servidor $Servidor -BaseDatos $basePruebaClientes | Out-Null
+    SqlPruebaClientes 'ALTER TABLE dbo.clientes DROP COLUMN version_cliente;' | Out-Null
     SqlPruebaClientes "INSERT INTO clientes(nombre,documento) VALUES(N'Cliente previo',N'PREVIO');" | Out-Null
+    & $instaladorClientes -Servidor $Servidor -BaseDatos $basePruebaClientes | Out-Null
+    ComprobarClientes ((SqlPruebaClientes "SELECT COL_LENGTH('dbo.clientes','version_cliente');") -eq 8) 'Actualización agrega versión a clientes existentes'
     $versionPreviaClientes = SqlPruebaClientes 'SELECT CONVERT(VARCHAR(18),version_cliente,1) FROM clientes;'
     & $instaladorClientes -Servidor $Servidor -BaseDatos $basePruebaClientes | Out-Null
     ComprobarClientes ((SqlPruebaClientes 'SELECT COUNT(*) FROM clientes;') -eq 1) 'Instalación repetida conserva clientes'
@@ -180,7 +182,7 @@ try {
     $cadenaPruebaClientes = (ConexionPruebaClientes $basePruebaClientes).Replace('"','""')
     $fuenteConexionClientes = $fuenteConexionClientes.Replace($conexionOriginalClientes, $cadenaPruebaClientes)
     [IO.File]::WriteAllText($conexionCopiaClientes, $fuenteConexionClientes, (New-Object Text.UTF8Encoding($true)))
-    $salidaCompilacionClientes = & $MSBuild (Join-Path $copiaClientes 'capaPresentacion/capaPresentacion.vbproj') /t:Rebuild /p:Configuration=Debug /v:minimal /nologo 2>&1
+    $salidaCompilacionClientes = & $MSBuild (Join-Path $copiaClientes 'capaPresentacion/capaPresentacion.vbproj') /t:Rebuild /p:Configuration=Debug /p:UseSharedCompilation=false /nodeReuse:false /v:minimal /nologo 2>&1
     if ($LASTEXITCODE -ne 0) { throw ($salidaCompilacionClientes -join [Environment]::NewLine) }
     ComprobarClientes $true 'Las tres capas compilan en la copia aislada'
     $resolverEnsambladosClientes = [ResolveEventHandler] {
@@ -309,25 +311,28 @@ try {
         ComprobarClientes ($selector.idClienteSeleccionado -eq $id -and $selector.nombreClienteSeleccionado -eq 'María Final') 'Selector devuelve cliente vigente'
         ComprobarClientes ($selector.DialogResult -eq [Windows.Forms.DialogResult]::OK) 'Selector confirma selección'
     } finally { $selector.Dispose() }
-    $cotizacion = New-Object capaPresentacion.frmCotizarVentana
+    $pedido = New-Object capaPresentacion.frmRegistrarPedido
     try {
-        MostrarPruebaClientes $cotizacion
-        ComprobarClientes (-not (CampoClientes $cotizacion 'btnHistorialCliente').Enabled) 'Cotización sin cliente deshabilita historial'
-        ElegirClientePrueba $cotizacion 'btnBuscarCliente_Click' $id
-        ComprobarClientes ($cotizacion.idClienteSeleccionado -eq $id) 'Cotización recibe ID del diálogo'
-        ComprobarClientes ((CampoClientes $cotizacion 'txtCliente').Text -eq 'María Final') 'Cotización conserva cliente seleccionado'
-        ComprobarClientes ((CampoClientes $cotizacion 'btnHistorialCliente').Enabled) 'Cotización habilita consulta de historial'
-        ComprobarClientes (@($cotizacion.Controls | Where-Object { $_.Visible -and ($_.Right -gt $cotizacion.ClientSize.Width -or $_.Bottom -gt $cotizacion.ClientSize.Height) }).Count -eq 0) 'Cotización sin controles recortados'
-        CapturarPruebaClientes $cotizacion 'cotizacion'
-    } finally { $cotizacion.Dispose() }
-    $cotizacionOscura = New-Object capaPresentacion.frmCotizarVentana
-    $cotizacionOscura.tema = 'OSCURO'
+        MostrarPruebaClientes $pedido
+        ComprobarClientes ($pedido.idClienteSeleccionado -eq 0) 'Pedido inicia sin cliente seleccionado'
+        ElegirClientePrueba $pedido 'btnBuscarCliente_Click' $id
+        ComprobarClientes ($pedido.idClienteSeleccionado -eq $id) 'Pedido recibe ID del diálogo'
+        ComprobarClientes ((CampoClientes $pedido 'txtNombreCliente').Text -eq 'María Final') 'Pedido conserva cliente seleccionado'
+        ComprobarClientes ($pedido.nombreClienteSeleccionado -eq 'María Final') 'Pedido recibe el nombre del cliente'
+        ComprobarClientes (@($pedido.Controls | Where-Object { $_.Visible -and ($_.Right -gt $pedido.ClientSize.Width -or $_.Bottom -gt $pedido.ClientSize.Height) }).Count -eq 0) 'Pedido sin controles recortados'
+        CapturarPruebaClientes $pedido 'pedido'
+    } finally { $pedido.Dispose() }
+    $pedidoOscuro = New-Object capaPresentacion.frmRegistrarPedido
+    $pedidoOscuro.tema = 'OSCURO'
     try {
-        MostrarPruebaClientes $cotizacionOscura
-        ComprobarClientes ((CampoClientes $cotizacionOscura 'Label1').ForeColor.ToArgb() -ne (CampoClientes $cotizacionOscura 'Panel1').BackColor.ToArgb()) 'Cotización oscura conserva texto legible en características'
-        ComprobarClientes ((CampoClientes $cotizacionOscura 'Label8').ForeColor.ToArgb() -ne (CampoClientes $cotizacionOscura 'Panel2').BackColor.ToArgb()) 'Cotización oscura conserva texto legible en medidas'
-        CapturarPruebaClientes $cotizacionOscura 'cotizacion_OSCURO'
-    } finally { $cotizacionOscura.Dispose() }
+        MostrarPruebaClientes $pedidoOscuro
+        ElegirClientePrueba $pedidoOscuro 'btnBuscarCliente_Click' $id
+        ComprobarClientes ($pedidoOscuro.idClienteSeleccionado -eq $id) 'Pedido oscuro recibe cliente seleccionado'
+        $etiquetaCliente = (CampoClientes $pedidoOscuro 'txtNombreCliente').Parent.Controls |
+            Where-Object { $_ -is [Windows.Forms.Label] -and $_.Text -like '*Cliente*' } | Select-Object -First 1
+        ComprobarClientes ($null -ne $etiquetaCliente -and $etiquetaCliente.ForeColor.ToArgb() -ne $etiquetaCliente.Parent.BackColor.ToArgb()) 'Pedido oscuro conserva etiqueta de cliente legible'
+        CapturarPruebaClientes $pedidoOscuro 'pedido_OSCURO'
+    } finally { $pedidoOscuro.Dispose() }
     $fichaCambio = New-Object capaPresentacion.frmHistorialClientes
     $fichaCambio.idCliente = $id
     try {
