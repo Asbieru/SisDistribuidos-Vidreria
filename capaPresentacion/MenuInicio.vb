@@ -239,4 +239,10 @@ Public Class MenuInicio
             MessageBox.Show(ex.Message, "Productos", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
     End Sub
+
+    Private Sub smnRPedido_Click(sender As Object, e As EventArgs) Handles smnRPedido.Click
+        Dim objFrm As New frmRegistrarPedido With {.tema = tema}
+        objFrm.MdiParent = Me
+        objFrm.Show()
+    End Sub
 End Class

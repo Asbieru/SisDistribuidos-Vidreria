@@ -232,28 +232,68 @@ CREATE TABLE dbo.inventario_cajas (
 GO
 
 -- ------------------------------------------------------------
+-- Items del pedido: agrupa los materiales de un mismo objeto
+-- (una ventana, una mampara, un vidrio suelto, una caja de tornillos)
+-- ------------------------------------------------------------
+IF OBJECT_ID(N'dbo.pedido_item', N'U') IS NULL
+CREATE TABLE dbo.pedido_item (
+    id_item      INT IDENTITY(1,1) PRIMARY KEY,
+    id_pedido    INT NOT NULL,
+    tipo         NVARCHAR(15) NOT NULL
+        CONSTRAINT ck_item_tipo CHECK (tipo IN ('CAJA','VIDRIO_SUELTO','VENTANA','MAMPARA')),
+    descripcion  NVARCHAR(255) NULL,
+    cantidad     INT NOT NULL DEFAULT 1
+        CONSTRAINT ck_item_cantidad CHECK (cantidad > 0),
+    estado       NVARCHAR(15) NOT NULL DEFAULT 'PENDIENTE'
+        CONSTRAINT ck_item_estado CHECK (estado IN ('PENDIENTE','EN_PROCESO','COMPLETADO','CANCELADO')),
+    subtotal     DECIMAL(10,2) NOT NULL DEFAULT 0,
+    CONSTRAINT fk_item_pedido FOREIGN KEY (id_pedido)
+        REFERENCES dbo.pedidos(id_pedido) ON DELETE CASCADE
+);
+GO
+
+-- ------------------------------------------------------------
 -- Detalle de pedidos
 -- ------------------------------------------------------------
 IF OBJECT_ID(N'dbo.pedido_detalle', N'U') IS NULL
 CREATE TABLE dbo.pedido_detalle (
     id_detalle                INT IDENTITY(1,1) PRIMARY KEY,
-    id_pedido                 INT NOT NULL,
+    id_item                   INT NOT NULL,
     id_variante               INT NOT NULL,
-    id_pieza                  INT NULL,        -- vidrio/aluminio: pieza especifica usada
+    id_pieza                  INT NULL,        -- pieza usada o resultante del corte; NULL si accion = COMPRA_NUEVA y aun no llega
+    id_compra_detalle         INT NULL,        -- si accion = COMPRA_NUEVA: que compra termino resolviendo esta linea
+    accion                    NVARCHAR(15) NOT NULL
+        CONSTRAINT ck_det_accion CHECK (accion IN ('USA_EXISTENTE','CORTA_PIEZA','COMPRA_NUEVA')),
+    estado                    NVARCHAR(15) NOT NULL DEFAULT 'ACTIVO'
+        CONSTRAINT ck_det_estado CHECK (estado IN ('ACTIVO','REEMPLAZADO','CANCELADO')),
+    id_detalle_origen         INT NULL,        -- si esta linea reemplaza a otra (cambio de material, accidente)
     cantidad_cajas            INT NULL,        -- tornillo/tarugo
-    ancho_cm                  DECIMAL(8,2),    -- medida real cortada
+    ancho_cm                  DECIMAL(8,2),    -- medida real cortada o necesaria
     alto_cm                   DECIMAL(8,2),
     largo_cm                  DECIMAL(8,2),
     precio_unitario_aplicado  DECIMAL(10,2) NOT NULL,
     subtotal                  DECIMAL(10,2) NOT NULL,
-    CONSTRAINT fk_det_pedido FOREIGN KEY (id_pedido)
-        REFERENCES dbo.pedidos(id_pedido) ON DELETE CASCADE,
+    CONSTRAINT fk_det_item FOREIGN KEY (id_item)
+        REFERENCES dbo.pedido_item(id_item) ON DELETE CASCADE,
     CONSTRAINT fk_det_variante FOREIGN KEY (id_variante)
         REFERENCES dbo.producto_variante(id_variante) ON DELETE NO ACTION,
     CONSTRAINT fk_det_pieza FOREIGN KEY (id_pieza)
-        REFERENCES dbo.inventario_piezas(id_pieza) ON DELETE SET NULL
+        REFERENCES dbo.inventario_piezas(id_pieza) ON DELETE SET NULL,
+    CONSTRAINT fk_det_compra_detalle FOREIGN KEY (id_compra_detalle)
+        REFERENCES dbo.compra_detalle(id_compra_detalle) ON DELETE SET NULL,
+    CONSTRAINT fk_det_origen FOREIGN KEY (id_detalle_origen)
+        REFERENCES dbo.pedido_detalle(id_detalle) ON DELETE NO ACTION
 );
 GO
+
+CREATE TABLE dbo.pedido_detalle_medida (
+    id_medida   INT IDENTITY(1,1) PRIMARY KEY,
+    id_detalle  INT NOT NULL,
+    etiqueta    NVARCHAR(30) NOT NULL,   -- ANCHO_SUP, ANCHO_INF, ALTO_IZQ, ALTO_DER, etc.
+    valor_cm    DECIMAL(8,2) NOT NULL,
+    CONSTRAINT fk_medida_detalle FOREIGN KEY (id_detalle)
+        REFERENCES dbo.pedido_detalle(id_detalle) ON DELETE CASCADE
+);
 
 -- ------------------------------------------------------------
 -- Kardex: historial de TODO lo que entra, sale o cambia en el inventario

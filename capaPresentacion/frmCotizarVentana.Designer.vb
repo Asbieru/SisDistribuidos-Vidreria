@@ -44,7 +44,6 @@ Partial Class frmCotizarVentana
         Me.Label9 = New System.Windows.Forms.Label()
         Me.txtAncho = New System.Windows.Forms.TextBox()
         Me.Label8 = New System.Windows.Forms.Label()
-        Me.btnCancelar = New System.Windows.Forms.Button()
         Me.btnLlevarPedido = New System.Windows.Forms.Button()
         Me.Label13 = New System.Windows.Forms.Label()
         Me.txtPreciomaterial = New System.Windows.Forms.TextBox()
@@ -279,18 +278,9 @@ Partial Class frmCotizarVentana
         Me.Label8.TabIndex = 0
         Me.Label8.Text = "Medidas"
         '
-        'btnCancelar
-        '
-        Me.btnCancelar.Location = New System.Drawing.Point(368, 463)
-        Me.btnCancelar.Name = "btnCancelar"
-        Me.btnCancelar.Size = New System.Drawing.Size(75, 23)
-        Me.btnCancelar.TabIndex = 11
-        Me.btnCancelar.Text = "Cancelar"
-        Me.btnCancelar.UseVisualStyleBackColor = True
-        '
         'btnLlevarPedido
         '
-        Me.btnLlevarPedido.Location = New System.Drawing.Point(254, 463)
+        Me.btnLlevarPedido.Location = New System.Drawing.Point(335, 463)
         Me.btnLlevarPedido.Name = "btnLlevarPedido"
         Me.btnLlevarPedido.Size = New System.Drawing.Size(108, 23)
         Me.btnLlevarPedido.TabIndex = 10
@@ -395,7 +385,6 @@ Partial Class frmCotizarVentana
         Me.Controls.Add(Me.txtPreciomaterial)
         Me.Controls.Add(Me.Label13)
         Me.Controls.Add(Me.btnLlevarPedido)
-        Me.Controls.Add(Me.btnCancelar)
         Me.Controls.Add(Me.Panel2)
         Me.Controls.Add(Me.Panel1)
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
@@ -424,7 +413,6 @@ Partial Class frmCotizarVentana
     Friend WithEvents Label7 As Label
     Friend WithEvents txtEspesor As TextBox
     Friend WithEvents Panel2 As Panel
-    Friend WithEvents btnCancelar As Button
     Friend WithEvents btnLlevarPedido As Button
     Friend WithEvents Label8 As Label
     Friend WithEvents Label10 As Label
