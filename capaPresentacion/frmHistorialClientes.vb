@@ -15,19 +15,39 @@ Public Class frmHistorialClientes
         lblTitulo.ForeColor = p.Acento
         cmbEstado.Items.AddRange(New Object() {TODOS, "PENDIENTE", "PARCIAL", "PAGADO", "CANCELADO"})
         cmbEstado.SelectedIndex = 0
+        dtpDesde.Value = New Date(Today.Year, Today.Month, 1)
+        dtpHasta.Value = Today
         cargando = False
         cargarHistorial()
     End Sub
 
     Public Sub cargarHistorial()
+        If chkFechas.Checked AndAlso dtpDesde.Value.Date > dtpHasta.Value.Date Then
+            MessageBox.Show("La fecha Desde no puede ser posterior a Hasta.", "Historial de clientes",
+                MessageBoxButtons.OK, MessageBoxIcon.Warning)
+            dtpDesde.Focus()
+            Return
+        End If
         cargando = True
         Try
             Dim cliente As DataTable = objCliente.Obtener(idCliente)
             If cliente.Rows.Count = 0 Then Throw New Exception("El cliente ya no existe. Seleccione otro cliente.")
-            lblCliente.Text = "Cliente: " & cliente.Rows(0)("nombre").ToString() &
-                              "  |  Documento: " & cliente.Rows(0)("documento").ToString()
+            Dim filaCliente As DataRow = cliente.Rows(0)
+            lblCliente.Text = "Cliente: " & filaCliente("nombre").ToString() &
+                "  |  " & If(filaCliente("tipo_persona").ToString() = "", "Por clasificar", filaCliente("tipo_persona").ToString()) &
+                "  |  " & If(filaCliente("tipo_documento").ToString() = "", "Documento", filaCliente("tipo_documento").ToString()) &
+                " " & filaCliente("documento").ToString()
             Dim estado As String = If(cmbEstado.SelectedIndex <= 0, Nothing, cmbEstado.SelectedItem.ToString())
-            Dim pedidos As DataTable = objCliente.Historial(idCliente, estado)
+            Dim desde As Date? = Nothing
+            Dim hasta As Date? = Nothing
+            If chkFechas.Checked Then
+                desde = dtpDesde.Value.Date
+                hasta = dtpHasta.Value.Date
+            End If
+            Dim pedidos As DataTable = objCliente.Historial(idCliente, estado, desde, hasta)
+            lblFiltro.Text = "Pedidos: " & If(estado, TODOS) & " | " &
+                If(chkFechas.Checked, "Del " & dtpDesde.Value.ToString("dd/MM/yyyy") &
+                   " al " & dtpHasta.Value.ToString("dd/MM/yyyy"), "Todas las fechas")
             dgvPedidos.DataSource = pedidos
             Encabezados(dgvPedidos, "id_pedido|Pedido", "fecha|Fecha", "estado|Estado",
                         "vendedor|Vendedor", "total|Total S/.", "pagado|Pagado S/.",
@@ -102,12 +122,26 @@ Public Class frmHistorialClientes
         cargarHistorial()
     End Sub
 
+    Private Sub chkFechas_CheckedChanged(sender As Object, e As EventArgs) Handles chkFechas.CheckedChanged
+        dtpDesde.Enabled = chkFechas.Checked
+        dtpHasta.Enabled = chkFechas.Checked
+    End Sub
+
+    Private Sub btnVerTodos_Click(sender As Object, e As EventArgs) Handles btnVerTodos.Click
+        cargando = True
+        chkFechas.Checked = False
+        cmbEstado.SelectedIndex = 0
+        cargando = False
+        cargarHistorial()
+    End Sub
+
     Private Sub btnCambiarCliente_Click(sender As Object, e As EventArgs) Handles btnCambiarCliente.Click
         Using formulario As New frmListadoClientes With {.tema = tema, .modoSeleccion = True}
             If formulario.ShowDialog(Me) = DialogResult.OK Then
                 idCliente = formulario.idClienteSeleccionado
                 cargando = True
                 cmbEstado.SelectedIndex = 0
+                chkFechas.Checked = False
                 cargando = False
                 cargarHistorial()
             End If
