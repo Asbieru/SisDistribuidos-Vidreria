@@ -20,21 +20,25 @@ try {
     if ([int]$comandoClientes.ExecuteScalar() -ne 7) {
         throw 'La base no contiene el esquema comercial requerido. Instale primero el esquema base del equipo.'
     }
-    $nombreSqlClientes = '[' + $BaseDatos.Replace(']', ']]') + ']'
-    foreach ($archivoClientes in @('04_modulo_clientes.sql', '05_ficha_comercial_clientes.sql')) {
-        $rutaSqlClientes = Join-Path $PSScriptRoot ('bd/' + $archivoClientes)
-        $sqlClientes = [IO.File]::ReadAllText($rutaSqlClientes)
-        $sqlClientes = [regex]::Replace($sqlClientes, '(?im)^\s*USE\s+vidrieria\s*;\s*$', {
-            param($coincidenciaCatalogoClientes)
-            'USE ' + $nombreSqlClientes + ';'
-        })
-        foreach ($loteClientes in [regex]::Split($sqlClientes, '(?im)^\s*GO\s*$')) {
-            if ([string]::IsNullOrWhiteSpace($loteClientes)) { continue }
-            $comandoClientes.CommandText = $loteClientes
-            $comandoClientes.CommandTimeout = 60
-            [void]$comandoClientes.ExecuteNonQuery()
-        }
-        Write-Output ('Aplicado: ' + $archivoClientes)
+    $rutaSqlClientes = Join-Path $PSScriptRoot 'bd/00_vidrieria_completo.sql'
+    $sqlClientes = [IO.File]::ReadAllText($rutaSqlClientes)
+    $procedimientosClientes = [regex]::Matches($sqlClientes,
+        '(?ims)^CREATE OR ALTER PROCEDURE\s+dbo\.(sp_cli_\w+)\b.*?(?=^\s*GO\s*$)')
+    $esperadosClientes = @('sp_cli_listar','sp_cli_obtener','sp_cli_guardar',
+        'sp_cli_tiene_pedidos','sp_cli_eliminar','sp_cli_documento_coincidente',
+        'sp_cli_historial','sp_cli_pagos_pedido')
+    $encontradosClientes = @($procedimientosClientes | ForEach-Object { $_.Groups[1].Value })
+    if ($procedimientosClientes.Count -ne 8 -or
+        @(Compare-Object $esperadosClientes $encontradosClientes).Count -ne 0) {
+        throw 'El script consolidado no contiene los ocho procedimientos esperados de Clientes.'
+    }
+    $comandoClientes.CommandTimeout = 60
+    $comandoClientes.CommandText = "IF COL_LENGTH('dbo.clientes','version_cliente') IS NULL ALTER TABLE dbo.clientes ADD version_cliente ROWVERSION NOT NULL;"
+    [void]$comandoClientes.ExecuteNonQuery()
+    foreach ($procedimientoClientes in $procedimientosClientes) {
+        $comandoClientes.CommandText = $procedimientoClientes.Value
+        [void]$comandoClientes.ExecuteNonQuery()
+        Write-Output ('Aplicado: ' + $procedimientoClientes.Groups[1].Value)
     }
     Write-Output ('Clientes instalado en ' + $Servidor + ' / ' + $BaseDatos + '. Los datos existentes se conservaron.')
 }
