@@ -24,6 +24,7 @@ Partial Class frmListadoProductos
     Private Sub InitializeComponent()
         Me.lblTitulo = New System.Windows.Forms.Label()
         Me.Panel2 = New System.Windows.Forms.Panel()
+        Me.btnSeleccionar = New System.Windows.Forms.Button()
         Me.Label1 = New System.Windows.Forms.Label()
         Me.cboCategoria = New System.Windows.Forms.ComboBox()
         Me.lblBuscar = New System.Windows.Forms.Label()
@@ -44,14 +45,16 @@ Partial Class frmListadoProductos
         '
         Me.lblTitulo.AutoSize = True
         Me.lblTitulo.Font = New System.Drawing.Font("Microsoft Sans Serif", 15.75!, System.Drawing.FontStyle.Bold)
-        Me.lblTitulo.Location = New System.Drawing.Point(28, 27)
+        Me.lblTitulo.Location = New System.Drawing.Point(21, 22)
+        Me.lblTitulo.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.lblTitulo.Name = "lblTitulo"
-        Me.lblTitulo.Size = New System.Drawing.Size(378, 31)
+        Me.lblTitulo.Size = New System.Drawing.Size(295, 25)
         Me.lblTitulo.TabIndex = 1
         Me.lblTitulo.Text = "LISTADO DE PRODUCTOS"
         '
         'Panel2
         '
+        Me.Panel2.Controls.Add(Me.btnSeleccionar)
         Me.Panel2.Controls.Add(Me.Label1)
         Me.Panel2.Controls.Add(Me.cboCategoria)
         Me.Panel2.Controls.Add(Me.lblBuscar)
@@ -67,35 +70,52 @@ Partial Class frmListadoProductos
         Me.Panel2.Controls.Add(Me.lblTitulo)
         Me.Panel2.Dock = System.Windows.Forms.DockStyle.Fill
         Me.Panel2.Location = New System.Drawing.Point(0, 0)
+        Me.Panel2.Margin = New System.Windows.Forms.Padding(2)
         Me.Panel2.Name = "Panel2"
-        Me.Panel2.Size = New System.Drawing.Size(909, 573)
+        Me.Panel2.Size = New System.Drawing.Size(682, 466)
         Me.Panel2.TabIndex = 2
+        '
+        'btnSeleccionar
+        '
+        Me.btnSeleccionar.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.btnSeleccionar.Font = New System.Drawing.Font("Microsoft Sans Serif", 7.8!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnSeleccionar.Location = New System.Drawing.Point(464, 428)
+        Me.btnSeleccionar.Margin = New System.Windows.Forms.Padding(2)
+        Me.btnSeleccionar.Name = "btnSeleccionar"
+        Me.btnSeleccionar.Size = New System.Drawing.Size(111, 28)
+        Me.btnSeleccionar.TabIndex = 27
+        Me.btnSeleccionar.Text = "SELECCIONAR"
+        Me.btnSeleccionar.UseVisualStyleBackColor = True
+        Me.btnSeleccionar.Visible = False
         '
         'Label1
         '
         Me.Label1.AutoSize = True
         Me.Label1.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label1.Location = New System.Drawing.Point(455, 83)
+        Me.Label1.Location = New System.Drawing.Point(341, 67)
+        Me.Label1.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(81, 20)
+        Me.Label1.Size = New System.Drawing.Size(69, 17)
         Me.Label1.TabIndex = 26
         Me.Label1.Text = "Categoría"
         '
         'cboCategoria
         '
         Me.cboCategoria.FormattingEnabled = True
-        Me.cboCategoria.Location = New System.Drawing.Point(459, 106)
+        Me.cboCategoria.Location = New System.Drawing.Point(344, 86)
+        Me.cboCategoria.Margin = New System.Windows.Forms.Padding(2)
         Me.cboCategoria.Name = "cboCategoria"
-        Me.cboCategoria.Size = New System.Drawing.Size(227, 24)
+        Me.cboCategoria.Size = New System.Drawing.Size(171, 21)
         Me.cboCategoria.TabIndex = 25
         '
         'lblBuscar
         '
         Me.lblBuscar.AutoSize = True
         Me.lblBuscar.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblBuscar.Location = New System.Drawing.Point(31, 84)
+        Me.lblBuscar.Location = New System.Drawing.Point(23, 68)
+        Me.lblBuscar.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.lblBuscar.Name = "lblBuscar"
-        Me.lblBuscar.Size = New System.Drawing.Size(160, 20)
+        Me.lblBuscar.Size = New System.Drawing.Size(136, 17)
         Me.lblBuscar.TabIndex = 13
         Me.lblBuscar.Text = "Nombre, tipo o color"
         '
@@ -103,19 +123,21 @@ Partial Class frmListadoProductos
         '
         Me.txtBuscar.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.txtBuscar.Location = New System.Drawing.Point(31, 108)
+        Me.txtBuscar.Location = New System.Drawing.Point(23, 88)
+        Me.txtBuscar.Margin = New System.Windows.Forms.Padding(2)
         Me.txtBuscar.MaxLength = 150
         Me.txtBuscar.Name = "txtBuscar"
-        Me.txtBuscar.Size = New System.Drawing.Size(387, 22)
+        Me.txtBuscar.Size = New System.Drawing.Size(291, 20)
         Me.txtBuscar.TabIndex = 14
         '
         'btnVerTodos
         '
         Me.btnVerTodos.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnVerTodos.Font = New System.Drawing.Font("Microsoft Sans Serif", 7.8!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnVerTodos.Location = New System.Drawing.Point(731, 96)
+        Me.btnVerTodos.Location = New System.Drawing.Point(548, 78)
+        Me.btnVerTodos.Margin = New System.Windows.Forms.Padding(2)
         Me.btnVerTodos.Name = "btnVerTodos"
-        Me.btnVerTodos.Size = New System.Drawing.Size(126, 34)
+        Me.btnVerTodos.Size = New System.Drawing.Size(94, 28)
         Me.btnVerTodos.TabIndex = 16
         Me.btnVerTodos.Text = "VER TODOS"
         Me.btnVerTodos.UseVisualStyleBackColor = True
@@ -129,14 +151,15 @@ Partial Class frmListadoProductos
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.dgvProductos.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill
         Me.dgvProductos.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.dgvProductos.Location = New System.Drawing.Point(31, 154)
+        Me.dgvProductos.Location = New System.Drawing.Point(23, 125)
+        Me.dgvProductos.Margin = New System.Windows.Forms.Padding(2)
         Me.dgvProductos.MultiSelect = False
         Me.dgvProductos.Name = "dgvProductos"
         Me.dgvProductos.ReadOnly = True
         Me.dgvProductos.RowHeadersVisible = False
         Me.dgvProductos.RowHeadersWidth = 51
         Me.dgvProductos.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
-        Me.dgvProductos.Size = New System.Drawing.Size(846, 314)
+        Me.dgvProductos.Size = New System.Drawing.Size(634, 255)
         Me.dgvProductos.TabIndex = 17
         '
         'lblCantidad
@@ -144,9 +167,10 @@ Partial Class frmListadoProductos
         Me.lblCantidad.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.lblCantidad.AutoSize = True
         Me.lblCantidad.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblCantidad.Location = New System.Drawing.Point(31, 481)
+        Me.lblCantidad.Location = New System.Drawing.Point(23, 391)
+        Me.lblCantidad.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.lblCantidad.Name = "lblCantidad"
-        Me.lblCantidad.Size = New System.Drawing.Size(201, 20)
+        Me.lblCantidad.Size = New System.Drawing.Size(171, 17)
         Me.lblCantidad.TabIndex = 18
         Me.lblCantidad.Text = "Productos encontrados: 0"
         '
@@ -154,9 +178,10 @@ Partial Class frmListadoProductos
         '
         Me.btnNuevo.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.btnNuevo.Font = New System.Drawing.Font("Microsoft Sans Serif", 7.8!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnNuevo.Location = New System.Drawing.Point(30, 527)
+        Me.btnNuevo.Location = New System.Drawing.Point(22, 428)
+        Me.btnNuevo.Margin = New System.Windows.Forms.Padding(2)
         Me.btnNuevo.Name = "btnNuevo"
-        Me.btnNuevo.Size = New System.Drawing.Size(129, 34)
+        Me.btnNuevo.Size = New System.Drawing.Size(97, 28)
         Me.btnNuevo.TabIndex = 19
         Me.btnNuevo.Text = "NUEVO"
         Me.btnNuevo.UseVisualStyleBackColor = True
@@ -165,9 +190,10 @@ Partial Class frmListadoProductos
         '
         Me.btnModificar.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.btnModificar.Font = New System.Drawing.Font("Microsoft Sans Serif", 7.8!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnModificar.Location = New System.Drawing.Point(175, 527)
+        Me.btnModificar.Location = New System.Drawing.Point(131, 428)
+        Me.btnModificar.Margin = New System.Windows.Forms.Padding(2)
         Me.btnModificar.Name = "btnModificar"
-        Me.btnModificar.Size = New System.Drawing.Size(129, 34)
+        Me.btnModificar.Size = New System.Drawing.Size(97, 28)
         Me.btnModificar.TabIndex = 20
         Me.btnModificar.Text = "MODIFICAR"
         Me.btnModificar.UseVisualStyleBackColor = True
@@ -176,9 +202,10 @@ Partial Class frmListadoProductos
         '
         Me.btnEliminar.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.btnEliminar.Font = New System.Drawing.Font("Microsoft Sans Serif", 7.8!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnEliminar.Location = New System.Drawing.Point(320, 527)
+        Me.btnEliminar.Location = New System.Drawing.Point(240, 428)
+        Me.btnEliminar.Margin = New System.Windows.Forms.Padding(2)
         Me.btnEliminar.Name = "btnEliminar"
-        Me.btnEliminar.Size = New System.Drawing.Size(129, 34)
+        Me.btnEliminar.Size = New System.Drawing.Size(97, 28)
         Me.btnEliminar.TabIndex = 21
         Me.btnEliminar.Text = "ELIMINAR"
         Me.btnEliminar.UseVisualStyleBackColor = True
@@ -188,9 +215,10 @@ Partial Class frmListadoProductos
         Me.btnCerrar.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnCerrar.DialogResult = System.Windows.Forms.DialogResult.Cancel
         Me.btnCerrar.Font = New System.Drawing.Font("Microsoft Sans Serif", 7.8!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnCerrar.Location = New System.Drawing.Point(767, 527)
+        Me.btnCerrar.Location = New System.Drawing.Point(575, 428)
+        Me.btnCerrar.Margin = New System.Windows.Forms.Padding(2)
         Me.btnCerrar.Name = "btnCerrar"
-        Me.btnCerrar.Size = New System.Drawing.Size(110, 34)
+        Me.btnCerrar.Size = New System.Drawing.Size(82, 28)
         Me.btnCerrar.TabIndex = 23
         Me.btnCerrar.Text = "CERRAR"
         Me.btnCerrar.UseVisualStyleBackColor = True
@@ -199,19 +227,21 @@ Partial Class frmListadoProductos
         '
         Me.btnDarBaja.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.btnDarBaja.Font = New System.Drawing.Font("Microsoft Sans Serif", 7.8!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnDarBaja.Location = New System.Drawing.Point(465, 527)
+        Me.btnDarBaja.Location = New System.Drawing.Point(349, 428)
+        Me.btnDarBaja.Margin = New System.Windows.Forms.Padding(2)
         Me.btnDarBaja.Name = "btnDarBaja"
-        Me.btnDarBaja.Size = New System.Drawing.Size(148, 34)
+        Me.btnDarBaja.Size = New System.Drawing.Size(111, 28)
         Me.btnDarBaja.TabIndex = 24
         Me.btnDarBaja.Text = "DAR DE BAJA"
         Me.btnDarBaja.UseVisualStyleBackColor = True
         '
         'frmListadoProductos
         '
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(909, 573)
+        Me.ClientSize = New System.Drawing.Size(682, 466)
         Me.Controls.Add(Me.Panel2)
+        Me.Margin = New System.Windows.Forms.Padding(2)
         Me.Name = "frmListadoProductos"
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "frmListadoProductos"
@@ -236,4 +266,5 @@ Partial Class frmListadoProductos
     Friend WithEvents btnDarBaja As Button
     Friend WithEvents cboCategoria As ComboBox
     Friend WithEvents Label1 As Label
+    Friend WithEvents btnSeleccionar As Button
 End Class

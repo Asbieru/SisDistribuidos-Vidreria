@@ -243,6 +243,9 @@
     <EmbeddedResource Include="CambiarContraseña.resx">
       <DependentUpon>CambiarContraseña.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="frmListadoClientes.resx">
+      <DependentUpon>frmListadoClientes.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="frmListadoProductos.resx">
       <DependentUpon>frmListadoProductos.vb</DependentUpon>
     </EmbeddedResource>

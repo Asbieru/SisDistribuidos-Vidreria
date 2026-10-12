@@ -1,9 +1,9 @@
-﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
+﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
 Partial Class frmCotizarVentana
     Inherits System.Windows.Forms.Form
 
     'Form reemplaza a Dispose para limpiar la lista de componentes.
-    <System.Diagnostics.DebuggerNonUserCode()> _
+    <System.Diagnostics.DebuggerNonUserCode()>
     Protected Overrides Sub Dispose(ByVal disposing As Boolean)
         Try
             If disposing AndAlso components IsNot Nothing Then
@@ -20,19 +20,18 @@ Partial Class frmCotizarVentana
     'NOTA: el Diseñador de Windows Forms necesita el siguiente procedimiento
     'Se puede modificar usando el Diseñador de Windows Forms.  
     'No lo modifique con el editor de código.
-    <System.Diagnostics.DebuggerStepThrough()> _
+    <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmCotizarVentana))
         Me.Panel1 = New System.Windows.Forms.Panel()
         Me.Label7 = New System.Windows.Forms.Label()
         Me.cmbPedido = New System.Windows.Forms.ComboBox()
         Me.Label4 = New System.Windows.Forms.Label()
-        Me.txtEspesor = New System.Windows.Forms.TextBox()
         Me.Label6 = New System.Windows.Forms.Label()
         Me.cmbTipoAluminio = New System.Windows.Forms.ComboBox()
         Me.Label5 = New System.Windows.Forms.Label()
-        Me.cmbVidrio = New System.Windows.Forms.ComboBox()
-        Me.cmbAluminio = New System.Windows.Forms.ComboBox()
+        Me.cmbColorVidrio = New System.Windows.Forms.ComboBox()
+        Me.cmbColorAluminio = New System.Windows.Forms.ComboBox()
         Me.Label3 = New System.Windows.Forms.Label()
         Me.Label2 = New System.Windows.Forms.Label()
         Me.Label1 = New System.Windows.Forms.Label()
@@ -54,6 +53,9 @@ Partial Class frmCotizarVentana
         Me.txtTotal = New System.Windows.Forms.TextBox()
         Me.Label16 = New System.Windows.Forms.Label()
         Me.btnDuplicar = New System.Windows.Forms.Button()
+        Me.cmbTipoVidrio = New System.Windows.Forms.ComboBox()
+        Me.Label17 = New System.Windows.Forms.Label()
+        Me.txtEspesor = New System.Windows.Forms.ComboBox()
         Me.Panel1.SuspendLayout()
         Me.Panel2.SuspendLayout()
         Me.SuspendLayout()
@@ -61,21 +63,23 @@ Partial Class frmCotizarVentana
         'Panel1
         '
         Me.Panel1.BackColor = System.Drawing.Color.White
+        Me.Panel1.Controls.Add(Me.txtEspesor)
+        Me.Panel1.Controls.Add(Me.cmbTipoVidrio)
+        Me.Panel1.Controls.Add(Me.Label17)
         Me.Panel1.Controls.Add(Me.Label7)
         Me.Panel1.Controls.Add(Me.cmbPedido)
         Me.Panel1.Controls.Add(Me.Label4)
-        Me.Panel1.Controls.Add(Me.txtEspesor)
         Me.Panel1.Controls.Add(Me.Label6)
         Me.Panel1.Controls.Add(Me.cmbTipoAluminio)
         Me.Panel1.Controls.Add(Me.Label5)
-        Me.Panel1.Controls.Add(Me.cmbVidrio)
-        Me.Panel1.Controls.Add(Me.cmbAluminio)
+        Me.Panel1.Controls.Add(Me.cmbColorVidrio)
+        Me.Panel1.Controls.Add(Me.cmbColorAluminio)
         Me.Panel1.Controls.Add(Me.Label3)
         Me.Panel1.Controls.Add(Me.Label2)
         Me.Panel1.Controls.Add(Me.Label1)
         Me.Panel1.Location = New System.Drawing.Point(12, 12)
         Me.Panel1.Name = "Panel1"
-        Me.Panel1.Size = New System.Drawing.Size(431, 178)
+        Me.Panel1.Size = New System.Drawing.Size(431, 201)
         Me.Panel1.TabIndex = 0
         '
         'Label7
@@ -83,7 +87,7 @@ Partial Class frmCotizarVentana
         Me.Label7.AutoSize = True
         Me.Label7.BackColor = System.Drawing.Color.Transparent
         Me.Label7.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label7.Location = New System.Drawing.Point(376, 142)
+        Me.Label7.Location = New System.Drawing.Point(376, 170)
         Me.Label7.Name = "Label7"
         Me.Label7.Size = New System.Drawing.Size(35, 16)
         Me.Label7.TabIndex = 0
@@ -108,19 +112,12 @@ Partial Class frmCotizarVentana
         Me.Label4.TabIndex = 0
         Me.Label4.Text = "Tipo de Pedido"
         '
-        'txtEspesor
-        '
-        Me.txtEspesor.Location = New System.Drawing.Point(270, 141)
-        Me.txtEspesor.Name = "txtEspesor"
-        Me.txtEspesor.Size = New System.Drawing.Size(100, 20)
-        Me.txtEspesor.TabIndex = 5
-        '
         'Label6
         '
         Me.Label6.AutoSize = True
         Me.Label6.BackColor = System.Drawing.Color.Transparent
         Me.Label6.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label6.Location = New System.Drawing.Point(23, 142)
+        Me.Label6.Location = New System.Drawing.Point(23, 170)
         Me.Label6.Name = "Label6"
         Me.Label6.Size = New System.Drawing.Size(115, 16)
         Me.Label6.TabIndex = 0
@@ -129,9 +126,9 @@ Partial Class frmCotizarVentana
         'cmbTipoAluminio
         '
         Me.cmbTipoAluminio.FormattingEnabled = True
-        Me.cmbTipoAluminio.Location = New System.Drawing.Point(201, 92)
+        Me.cmbTipoAluminio.Location = New System.Drawing.Point(170, 67)
         Me.cmbTipoAluminio.Name = "cmbTipoAluminio"
-        Me.cmbTipoAluminio.Size = New System.Drawing.Size(210, 21)
+        Me.cmbTipoAluminio.Size = New System.Drawing.Size(241, 21)
         Me.cmbTipoAluminio.TabIndex = 3
         '
         'Label5
@@ -139,34 +136,34 @@ Partial Class frmCotizarVentana
         Me.Label5.AutoSize = True
         Me.Label5.BackColor = System.Drawing.Color.Transparent
         Me.Label5.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label5.Location = New System.Drawing.Point(23, 92)
+        Me.Label5.Location = New System.Drawing.Point(10, 67)
         Me.Label5.Name = "Label5"
         Me.Label5.Size = New System.Drawing.Size(108, 16)
         Me.Label5.TabIndex = 0
         Me.Label5.Text = "Tipo de Aluminio"
         '
-        'cmbVidrio
+        'cmbColorVidrio
         '
-        Me.cmbVidrio.FormattingEnabled = True
-        Me.cmbVidrio.Location = New System.Drawing.Point(170, 117)
-        Me.cmbVidrio.Name = "cmbVidrio"
-        Me.cmbVidrio.Size = New System.Drawing.Size(241, 21)
-        Me.cmbVidrio.TabIndex = 4
+        Me.cmbColorVidrio.FormattingEnabled = True
+        Me.cmbColorVidrio.Location = New System.Drawing.Point(211, 142)
+        Me.cmbColorVidrio.Name = "cmbColorVidrio"
+        Me.cmbColorVidrio.Size = New System.Drawing.Size(200, 21)
+        Me.cmbColorVidrio.TabIndex = 4
         '
-        'cmbAluminio
+        'cmbColorAluminio
         '
-        Me.cmbAluminio.FormattingEnabled = True
-        Me.cmbAluminio.Location = New System.Drawing.Point(170, 67)
-        Me.cmbAluminio.Name = "cmbAluminio"
-        Me.cmbAluminio.Size = New System.Drawing.Size(241, 21)
-        Me.cmbAluminio.TabIndex = 2
+        Me.cmbColorAluminio.FormattingEnabled = True
+        Me.cmbColorAluminio.Location = New System.Drawing.Point(211, 92)
+        Me.cmbColorAluminio.Name = "cmbColorAluminio"
+        Me.cmbColorAluminio.Size = New System.Drawing.Size(200, 21)
+        Me.cmbColorAluminio.TabIndex = 2
         '
         'Label3
         '
         Me.Label3.AutoSize = True
         Me.Label3.BackColor = System.Drawing.Color.Transparent
         Me.Label3.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label3.Location = New System.Drawing.Point(7, 118)
+        Me.Label3.Location = New System.Drawing.Point(27, 146)
         Me.Label3.Name = "Label3"
         Me.Label3.Size = New System.Drawing.Size(96, 16)
         Me.Label3.TabIndex = 0
@@ -177,7 +174,7 @@ Partial Class frmCotizarVentana
         Me.Label2.AutoSize = True
         Me.Label2.BackColor = System.Drawing.Color.Transparent
         Me.Label2.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label2.Location = New System.Drawing.Point(7, 67)
+        Me.Label2.Location = New System.Drawing.Point(26, 93)
         Me.Label2.Name = "Label2"
         Me.Label2.Size = New System.Drawing.Size(112, 16)
         Me.Label2.TabIndex = 0
@@ -204,7 +201,7 @@ Partial Class frmCotizarVentana
         Me.Panel2.Controls.Add(Me.Label9)
         Me.Panel2.Controls.Add(Me.txtAncho)
         Me.Panel2.Controls.Add(Me.Label8)
-        Me.Panel2.Location = New System.Drawing.Point(12, 197)
+        Me.Panel2.Location = New System.Drawing.Point(12, 219)
         Me.Panel2.Name = "Panel2"
         Me.Panel2.Size = New System.Drawing.Size(431, 108)
         Me.Panel2.TabIndex = 0
@@ -292,7 +289,7 @@ Partial Class frmCotizarVentana
         Me.Label13.AutoSize = True
         Me.Label13.BackColor = System.Drawing.Color.Transparent
         Me.Label13.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label13.Location = New System.Drawing.Point(19, 355)
+        Me.Label13.Location = New System.Drawing.Point(19, 377)
         Me.Label13.Name = "Label13"
         Me.Label13.Size = New System.Drawing.Size(182, 16)
         Me.Label13.TabIndex = 0
@@ -301,7 +298,7 @@ Partial Class frmCotizarVentana
         'txtPreciomaterial
         '
         Me.txtPreciomaterial.Enabled = False
-        Me.txtPreciomaterial.Location = New System.Drawing.Point(223, 353)
+        Me.txtPreciomaterial.Location = New System.Drawing.Point(223, 375)
         Me.txtPreciomaterial.Name = "txtPreciomaterial"
         Me.txtPreciomaterial.Size = New System.Drawing.Size(200, 20)
         Me.txtPreciomaterial.TabIndex = 0
@@ -311,7 +308,7 @@ Partial Class frmCotizarVentana
         Me.Label14.AutoSize = True
         Me.Label14.BackColor = System.Drawing.Color.Transparent
         Me.Label14.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label14.Location = New System.Drawing.Point(127, 330)
+        Me.Label14.Location = New System.Drawing.Point(127, 352)
         Me.Label14.Name = "Label14"
         Me.Label14.Size = New System.Drawing.Size(74, 16)
         Me.Label14.TabIndex = 0
@@ -319,14 +316,14 @@ Partial Class frmCotizarVentana
         '
         'txtExtra
         '
-        Me.txtExtra.Location = New System.Drawing.Point(223, 327)
+        Me.txtExtra.Location = New System.Drawing.Point(223, 349)
         Me.txtExtra.Name = "txtExtra"
         Me.txtExtra.Size = New System.Drawing.Size(200, 20)
         Me.txtExtra.TabIndex = 8
         '
         'txtManoObra
         '
-        Me.txtManoObra.Location = New System.Drawing.Point(223, 379)
+        Me.txtManoObra.Location = New System.Drawing.Point(223, 401)
         Me.txtManoObra.Name = "txtManoObra"
         Me.txtManoObra.Size = New System.Drawing.Size(200, 20)
         Me.txtManoObra.TabIndex = 9
@@ -336,7 +333,7 @@ Partial Class frmCotizarVentana
         Me.Label15.AutoSize = True
         Me.Label15.BackColor = System.Drawing.Color.Transparent
         Me.Label15.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label15.Location = New System.Drawing.Point(80, 381)
+        Me.Label15.Location = New System.Drawing.Point(80, 403)
         Me.Label15.Name = "Label15"
         Me.Label15.Size = New System.Drawing.Size(121, 16)
         Me.Label15.TabIndex = 0
@@ -345,7 +342,7 @@ Partial Class frmCotizarVentana
         'txtTotal
         '
         Me.txtTotal.Enabled = False
-        Me.txtTotal.Location = New System.Drawing.Point(223, 405)
+        Me.txtTotal.Location = New System.Drawing.Point(223, 427)
         Me.txtTotal.Name = "txtTotal"
         Me.txtTotal.Size = New System.Drawing.Size(200, 20)
         Me.txtTotal.TabIndex = 0
@@ -356,7 +353,7 @@ Partial Class frmCotizarVentana
         Me.Label16.AutoSize = True
         Me.Label16.BackColor = System.Drawing.Color.Transparent
         Me.Label16.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label16.Location = New System.Drawing.Point(133, 405)
+        Me.Label16.Location = New System.Drawing.Point(133, 427)
         Me.Label16.Name = "Label16"
         Me.Label16.Size = New System.Drawing.Size(68, 16)
         Me.Label16.TabIndex = 0
@@ -370,6 +367,33 @@ Partial Class frmCotizarVentana
         Me.btnDuplicar.TabIndex = 12
         Me.btnDuplicar.Text = "Duplicar"
         Me.btnDuplicar.UseVisualStyleBackColor = True
+        '
+        'cmbTipoVidrio
+        '
+        Me.cmbTipoVidrio.FormattingEnabled = True
+        Me.cmbTipoVidrio.Location = New System.Drawing.Point(170, 117)
+        Me.cmbTipoVidrio.Name = "cmbTipoVidrio"
+        Me.cmbTipoVidrio.Size = New System.Drawing.Size(241, 21)
+        Me.cmbTipoVidrio.TabIndex = 7
+        '
+        'Label17
+        '
+        Me.Label17.AutoSize = True
+        Me.Label17.BackColor = System.Drawing.Color.Transparent
+        Me.Label17.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label17.Location = New System.Drawing.Point(10, 119)
+        Me.Label17.Name = "Label17"
+        Me.Label17.Size = New System.Drawing.Size(92, 16)
+        Me.Label17.TabIndex = 6
+        Me.Label17.Text = "Tipo de Vidrio"
+        '
+        'txtEspesor
+        '
+        Me.txtEspesor.FormattingEnabled = True
+        Me.txtEspesor.Location = New System.Drawing.Point(258, 169)
+        Me.txtEspesor.Name = "txtEspesor"
+        Me.txtEspesor.Size = New System.Drawing.Size(112, 21)
+        Me.txtEspesor.TabIndex = 8
         '
         'frmCotizarVentana
         '
@@ -403,15 +427,15 @@ Partial Class frmCotizarVentana
     Friend WithEvents Label3 As Label
     Friend WithEvents Label2 As Label
     Friend WithEvents Label1 As Label
-    Friend WithEvents cmbVidrio As ComboBox
-    Friend WithEvents cmbAluminio As ComboBox
+    Friend WithEvents cmbTipoVidrio As ComboBox
+    Friend WithEvents cmbColorVidrio As ComboBox
+    Friend WithEvents cmbColorAluminio As ComboBox
     Friend WithEvents cmbPedido As ComboBox
     Friend WithEvents Label4 As Label
     Friend WithEvents Label6 As Label
     Friend WithEvents cmbTipoAluminio As ComboBox
     Friend WithEvents Label5 As Label
     Friend WithEvents Label7 As Label
-    Friend WithEvents txtEspesor As TextBox
     Friend WithEvents Panel2 As Panel
     Friend WithEvents btnLlevarPedido As Button
     Friend WithEvents Label8 As Label
@@ -430,4 +454,6 @@ Partial Class frmCotizarVentana
     Friend WithEvents txtTotal As TextBox
     Friend WithEvents Label16 As Label
     Friend WithEvents btnDuplicar As Button
+    Friend WithEvents Label17 As Label
+    Friend WithEvents txtEspesor As ComboBox
 End Class

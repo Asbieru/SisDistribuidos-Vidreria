@@ -19,8 +19,7 @@ Public Class frmCotizarVentana
             .txtAncho = Me.txtAncho,
             .txtEspesor = Me.txtEspesor,
             .txtManoObra = Me.txtManoObra,
-            .txtExtra = Me.txtExtra,
-            .cmbAluminio = Me.cmbAluminio}
+            .txtExtra = Me.txtExtra}
         objCotV.MdiParent = Me.MdiParent
         objCotV.Show()
     End Sub

@@ -9,6 +9,7 @@ Module Temas
     Public Structure Paleta
         Public Fondo As Color
         Public Texto As Color
+        Public FondoPanel As Color
         Public BotonTexto As Color
         Public BotonFondo As Color
         Public Acento As Color
@@ -19,12 +20,14 @@ Module Temas
         Select Case tema
             Case "OSCURO"
                 p.Fondo = Color.FromArgb(32, 32, 32)
+                p.FondoPanel = Color.Silver
                 p.Texto = Color.White
                 p.BotonTexto = Color.White
                 p.BotonFondo = Color.Gray
                 p.Acento = Color.LightBlue
             Case "CLARO"
                 p.Fondo = Color.White
+                p.FondoPanel = Color.LightGray
                 p.Texto = Color.Black
                 p.BotonTexto = Color.Black
                 p.BotonFondo = Color.Gainsboro

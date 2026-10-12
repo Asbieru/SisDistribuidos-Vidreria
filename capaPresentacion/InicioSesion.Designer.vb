@@ -51,7 +51,7 @@ Partial Class InicioSesion
         Me.PictureBox1.BackgroundImage = CType(resources.GetObject("PictureBox1.BackgroundImage"), System.Drawing.Image)
         Me.PictureBox1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom
         Me.PictureBox1.InitialImage = CType(resources.GetObject("PictureBox1.InitialImage"), System.Drawing.Image)
-        Me.PictureBox1.Location = New System.Drawing.Point(49, 12)
+        Me.PictureBox1.Location = New System.Drawing.Point(49, 22)
         Me.PictureBox1.Name = "PictureBox1"
         Me.PictureBox1.Size = New System.Drawing.Size(88, 88)
         Me.PictureBox1.TabIndex = 0
@@ -79,7 +79,7 @@ Partial Class InicioSesion
         Me.btnSalir.Location = New System.Drawing.Point(161, 123)
         Me.btnSalir.Name = "btnSalir"
         Me.btnSalir.Size = New System.Drawing.Size(115, 28)
-        Me.btnSalir.TabIndex = 0
+        Me.btnSalir.TabIndex = 5
         Me.btnSalir.Text = "Salir"
         Me.btnSalir.UseVisualStyleBackColor = False
         '

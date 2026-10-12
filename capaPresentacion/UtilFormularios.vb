@@ -25,7 +25,7 @@ Module UtilFormularios
             ElseIf TypeOf c Is Label OrElse TypeOf c Is CheckBox OrElse TypeOf c Is GroupBox Then
                 c.ForeColor = p.Texto
             ElseIf TypeOf c Is Panel Then
-                c.BackColor = p.BotonFondo
+                c.BackColor = p.FondoPanel
             End If
             If c.HasChildren Then AplicarTemaControles(c.Controls, p)
         Next
@@ -123,8 +123,12 @@ Module UtilFormularios
     End Function
 
     ' ---------------- Mensajes ----------------
+    Public Sub MostrarError(texto As String)
+        MessageBox.Show(texto, "Inventario", MessageBoxButtons.OK, MessageBoxIcon.Error)
+    End Sub
+
     Public Sub MostrarError(ex As Exception)
-        MessageBox.Show(ex.Message, "Inventario", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        MostrarError(ex.Message)
     End Sub
 
     Public Sub MostrarAviso(texto As String)

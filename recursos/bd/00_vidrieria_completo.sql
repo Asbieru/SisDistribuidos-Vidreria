@@ -83,44 +83,6 @@ CREATE TABLE dbo.usuario_mensajes_descartados (
 GO
 
 -- ------------------------------------------------------------
--- Roles y permisos
---   tipo_permiso : lista de permisos del sistema (cada uno habilita opciones del menú)
---   rol_permiso  : permisos que recibe por defecto cada rol (plantilla)
---   permiso      : permisos que tiene realmente cada usuario
--- ------------------------------------------------------------
-IF OBJECT_ID(N'dbo.tipo_permiso', N'U') IS NULL
-CREATE TABLE dbo.tipo_permiso (
-    id_tipo      INT IDENTITY(1,1) PRIMARY KEY,
-    codigo       NVARCHAR(30)  NOT NULL UNIQUE,   -- lo usa el código del menú (USUARIOS, CLIENTES...)
-    nombre       NVARCHAR(100) NOT NULL,
-    descripcion  NVARCHAR(255) NULL
-);
-GO
-
-IF OBJECT_ID(N'dbo.rol_permiso', N'U') IS NULL
-CREATE TABLE dbo.rol_permiso (
-    rol      NVARCHAR(20) NOT NULL
-        CONSTRAINT ck_rol_permiso_rol CHECK (rol IN ('VENDEDOR','ADMINISTRADOR')),
-    id_tipo  INT NOT NULL,
-    CONSTRAINT pk_rol_permiso PRIMARY KEY (rol, id_tipo),
-    CONSTRAINT fk_rolper_tipo FOREIGN KEY (id_tipo)
-        REFERENCES dbo.tipo_permiso(id_tipo) ON DELETE CASCADE
-);
-GO
-
-IF OBJECT_ID(N'dbo.permiso', N'U') IS NULL
-CREATE TABLE dbo.permiso (
-    id_usuario  INT NOT NULL,
-    id_tipo     INT NOT NULL,
-    CONSTRAINT pk_permiso PRIMARY KEY (id_usuario, id_tipo),
-    CONSTRAINT fk_permiso_usuario FOREIGN KEY (id_usuario)
-        REFERENCES dbo.usuarios(id_usuario) ON DELETE CASCADE,
-    CONSTRAINT fk_permiso_tipo FOREIGN KEY (id_tipo)
-        REFERENCES dbo.tipo_permiso(id_tipo) ON DELETE CASCADE
-);
-GO
-
--- ------------------------------------------------------------
 -- Clientes
 -- (la columna version_cliente viene del modulo de clientes)
 -- ------------------------------------------------------------
@@ -165,16 +127,29 @@ CREATE TABLE dbo.producto_variante (
     id_variante        INT IDENTITY(1,1) PRIMARY KEY,
     id_producto        INT NOT NULL,
     id_caracteristica  INT NOT NULL,
-    unidad_costo       NVARCHAR(10) NOT NULL,  -- CM2, CM_LINEAL, CAJA
+    unidad_costo       NVARCHAR(10) NOT NULL,  -- CM2, CM_LINEAL, CAJA, PIE2
     precio_unitario    DECIMAL(10,2) NOT NULL,
     stock_minimo       INT NOT NULL CONSTRAINT df_variante_stock_minimo DEFAULT 0,
     CONSTRAINT uq_variante UNIQUE (id_producto, id_caracteristica),
-    CONSTRAINT ck_variante_unidad_costo CHECK (unidad_costo IN ('CM2','CM_LINEAL','CAJA')),
+    CONSTRAINT ck_variante_unidad_costo CHECK (unidad_costo IN ('CM2','CM_LINEAL','CAJA','PIE2')),
     CONSTRAINT fk_var_producto FOREIGN KEY (id_producto)
         REFERENCES dbo.productos(id_producto) ON DELETE NO ACTION,
     CONSTRAINT fk_var_caract FOREIGN KEY (id_caracteristica)
         REFERENCES dbo.caracteristicas(id_caracteristica) ON DELETE NO ACTION
 );
+GO
+
+-- Si la tabla ya existia de una corrida anterior (sin PIE2), se actualiza el CHECK
+IF EXISTS (SELECT 1 FROM sys.check_constraints WHERE name = 'ck_variante_unidad_costo')
+   AND NOT EXISTS (
+       SELECT 1 FROM sys.check_constraints
+       WHERE name = 'ck_variante_unidad_costo' AND definition LIKE '%PIE2%'
+   )
+BEGIN
+    ALTER TABLE dbo.producto_variante DROP CONSTRAINT ck_variante_unidad_costo;
+    ALTER TABLE dbo.producto_variante ADD CONSTRAINT ck_variante_unidad_costo
+        CHECK (unidad_costo IN ('CM2','CM_LINEAL','CAJA','PIE2'));
+END
 GO
 
 -- ------------------------------------------------------------
@@ -1069,6 +1044,148 @@ BEGIN
 END
 GO
 
+-- ------------------------------------------------------------
+-- Combos de frmRegistrarPedido: aluminio (color -> tipo, en cascada)
+-- ------------------------------------------------------------
+CREATE OR ALTER PROCEDURE dbo.sp_ped_combo_colores_aluminio
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT DISTINCT color
+    FROM dbo.productos
+    WHERE categoria = 'ALUMINIO' AND activo = 1 AND color IS NOT NULL
+    ORDER BY color;
+END
+GO
+
+CREATE OR ALTER PROCEDURE dbo.sp_ped_combo_tipos_aluminio
+    @color NVARCHAR(30)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT DISTINCT tipo
+    FROM dbo.productos
+    WHERE categoria = 'ALUMINIO' AND color = @color AND activo = 1
+    ORDER BY tipo;
+END
+GO
+
+-- ------------------------------------------------------------
+-- Combos de frmRegistrarPedido: vidrio.
+-- El vidrio se identifica por la combinacion tipo + color + espesor:
+-- tipo  (COLOR, ESPEJO, FIGURA...) y color (INCOLORO, AZUL...)
+-- salen de productos.tipo y productos.color.
+-- ------------------------------------------------------------
+CREATE OR ALTER PROCEDURE dbo.sp_ped_combo_colores_vidrio
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT DISTINCT tipo AS color_vidrio
+    FROM dbo.productos
+    WHERE categoria = 'VIDRIO' AND activo = 1
+    ORDER BY tipo;
+END
+GO
+
+CREATE OR ALTER PROCEDURE dbo.sp_ped_combo_espesores_vidrio
+    @tipo  NVARCHAR(50),
+    @color NVARCHAR(30)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT DISTINCT c.espesor_cm
+    FROM dbo.producto_variante pv
+    INNER JOIN dbo.productos p       ON p.id_producto = pv.id_producto
+    INNER JOIN dbo.caracteristicas c ON c.id_caracteristica = pv.id_caracteristica
+    WHERE p.categoria = 'VIDRIO' AND p.tipo = @tipo
+      AND ISNULL(p.color, '') = ISNULL(@color, '') AND p.activo = 1
+    ORDER BY c.espesor_cm;
+END
+GO
+
+-- ------------------------------------------------------------
+-- Espesores de un producto concreto (se elige el producto con
+-- frmListadoProductos y de ahi salen sus espesores disponibles).
+-- ------------------------------------------------------------
+CREATE OR ALTER PROCEDURE dbo.sp_ped_espesores_por_producto
+    @id_producto INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT DISTINCT c.espesor_cm
+    FROM dbo.producto_variante pv
+    INNER JOIN dbo.caracteristicas c ON c.id_caracteristica = pv.id_caracteristica
+    WHERE pv.id_producto = @id_producto AND c.espesor_cm IS NOT NULL
+    ORDER BY c.espesor_cm;
+END
+GO
+
+-- ------------------------------------------------------------
+-- Resolver la variante exacta (id_variante + precio) de un producto
+-- segun el espesor elegido. Es lo que va dentro del TVP_PedidoDetalle.
+-- ------------------------------------------------------------
+CREATE OR ALTER PROCEDURE dbo.sp_ped_resolver_variante_producto
+    @id_producto INT,
+    @espesor_cm  DECIMAL(6,2)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT TOP 1 pv.id_variante, pv.precio_unitario, pv.unidad_costo
+    FROM dbo.producto_variante pv
+    INNER JOIN dbo.caracteristicas c ON c.id_caracteristica = pv.id_caracteristica
+    WHERE pv.id_producto = @id_producto AND c.espesor_cm = @espesor_cm;
+END
+GO
+
+-- ------------------------------------------------------------
+-- Resolver la variante exacta (id_variante + precio) una vez elegidos
+-- todos los combos. Esto es lo que va dentro del TVP_PedidoDetalle.
+-- ------------------------------------------------------------
+CREATE OR ALTER PROCEDURE dbo.sp_ped_resolver_variante_vidrio
+    @tipo       NVARCHAR(50),
+    @color      NVARCHAR(30),
+    @espesor_cm DECIMAL(6,2)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT TOP 1 pv.id_variante, pv.precio_unitario, pv.unidad_costo
+    FROM dbo.producto_variante pv
+    INNER JOIN dbo.productos p       ON p.id_producto = pv.id_producto
+    INNER JOIN dbo.caracteristicas c ON c.id_caracteristica = pv.id_caracteristica
+    WHERE p.categoria = 'VIDRIO' AND p.tipo = @tipo
+      AND ISNULL(p.color, '') = ISNULL(@color, '')
+      AND c.espesor_cm = @espesor_cm AND p.activo = 1;
+END
+GO
+
+CREATE OR ALTER PROCEDURE dbo.sp_ped_resolver_variante_aluminio
+    @color NVARCHAR(30),
+    @tipo  NVARCHAR(50)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT TOP 1 pv.id_variante, pv.precio_unitario, pv.unidad_costo
+    FROM dbo.producto_variante pv
+    INNER JOIN dbo.productos p ON p.id_producto = pv.id_producto
+    WHERE p.categoria = 'ALUMINIO' AND p.color = @color AND p.tipo = @tipo AND p.activo = 1;
+END
+GO
+
+-- ------------------------------------------------------------
+-- Sugerencia de "Extras" (aluminio + silicona) segun el perimetro
+-- de la ventana. Solo precarga el campo; el usuario lo puede editar.
+-- ------------------------------------------------------------
+CREATE OR ALTER PROCEDURE dbo.sp_ped_tarifa_sugerida
+    @perimetro_cm DECIMAL(10,2)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT TOP 1 costo_aluminio, costo_silicona
+    FROM dbo.tarifas_ventana
+    WHERE @perimetro_cm >= perimetro_min_cm AND @perimetro_cm <= perimetro_max_cm;
+END
+GO
+
 -- ============================================================
 -- Procedimientos del modulo de CLIENTES
 -- (incluye las versiones mas recientes de la ficha comercial)
@@ -1309,55 +1426,6 @@ END
 GO
 
 -- ------------------------------------------------------------
--- Roles y permisos: datos
--- (va ANTES de los datos de prueba de inventario, porque ese bloque
---  termina con RETURN y lo que esté después no se ejecutaría)
--- ------------------------------------------------------------
-
--- Lista de permisos (solo agrega los que falten)
-INSERT INTO dbo.tipo_permiso (codigo, nombre, descripcion)
-SELECT v.codigo, v.nombre, v.descripcion
-FROM (VALUES
-    (N'USUARIOS',   N'Gestión de usuarios',  N'Registrar, modificar, eliminar y dar de baja usuarios'),
-    (N'PERMISOS',   N'Asignar permisos',     N'Asignar o quitar permisos a los usuarios'),
-    (N'CLIENTES',   N'Gestión de clientes',  N'Registrar, modificar y ver el historial de clientes'),
-    (N'PRODUCTOS',  N'Gestión de productos', N'Registrar, modificar y dar de baja productos'),
-    (N'INVENTARIO', N'Inventario',           N'Ver inventario, piezas, cajas y kardex'),
-    (N'COMPRAS',    N'Compras',              N'Registrar y ver compras'),
-    (N'PEDIDOS',    N'Pedidos y ventas',     N'Cotizar, registrar pedidos y ver ventas'),
-    (N'PAGOS',      N'Pagos',                N'Registrar pagos y comprobantes'),
-    (N'REPORTES',   N'Reportes',             N'Ver los reportes del negocio')
-) AS v(codigo, nombre, descripcion)
-WHERE NOT EXISTS (SELECT 1 FROM dbo.tipo_permiso t WHERE t.codigo = v.codigo);
-GO
-
--- Permisos por defecto de cada rol
-INSERT INTO dbo.rol_permiso (rol, id_tipo)
-SELECT r.rol, t.id_tipo
-FROM (VALUES
-    (N'ADMINISTRADOR', N'USUARIOS'),  (N'ADMINISTRADOR', N'PERMISOS'),
-    (N'ADMINISTRADOR', N'CLIENTES'),  (N'ADMINISTRADOR', N'PRODUCTOS'),
-    (N'ADMINISTRADOR', N'INVENTARIO'),(N'ADMINISTRADOR', N'COMPRAS'),
-    (N'ADMINISTRADOR', N'PEDIDOS'),   (N'ADMINISTRADOR', N'PAGOS'),
-    (N'ADMINISTRADOR', N'REPORTES'),
-    (N'VENDEDOR', N'CLIENTES'),   (N'VENDEDOR', N'INVENTARIO'),
-    (N'VENDEDOR', N'COMPRAS'),    (N'VENDEDOR', N'PEDIDOS'),
-    (N'VENDEDOR', N'PAGOS')
-) AS r(rol, codigo)
-INNER JOIN dbo.tipo_permiso t ON t.codigo = r.codigo
-WHERE NOT EXISTS (SELECT 1 FROM dbo.rol_permiso x WHERE x.rol = r.rol AND x.id_tipo = t.id_tipo);
-GO
-
--- Usuarios que todavía no tienen NINGÚN permiso reciben los de su rol
--- (si a alguien ya se le ajustaron sus permisos, no se tocan)
-INSERT INTO dbo.permiso (id_usuario, id_tipo)
-SELECT u.id_usuario, rp.id_tipo
-FROM dbo.usuarios u
-INNER JOIN dbo.rol_permiso rp ON rp.rol = u.rol
-WHERE NOT EXISTS (SELECT 1 FROM dbo.permiso p WHERE p.id_usuario = u.id_usuario);
-GO
-
--- ------------------------------------------------------------
 -- Datos de PRUEBA para el modulo de inventario
 -- Solo inserta si la tabla productos esta vacia (no duplica datos)
 -- ------------------------------------------------------------
@@ -1408,4 +1476,142 @@ EXEC dbo.sp_inv_mover_cajas @id_variante = @v_tor, @tipo = 'ENTRADA', @cantidad 
 EXEC dbo.sp_inv_mover_cajas @id_variante = @v_tar, @tipo = 'ENTRADA', @cantidad = 3,  @motivo = 'INICIAL', @id_usuario = @admin;  -- queda bajo el minimo (4)
 
 PRINT 'Datos de prueba de inventario insertados.';
+GO
+
+-- ============================================================
+-- Catalogo real de vidrios (color, espejo, figura)
+-- Precio por pie2: alto_cm * ancho_cm / 900 * precio_unitario
+-- Idempotente: cada producto se inserta solo si no existe.
+-- ============================================================
+
+DECLARE @e3 INT, @e4 INT, @e55 INT, @e8 INT, @e10 INT;
+
+SELECT @e3  = id_caracteristica FROM dbo.caracteristicas WHERE espesor_cm = 0.30 AND medida_cm IS NULL;
+IF @e3 IS NULL BEGIN INSERT INTO dbo.caracteristicas (espesor_cm, medida_cm) VALUES (0.30, NULL); SET @e3 = SCOPE_IDENTITY(); END
+
+SELECT @e4  = id_caracteristica FROM dbo.caracteristicas WHERE espesor_cm = 0.40 AND medida_cm IS NULL;
+IF @e4 IS NULL BEGIN INSERT INTO dbo.caracteristicas (espesor_cm, medida_cm) VALUES (0.40, NULL); SET @e4 = SCOPE_IDENTITY(); END
+
+SELECT @e55 = id_caracteristica FROM dbo.caracteristicas WHERE espesor_cm = 0.55 AND medida_cm IS NULL;
+IF @e55 IS NULL BEGIN INSERT INTO dbo.caracteristicas (espesor_cm, medida_cm) VALUES (0.55, NULL); SET @e55 = SCOPE_IDENTITY(); END
+
+SELECT @e8  = id_caracteristica FROM dbo.caracteristicas WHERE espesor_cm = 0.80 AND medida_cm IS NULL;
+IF @e8 IS NULL BEGIN INSERT INTO dbo.caracteristicas (espesor_cm, medida_cm) VALUES (0.80, NULL); SET @e8 = SCOPE_IDENTITY(); END
+
+SELECT @e10 = id_caracteristica FROM dbo.caracteristicas WHERE espesor_cm = 1.00 AND medida_cm IS NULL;
+IF @e10 IS NULL BEGIN INSERT INTO dbo.caracteristicas (espesor_cm, medida_cm) VALUES (1.00, NULL); SET @e10 = SCOPE_IDENTITY(); END
+
+-- ===================== COLOR =====================
+
+DECLARE @p_incoloro INT;
+IF NOT EXISTS (SELECT 1 FROM dbo.productos WHERE categoria='VIDRIO' AND tipo='COLOR' AND color='INCOLORO')
+BEGIN
+    INSERT INTO dbo.productos (categoria, tipo, color, nombre) VALUES ('VIDRIO','COLOR','INCOLORO','Vidrio incoloro');
+    SET @p_incoloro = SCOPE_IDENTITY();
+    INSERT INTO dbo.producto_variante (id_producto, id_caracteristica, unidad_costo, precio_unitario, stock_minimo) VALUES
+        (@p_incoloro, @e3,  'PIE2', 3.50, 0),
+        (@p_incoloro, @e4,  'PIE2', 4.00, 0),
+        (@p_incoloro, @e55, 'PIE2', 4.80, 0),
+        (@p_incoloro, @e8,  'PIE2', 6.80, 0),
+        (@p_incoloro, @e10, 'PIE2', 8.00, 0);
+END
+
+DECLARE @p_azul INT;
+IF NOT EXISTS (SELECT 1 FROM dbo.productos WHERE categoria='VIDRIO' AND tipo='COLOR' AND color='AZUL')
+BEGIN
+    INSERT INTO dbo.productos (categoria, tipo, color, nombre) VALUES ('VIDRIO','COLOR','AZUL','Vidrio color azul');
+    SET @p_azul = SCOPE_IDENTITY();
+    INSERT INTO dbo.producto_variante (id_producto, id_caracteristica, unidad_costo, precio_unitario, stock_minimo) VALUES
+        (@p_azul, @e3,  'PIE2', 5.50, 0),
+        (@p_azul, @e4,  'PIE2', 6.00, 0),
+        (@p_azul, @e55, 'PIE2', 6.80, 0),
+        (@p_azul, @e8,  'PIE2', 8.80, 0),
+        (@p_azul, @e10, 'PIE2', 10.00, 0);
+END
+
+DECLARE @p_marron INT;
+IF NOT EXISTS (SELECT 1 FROM dbo.productos WHERE categoria='VIDRIO' AND tipo='COLOR' AND color='MARRON')
+BEGIN
+    INSERT INTO dbo.productos (categoria, tipo, color, nombre) VALUES ('VIDRIO','COLOR','MARRON','Vidrio color marrón');
+    SET @p_marron = SCOPE_IDENTITY();
+    INSERT INTO dbo.producto_variante (id_producto, id_caracteristica, unidad_costo, precio_unitario, stock_minimo) VALUES
+        (@p_marron, @e3,  'PIE2', 5.00, 0),
+        (@p_marron, @e4,  'PIE2', 5.50, 0),
+        (@p_marron, @e55, 'PIE2', 6.30, 0),
+        (@p_marron, @e8,  'PIE2', 8.30, 0),
+        (@p_marron, @e10, 'PIE2', 9.50, 0);
+END
+
+-- ===================== ESPEJO =====================
+-- solido: hasta 5.5mm. azul y gris: desde 5.5mm (no hay 3mm ni 4mm).
+
+DECLARE @p_esp_solido INT;
+IF NOT EXISTS (SELECT 1 FROM dbo.productos WHERE categoria='VIDRIO' AND tipo='ESPEJO' AND color='SOLIDO')
+BEGIN
+    INSERT INTO dbo.productos (categoria, tipo, color, nombre) VALUES ('VIDRIO','ESPEJO','SOLIDO','Espejo sólido');
+    SET @p_esp_solido = SCOPE_IDENTITY();
+    INSERT INTO dbo.producto_variante (id_producto, id_caracteristica, unidad_costo, precio_unitario, stock_minimo) VALUES
+        (@p_esp_solido, @e3,  'PIE2', 6.50, 0),
+        (@p_esp_solido, @e4,  'PIE2', 7.00, 0),
+        (@p_esp_solido, @e55, 'PIE2', 7.80, 0);
+END
+
+DECLARE @p_esp_azul INT;
+IF NOT EXISTS (SELECT 1 FROM dbo.productos WHERE categoria='VIDRIO' AND tipo='ESPEJO' AND color='AZUL')
+BEGIN
+    INSERT INTO dbo.productos (categoria, tipo, color, nombre) VALUES ('VIDRIO','ESPEJO','AZUL','Espejo azul');
+    SET @p_esp_azul = SCOPE_IDENTITY();
+    INSERT INTO dbo.producto_variante (id_producto, id_caracteristica, unidad_costo, precio_unitario, stock_minimo) VALUES
+        (@p_esp_azul, @e55, 'PIE2', 10.30, 0),
+        (@p_esp_azul, @e8,  'PIE2', 12.30, 0),
+        (@p_esp_azul, @e10, 'PIE2', 13.50, 0);
+END
+
+DECLARE @p_esp_gris INT;
+IF NOT EXISTS (SELECT 1 FROM dbo.productos WHERE categoria='VIDRIO' AND tipo='ESPEJO' AND color='GRIS')
+BEGIN
+    INSERT INTO dbo.productos (categoria, tipo, color, nombre) VALUES ('VIDRIO','ESPEJO','GRIS','Espejo gris');
+    SET @p_esp_gris = SCOPE_IDENTITY();
+    INSERT INTO dbo.producto_variante (id_producto, id_caracteristica, unidad_costo, precio_unitario, stock_minimo) VALUES
+        (@p_esp_gris, @e55, 'PIE2', 13.30, 0),
+        (@p_esp_gris, @e8,  'PIE2', 15.30, 0),
+        (@p_esp_gris, @e10, 'PIE2', 16.50, 0);
+END
+
+-- ===================== FIGURA =====================
+-- mismo precio que incoloro, solo hasta 5.5mm (no hay 8mm a mas)
+
+DECLARE @p_catedral INT, @p_cruz INT, @p_flor INT;
+
+IF NOT EXISTS (SELECT 1 FROM dbo.productos WHERE categoria='VIDRIO' AND tipo='FIGURA' AND color='CATEDRAL')
+BEGIN
+    INSERT INTO dbo.productos (categoria, tipo, color, nombre) VALUES ('VIDRIO','FIGURA','CATEDRAL','Vidrio figura catedral');
+    SET @p_catedral = SCOPE_IDENTITY();
+    INSERT INTO dbo.producto_variante (id_producto, id_caracteristica, unidad_costo, precio_unitario, stock_minimo) VALUES
+        (@p_catedral, @e3,  'PIE2', 3.50, 0),
+        (@p_catedral, @e4,  'PIE2', 4.00, 0),
+        (@p_catedral, @e55, 'PIE2', 4.80, 0);
+END
+
+IF NOT EXISTS (SELECT 1 FROM dbo.productos WHERE categoria='VIDRIO' AND tipo='FIGURA' AND color='CRUZ')
+BEGIN
+    INSERT INTO dbo.productos (categoria, tipo, color, nombre) VALUES ('VIDRIO','FIGURA','CRUZ','Vidrio figura cruz');
+    SET @p_cruz = SCOPE_IDENTITY();
+    INSERT INTO dbo.producto_variante (id_producto, id_caracteristica, unidad_costo, precio_unitario, stock_minimo) VALUES
+        (@p_cruz, @e3,  'PIE2', 3.50, 0),
+        (@p_cruz, @e4,  'PIE2', 4.00, 0),
+        (@p_cruz, @e55, 'PIE2', 4.80, 0);
+END
+
+IF NOT EXISTS (SELECT 1 FROM dbo.productos WHERE categoria='VIDRIO' AND tipo='FIGURA' AND color='FLOR')
+BEGIN
+    INSERT INTO dbo.productos (categoria, tipo, color, nombre) VALUES ('VIDRIO','FIGURA','FLOR','Vidrio figura flor');
+    SET @p_flor = SCOPE_IDENTITY();
+    INSERT INTO dbo.producto_variante (id_producto, id_caracteristica, unidad_costo, precio_unitario, stock_minimo) VALUES
+        (@p_flor, @e3,  'PIE2', 3.50, 0),
+        (@p_flor, @e4,  'PIE2', 4.00, 0),
+        (@p_flor, @e55, 'PIE2', 4.80, 0);
+END
+
+PRINT 'Catalogo de vidrios (color/espejo/figura) insertado.';
 GO
