@@ -276,7 +276,7 @@ Public Class MenuInicio
 
             ' Pedidos y ventas
             smnRPedido.Available = permisos.Contains("PEDIDOS")
-            smnVVenta.Available = permisos.Contains("PEDIDOS")
+            smnVPedido.Available = permisos.Contains("PEDIDOS")
             toolCotizar.Available = permisos.Contains("PEDIDOS")
 
             ' Pagos
@@ -289,7 +289,7 @@ Public Class MenuInicio
             MantenimientosToolStripMenuItem.Available = smnUsuarios.Available OrElse smnPermisos.Available OrElse
                                                         smnClientes.Available OrElse smnProductos.Available
             mnProcesos.Available = smnRCompra.Available OrElse smnRPedido.Available OrElse smnRPago.Available
-            mnTablas.Available = smnVCompra.Available OrElse smnVVenta.Available OrElse smnVInventario.Available
+            mnTablas.Available = smnVCompra.Available OrElse smnVPedido.Available OrElse smnVInventario.Available
             ToolStripSeparator1.Available = toolInventario.Available AndAlso toolCotizar.Available
         Catch ex As Exception
             MessageBox.Show("Error al cargar permisos: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -307,5 +307,26 @@ Public Class MenuInicio
         Dim objFrm As New frmPermisos With {.tema = tema, .idUsuarioConectado = Integer.Parse(txtID.Text)}
         objFrm.MdiParent = Me
         objFrm.Show()
+    End Sub
+
+    Private Sub smnVPedido_Click(sender As Object, e As EventArgs) Handles smnVPedido.Click
+        Try
+            For Each formulario As Form In Application.OpenForms
+                If TypeOf formulario Is frmListadoPedido Then
+                    Dim listado As frmListadoPedido = DirectCast(formulario, frmListadoPedido)
+                    If Not listado.modoSeleccion Then
+                        listado.WindowState = FormWindowState.Normal
+                        listado.cargarLista()
+                        listado.BringToFront()
+                        Return
+                    End If
+                End If
+            Next
+            Dim nuevoListado As New frmListadoPedido With {.tema = tema, .idUsuario = Integer.Parse(txtID.Text)}
+            nuevoListado.MdiParent = Me
+            nuevoListado.Show()
+        Catch ex As Exception
+            MessageBox.Show(ex.Message, "Pedidos", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
     End Sub
 End Class

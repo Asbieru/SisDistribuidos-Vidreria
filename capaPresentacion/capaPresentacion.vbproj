@@ -79,10 +79,22 @@
     <Compile Include="CambiarContraseña.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="frmListadoPedido.Designer.vb">
+      <DependentUpon>frmListadoPedido.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmListadoPedido.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="frmListadoProductos.Designer.vb">
       <DependentUpon>frmListadoProductos.vb</DependentUpon>
     </Compile>
     <Compile Include="frmListadoProductos.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmPedidoUnitario.Designer.vb">
+      <DependentUpon>frmPedidoUnitario.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmPedidoUnitario.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="frmPermisos.Designer.vb">
@@ -245,6 +257,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="frmListadoClientes.resx">
       <DependentUpon>frmListadoClientes.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmListadoPedido.resx">
+      <DependentUpon>frmListadoPedido.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmListadoProductos.resx">
       <DependentUpon>frmListadoProductos.vb</DependentUpon>

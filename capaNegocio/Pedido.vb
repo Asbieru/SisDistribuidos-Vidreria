@@ -35,6 +35,18 @@ Public Class Pedido
         Return objMan.listarComando("select * from pedidos where id_cliente=" & idCliente & " order by fecha")
     End Function
 
+    ' Listado para la grilla: trae el nombre del cliente y del vendedor.
+    ' fecha_registro queda como texto (dd/MM/yyyy) para poder buscar por fecha.
+    Public Function ListarDetallado() As DataTable
+        Return objMan.listarComando(
+            "select p.id_pedido, c.nombre as cliente, u.nombre as usuario, p.fecha, p.estado, " &
+            "convert(varchar(10), p.fecha, 103) as fecha_registro " &
+            "from pedidos p " &
+            "inner join clientes c on c.id_cliente = p.id_cliente " &
+            "inner join usuarios u on u.id_usuario = p.id_usuario " &
+            "order by p.fecha desc, p.id_pedido desc")
+    End Function
+
     ' estado: PENDIENTE, PAGADO, PARCIAL o CANCELADO
     Public Sub CambiarEstado(idPedido As Integer, estado As String)
         objMan.ejecutarComando("update pedidos set estado='" & Esc(estado) & "' where id_pedido=" & idPedido)

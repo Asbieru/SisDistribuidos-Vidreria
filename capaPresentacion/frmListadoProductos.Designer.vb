@@ -44,7 +44,7 @@ Partial Class frmListadoProductos
         'lblTitulo
         '
         Me.lblTitulo.AutoSize = True
-        Me.lblTitulo.Font = New System.Drawing.Font("Microsoft Sans Serif", 15.75!, System.Drawing.FontStyle.Bold)
+        Me.lblTitulo.Font = New System.Drawing.Font("Microsoft Sans Serif", 15.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.lblTitulo.Location = New System.Drawing.Point(21, 22)
         Me.lblTitulo.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.lblTitulo.Name = "lblTitulo"

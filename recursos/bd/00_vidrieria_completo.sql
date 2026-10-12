@@ -1602,6 +1602,13 @@ BEGIN
 END
 GO
 
+IF NOT EXISTS (SELECT 1 FROM dbo.tipos_mensaje WHERE codigo = N'CANCELARPEDIDO')
+BEGIN
+    INSERT INTO dbo.tipos_mensaje (codigo, titulo, texto)
+    VALUES ('CANCELARPEDIDO', 'Cancelar pedido', '¿Deseas cancelar el pedido seleccionado?');
+END
+GO
+
 -- ------------------------------------------------------------
 -- Roles y permisos: datos
 -- (va ANTES de los datos de prueba de inventario, porque ese bloque
