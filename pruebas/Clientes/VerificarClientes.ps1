@@ -455,6 +455,73 @@ try {
         ComprobarClientes ((CampoClientes $fichaCambio 'dgvPagos').DataSource -eq $null) 'Cambiar de cliente limpia pagos anteriores'
     } finally { $fichaCambio.Dispose() }
 
+    $permisos = New-Object capaNegocio.Permiso
+    $adminPrueba = [int](SqlPruebaClientes "SELECT id_usuario FROM usuarios WHERE nombre=N'admin';")
+    ComprobarClientes ($permisos.codigosPermisoUsuario($adminPrueba).Contains('CLIENTES')) 'Administrador conserva acceso a Clientes'
+    ComprobarClientes (@($permisos.listarPermisosRol('VENDEDOR').Rows | Where-Object { $_['codigo'] -eq 'CLIENTES' }).Count -eq 1) 'Rol vendedor incluye mantenimiento de Clientes'
+    $menuPrueba = New-Object capaPresentacion.MenuInicio
+    try {
+        (CampoClientes $menuPrueba 'txtUsuario').Text = 'admin'
+        MostrarPruebaClientes $menuPrueba
+        ComprobarClientes ((CampoClientes $menuPrueba 'smnClientes').Available) 'Menu muestra Clientes con permiso'
+        ComprobarClientes ((CampoClientes $menuPrueba 'txtRol').Text -eq 'ADMINISTRADOR') 'Menu muestra rol del usuario'
+        $idsSinClientes = New-Object 'Collections.Generic.List[int]'
+        foreach ($fila in $permisos.listarPermisosUsuario($adminPrueba).Rows) {
+            if ($fila['codigo'] -ne 'CLIENTES') { $idsSinClientes.Add([int]$fila['id_tipo']) }
+        }
+        $permisos.guardarPermisos($adminPrueba,$idsSinClientes)
+        $menuPrueba.aplicarPermisos()
+        ComprobarClientes (-not (CampoClientes $menuPrueba 'smnClientes').Available) 'Menu oculta Clientes sin permiso'
+    } finally {
+        $permisos.asignarPermisosRol($adminPrueba,'ADMINISTRADOR')
+        $menuPrueba.Dispose()
+    }
+
+    $negocioPedido = New-Object capaNegocio.Pedido
+    $variantePrueba = [int](SqlPruebaClientes "SELECT TOP 1 v.id_variante FROM producto_variante v JOIN productos p ON p.id_producto=v.id_producto WHERE p.categoria='VIDRIO' AND p.activo=1 ORDER BY v.id_variante;")
+    $detallePrueba = New-Object capaNegocio.DetallePedidoDTO
+    $detallePrueba.IdVariante = $variantePrueba
+    $detallePrueba.Accion = 'COMPRA_NUEVA'
+    $detallePrueba.AnchoCm = 30; $detallePrueba.AltoCm = 40; $detallePrueba.Subtotal = 20
+    $itemPrueba = New-Object capaNegocio.ItemPedidoDTO
+    $itemPrueba.Tipo = 'VIDRIO_SUELTO'; $itemPrueba.Etiqueta = 'Integracion clientes'
+    $itemPrueba.PrecioMateriales = 20; $itemPrueba.CostoExtra = 5; $itemPrueba.ManoObra = 10; $itemPrueba.Total = 35
+    $itemPrueba.Detalles.Add($detallePrueba)
+    $itemsPrueba = New-Object 'Collections.Generic.List[capaNegocio.ItemPedidoDTO]'
+    $itemsPrueba.Add($itemPrueba)
+    $pedidoIntegrado = $negocioPedido.Registrar($id,$adminPrueba,$itemsPrueba)
+    ComprobarClientes ($pedidoIntegrado -gt 0) 'Nuevo registro de pedido devuelve ID'
+    ComprobarClientes ((SqlPruebaClientes "SELECT total FROM pedidos WHERE id_pedido=$pedidoIntegrado;") -eq 35) 'Pedido guarda total de sus items'
+    ComprobarClientes ($negocioPedido.ListarItems($pedidoIntegrado).Rows.Count -eq 1) 'Pedido guarda item comercial'
+    $idItemPrueba = [int]$negocioPedido.ListarItems($pedidoIntegrado).Rows[0]['id_item']
+    ComprobarClientes ($negocioPedido.ListarDetalles($idItemPrueba).Rows.Count -eq 1) 'Pedido guarda detalle asociado al item'
+    $filaIntegrada = @($cliente.Historial($id).Rows | Where-Object { $_['id_pedido'] -eq $pedidoIntegrado })
+    ComprobarClientes ($filaIntegrada.Count -eq 1) 'Ficha comercial recibe el pedido nuevo sin duplicados'
+    ComprobarClientes ($filaIntegrada[0]['total'] -eq 35 -and $filaIntegrada[0]['saldo'] -eq 35) 'Ficha conserva total y saldo del pedido nuevo'
+    ComprobarClientes ($cliente.PagosDePedido($id,$pedidoIntegrado).Rows.Count -eq 0) 'Pedido nuevo muestra pagos vacios'
+    ComprobarClientes ($cliente.Historial($repetido).Rows.Count -eq 0) 'Pedido nuevo no aparece en otro cliente'
+    EsperarErrorClientes { $cliente.Eliminar($id) } 'tiene pedidos' 'Pedido nuevo mantiene proteccion de historial'
+    $detallePrueba.IdVariante = 2147483647
+    $rechazadoPedido = $false
+    try { $negocioPedido.Registrar($id,$adminPrueba,$itemsPrueba) | Out-Null } catch { $rechazadoPedido = $true }
+    ComprobarClientes $rechazadoPedido 'Variante inexistente rechaza registro de pedido'
+    ComprobarClientes ((SqlPruebaClientes "SELECT COUNT(*) FROM pedidos WHERE id_cliente=$id;") -eq 5) 'Pedido fallido no deja cabecera parcial en historial'
+
+    SqlPruebaClientes 'INSERT INTO tarifas_ventana(perimetro_min_cm,perimetro_max_cm,costo_aluminio,costo_silicona) VALUES(0,100,12,3);' | Out-Null
+    $tarifaPedido = $negocioPedido.TarifaSugerida(10,10)
+    ComprobarClientes ($tarifaPedido.Item1 -eq 12 -and $tarifaPedido.Item2 -eq 3) 'Pedido consulta tarifa con parametros compatibles'
+    $negocioProducto = New-Object capaNegocio.Producto
+    $tarifaProducto = $negocioProducto.TarifaSugerida(10,10)
+    ComprobarClientes ($tarifaProducto.Item1 -eq 12 -and $tarifaProducto.Item2 -eq 3) 'Producto consulta tarifa con parametros compatibles'
+
+    $versionTrasIntegracion = [Convert]::ToBase64String([byte[]]$cliente.Obtener($id).Rows[0]['version_cliente'])
+    foreach ($lote in [regex]::Split($esquemaClientes, '(?im)^\s*GO\s*$')) {
+        if (-not [string]::IsNullOrWhiteSpace($lote)) { SqlPruebaClientes $lote | Out-Null }
+    }
+    ComprobarClientes ([Convert]::ToBase64String([byte[]]$cliente.Obtener($id).Rows[0]['version_cliente']) -eq $versionTrasIntegracion) 'SQL completo repetido conserva version del cliente'
+    ComprobarClientes ($negocioPedido.ListarDetalles($idItemPrueba).Rows.Count -eq 1) 'SQL completo repetido conserva detalles de pedido'
+    ComprobarClientes (@($cliente.Historial($id).Rows | Where-Object { $_['id_pedido'] -eq $pedidoIntegrado }).Count -eq 1) 'SQL completo repetido conserva enlace con ficha comercial'
+
     [IO.File]::WriteAllLines((Join-Path $trabajoPruebaClientes 'resultados.txt'),$comprobacionesClientes,(New-Object Text.UTF8Encoding($true)))
     Write-Output ('Correcto: ' + $comprobacionesClientes.Count + ' comprobaciones. La base de la aplicación no se modificó.')
     if ($ConservarResultados) { Write-Output ('Resultados y capturas: ' + $trabajoPruebaClientes) }
