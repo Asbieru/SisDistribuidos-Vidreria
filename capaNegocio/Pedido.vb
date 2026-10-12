@@ -50,7 +50,7 @@ Public Class Pedido
 
     Public Function TarifaSugerida(anchoCm As Decimal, altoCm As Decimal) As (aluminio As Decimal, silicona As Decimal)
         Dim perimetro As Decimal = 2 * (anchoCm + altoCm)
-        Dim parametros As New Dictionary(Of String, Object) From {{"@perimetro_cm", perimetro}}
+        Dim parametros As New Dictionary(Of String, Object) From {{"perimetro_cm", perimetro}}
         Dim dt = objMan.listarProcedimiento("sp_ped_tarifa_sugerida", parametros)
         If dt.Rows.Count = 0 Then Return (0D, 0D)
         Return (CDec(dt.Rows(0)("costo_aluminio")), CDec(dt.Rows(0)("costo_silicona")))
