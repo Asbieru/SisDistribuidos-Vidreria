@@ -312,6 +312,16 @@ GO
 -- ------------------------------------------------------------
 -- Detalle de pedidos
 -- ------------------------------------------------------------
+IF COL_LENGTH('dbo.pedido_item','precio_materiales') IS NULL
+    ALTER TABLE dbo.pedido_item ADD precio_materiales DECIMAL(10,2) NULL;
+IF COL_LENGTH('dbo.pedido_item','costo_extra') IS NULL
+    ALTER TABLE dbo.pedido_item ADD costo_extra DECIMAL(10,2) NOT NULL DEFAULT 0;
+IF COL_LENGTH('dbo.pedido_item','mano_obra') IS NULL
+    ALTER TABLE dbo.pedido_item ADD mano_obra DECIMAL(10,2) NOT NULL DEFAULT 0;
+IF COL_LENGTH('dbo.pedido_item','total') IS NULL
+    ALTER TABLE dbo.pedido_item ADD total DECIMAL(10,2) NULL;
+GO
+
 IF OBJECT_ID(N'dbo.pedido_detalle', N'U') IS NULL
 CREATE TABLE dbo.pedido_detalle (
     id_detalle                INT IDENTITY(1,1) PRIMARY KEY,
@@ -341,6 +351,44 @@ CREATE TABLE dbo.pedido_detalle (
     CONSTRAINT fk_det_origen FOREIGN KEY (id_detalle_origen)
         REFERENCES dbo.pedido_detalle(id_detalle) ON DELETE NO ACTION
 );
+GO
+
+-- Actualizar bases anteriores que aun no tienen detalles registrados.
+-- Si hay detalles antiguos, se conservan y se solicita una migracion explicita.
+IF COL_LENGTH('dbo.pedido_detalle','id_item') IS NULL
+BEGIN
+    IF EXISTS (SELECT 1 FROM dbo.pedido_detalle)
+        THROW 50200, 'Hay detalles de pedidos con el esquema anterior. Migrelos antes de actualizar; no se borraron datos.', 1;
+    ALTER TABLE dbo.pedido_detalle ADD id_item INT NOT NULL;
+END;
+IF COL_LENGTH('dbo.pedido_detalle','id_pedido') IS NOT NULL
+BEGIN
+    EXEC(N'IF EXISTS (SELECT 1 FROM dbo.pedido_detalle WHERE id_pedido IS NOT NULL)
+        THROW 50200, ''Hay detalles de pedidos con el esquema anterior. Migrelos antes de actualizar; no se borraron datos.'', 1;');
+    IF EXISTS (SELECT 1 FROM sys.foreign_keys WHERE parent_object_id = OBJECT_ID('dbo.pedido_detalle') AND name = 'fk_det_pedido')
+        ALTER TABLE dbo.pedido_detalle DROP CONSTRAINT fk_det_pedido;
+    EXEC(N'ALTER TABLE dbo.pedido_detalle ALTER COLUMN id_pedido INT NULL;');
+END;
+IF COL_LENGTH('dbo.pedido_detalle','id_compra_detalle') IS NULL
+    ALTER TABLE dbo.pedido_detalle ADD id_compra_detalle INT NULL;
+IF COL_LENGTH('dbo.pedido_detalle','accion') IS NULL
+    ALTER TABLE dbo.pedido_detalle ADD accion NVARCHAR(15) NOT NULL DEFAULT 'COMPRA_NUEVA';
+IF COL_LENGTH('dbo.pedido_detalle','estado') IS NULL
+    ALTER TABLE dbo.pedido_detalle ADD estado NVARCHAR(15) NOT NULL DEFAULT 'ACTIVO';
+IF COL_LENGTH('dbo.pedido_detalle','id_detalle_origen') IS NULL
+    ALTER TABLE dbo.pedido_detalle ADD id_detalle_origen INT NULL;
+GO
+
+IF NOT EXISTS (SELECT 1 FROM sys.foreign_keys WHERE parent_object_id = OBJECT_ID('dbo.pedido_detalle') AND name = 'fk_det_item')
+    ALTER TABLE dbo.pedido_detalle ADD CONSTRAINT fk_det_item FOREIGN KEY (id_item) REFERENCES dbo.pedido_item(id_item) ON DELETE CASCADE;
+IF NOT EXISTS (SELECT 1 FROM sys.foreign_keys WHERE parent_object_id = OBJECT_ID('dbo.pedido_detalle') AND name = 'fk_det_compra_detalle')
+    ALTER TABLE dbo.pedido_detalle ADD CONSTRAINT fk_det_compra_detalle FOREIGN KEY (id_compra_detalle) REFERENCES dbo.compra_detalle(id_compra_detalle) ON DELETE SET NULL;
+IF NOT EXISTS (SELECT 1 FROM sys.foreign_keys WHERE parent_object_id = OBJECT_ID('dbo.pedido_detalle') AND name = 'fk_det_origen')
+    ALTER TABLE dbo.pedido_detalle ADD CONSTRAINT fk_det_origen FOREIGN KEY (id_detalle_origen) REFERENCES dbo.pedido_detalle(id_detalle) ON DELETE NO ACTION;
+IF NOT EXISTS (SELECT 1 FROM sys.check_constraints WHERE parent_object_id = OBJECT_ID('dbo.pedido_detalle') AND name = 'ck_det_accion')
+    ALTER TABLE dbo.pedido_detalle ADD CONSTRAINT ck_det_accion CHECK (accion IN ('USA_EXISTENTE','CORTA_PIEZA','COMPRA_NUEVA'));
+IF NOT EXISTS (SELECT 1 FROM sys.check_constraints WHERE parent_object_id = OBJECT_ID('dbo.pedido_detalle') AND name = 'ck_det_estado')
+    ALTER TABLE dbo.pedido_detalle ADD CONSTRAINT ck_det_estado CHECK (estado IN ('ACTIVO','REEMPLAZADO','CANCELADO'));
 GO
 
 IF OBJECT_ID(N'dbo.pedido_detalle_medida', N'U') IS NULL
