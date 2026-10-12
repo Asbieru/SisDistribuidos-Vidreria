@@ -107,6 +107,11 @@ Public Class frmListadoUsuarios
         If id = 0 Then Return
         Dim nombre As String = dgvUsuarios.CurrentRow.Cells("nombre").Value.ToString
         Try
+            If objUsu.esUltimoAdministrador(id) Then
+                MessageBox.Show("'" & nombre & "' es el único administrador activo y no se puede eliminar.",
+                                "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+                Return
+            End If
             If objUsu.tienePedidos(id) Then
                 MessageBox.Show("El usuario '" & nombre & "' tiene pedidos registrados y no se puede eliminar." & vbCrLf &
                                 "Use el botón Dar de baja.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning)
@@ -130,6 +135,16 @@ Public Class frmListadoUsuarios
         If id = 0 Then Return
         Dim nombre As String = dgvUsuarios.CurrentRow.Cells("nombre").Value.ToString
         Dim reactivar As Boolean = dgvUsuarios.CurrentRow.Cells("estado").Value.ToString = "INACTIVO"
+        Try
+            If Not reactivar AndAlso objUsu.esUltimoAdministrador(id) Then
+                MessageBox.Show("'" & nombre & "' es el único administrador activo y no se puede dar de baja.",
+                                "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+                Return
+            End If
+        Catch ex As Exception
+            MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Return
+        End Try
         Dim pregunta As String = If(reactivar,
                                     "¿Reactivar al usuario '" & nombre & "'?",
                                     "¿Dar de baja al usuario '" & nombre & "'? Ya no podrá iniciar sesión.")

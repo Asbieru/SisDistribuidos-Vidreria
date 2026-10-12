@@ -85,6 +85,12 @@
     <Compile Include="frmListadoProductos.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="frmPermisos.Designer.vb">
+      <DependentUpon>frmPermisos.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmPermisos.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="frmRegistrarCompras.Designer.vb">
       <DependentUpon>frmRegistrarCompras.vb</DependentUpon>
     </Compile>
@@ -237,8 +243,14 @@
     <EmbeddedResource Include="CambiarContraseña.resx">
       <DependentUpon>CambiarContraseña.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="frmListadoClientes.resx">
+      <DependentUpon>frmListadoClientes.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="frmListadoProductos.resx">
       <DependentUpon>frmListadoProductos.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmPermisos.resx">
+      <DependentUpon>frmPermisos.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmRegistrarCompras.resx">
       <DependentUpon>frmRegistrarCompras.vb</DependentUpon>
@@ -320,22 +332,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Imagenes\Fondos\fondoInicioClaro.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Imagenes\Fondos\fondoInicioOscuro.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Imagenes\Iconos\Oscuro\CotizarVentana.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Imagenes\Iconos\Oscuro\Inventario.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Imagenes\Iconos\Claro\CotizarVentana.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Imagenes\Iconos\Claro\Inventario.png">
+    <Content Include="Imagenes\**\*.*">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

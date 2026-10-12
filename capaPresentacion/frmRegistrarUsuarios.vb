@@ -10,6 +10,8 @@ Public Class frmRegistrarUsuarios
     Public Property nombreGuardado As String = ""
 
     Dim objUsu As New Usuario
+    Dim objPer As New Permiso
+    Dim rolOriginal As String = ""   ' para saber si al modificar le cambiaron el rol
 
     Private Sub frmRegistrarUsuarios_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         AplicarTema(Me, tema)
@@ -64,6 +66,7 @@ Public Class frmRegistrarUsuarios
         txtPregunta.Text = fila("pregunta_seguridad").ToString
         txtRespuesta.Text = fila("respuesta").ToString
         cboRol.SelectedItem = fila("rol").ToString
+        rolOriginal = fila("rol").ToString
         chkActivo.Checked = CBool(fila("activo"))   ' marcado = ACTIVO, sin marcar = INACTIVO
     End Sub
 
@@ -120,15 +123,38 @@ Public Class frmRegistrarUsuarios
                 Return
             End If
 
+            ' No se puede dejar el sistema sin administradores activos
+            If idUsuario > 0 AndAlso (cboRol.Text <> "ADMINISTRADOR" OrElse Not chkActivo.Checked) _
+               AndAlso objUsu.esUltimoAdministrador(idUsuario) Then
+                MessageBox.Show("Este es el único administrador activo del sistema." & vbCrLf &
+                                "No se le puede quitar el rol ADMINISTRADOR ni dejarlo inactivo.", "Usuarios",
+                                MessageBoxButtons.OK, MessageBoxIcon.Warning)
+                Return
+            End If
+
+            ' Si al modificar le cambiaron el rol, se pregunta si se le dan los permisos del nuevo rol
+            Dim reasignarPermisos As Boolean = False
+            If idUsuario > 0 AndAlso cboRol.Text <> rolOriginal Then
+                reasignarPermisos = MessageBox.Show(
+                    "Cambió el rol de " & rolOriginal & " a " & cboRol.Text & "." & vbCrLf &
+                    "¿Desea reemplazar sus permisos por los del rol " & cboRol.Text & "?",
+                    "Usuarios", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes
+            End If
+
             If idUsuario = 0 Then
                 ' Todo usuario nuevo se crea activo
                 objUsu.registrarUsuario(txtUsuario.Text.Trim, txtCorreo.Text.Trim, txtContrasena.Text.Trim,
                                         txtPregunta.Text.Trim, txtRespuesta.Text.Trim, cboRol.Text, True)
-                MessageBox.Show("Usuario registrado correctamente.", "Usuarios", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                ' El usuario nuevo recibe los permisos por defecto de su rol
+                Dim idNuevo As Integer = objUsu.obtenerIDUsuario(txtUsuario.Text.Trim)
+                objPer.asignarPermisosRol(idNuevo, cboRol.Text)
+                MessageBox.Show("Usuario registrado correctamente con los permisos del rol " & cboRol.Text & ".",
+                                "Usuarios", MessageBoxButtons.OK, MessageBoxIcon.Information)
             Else
                 ' Se guarda el estado que tenga el check: marcado = ACTIVO, sin marcar = INACTIVO
                 objUsu.modificarUsuario(idUsuario, txtUsuario.Text.Trim, txtCorreo.Text.Trim, txtContrasena.Text.Trim,
                                         txtPregunta.Text.Trim, txtRespuesta.Text.Trim, cboRol.Text, chkActivo.Checked)
+                If reasignarPermisos Then objPer.asignarPermisosRol(idUsuario, cboRol.Text)
                 MessageBox.Show("Usuario modificado correctamente.", "Usuarios", MessageBoxButtons.OK, MessageBoxIcon.Information)
             End If
 

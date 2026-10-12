@@ -18,6 +18,49 @@ Public Class Producto
             New Dictionary(Of String, Object) From {{"categoria", categoria}})
     End Function
 
+    ' Valores distintos de una columna (categoria, tipo o color) para llenar los combos del pedido
+    Public Function ListarCategorias() As List(Of String)
+        Return ValoresDistintos("categoria", Nothing, Nothing)
+    End Function
+
+    Public Function ListarTiposPorCategoria(categoria As String) As List(Of String)
+        Return ValoresDistintos("tipo", categoria, Nothing)
+    End Function
+
+    Public Function ListarColoresPorCategoria(categoria As String) As List(Of String)
+        Return ValoresDistintos("color", categoria, Nothing)
+    End Function
+
+    ' Colores de un tipo concreto (combo en cascada: tipo de vidrio -> color)
+    Public Function ListarColoresPorTipo(categoria As String, tipo As String) As List(Of String)
+        Return ValoresDistintos("color", categoria, tipo)
+    End Function
+
+    Private Function ValoresDistintos(columna As String, categoria As String, tipo As String) As List(Of String)
+        Dim condiciones As New List(Of String) From {"activo=1"}
+        Dim parametros As New Dictionary(Of String, Object)
+        If Not String.IsNullOrWhiteSpace(categoria) Then
+            condiciones.Add("categoria=@categoria")
+            parametros.Add("categoria", categoria)
+        End If
+        If Not String.IsNullOrWhiteSpace(tipo) Then
+            condiciones.Add("tipo=@tipo")
+            parametros.Add("tipo", tipo)
+        End If
+
+        Dim sql As String = "select distinct " & columna & " as valor from productos where " &
+                            String.Join(" and ", condiciones) & " order by valor"
+
+        Dim lista As New List(Of String)
+        For Each fila As DataRow In objMan.consultarConParametros(sql, parametros).Rows
+            If IsDBNull(fila("valor")) Then Continue For
+            Dim valor As String = fila("valor").ToString().Trim()
+            If valor <> "" Then lista.Add(valor)
+        Next
+        Return lista
+    End Function
+
+
     Public Function Insertar(categoria As String, tipo As String, color As String, nombre As String,
                              descripcion As String, Optional imagenUrl As String = Nothing) As Integer
         Dim sql As String = "insert into productos (categoria, tipo, color, nombre, descripcion, imagen_url, activo) " &
@@ -129,5 +172,14 @@ Public Class Producto
         Return New Dictionary(Of String, Object) From {
             {"categoria", Limpiar(categoria)}, {"tipo", Limpiar(tipo)}, {"color", Limpiar(color)},
             {"nombre", Limpiar(nombre)}, {"descripcion", Limpiar(descripcion)}, {"imagen_url", Limpiar(imagenUrl)}}
+    End Function
+
+    Public Function TarifaSugerida(anchoCm As Decimal, altoCm As Decimal) As (aluminio As Decimal, silicona As Decimal)
+        Dim perimetro As Decimal = 2 * (anchoCm + altoCm)
+        Dim objMan As New clsMantenimiento
+        Dim parametros As New Dictionary(Of String, Object) From {{"@perimetro_cm", perimetro}}
+        Dim dt = objMan.listarProcedimiento("sp_ped_tarifa_sugerida", parametros)
+        If dt.Rows.Count = 0 Then Return (0D, 0D)
+        Return (CDec(dt.Rows(0)("costo_aluminio")), CDec(dt.Rows(0)("costo_silicona")))
     End Function
 End Class

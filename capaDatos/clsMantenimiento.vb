@@ -90,6 +90,24 @@ Public Class clsMantenimiento
     Public Sub ejecutarConParametros(strConsulta As String, Optional parametros As Dictionary(Of String, Object) = Nothing)
         ejecutarConsulta(strConsulta, CommandType.Text, parametros)
     End Sub
+    Public Function EjecutarProcedimientoConParametros(nombreSp As String, parametros As List(Of SqlParameter)) As Object
+        Using cn As New SqlConnection(objConecta.miConexion.ConnectionString)
+            Using cmd As New SqlCommand(nombreSp, cn)
+                cmd.CommandType = CommandType.StoredProcedure
+                For Each p As SqlParameter In parametros
+                    cmd.Parameters.Add(p)
+                Next
+                cn.Open()
+                Try
+                    cmd.ExecuteNonQuery()
+                Catch ex As SqlException When ex.Number >= 50000
+                    Throw New Exception(ex.Message)
+                End Try
+                Dim salida = parametros.FirstOrDefault(Function(p) p.Direction = ParameterDirection.Output)
+                Return If(salida IsNot Nothing, salida.Value, Nothing)
+            End Using
+        End Using
+    End Function
 
     Private Function ejecutarConsulta(texto As String, tipo As CommandType, parametros As Dictionary(Of String, Object)) As DataTable
         Dim dt As New DataTable

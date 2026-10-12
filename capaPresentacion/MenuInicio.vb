@@ -89,11 +89,14 @@ Public Class MenuInicio
     Private Sub MenuInicio_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         Try
             txtID.Text = objUsu.obtenerIDUsuario(txtUsuario.Text)
+            Dim dtUsu As DataTable = objUsu.obtenerUsuario(Integer.Parse(txtID.Text))
+            If dtUsu.Rows.Count > 0 Then txtRol.Text = dtUsu.Rows(0)("rol").ToString
             Dim dt As DataTable = objUsu.obtenerPreferencia(Integer.Parse(txtID.Text))
             If dt.Rows.Count > 0 Then
                 tema = dt.Rows(0).Item(0).ToString
-                temaColor()
             End If
+            temaColor()
+            aplicarPermisos()
         Catch ex As Exception
             MessageBox.Show("Error al iniciar Menu: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
@@ -241,7 +244,67 @@ Public Class MenuInicio
     End Sub
 
     Private Sub smnRPedido_Click(sender As Object, e As EventArgs) Handles smnRPedido.Click
-        Dim objFrm As New frmRegistrarPedido With {.tema = tema}
+        Dim objFrm As New frmRegistrarPedido With {.tema = tema, .idUsuario = Integer.Parse(txtID.Text)}
+        objFrm.MdiParent = Me
+        objFrm.Show()
+    End Sub
+
+    ' =========================================================
+    ' ROLES Y PERMISOS (pegar dentro de la clase MenuInicio)
+    ' =========================================================
+
+    ' Muestra solo las opciones del menú que el usuario conectado tiene permitidas.
+    ' Se usa .Available (y no .Visible) porque en los submenús cerrados .Visible siempre devuelve False.
+    Public Sub aplicarPermisos()
+        Try
+            Dim objPer As New Permiso
+            Dim permisos As List(Of String) = objPer.codigosPermisoUsuario(Integer.Parse(txtID.Text))
+
+            ' Mantenimiento
+            smnUsuarios.Available = permisos.Contains("USUARIOS")
+            smnPermisos.Available = permisos.Contains("PERMISOS")
+            smnClientes.Available = permisos.Contains("CLIENTES")
+            smnProductos.Available = permisos.Contains("PRODUCTOS")
+
+            ' Inventario
+            smnVInventario.Available = permisos.Contains("INVENTARIO")
+            toolInventario.Available = permisos.Contains("INVENTARIO")
+
+            ' Compras
+            smnRCompra.Available = permisos.Contains("COMPRAS")
+            smnVCompra.Available = permisos.Contains("COMPRAS")
+
+            ' Pedidos y ventas
+            smnRPedido.Available = permisos.Contains("PEDIDOS")
+            smnVVenta.Available = permisos.Contains("PEDIDOS")
+            toolCotizar.Available = permisos.Contains("PEDIDOS")
+
+            ' Pagos
+            smnRPago.Available = permisos.Contains("PAGOS")
+
+            ' Reportes
+            mnReportes.Available = permisos.Contains("REPORTES")
+
+            ' Los menús principales se ocultan si no les queda ninguna opción
+            MantenimientosToolStripMenuItem.Available = smnUsuarios.Available OrElse smnPermisos.Available OrElse
+                                                        smnClientes.Available OrElse smnProductos.Available
+            mnProcesos.Available = smnRCompra.Available OrElse smnRPedido.Available OrElse smnRPago.Available
+            mnTablas.Available = smnVCompra.Available OrElse smnVVenta.Available OrElse smnVInventario.Available
+            ToolStripSeparator1.Available = toolInventario.Available AndAlso toolCotizar.Available
+        Catch ex As Exception
+            MessageBox.Show("Error al cargar permisos: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
+    End Sub
+
+    Private Sub smnPermisos_Click(sender As Object, e As EventArgs) Handles smnPermisos.Click
+        For Each formulario As Form In Application.OpenForms
+            If TypeOf formulario Is frmPermisos Then
+                formulario.WindowState = FormWindowState.Normal
+                formulario.BringToFront()
+                Return
+            End If
+        Next
+        Dim objFrm As New frmPermisos With {.tema = tema, .idUsuarioConectado = Integer.Parse(txtID.Text)}
         objFrm.MdiParent = Me
         objFrm.Show()
     End Sub

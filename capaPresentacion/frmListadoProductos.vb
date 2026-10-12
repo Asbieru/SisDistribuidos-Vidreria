@@ -3,6 +3,12 @@
 Public Class frmListadoProductos
     Implements IFormularioTema
     Public Property tema As String = "CLARO" Implements IFormularioTema.tema
+    ' False: mantenimiento. True: ShowDialog devuelve el producto elegido.
+    Public Property modoSeleccion As Boolean = False
+    ' Categoría fija al seleccionar (ej. "VIDRIO"): oculta Ver todos y bloquea el combo
+    Public Property categoriaFiltro As String = ""
+    Public Property idProductoSeleccionado As Integer = 0
+    Public Property nombreProductoSeleccionado As String = ""
 
     Dim objProd As New Producto
     Dim dtProductos As DataTable
@@ -12,6 +18,14 @@ Public Class frmListadoProductos
         Dim p As Paleta = Temas.Obtener(tema)
         Panel2.BackColor = p.Fondo
         lblTitulo.ForeColor = p.Acento
+
+        btnSeleccionar.Visible = modoSeleccion
+        btnEliminar.Visible = Not modoSeleccion
+        btnDarBaja.Visible = Not modoSeleccion
+        lblTitulo.Text = If(modoSeleccion, "SELECCIONAR PRODUCTO", "LISTADO DE PRODUCTOS")
+        Text = If(modoSeleccion, "Seleccionar producto", "Mantenimiento de productos")
+        idProductoSeleccionado = 0
+        nombreProductoSeleccionado = ""
 
         dgvProductos.ReadOnly = True
         dgvProductos.SelectionMode = DataGridViewSelectionMode.FullRowSelect
@@ -25,6 +39,13 @@ Public Class frmListadoProductos
         cboCategoria.Items.Add("TODAS")
         cboCategoria.Items.AddRange(Producto.Categorias)
         cboCategoria.SelectedIndex = 0
+
+        If Not String.IsNullOrWhiteSpace(categoriaFiltro) Then
+            Dim indice As Integer = cboCategoria.Items.IndexOf(categoriaFiltro)
+            If indice >= 0 Then cboCategoria.SelectedIndex = indice
+            cboCategoria.Enabled = False
+            btnVerTodos.Visible = False
+        End If
 
         cargarLista()
     End Sub
@@ -107,6 +128,7 @@ Public Class frmListadoProductos
         btnEliminar.Enabled = haySeleccion
         btnDarBaja.Enabled = haySeleccion
         btnDarBaja.Text = If(haySeleccion AndAlso Not productoActivo(), "REACTIVAR", "DAR DE BAJA")
+        btnSeleccionar.Enabled = haySeleccion
     End Sub
 
     Private Sub dgvProductos_SelectionChanged(sender As Object, e As EventArgs) Handles dgvProductos.SelectionChanged
@@ -122,9 +144,14 @@ Public Class frmListadoProductos
         If id > 0 Then abrirRegistro(id)
     End Sub
 
-    ' Doble clic en una fila hace lo mismo que Modificar
+    ' Doble clic en una fila: en modo selección devuelve el producto, si no, abre Modificar
     Private Sub dgvProductos_CellDoubleClick(sender As Object, e As DataGridViewCellEventArgs) Handles dgvProductos.CellDoubleClick
-        If e.RowIndex >= 0 Then btnModificar.PerformClick()
+        If e.RowIndex < 0 Then Return
+        If modoSeleccion Then
+            btnSeleccionar.PerformClick()
+        Else
+            btnModificar.PerformClick()
+        End If
     End Sub
 
     ' ShowDialog abre el registro como ventana modal: mientras esté abierto
@@ -190,6 +217,31 @@ Public Class frmListadoProductos
     End Sub
 
     Private Sub btnCerrar_Click(sender As Object, e As EventArgs) Handles btnCerrar.Click
-        Close()
+        If modoSeleccion Then
+            DialogResult = DialogResult.Cancel
+        Else
+            Close()
+        End If
+    End Sub
+
+    Private Sub btnSeleccionar_Click(sender As Object, e As EventArgs) Handles btnSeleccionar.Click
+        If Not modoSeleccion Then Return
+        Dim id As Integer = idSeleccionado()
+        If id = 0 Then Return
+        Try
+            ' Revalidar: otro trabajador pudo dar de baja/eliminar el producto tras cargar la grilla.
+            Dim dt As DataTable = objProd.Obtener(id)
+            If dt Is Nothing OrElse dt.Rows.Count = 0 Then
+                MessageBox.Show("El producto ya no existe. Seleccione otro.", "Productos",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning)
+                cargarLista()
+                Return
+            End If
+            idProductoSeleccionado = id
+            nombreProductoSeleccionado = dt.Rows(0)("nombre").ToString()
+            DialogResult = DialogResult.OK
+        Catch ex As Exception
+            MessageBox.Show(ex.Message, "Productos", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
     End Sub
 End Class
