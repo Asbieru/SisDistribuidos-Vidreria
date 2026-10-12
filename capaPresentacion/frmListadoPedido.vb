@@ -19,9 +19,8 @@ Public Class frmListadoPedido
 
         btnSeleccionar.Visible = modoSeleccion
         btnNuevo.Visible = Not modoSeleccion
-        btnModificar.Visible = Not modoSeleccion
+        btnVerPedido.Visible = Not modoSeleccion
         btnCancelar.Visible = Not modoSeleccion
-        btnModificar.Enabled = False
         lblTitulo.Text = If(modoSeleccion, "SELECCIONAR PEDIDO", "LISTADO DE PEDIDOS")
         Text = If(modoSeleccion, "Seleccionar pedido", "Listado de pedidos")
         idPedidoSeleccionado = 0
@@ -120,11 +119,35 @@ Public Class frmListadoPedido
     Private Sub actualizarBotones()
         Dim haySeleccion As Boolean = idSeleccionado() > 0
         btnCancelar.Enabled = haySeleccion
+        btnVerPedido.Enabled = haySeleccion
         btnSeleccionar.Enabled = haySeleccion
     End Sub
 
     Private Sub tblPedidos_SelectionChanged(sender As Object, e As EventArgs) Handles tblPedidos.SelectionChanged
         actualizarBotones()
+    End Sub
+
+    ' Doble clic: en modo selección devuelve el pedido, si no, abre el detalle
+    Private Sub tblPedidos_CellDoubleClick(sender As Object, e As DataGridViewCellEventArgs) Handles tblPedidos.CellDoubleClick
+        If e.RowIndex < 0 Then Return
+        If modoSeleccion Then
+            btnSeleccionar.PerformClick()
+            Return
+        End If
+        verPedidoSeleccionado()
+    End Sub
+
+    Private Sub btnVerPedido_Click(sender As Object, e As EventArgs) Handles btnVerPedido.Click
+        verPedidoSeleccionado()
+    End Sub
+
+    ' Abre el detalle del pedido seleccionado en la tabla
+    Private Sub verPedidoSeleccionado()
+        Dim id As Integer = idSeleccionado()
+        If id = 0 Then Return
+        Dim frm As New frmPedidoUnitario With {.idPedido = id, .tema = tema, .idUsuario = idUsuario}
+        frm.MdiParent = Me.MdiParent
+        frm.Show()
     End Sub
 
     Private Sub btnNuevo_Click(sender As Object, e As EventArgs) Handles btnNuevo.Click

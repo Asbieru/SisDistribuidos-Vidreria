@@ -164,7 +164,7 @@ Partial Class frmRegistrarCompras
         'nudCostoUnitario
         '
         Me.nudCostoUnitario.DecimalPlaces = 2
-        Me.nudCostoUnitario.Location = New System.Drawing.Point(427, 216)
+        Me.nudCostoUnitario.Location = New System.Drawing.Point(427, 205)
         Me.nudCostoUnitario.Maximum = New Decimal(New Integer() {1000000, 0, 0, 0})
         Me.nudCostoUnitario.Name = "nudCostoUnitario"
         Me.nudCostoUnitario.Size = New System.Drawing.Size(102, 20)
@@ -173,7 +173,7 @@ Partial Class frmRegistrarCompras
         '
         'nudCantidad
         '
-        Me.nudCantidad.Location = New System.Drawing.Point(427, 170)
+        Me.nudCantidad.Location = New System.Drawing.Point(427, 158)
         Me.nudCantidad.Maximum = New Decimal(New Integer() {1000000, 0, 0, 0})
         Me.nudCantidad.Name = "nudCantidad"
         Me.nudCantidad.Size = New System.Drawing.Size(102, 20)
@@ -184,7 +184,7 @@ Partial Class frmRegistrarCompras
         '
         Me.cboVariante.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.cboVariante.FormattingEnabled = True
-        Me.cboVariante.Location = New System.Drawing.Point(427, 113)
+        Me.cboVariante.Location = New System.Drawing.Point(427, 99)
         Me.cboVariante.Name = "cboVariante"
         Me.cboVariante.Size = New System.Drawing.Size(185, 21)
         Me.cboVariante.TabIndex = 12
@@ -192,7 +192,7 @@ Partial Class frmRegistrarCompras
         'lblCosto
         '
         Me.lblCosto.AutoSize = True
-        Me.lblCosto.Location = New System.Drawing.Point(319, 223)
+        Me.lblCosto.Location = New System.Drawing.Point(319, 211)
         Me.lblCosto.Name = "lblCosto"
         Me.lblCosto.Size = New System.Drawing.Size(74, 13)
         Me.lblCosto.TabIndex = 11
@@ -201,7 +201,7 @@ Partial Class frmRegistrarCompras
         'lblCantidad
         '
         Me.lblCantidad.AutoSize = True
-        Me.lblCantidad.Location = New System.Drawing.Point(319, 170)
+        Me.lblCantidad.Location = New System.Drawing.Point(319, 158)
         Me.lblCantidad.Name = "lblCantidad"
         Me.lblCantidad.Size = New System.Drawing.Size(52, 13)
         Me.lblCantidad.TabIndex = 10
@@ -210,7 +210,7 @@ Partial Class frmRegistrarCompras
         'lblProducto
         '
         Me.lblProducto.AutoSize = True
-        Me.lblProducto.Location = New System.Drawing.Point(319, 116)
+        Me.lblProducto.Location = New System.Drawing.Point(319, 102)
         Me.lblProducto.Name = "lblProducto"
         Me.lblProducto.Size = New System.Drawing.Size(102, 13)
         Me.lblProducto.TabIndex = 9
@@ -218,7 +218,7 @@ Partial Class frmRegistrarCompras
         '
         'nudPedidoOrigen
         '
-        Me.nudPedidoOrigen.Location = New System.Drawing.Point(146, 235)
+        Me.nudPedidoOrigen.Location = New System.Drawing.Point(147, 215)
         Me.nudPedidoOrigen.Maximum = New Decimal(New Integer() {2147483647, 0, 0, 0})
         Me.nudPedidoOrigen.Minimum = New Decimal(New Integer() {1, 0, 0, 0})
         Me.nudPedidoOrigen.Name = "nudPedidoOrigen"
@@ -230,7 +230,7 @@ Partial Class frmRegistrarCompras
         '
         Me.cboMotivo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.cboMotivo.FormattingEnabled = True
-        Me.cboMotivo.Location = New System.Drawing.Point(146, 187)
+        Me.cboMotivo.Location = New System.Drawing.Point(146, 175)
         Me.cboMotivo.Name = "cboMotivo"
         Me.cboMotivo.Size = New System.Drawing.Size(102, 21)
         Me.cboMotivo.TabIndex = 7
@@ -238,7 +238,7 @@ Partial Class frmRegistrarCompras
         'dtpFecha
         '
         Me.dtpFecha.Format = System.Windows.Forms.DateTimePickerFormat.[Short]
-        Me.dtpFecha.Location = New System.Drawing.Point(146, 148)
+        Me.dtpFecha.Location = New System.Drawing.Point(146, 136)
         Me.dtpFecha.Name = "dtpFecha"
         Me.dtpFecha.Size = New System.Drawing.Size(102, 20)
         Me.dtpFecha.TabIndex = 6
@@ -254,7 +254,7 @@ Partial Class frmRegistrarCompras
         'lblPedidoOrigen
         '
         Me.lblPedidoOrigen.AutoSize = True
-        Me.lblPedidoOrigen.Location = New System.Drawing.Point(50, 242)
+        Me.lblPedidoOrigen.Location = New System.Drawing.Point(51, 218)
         Me.lblPedidoOrigen.Name = "lblPedidoOrigen"
         Me.lblPedidoOrigen.Size = New System.Drawing.Size(90, 13)
         Me.lblPedidoOrigen.TabIndex = 4
@@ -263,7 +263,7 @@ Partial Class frmRegistrarCompras
         'lblMotivo
         '
         Me.lblMotivo.AutoSize = True
-        Me.lblMotivo.Location = New System.Drawing.Point(98, 195)
+        Me.lblMotivo.Location = New System.Drawing.Point(96, 179)
         Me.lblMotivo.Name = "lblMotivo"
         Me.lblMotivo.Size = New System.Drawing.Size(42, 13)
         Me.lblMotivo.TabIndex = 3
@@ -272,7 +272,7 @@ Partial Class frmRegistrarCompras
         'lblFecha
         '
         Me.lblFecha.AutoSize = True
-        Me.lblFecha.Location = New System.Drawing.Point(81, 148)
+        Me.lblFecha.Location = New System.Drawing.Point(96, 139)
         Me.lblFecha.Name = "lblFecha"
         Me.lblFecha.Size = New System.Drawing.Size(40, 13)
         Me.lblFecha.TabIndex = 2

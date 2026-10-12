@@ -5,6 +5,8 @@ Imports System.Windows.Forms
 Public Class frmRegistrarCompras
     Implements IFormularioTema
     Public Property tema As String = "CLARO" Implements IFormularioTema.tema
+    ' Variante que llega preseleccionada desde frmPedidoUnitario (boton "Comprar Ahora")
+    Public Property idVarianteInicial As Integer? = Nothing
     Private objVariante As New ProductoVariante
     Private objCompra As New Compra
     Private detalle As DataTable
@@ -71,6 +73,11 @@ Public Class frmRegistrarCompras
             cargarVariantes()
             limpiar()
             btnGuardar.Enabled = True
+
+            If idVarianteInicial.HasValue AndAlso idVarianteInicial.Value > 0 Then
+                cboVariante.SelectedValue = idVarianteInicial.Value
+                If cboVariante.SelectedIndex >= 0 Then nudCantidad.Focus()
+            End If
 
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Error",

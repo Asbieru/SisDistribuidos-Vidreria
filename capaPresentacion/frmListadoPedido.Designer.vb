@@ -31,7 +31,7 @@ Partial Class frmListadoPedido
         Me.btnVerTodos = New System.Windows.Forms.Button()
         Me.btnSeleccionar = New System.Windows.Forms.Button()
         Me.btnNuevo = New System.Windows.Forms.Button()
-        Me.btnModificar = New System.Windows.Forms.Button()
+        Me.btnVerPedido = New System.Windows.Forms.Button()
         Me.btnCancelar = New System.Windows.Forms.Button()
         Me.btnCerrar = New System.Windows.Forms.Button()
         Me.msj = New System.Windows.Forms.Label()
@@ -149,17 +149,17 @@ Partial Class frmListadoPedido
         Me.btnNuevo.Text = "Nuevo +"
         Me.btnNuevo.UseVisualStyleBackColor = True
         '
-        'btnModificar
+        'btnVerPedido
         '
-        Me.btnModificar.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.btnModificar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnModificar.Location = New System.Drawing.Point(132, 401)
-        Me.btnModificar.Margin = New System.Windows.Forms.Padding(2)
-        Me.btnModificar.Name = "btnModificar"
-        Me.btnModificar.Size = New System.Drawing.Size(97, 28)
-        Me.btnModificar.TabIndex = 5
-        Me.btnModificar.Text = "Modificar"
-        Me.btnModificar.UseVisualStyleBackColor = True
+        Me.btnVerPedido.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.btnVerPedido.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnVerPedido.Location = New System.Drawing.Point(132, 401)
+        Me.btnVerPedido.Margin = New System.Windows.Forms.Padding(2)
+        Me.btnVerPedido.Name = "btnVerPedido"
+        Me.btnVerPedido.Size = New System.Drawing.Size(97, 28)
+        Me.btnVerPedido.TabIndex = 5
+        Me.btnVerPedido.Text = "Ver Pedido"
+        Me.btnVerPedido.UseVisualStyleBackColor = True
         '
         'btnCancelar
         '
@@ -205,7 +205,7 @@ Partial Class frmListadoPedido
         Me.Controls.Add(Me.msj)
         Me.Controls.Add(Me.btnSeleccionar)
         Me.Controls.Add(Me.btnNuevo)
-        Me.Controls.Add(Me.btnModificar)
+        Me.Controls.Add(Me.btnVerPedido)
         Me.Controls.Add(Me.btnCancelar)
         Me.Controls.Add(Me.btnCerrar)
         Me.Controls.Add(Me.btnVerTodos)
@@ -232,7 +232,7 @@ Partial Class frmListadoPedido
     Friend WithEvents btnVerTodos As Button
     Friend WithEvents btnSeleccionar As Button
     Friend WithEvents btnNuevo As Button
-    Friend WithEvents btnModificar As Button
+    Friend WithEvents btnVerPedido As Button
     Friend WithEvents btnCancelar As Button
     Friend WithEvents btnCerrar As Button
     Friend WithEvents msj As Label

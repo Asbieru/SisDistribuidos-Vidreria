@@ -47,6 +47,16 @@ Public Class Pedido
             "order by p.fecha desc, p.id_pedido desc")
     End Function
 
+    ' Cabecera de un pedido con los nombres de cliente y vendedor
+    Public Function Obtener(idPedido As Integer) As DataTable
+        Return objMan.listarComando(
+            "select p.id_pedido, c.nombre as cliente, u.nombre as usuario, p.fecha, p.estado, p.total " &
+            "from pedidos p " &
+            "inner join clientes c on c.id_cliente = p.id_cliente " &
+            "inner join usuarios u on u.id_usuario = p.id_usuario " &
+            "where p.id_pedido=" & idPedido)
+    End Function
+
     ' estado: PENDIENTE, PAGADO, PARCIAL o CANCELADO
     Public Sub CambiarEstado(idPedido As Integer, estado As String)
         objMan.ejecutarComando("update pedidos set estado='" & Esc(estado) & "' where id_pedido=" & idPedido)
@@ -59,6 +69,42 @@ Public Class Pedido
     Public Function ListarDetalles(idItem As Integer) As DataTable
         Return objMan.listarComando("select * from pedido_detalle where id_item=" & idItem & " and estado='ACTIVO'")
     End Function
+
+    ' Cabecera de cada item del pedido (una pestaña en frmPedidoUnitario)
+    Public Function ListarItemsDetallado(idPedido As Integer) As DataTable
+        Return objMan.listarComando(
+            "select pi.id_item, pi.tipo, pi.descripcion, pi.estado, pi.total, " &
+            "medidas.ancho_cm, medidas.alto_cm " &
+            "from pedido_item pi " &
+            "outer apply ( " &
+            "  select top 1 pd.ancho_cm, pd.alto_cm " &
+            "  from pedido_detalle pd " &
+            "  where pd.id_item = pi.id_item and pd.estado = 'ACTIVO' and pd.ancho_cm is not null " &
+            "  order by pd.id_detalle " &
+            ") medidas " &
+            "where pi.id_pedido = " & idPedido & " " &
+            "order by pi.id_item")
+    End Function
+
+    ' Lineas de material de un item, con el nombre del producto y la pieza asociada
+    Public Function ListarDetallesDeItem(idItem As Integer) As DataTable
+        Return objMan.listarComando(
+            "select pd.id_detalle, v.producto as material, " &
+            "pd.ancho_cm, pd.alto_cm, pd.largo_cm, pd.cantidad_cajas, " &
+            "pd.accion, pd.subtotal, pd.id_variante, pd.id_compra_detalle, " &
+            "ip.id_pieza as pieza_usada, ip.ancho_cm as pieza_ancho, " &
+            "ip.alto_cm as pieza_alto, ip.largo_cm as pieza_largo, ip.origen as pieza_origen " &
+            "from pedido_detalle pd " &
+            "inner join vw_inv_variantes v on v.id_variante = pd.id_variante " &
+            "left join inventario_piezas ip on ip.id_pieza = pd.id_pieza " &
+            "where pd.id_item = " & idItem & " and pd.estado = 'ACTIVO' " &
+            "order by pd.id_detalle")
+    End Function
+
+    ' Marca una linea de material como resuelta (p.ej. despues de confirmar el corte)
+    Public Sub ResolverDetalle(idDetalle As Integer)
+        objMan.ejecutarComando("update pedido_detalle set accion='USA_EXISTENTE', id_pieza=NULL where id_detalle=" & idDetalle)
+    End Sub
 
     Public Function TarifaSugerida(anchoCm As Decimal, altoCm As Decimal) As (aluminio As Decimal, silicona As Decimal)
         Dim perimetro As Decimal = 2 * (anchoCm + altoCm)

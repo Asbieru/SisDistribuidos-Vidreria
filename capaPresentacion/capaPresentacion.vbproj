@@ -264,6 +264,9 @@
     <EmbeddedResource Include="frmListadoProductos.resx">
       <DependentUpon>frmListadoProductos.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="frmPedidoUnitario.resx">
+      <DependentUpon>frmPedidoUnitario.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="frmPermisos.resx">
       <DependentUpon>frmPermisos.vb</DependentUpon>
     </EmbeddedResource>
