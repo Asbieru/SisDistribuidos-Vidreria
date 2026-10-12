@@ -87,13 +87,15 @@ Partial Class frmHistorialClientes
         Me.cmbEstado.TabIndex = 1
         Me.btnCambiarCliente.Location = New System.Drawing.Point(24, 94)
         Me.btnCambiarCliente.Name = "btnCambiarCliente"
-        Me.btnCambiarCliente.Size = New System.Drawing.Size(150, 34)
+        Me.btnCambiarCliente.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Bold)
+        Me.btnCambiarCliente.Size = New System.Drawing.Size(150, 32)
         Me.btnCambiarCliente.TabIndex = 0
         Me.btnCambiarCliente.Text = "ELEGIR CLIENTE"
         Me.btnCambiarCliente.UseVisualStyleBackColor = True
         Me.btnActualizar.Location = New System.Drawing.Point(454, 94)
         Me.btnActualizar.Name = "btnActualizar"
-        Me.btnActualizar.Size = New System.Drawing.Size(130, 34)
+        Me.btnActualizar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Bold)
+        Me.btnActualizar.Size = New System.Drawing.Size(130, 32)
         Me.btnActualizar.TabIndex = 2
         Me.btnActualizar.Text = "ACTUALIZAR"
         Me.btnActualizar.UseVisualStyleBackColor = True
@@ -124,7 +126,8 @@ Partial Class frmHistorialClientes
         Me.dtpHasta.TabIndex = 5
         Me.btnVerTodos.Location = New System.Drawing.Point(660, 136)
         Me.btnVerTodos.Name = "btnVerTodos"
-        Me.btnVerTodos.Size = New System.Drawing.Size(140, 34)
+        Me.btnVerTodos.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Bold)
+        Me.btnVerTodos.Size = New System.Drawing.Size(140, 32)
         Me.btnVerTodos.Text = "VER TODO"
         Me.btnVerTodos.TabIndex = 6
         Me.btnVerTodos.UseVisualStyleBackColor = True
@@ -182,7 +185,8 @@ Partial Class frmHistorialClientes
         Me.btnCerrar.Anchor = System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right
         Me.btnCerrar.Location = New System.Drawing.Point(906, 670)
         Me.btnCerrar.Name = "btnCerrar"
-        Me.btnCerrar.Size = New System.Drawing.Size(120, 34)
+        Me.btnCerrar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Bold)
+        Me.btnCerrar.Size = New System.Drawing.Size(120, 32)
         Me.btnCerrar.Text = "CERRAR"
         Me.btnCerrar.TabIndex = 9
         Me.btnCerrar.UseVisualStyleBackColor = True

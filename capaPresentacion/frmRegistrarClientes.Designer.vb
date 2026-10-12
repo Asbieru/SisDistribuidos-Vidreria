@@ -182,6 +182,7 @@ Partial Class frmRegistrarClientes
         Me.btnRecargar.Anchor = System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right
         Me.btnRecargar.Location = New System.Drawing.Point(345, 484)
         Me.btnRecargar.Name = "btnRecargar"
+        Me.btnRecargar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Bold)
         Me.btnRecargar.Size = New System.Drawing.Size(120, 34)
         Me.btnRecargar.TabIndex = 14
         Me.btnRecargar.Text = "RECARGAR"
