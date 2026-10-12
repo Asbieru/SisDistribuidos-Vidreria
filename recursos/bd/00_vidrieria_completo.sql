@@ -8,6 +8,8 @@
 --   03_datos_prueba_inventario.sql   (datos de prueba)
 --   04_modulo_clientes.sql           (modulo de clientes)
 --   05_ficha_comercial_clientes.sql  (ampliacion de clientes)
+--   + roles y permisos (tipo_permiso, rol_permiso, permiso)
+--   + catalogo real de vidrios por pie2 y combos de registrar pedido
 --
 -- Orden de ejecucion:
 --   1) Base de datos y TABLAS (los cambios de los modulos ya estan
@@ -79,6 +81,44 @@ CREATE TABLE dbo.usuario_mensajes_descartados (
         REFERENCES dbo.usuarios(id_usuario) ON DELETE CASCADE,
     CONSTRAINT fk_desc_mensaje FOREIGN KEY (id_mensaje)
         REFERENCES dbo.tipos_mensaje(id_mensaje) ON DELETE CASCADE
+);
+GO
+
+-- ------------------------------------------------------------
+-- Roles y permisos
+--   tipo_permiso : lista de permisos del sistema (cada uno habilita opciones del menú)
+--   rol_permiso  : permisos que recibe por defecto cada rol (plantilla)
+--   permiso      : permisos que tiene realmente cada usuario
+-- ------------------------------------------------------------
+IF OBJECT_ID(N'dbo.tipo_permiso', N'U') IS NULL
+CREATE TABLE dbo.tipo_permiso (
+    id_tipo      INT IDENTITY(1,1) PRIMARY KEY,
+    codigo       NVARCHAR(30)  NOT NULL UNIQUE,   -- lo usa el código del menú (USUARIOS, CLIENTES...)
+    nombre       NVARCHAR(100) NOT NULL,
+    descripcion  NVARCHAR(255) NULL
+);
+GO
+
+IF OBJECT_ID(N'dbo.rol_permiso', N'U') IS NULL
+CREATE TABLE dbo.rol_permiso (
+    rol      NVARCHAR(20) NOT NULL
+        CONSTRAINT ck_rol_permiso_rol CHECK (rol IN ('VENDEDOR','ADMINISTRADOR')),
+    id_tipo  INT NOT NULL,
+    CONSTRAINT pk_rol_permiso PRIMARY KEY (rol, id_tipo),
+    CONSTRAINT fk_rolper_tipo FOREIGN KEY (id_tipo)
+        REFERENCES dbo.tipo_permiso(id_tipo) ON DELETE CASCADE
+);
+GO
+
+IF OBJECT_ID(N'dbo.permiso', N'U') IS NULL
+CREATE TABLE dbo.permiso (
+    id_usuario  INT NOT NULL,
+    id_tipo     INT NOT NULL,
+    CONSTRAINT pk_permiso PRIMARY KEY (id_usuario, id_tipo),
+    CONSTRAINT fk_permiso_usuario FOREIGN KEY (id_usuario)
+        REFERENCES dbo.usuarios(id_usuario) ON DELETE CASCADE,
+    CONSTRAINT fk_permiso_tipo FOREIGN KEY (id_tipo)
+        REFERENCES dbo.tipo_permiso(id_tipo) ON DELETE CASCADE
 );
 GO
 
@@ -613,7 +653,7 @@ BEGIN
         THROW 50001, 'La variante de producto no existe.', 1;
     IF @unidad = 'CAJA'
         THROW 50002, 'Tornillos y tarugos se manejan por cajas, no por piezas.', 1;
-    IF @unidad = 'CM2' AND (ISNULL(@ancho_cm, 0) <= 0 OR ISNULL(@alto_cm, 0) <= 0)
+    IF @unidad IN ('CM2','PIE2') AND (ISNULL(@ancho_cm, 0) <= 0 OR ISNULL(@alto_cm, 0) <= 0)
         THROW 50003, 'Para vidrio ingrese ancho y alto mayores a cero.', 1;
     IF @unidad = 'CM_LINEAL' AND ISNULL(@largo_cm, 0) <= 0
         THROW 50004, 'Para aluminio ingrese el largo mayor a cero.', 1;
@@ -623,7 +663,7 @@ BEGIN
         THROW 50006, 'Un retazo debe indicar la pieza de la que salio.', 1;
 
     -- Solo se guardan las medidas que corresponden al tipo de material
-    IF @unidad = 'CM2'       SET @largo_cm = NULL;
+    IF @unidad IN ('CM2','PIE2') SET @largo_cm = NULL;   -- vidrio (por cm2 o por pie2)
     IF @unidad = 'CM_LINEAL' SELECT @ancho_cm = NULL, @alto_cm = NULL;
 
     BEGIN TRY
@@ -1423,6 +1463,55 @@ BEGIN
     INSERT INTO dbo.tipos_mensaje (codigo, titulo, texto)
     VALUES ('CERRARSESION', 'Cerrar sesión', '¿Seguro que deseas cerrar sesión?');
 END
+GO
+
+-- ------------------------------------------------------------
+-- Roles y permisos: datos
+-- (va ANTES de los datos de prueba de inventario, porque ese bloque
+--  termina con RETURN y lo que esté después no se ejecutaría)
+-- ------------------------------------------------------------
+
+-- Lista de permisos (solo agrega los que falten)
+INSERT INTO dbo.tipo_permiso (codigo, nombre, descripcion)
+SELECT v.codigo, v.nombre, v.descripcion
+FROM (VALUES
+    (N'USUARIOS',   N'Gestión de usuarios',  N'Registrar, modificar, eliminar y dar de baja usuarios'),
+    (N'PERMISOS',   N'Asignar permisos',     N'Asignar o quitar permisos a los usuarios'),
+    (N'CLIENTES',   N'Gestión de clientes',  N'Registrar, modificar y ver el historial de clientes'),
+    (N'PRODUCTOS',  N'Gestión de productos', N'Registrar, modificar y dar de baja productos'),
+    (N'INVENTARIO', N'Inventario',           N'Ver inventario, piezas, cajas y kardex'),
+    (N'COMPRAS',    N'Compras',              N'Registrar y ver compras'),
+    (N'PEDIDOS',    N'Pedidos y ventas',     N'Cotizar, registrar pedidos y ver ventas'),
+    (N'PAGOS',      N'Pagos',                N'Registrar pagos y comprobantes'),
+    (N'REPORTES',   N'Reportes',             N'Ver los reportes del negocio')
+) AS v(codigo, nombre, descripcion)
+WHERE NOT EXISTS (SELECT 1 FROM dbo.tipo_permiso t WHERE t.codigo = v.codigo);
+GO
+
+-- Permisos por defecto de cada rol
+INSERT INTO dbo.rol_permiso (rol, id_tipo)
+SELECT r.rol, t.id_tipo
+FROM (VALUES
+    (N'ADMINISTRADOR', N'USUARIOS'),  (N'ADMINISTRADOR', N'PERMISOS'),
+    (N'ADMINISTRADOR', N'CLIENTES'),  (N'ADMINISTRADOR', N'PRODUCTOS'),
+    (N'ADMINISTRADOR', N'INVENTARIO'),(N'ADMINISTRADOR', N'COMPRAS'),
+    (N'ADMINISTRADOR', N'PEDIDOS'),   (N'ADMINISTRADOR', N'PAGOS'),
+    (N'ADMINISTRADOR', N'REPORTES'),
+    (N'VENDEDOR', N'CLIENTES'),   (N'VENDEDOR', N'INVENTARIO'),
+    (N'VENDEDOR', N'COMPRAS'),    (N'VENDEDOR', N'PEDIDOS'),
+    (N'VENDEDOR', N'PAGOS')
+) AS r(rol, codigo)
+INNER JOIN dbo.tipo_permiso t ON t.codigo = r.codigo
+WHERE NOT EXISTS (SELECT 1 FROM dbo.rol_permiso x WHERE x.rol = r.rol AND x.id_tipo = t.id_tipo);
+GO
+
+-- Usuarios que todavía no tienen NINGÚN permiso reciben los de su rol
+-- (si a alguien ya se le ajustaron sus permisos, no se tocan)
+INSERT INTO dbo.permiso (id_usuario, id_tipo)
+SELECT u.id_usuario, rp.id_tipo
+FROM dbo.usuarios u
+INNER JOIN dbo.rol_permiso rp ON rp.rol = u.rol
+WHERE NOT EXISTS (SELECT 1 FROM dbo.permiso p WHERE p.id_usuario = u.id_usuario);
 GO
 
 -- ------------------------------------------------------------
