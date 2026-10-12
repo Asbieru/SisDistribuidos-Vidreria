@@ -102,4 +102,34 @@ Public Class ProductoVariante
         Return CInt(dt.Rows(0)("id_variante"))
     End Function
 
+    ' Precio unitario de la variante de un producto segun el espesor elegido
+    Public Function ObtenerPrecioUnitario(idProducto As Integer, espesorCm As Decimal) As Decimal
+        Dim objMan As New clsMantenimiento
+        Dim parametros As New Dictionary(Of String, Object) From {{"id_producto", idProducto}, {"espesor_cm", espesorCm}}
+        Dim dt = objMan.listarProcedimiento("sp_ped_resolver_variante_producto", parametros)
+        If dt.Rows.Count = 0 Then Return 0D
+        Return CDec(dt.Rows(0)("precio_unitario"))
+    End Function
+
+    ' Precio unitario de un producto sin depender del espesor (para ALUMINIO)
+    Public Function ObtenerPrecioUnitarioPorProducto(idProducto As Integer) As Decimal
+        Dim objMan As New clsMantenimiento
+        Dim parametros As New Dictionary(Of String, Object) From {{"id_producto", idProducto}}
+        Dim sql As String = "select top 1 precio_unitario from producto_variante where id_producto=@id_producto order by id_variante"
+        Dim dt = objMan.consultarConParametros(sql, parametros)
+        If dt.Rows.Count = 0 Then Return 0D
+        If IsDBNull(dt.Rows(0)("precio_unitario")) Then Return 0D
+        Return CDec(dt.Rows(0)("precio_unitario"))
+    End Function
+
+    ' Id de la variante de un producto sin depender del espesor (para ALUMINIO al guardar)
+    Public Function ObtenerVariantePorProducto(idProducto As Integer) As Integer
+        Dim objMan As New clsMantenimiento
+        Dim parametros As New Dictionary(Of String, Object) From {{"id_producto", idProducto}}
+        Dim sql As String = "select top 1 id_variante from producto_variante where id_producto=@id_producto order by id_variante"
+        Dim dt = objMan.consultarConParametros(sql, parametros)
+        If dt.Rows.Count = 0 Then Return 0
+        Return CInt(dt.Rows(0)("id_variante"))
+    End Function
+
 End Class

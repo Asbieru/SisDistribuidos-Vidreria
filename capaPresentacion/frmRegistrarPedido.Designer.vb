@@ -61,6 +61,7 @@ Partial Class frmRegistrarPedido
         Me.txtAncho = New System.Windows.Forms.TextBox()
         Me.Label14 = New System.Windows.Forms.Label()
         Me.Panel4 = New System.Windows.Forms.Panel()
+        Me.Label15 = New System.Windows.Forms.Label()
         Me.txtNombreVidrio = New System.Windows.Forms.TextBox()
         Me.btnSelectVidrio = New System.Windows.Forms.Button()
         Me.txtEspesor = New System.Windows.Forms.ComboBox()
@@ -68,14 +69,15 @@ Partial Class frmRegistrarPedido
         Me.Label7 = New System.Windows.Forms.Label()
         Me.Label8 = New System.Windows.Forms.Label()
         Me.tabModeloVentana = New System.Windows.Forms.TabPage()
-        Me.TextBox6 = New System.Windows.Forms.TextBox()
+        Me.Label16 = New System.Windows.Forms.Label()
+        Me.txtTotalVentana = New System.Windows.Forms.TextBox()
         Me.Panel6 = New System.Windows.Forms.Panel()
         Me.Label27 = New System.Windows.Forms.Label()
-        Me.TextBox2 = New System.Windows.Forms.TextBox()
+        Me.txtCenVentana1 = New System.Windows.Forms.TextBox()
         Me.CheckBox4 = New System.Windows.Forms.CheckBox()
         Me.CheckBox3 = New System.Windows.Forms.CheckBox()
         Me.Label36 = New System.Windows.Forms.Label()
-        Me.txtCenVentana = New System.Windows.Forms.TextBox()
+        Me.txtCenVentana2 = New System.Windows.Forms.TextBox()
         Me.Label21 = New System.Windows.Forms.Label()
         Me.Label22 = New System.Windows.Forms.Label()
         Me.Label23 = New System.Windows.Forms.Label()
@@ -89,23 +91,47 @@ Partial Class frmRegistrarPedido
         Me.Label30 = New System.Windows.Forms.Label()
         Me.txtArrVentana = New System.Windows.Forms.TextBox()
         Me.Label31 = New System.Windows.Forms.Label()
+        Me.txtNombreVidrioVentana = New System.Windows.Forms.TextBox()
         Me.Panel3 = New System.Windows.Forms.Panel()
-        Me.cmbColorAlumnio = New System.Windows.Forms.ComboBox()
+        Me.cmbEspesorVentana = New System.Windows.Forms.ComboBox()
+        Me.Label29 = New System.Windows.Forms.Label()
+        Me.cmbColorAlumnioVentana = New System.Windows.Forms.ComboBox()
         Me.Label6 = New System.Windows.Forms.Label()
+        Me.Label37 = New System.Windows.Forms.Label()
         Me.Label5 = New System.Windows.Forms.Label()
+        Me.btnBuscarVidrioVentana = New System.Windows.Forms.Button()
         Me.Label32 = New System.Windows.Forms.Label()
-        Me.TextBox7 = New System.Windows.Forms.TextBox()
+        Me.txtManoObraVentana = New System.Windows.Forms.TextBox()
         Me.Label34 = New System.Windows.Forms.Label()
         Me.Label35 = New System.Windows.Forms.Label()
-        Me.TextBox8 = New System.Windows.Forms.TextBox()
-        Me.TextBox9 = New System.Windows.Forms.TextBox()
+        Me.txtExtraVentana = New System.Windows.Forms.TextBox()
+        Me.txtPreciomaterialVentana = New System.Windows.Forms.TextBox()
         Me.Label33 = New System.Windows.Forms.Label()
+        Me.tabModeloAluminio = New System.Windows.Forms.TabPage()
+        Me.Panel8 = New System.Windows.Forms.Panel()
+        Me.Label48 = New System.Windows.Forms.Label()
+        Me.Label49 = New System.Windows.Forms.Label()
+        Me.txtLargoAluminio = New System.Windows.Forms.TextBox()
+        Me.Label50 = New System.Windows.Forms.Label()
+        Me.Panel7 = New System.Windows.Forms.Panel()
+        Me.txtNombreAluminio = New System.Windows.Forms.TextBox()
+        Me.Label39 = New System.Windows.Forms.Label()
+        Me.Label41 = New System.Windows.Forms.Label()
+        Me.btnBuscarAluminio = New System.Windows.Forms.Button()
         Me.btnDuplicar = New System.Windows.Forms.Button()
         Me.btnLimpiar = New System.Windows.Forms.Button()
         Me.btnEliminar = New System.Windows.Forms.Button()
         Me.btnGuardarPedido = New System.Windows.Forms.Button()
         Me.Label20 = New System.Windows.Forms.Label()
-        Me.TextBox1 = New System.Windows.Forms.TextBox()
+        Me.txtTotalTodo = New System.Windows.Forms.TextBox()
+        Me.txtTotalAluminio = New System.Windows.Forms.TextBox()
+        Me.Label38 = New System.Windows.Forms.Label()
+        Me.txtManoObraAluminio = New System.Windows.Forms.TextBox()
+        Me.Label40 = New System.Windows.Forms.Label()
+        Me.txtExtraAluminio = New System.Windows.Forms.TextBox()
+        Me.Label42 = New System.Windows.Forms.Label()
+        Me.txtPrecioMaterialesAluminio = New System.Windows.Forms.TextBox()
+        Me.Label43 = New System.Windows.Forms.Label()
         Me.Panel1.SuspendLayout()
         Me.Panel2.SuspendLayout()
         Me.tabsPedidos.SuspendLayout()
@@ -115,6 +141,9 @@ Partial Class frmRegistrarPedido
         Me.tabModeloVentana.SuspendLayout()
         Me.Panel6.SuspendLayout()
         Me.Panel3.SuspendLayout()
+        Me.tabModeloAluminio.SuspendLayout()
+        Me.Panel8.SuspendLayout()
+        Me.Panel7.SuspendLayout()
         Me.SuspendLayout()
         '
         'Panel1
@@ -125,7 +154,7 @@ Partial Class frmRegistrarPedido
         Me.Panel1.Controls.Add(Me.Label1)
         Me.Panel1.Location = New System.Drawing.Point(12, 12)
         Me.Panel1.Name = "Panel1"
-        Me.Panel1.Size = New System.Drawing.Size(364, 99)
+        Me.Panel1.Size = New System.Drawing.Size(363, 99)
         Me.Panel1.TabIndex = 0
         '
         'Label3
@@ -193,9 +222,9 @@ Partial Class frmRegistrarPedido
         Me.Panel2.Controls.Add(Me.Label2)
         Me.Panel2.Controls.Add(Me.cmbPedido)
         Me.Panel2.Controls.Add(Me.Label4)
-        Me.Panel2.Location = New System.Drawing.Point(388, 12)
+        Me.Panel2.Location = New System.Drawing.Point(381, 12)
         Me.Panel2.Name = "Panel2"
-        Me.Panel2.Size = New System.Drawing.Size(405, 99)
+        Me.Panel2.Size = New System.Drawing.Size(412, 99)
         Me.Panel2.TabIndex = 0
         '
         'btnAgregarPedido
@@ -222,6 +251,7 @@ Partial Class frmRegistrarPedido
         '
         Me.tabsPedidos.Controls.Add(Me.tabModeloVidrio)
         Me.tabsPedidos.Controls.Add(Me.tabModeloVentana)
+        Me.tabsPedidos.Controls.Add(Me.tabModeloAluminio)
         Me.tabsPedidos.Location = New System.Drawing.Point(12, 117)
         Me.tabsPedidos.Name = "tabsPedidos"
         Me.tabsPedidos.SelectedIndex = 0
@@ -520,6 +550,7 @@ Partial Class frmRegistrarPedido
         'Panel4
         '
         Me.Panel4.BackColor = System.Drawing.Color.Transparent
+        Me.Panel4.Controls.Add(Me.Label15)
         Me.Panel4.Controls.Add(Me.txtNombreVidrio)
         Me.Panel4.Controls.Add(Me.btnSelectVidrio)
         Me.Panel4.Controls.Add(Me.txtEspesor)
@@ -530,6 +561,17 @@ Partial Class frmRegistrarPedido
         Me.Panel4.Name = "Panel4"
         Me.Panel4.Size = New System.Drawing.Size(756, 100)
         Me.Panel4.TabIndex = 0
+        '
+        'Label15
+        '
+        Me.Label15.AutoSize = True
+        Me.Label15.BackColor = System.Drawing.Color.Transparent
+        Me.Label15.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label15.Location = New System.Drawing.Point(13, 40)
+        Me.Label15.Name = "Label15"
+        Me.Label15.Size = New System.Drawing.Size(113, 16)
+        Me.Label15.TabIndex = 9
+        Me.Label15.Text = "Nombre de Vidrio"
         '
         'txtNombreVidrio
         '
@@ -591,15 +633,17 @@ Partial Class frmRegistrarPedido
         '
         'tabModeloVentana
         '
-        Me.tabModeloVentana.Controls.Add(Me.TextBox6)
+        Me.tabModeloVentana.Controls.Add(Me.Label16)
+        Me.tabModeloVentana.Controls.Add(Me.txtTotalVentana)
         Me.tabModeloVentana.Controls.Add(Me.Panel6)
+        Me.tabModeloVentana.Controls.Add(Me.txtNombreVidrioVentana)
         Me.tabModeloVentana.Controls.Add(Me.Panel3)
         Me.tabModeloVentana.Controls.Add(Me.Label32)
-        Me.tabModeloVentana.Controls.Add(Me.TextBox7)
+        Me.tabModeloVentana.Controls.Add(Me.txtManoObraVentana)
         Me.tabModeloVentana.Controls.Add(Me.Label34)
         Me.tabModeloVentana.Controls.Add(Me.Label35)
-        Me.tabModeloVentana.Controls.Add(Me.TextBox8)
-        Me.tabModeloVentana.Controls.Add(Me.TextBox9)
+        Me.tabModeloVentana.Controls.Add(Me.txtExtraVentana)
+        Me.tabModeloVentana.Controls.Add(Me.txtPreciomaterialVentana)
         Me.tabModeloVentana.Controls.Add(Me.Label33)
         Me.tabModeloVentana.Location = New System.Drawing.Point(4, 22)
         Me.tabModeloVentana.Name = "tabModeloVentana"
@@ -609,24 +653,35 @@ Partial Class frmRegistrarPedido
         Me.tabModeloVentana.Text = "Modelo Ventana"
         Me.tabModeloVentana.UseVisualStyleBackColor = True
         '
-        'TextBox6
+        'Label16
         '
-        Me.TextBox6.Enabled = False
-        Me.TextBox6.Location = New System.Drawing.Point(562, 319)
-        Me.TextBox6.Name = "TextBox6"
-        Me.TextBox6.Size = New System.Drawing.Size(200, 20)
-        Me.TextBox6.TabIndex = 22
-        Me.TextBox6.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
+        Me.Label16.AutoSize = True
+        Me.Label16.BackColor = System.Drawing.Color.Transparent
+        Me.Label16.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label16.Location = New System.Drawing.Point(13, 69)
+        Me.Label16.Name = "Label16"
+        Me.Label16.Size = New System.Drawing.Size(113, 16)
+        Me.Label16.TabIndex = 12
+        Me.Label16.Text = "Nombre de Vidrio"
+        '
+        'txtTotalVentana
+        '
+        Me.txtTotalVentana.Enabled = False
+        Me.txtTotalVentana.Location = New System.Drawing.Point(562, 319)
+        Me.txtTotalVentana.Name = "txtTotalVentana"
+        Me.txtTotalVentana.Size = New System.Drawing.Size(200, 20)
+        Me.txtTotalVentana.TabIndex = 22
+        Me.txtTotalVentana.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
         'Panel6
         '
         Me.Panel6.BackColor = System.Drawing.Color.White
         Me.Panel6.Controls.Add(Me.Label27)
-        Me.Panel6.Controls.Add(Me.TextBox2)
+        Me.Panel6.Controls.Add(Me.txtCenVentana1)
         Me.Panel6.Controls.Add(Me.CheckBox4)
         Me.Panel6.Controls.Add(Me.CheckBox3)
         Me.Panel6.Controls.Add(Me.Label36)
-        Me.Panel6.Controls.Add(Me.txtCenVentana)
+        Me.Panel6.Controls.Add(Me.txtCenVentana2)
         Me.Panel6.Controls.Add(Me.Label21)
         Me.Panel6.Controls.Add(Me.Label22)
         Me.Panel6.Controls.Add(Me.Label23)
@@ -656,17 +711,17 @@ Partial Class frmRegistrarPedido
         Me.Label27.TabIndex = 17
         Me.Label27.Text = "Centro"
         '
-        'TextBox2
+        'txtCenVentana1
         '
-        Me.TextBox2.Location = New System.Drawing.Point(376, 45)
-        Me.TextBox2.Name = "TextBox2"
-        Me.TextBox2.Size = New System.Drawing.Size(126, 20)
-        Me.TextBox2.TabIndex = 16
+        Me.txtCenVentana1.Location = New System.Drawing.Point(380, 45)
+        Me.txtCenVentana1.Name = "txtCenVentana1"
+        Me.txtCenVentana1.Size = New System.Drawing.Size(126, 20)
+        Me.txtCenVentana1.TabIndex = 16
         '
         'CheckBox4
         '
         Me.CheckBox4.AutoSize = True
-        Me.CheckBox4.Location = New System.Drawing.Point(13, 138)
+        Me.CheckBox4.Location = New System.Drawing.Point(14, 134)
         Me.CheckBox4.Name = "CheckBox4"
         Me.CheckBox4.Size = New System.Drawing.Size(74, 17)
         Me.CheckBox4.TabIndex = 15
@@ -676,7 +731,7 @@ Partial Class frmRegistrarPedido
         'CheckBox3
         '
         Me.CheckBox3.AutoSize = True
-        Me.CheckBox3.Location = New System.Drawing.Point(13, 73)
+        Me.CheckBox3.Location = New System.Drawing.Point(13, 70)
         Me.CheckBox3.Name = "CheckBox3"
         Me.CheckBox3.Size = New System.Drawing.Size(74, 17)
         Me.CheckBox3.TabIndex = 14
@@ -688,18 +743,18 @@ Partial Class frmRegistrarPedido
         Me.Label36.AutoSize = True
         Me.Label36.BackColor = System.Drawing.Color.Transparent
         Me.Label36.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label36.Location = New System.Drawing.Point(327, 109)
+        Me.Label36.Location = New System.Drawing.Point(327, 106)
         Me.Label36.Name = "Label36"
         Me.Label36.Size = New System.Drawing.Size(46, 16)
         Me.Label36.TabIndex = 0
         Me.Label36.Text = "Centro"
         '
-        'txtCenVentana
+        'txtCenVentana2
         '
-        Me.txtCenVentana.Location = New System.Drawing.Point(376, 107)
-        Me.txtCenVentana.Name = "txtCenVentana"
-        Me.txtCenVentana.Size = New System.Drawing.Size(126, 20)
-        Me.txtCenVentana.TabIndex = 13
+        Me.txtCenVentana2.Location = New System.Drawing.Point(376, 104)
+        Me.txtCenVentana2.Name = "txtCenVentana2"
+        Me.txtCenVentana2.Size = New System.Drawing.Size(126, 20)
+        Me.txtCenVentana2.TabIndex = 13
         '
         'Label21
         '
@@ -728,7 +783,7 @@ Partial Class frmRegistrarPedido
         Me.Label23.AutoSize = True
         Me.Label23.BackColor = System.Drawing.Color.Transparent
         Me.Label23.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label23.Location = New System.Drawing.Point(122, 109)
+        Me.Label23.Location = New System.Drawing.Point(122, 107)
         Me.Label23.Name = "Label23"
         Me.Label23.Size = New System.Drawing.Size(59, 16)
         Me.Label23.TabIndex = 0
@@ -768,7 +823,7 @@ Partial Class frmRegistrarPedido
         Me.Label26.AutoSize = True
         Me.Label26.BackColor = System.Drawing.Color.Transparent
         Me.Label26.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label26.Location = New System.Drawing.Point(710, 43)
+        Me.Label26.Location = New System.Drawing.Point(710, 48)
         Me.Label26.Name = "Label26"
         Me.Label26.Size = New System.Drawing.Size(28, 16)
         Me.Label26.TabIndex = 0
@@ -776,7 +831,7 @@ Partial Class frmRegistrarPedido
         '
         'txtAbaVentana
         '
-        Me.txtAbaVentana.Location = New System.Drawing.Point(578, 43)
+        Me.txtAbaVentana.Location = New System.Drawing.Point(578, 45)
         Me.txtAbaVentana.Name = "txtAbaVentana"
         Me.txtAbaVentana.Size = New System.Drawing.Size(126, 20)
         Me.txtAbaVentana.TabIndex = 10
@@ -786,7 +841,7 @@ Partial Class frmRegistrarPedido
         Me.Label28.AutoSize = True
         Me.Label28.BackColor = System.Drawing.Color.Transparent
         Me.Label28.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label28.Location = New System.Drawing.Point(7, 110)
+        Me.Label28.Location = New System.Drawing.Point(8, 107)
         Me.Label28.Name = "Label28"
         Me.Label28.Size = New System.Drawing.Size(96, 16)
         Me.Label28.TabIndex = 0
@@ -794,7 +849,7 @@ Partial Class frmRegistrarPedido
         '
         'txtDerVentana
         '
-        Me.txtDerVentana.Location = New System.Drawing.Point(188, 108)
+        Me.txtDerVentana.Location = New System.Drawing.Point(188, 105)
         Me.txtDerVentana.Name = "txtDerVentana"
         Me.txtDerVentana.Size = New System.Drawing.Size(127, 20)
         Me.txtDerVentana.TabIndex = 7
@@ -804,7 +859,7 @@ Partial Class frmRegistrarPedido
         Me.Label30.AutoSize = True
         Me.Label30.BackColor = System.Drawing.Color.Transparent
         Me.Label30.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label30.Location = New System.Drawing.Point(7, 42)
+        Me.Label30.Location = New System.Drawing.Point(7, 46)
         Me.Label30.Name = "Label30"
         Me.Label30.Size = New System.Drawing.Size(111, 16)
         Me.Label30.TabIndex = 0
@@ -828,24 +883,56 @@ Partial Class frmRegistrarPedido
         Me.Label31.TabIndex = 0
         Me.Label31.Text = "Medidas"
         '
+        'txtNombreVidrioVentana
+        '
+        Me.txtNombreVidrioVentana.Enabled = False
+        Me.txtNombreVidrioVentana.Location = New System.Drawing.Point(134, 68)
+        Me.txtNombreVidrioVentana.Name = "txtNombreVidrioVentana"
+        Me.txtNombreVidrioVentana.Size = New System.Drawing.Size(213, 20)
+        Me.txtNombreVidrioVentana.TabIndex = 10
+        '
         'Panel3
         '
-        Me.Panel3.Controls.Add(Me.cmbColorAlumnio)
+        Me.Panel3.Controls.Add(Me.cmbEspesorVentana)
+        Me.Panel3.Controls.Add(Me.Label29)
+        Me.Panel3.Controls.Add(Me.cmbColorAlumnioVentana)
         Me.Panel3.Controls.Add(Me.Label6)
+        Me.Panel3.Controls.Add(Me.Label37)
         Me.Panel3.Controls.Add(Me.Label5)
+        Me.Panel3.Controls.Add(Me.btnBuscarVidrioVentana)
         Me.Panel3.Location = New System.Drawing.Point(6, 6)
         Me.Panel3.Name = "Panel3"
         Me.Panel3.Size = New System.Drawing.Size(756, 100)
         Me.Panel3.TabIndex = 0
         '
-        'cmbColorAlumnio
+        'cmbEspesorVentana
         '
-        Me.cmbColorAlumnio.FormattingEnabled = True
-        Me.cmbColorAlumnio.Items.AddRange(New Object() {"Estandar", "Negro", "Madera"})
-        Me.cmbColorAlumnio.Location = New System.Drawing.Point(128, 35)
-        Me.cmbColorAlumnio.Name = "cmbColorAlumnio"
-        Me.cmbColorAlumnio.Size = New System.Drawing.Size(226, 21)
-        Me.cmbColorAlumnio.TabIndex = 5
+        Me.cmbEspesorVentana.FormattingEnabled = True
+        Me.cmbEspesorVentana.Location = New System.Drawing.Point(604, 59)
+        Me.cmbEspesorVentana.Name = "cmbEspesorVentana"
+        Me.cmbEspesorVentana.Size = New System.Drawing.Size(100, 21)
+        Me.cmbEspesorVentana.TabIndex = 12
+        '
+        'Label29
+        '
+        Me.Label29.AutoSize = True
+        Me.Label29.BackColor = System.Drawing.Color.Transparent
+        Me.Label29.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label29.Location = New System.Drawing.Point(710, 62)
+        Me.Label29.Name = "Label29"
+        Me.Label29.Size = New System.Drawing.Size(35, 16)
+        Me.Label29.TabIndex = 10
+        Me.Label29.Text = "m.m."
+        '
+        'cmbColorAlumnioVentana
+        '
+        Me.cmbColorAlumnioVentana.AutoCompleteCustomSource.AddRange(New String() {"ESTANDAR", "NEGRO", "MADERA"})
+        Me.cmbColorAlumnioVentana.FormattingEnabled = True
+        Me.cmbColorAlumnioVentana.Items.AddRange(New Object() {"Estandar", "Negro", "Madera"})
+        Me.cmbColorAlumnioVentana.Location = New System.Drawing.Point(128, 35)
+        Me.cmbColorAlumnioVentana.Name = "cmbColorAlumnioVentana"
+        Me.cmbColorAlumnioVentana.Size = New System.Drawing.Size(213, 21)
+        Me.cmbColorAlumnioVentana.TabIndex = 5
         '
         'Label6
         '
@@ -858,6 +945,17 @@ Partial Class frmRegistrarPedido
         Me.Label6.TabIndex = 5
         Me.Label6.Text = "Color de Aluminio"
         '
+        'Label37
+        '
+        Me.Label37.AutoSize = True
+        Me.Label37.BackColor = System.Drawing.Color.Transparent
+        Me.Label37.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label37.Location = New System.Drawing.Point(483, 63)
+        Me.Label37.Name = "Label37"
+        Me.Label37.Size = New System.Drawing.Size(115, 16)
+        Me.Label37.TabIndex = 11
+        Me.Label37.Text = "Espesor de Vidrio"
+        '
         'Label5
         '
         Me.Label5.AutoSize = True
@@ -868,6 +966,15 @@ Partial Class frmRegistrarPedido
         Me.Label5.Size = New System.Drawing.Size(170, 25)
         Me.Label5.TabIndex = 5
         Me.Label5.Text = "Caracteristicas"
+        '
+        'btnBuscarVidrioVentana
+        '
+        Me.btnBuscarVidrioVentana.Location = New System.Drawing.Point(355, 59)
+        Me.btnBuscarVidrioVentana.Name = "btnBuscarVidrioVentana"
+        Me.btnBuscarVidrioVentana.Size = New System.Drawing.Size(110, 25)
+        Me.btnBuscarVidrioVentana.TabIndex = 11
+        Me.btnBuscarVidrioVentana.Text = "Buscar Vidrio"
+        Me.btnBuscarVidrioVentana.UseVisualStyleBackColor = True
         '
         'Label32
         '
@@ -880,12 +987,12 @@ Partial Class frmRegistrarPedido
         Me.Label32.TabIndex = 18
         Me.Label32.Text = "Total (S/.):"
         '
-        'TextBox7
+        'txtManoObraVentana
         '
-        Me.TextBox7.Location = New System.Drawing.Point(562, 293)
-        Me.TextBox7.Name = "TextBox7"
-        Me.TextBox7.Size = New System.Drawing.Size(200, 20)
-        Me.TextBox7.TabIndex = 25
+        Me.txtManoObraVentana.Location = New System.Drawing.Point(562, 293)
+        Me.txtManoObraVentana.Name = "txtManoObraVentana"
+        Me.txtManoObraVentana.Size = New System.Drawing.Size(200, 20)
+        Me.txtManoObraVentana.TabIndex = 25
         '
         'Label34
         '
@@ -909,20 +1016,20 @@ Partial Class frmRegistrarPedido
         Me.Label35.TabIndex = 21
         Me.Label35.Text = "Precio de los materiales (S/.):"
         '
-        'TextBox8
+        'txtExtraVentana
         '
-        Me.TextBox8.Location = New System.Drawing.Point(201, 292)
-        Me.TextBox8.Name = "TextBox8"
-        Me.TextBox8.Size = New System.Drawing.Size(200, 20)
-        Me.TextBox8.TabIndex = 24
+        Me.txtExtraVentana.Location = New System.Drawing.Point(201, 292)
+        Me.txtExtraVentana.Name = "txtExtraVentana"
+        Me.txtExtraVentana.Size = New System.Drawing.Size(200, 20)
+        Me.txtExtraVentana.TabIndex = 24
         '
-        'TextBox9
+        'txtPreciomaterialVentana
         '
-        Me.TextBox9.Enabled = False
-        Me.TextBox9.Location = New System.Drawing.Point(201, 319)
-        Me.TextBox9.Name = "TextBox9"
-        Me.TextBox9.Size = New System.Drawing.Size(200, 20)
-        Me.TextBox9.TabIndex = 23
+        Me.txtPreciomaterialVentana.Enabled = False
+        Me.txtPreciomaterialVentana.Location = New System.Drawing.Point(201, 319)
+        Me.txtPreciomaterialVentana.Name = "txtPreciomaterialVentana"
+        Me.txtPreciomaterialVentana.Size = New System.Drawing.Size(200, 20)
+        Me.txtPreciomaterialVentana.TabIndex = 23
         '
         'Label33
         '
@@ -934,6 +1041,128 @@ Partial Class frmRegistrarPedido
         Me.Label33.Size = New System.Drawing.Size(121, 16)
         Me.Label33.TabIndex = 19
         Me.Label33.Text = "Mano de obra (S/.):"
+        '
+        'tabModeloAluminio
+        '
+        Me.tabModeloAluminio.Controls.Add(Me.txtTotalAluminio)
+        Me.tabModeloAluminio.Controls.Add(Me.Panel8)
+        Me.tabModeloAluminio.Controls.Add(Me.Panel7)
+        Me.tabModeloAluminio.Controls.Add(Me.Label38)
+        Me.tabModeloAluminio.Controls.Add(Me.txtManoObraAluminio)
+        Me.tabModeloAluminio.Controls.Add(Me.Label40)
+        Me.tabModeloAluminio.Controls.Add(Me.txtPrecioMaterialesAluminio)
+        Me.tabModeloAluminio.Controls.Add(Me.Label43)
+        Me.tabModeloAluminio.Controls.Add(Me.Label42)
+        Me.tabModeloAluminio.Controls.Add(Me.txtExtraAluminio)
+        Me.tabModeloAluminio.Location = New System.Drawing.Point(4, 22)
+        Me.tabModeloAluminio.Name = "tabModeloAluminio"
+        Me.tabModeloAluminio.Padding = New System.Windows.Forms.Padding(3)
+        Me.tabModeloAluminio.Size = New System.Drawing.Size(773, 349)
+        Me.tabModeloAluminio.TabIndex = 2
+        Me.tabModeloAluminio.Text = "Modelo Aluminio"
+        Me.tabModeloAluminio.UseVisualStyleBackColor = True
+        '
+        'Panel8
+        '
+        Me.Panel8.BackColor = System.Drawing.Color.White
+        Me.Panel8.Controls.Add(Me.Label48)
+        Me.Panel8.Controls.Add(Me.Label49)
+        Me.Panel8.Controls.Add(Me.txtLargoAluminio)
+        Me.Panel8.Controls.Add(Me.Label50)
+        Me.Panel8.Location = New System.Drawing.Point(16, 120)
+        Me.Panel8.Name = "Panel8"
+        Me.Panel8.Size = New System.Drawing.Size(730, 84)
+        Me.Panel8.TabIndex = 12
+        '
+        'Label48
+        '
+        Me.Label48.AutoSize = True
+        Me.Label48.BackColor = System.Drawing.Color.Transparent
+        Me.Label48.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label48.Location = New System.Drawing.Point(393, 38)
+        Me.Label48.Name = "Label48"
+        Me.Label48.Size = New System.Drawing.Size(28, 16)
+        Me.Label48.TabIndex = 0
+        Me.Label48.Text = "cm."
+        '
+        'Label49
+        '
+        Me.Label49.AutoSize = True
+        Me.Label49.BackColor = System.Drawing.Color.Transparent
+        Me.Label49.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label49.Location = New System.Drawing.Point(7, 42)
+        Me.Label49.Name = "Label49"
+        Me.Label49.Size = New System.Drawing.Size(115, 16)
+        Me.Label49.TabIndex = 0
+        Me.Label49.Text = "Largo de Aluminio"
+        '
+        'txtLargoAluminio
+        '
+        Me.txtLargoAluminio.Location = New System.Drawing.Point(129, 38)
+        Me.txtLargoAluminio.Name = "txtLargoAluminio"
+        Me.txtLargoAluminio.Size = New System.Drawing.Size(251, 20)
+        Me.txtLargoAluminio.TabIndex = 6
+        '
+        'Label50
+        '
+        Me.Label50.AutoSize = True
+        Me.Label50.BackColor = System.Drawing.Color.Transparent
+        Me.Label50.Font = New System.Drawing.Font("Microsoft Sans Serif", 15.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label50.Location = New System.Drawing.Point(3, 4)
+        Me.Label50.Name = "Label50"
+        Me.Label50.Size = New System.Drawing.Size(101, 25)
+        Me.Label50.TabIndex = 0
+        Me.Label50.Text = "Medidas"
+        '
+        'Panel7
+        '
+        Me.Panel7.Controls.Add(Me.txtNombreAluminio)
+        Me.Panel7.Controls.Add(Me.Label39)
+        Me.Panel7.Controls.Add(Me.Label41)
+        Me.Panel7.Controls.Add(Me.btnBuscarAluminio)
+        Me.Panel7.Location = New System.Drawing.Point(16, 22)
+        Me.Panel7.Name = "Panel7"
+        Me.Panel7.Size = New System.Drawing.Size(730, 74)
+        Me.Panel7.TabIndex = 13
+        '
+        'txtNombreAluminio
+        '
+        Me.txtNombreAluminio.Enabled = False
+        Me.txtNombreAluminio.Location = New System.Drawing.Point(128, 32)
+        Me.txtNombreAluminio.Name = "txtNombreAluminio"
+        Me.txtNombreAluminio.Size = New System.Drawing.Size(273, 20)
+        Me.txtNombreAluminio.TabIndex = 2
+        '
+        'Label39
+        '
+        Me.Label39.AutoSize = True
+        Me.Label39.BackColor = System.Drawing.Color.Transparent
+        Me.Label39.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label39.Location = New System.Drawing.Point(10, 36)
+        Me.Label39.Name = "Label39"
+        Me.Label39.Size = New System.Drawing.Size(108, 16)
+        Me.Label39.TabIndex = 5
+        Me.Label39.Text = "Tipo de Aluminio"
+        '
+        'Label41
+        '
+        Me.Label41.AutoSize = True
+        Me.Label41.BackColor = System.Drawing.Color.Transparent
+        Me.Label41.Font = New System.Drawing.Font("Microsoft Sans Serif", 15.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label41.Location = New System.Drawing.Point(4, 4)
+        Me.Label41.Name = "Label41"
+        Me.Label41.Size = New System.Drawing.Size(170, 25)
+        Me.Label41.TabIndex = 5
+        Me.Label41.Text = "Caracteristicas"
+        '
+        'btnBuscarAluminio
+        '
+        Me.btnBuscarAluminio.Location = New System.Drawing.Point(407, 29)
+        Me.btnBuscarAluminio.Name = "btnBuscarAluminio"
+        Me.btnBuscarAluminio.Size = New System.Drawing.Size(110, 25)
+        Me.btnBuscarAluminio.TabIndex = 11
+        Me.btnBuscarAluminio.Text = "Buscar Aluminio"
+        Me.btnBuscarAluminio.UseVisualStyleBackColor = True
         '
         'btnDuplicar
         '
@@ -982,21 +1211,96 @@ Partial Class frmRegistrarPedido
         Me.Label20.TabIndex = 18
         Me.Label20.Text = "Total (S/.):"
         '
-        'TextBox1
+        'txtTotalTodo
         '
-        Me.TextBox1.Enabled = False
-        Me.TextBox1.Location = New System.Drawing.Point(417, 500)
-        Me.TextBox1.Name = "TextBox1"
-        Me.TextBox1.Size = New System.Drawing.Size(200, 20)
-        Me.TextBox1.TabIndex = 18
-        Me.TextBox1.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
+        Me.txtTotalTodo.Enabled = False
+        Me.txtTotalTodo.Location = New System.Drawing.Point(417, 500)
+        Me.txtTotalTodo.Name = "txtTotalTodo"
+        Me.txtTotalTodo.Size = New System.Drawing.Size(200, 20)
+        Me.txtTotalTodo.TabIndex = 18
+        Me.txtTotalTodo.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
+        '
+        'txtTotalAluminio
+        '
+        Me.txtTotalAluminio.Enabled = False
+        Me.txtTotalAluminio.Location = New System.Drawing.Point(556, 259)
+        Me.txtTotalAluminio.Name = "txtTotalAluminio"
+        Me.txtTotalAluminio.Size = New System.Drawing.Size(200, 20)
+        Me.txtTotalAluminio.TabIndex = 22
+        Me.txtTotalAluminio.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
+        '
+        'Label38
+        '
+        Me.Label38.AutoSize = True
+        Me.Label38.BackColor = System.Drawing.Color.Transparent
+        Me.Label38.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label38.Location = New System.Drawing.Point(482, 258)
+        Me.Label38.Name = "Label38"
+        Me.Label38.Size = New System.Drawing.Size(68, 16)
+        Me.Label38.TabIndex = 18
+        Me.Label38.Text = "Total (S/.):"
+        '
+        'txtManoObraAluminio
+        '
+        Me.txtManoObraAluminio.Location = New System.Drawing.Point(556, 233)
+        Me.txtManoObraAluminio.Name = "txtManoObraAluminio"
+        Me.txtManoObraAluminio.Size = New System.Drawing.Size(200, 20)
+        Me.txtManoObraAluminio.TabIndex = 25
+        '
+        'Label40
+        '
+        Me.Label40.AutoSize = True
+        Me.Label40.BackColor = System.Drawing.Color.Transparent
+        Me.Label40.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label40.Location = New System.Drawing.Point(429, 234)
+        Me.Label40.Name = "Label40"
+        Me.Label40.Size = New System.Drawing.Size(121, 16)
+        Me.Label40.TabIndex = 19
+        Me.Label40.Text = "Mano de obra (S/.):"
+        '
+        'txtExtraAluminio
+        '
+        Me.txtExtraAluminio.Location = New System.Drawing.Point(195, 229)
+        Me.txtExtraAluminio.Name = "txtExtraAluminio"
+        Me.txtExtraAluminio.Size = New System.Drawing.Size(200, 20)
+        Me.txtExtraAluminio.TabIndex = 24
+        '
+        'Label42
+        '
+        Me.Label42.AutoSize = True
+        Me.Label42.BackColor = System.Drawing.Color.Transparent
+        Me.Label42.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label42.Location = New System.Drawing.Point(115, 231)
+        Me.Label42.Name = "Label42"
+        Me.Label42.Size = New System.Drawing.Size(74, 16)
+        Me.Label42.TabIndex = 20
+        Me.Label42.Text = "Extras (S/.):"
+        '
+        'txtPrecioMaterialesAluminio
+        '
+        Me.txtPrecioMaterialesAluminio.Enabled = False
+        Me.txtPrecioMaterialesAluminio.Location = New System.Drawing.Point(195, 257)
+        Me.txtPrecioMaterialesAluminio.Name = "txtPrecioMaterialesAluminio"
+        Me.txtPrecioMaterialesAluminio.Size = New System.Drawing.Size(200, 20)
+        Me.txtPrecioMaterialesAluminio.TabIndex = 23
+        '
+        'Label43
+        '
+        Me.Label43.AutoSize = True
+        Me.Label43.BackColor = System.Drawing.Color.Transparent
+        Me.Label43.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label43.Location = New System.Drawing.Point(7, 258)
+        Me.Label43.Name = "Label43"
+        Me.Label43.Size = New System.Drawing.Size(182, 16)
+        Me.Label43.TabIndex = 21
+        Me.Label43.Text = "Precio de los materiales (S/.):"
         '
         'frmRegistrarPedido
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(805, 534)
-        Me.Controls.Add(Me.TextBox1)
+        Me.Controls.Add(Me.txtTotalTodo)
         Me.Controls.Add(Me.Label20)
         Me.Controls.Add(Me.btnEliminar)
         Me.Controls.Add(Me.btnLimpiar)
@@ -1024,6 +1328,12 @@ Partial Class frmRegistrarPedido
         Me.Panel6.PerformLayout()
         Me.Panel3.ResumeLayout(False)
         Me.Panel3.PerformLayout()
+        Me.tabModeloAluminio.ResumeLayout(False)
+        Me.tabModeloAluminio.PerformLayout()
+        Me.Panel8.ResumeLayout(False)
+        Me.Panel8.PerformLayout()
+        Me.Panel7.ResumeLayout(False)
+        Me.Panel7.PerformLayout()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -1048,7 +1358,7 @@ Partial Class frmRegistrarPedido
     Friend WithEvents Panel4 As Panel
     Friend WithEvents Label7 As Label
     Friend WithEvents Label8 As Label
-    Friend WithEvents cmbColorAlumnio As ComboBox
+    Friend WithEvents cmbColorAlumnioVentana As ComboBox
     Friend WithEvents Label9 As Label
     Friend WithEvents Panel5 As Panel
     Friend WithEvents Label11 As Label
@@ -1081,7 +1391,7 @@ Partial Class frmRegistrarPedido
     Friend WithEvents btnLimpiar As Button
     Friend WithEvents btnEliminar As Button
     Friend WithEvents Label20 As Label
-    Friend WithEvents TextBox1 As TextBox
+    Friend WithEvents txtTotalTodo As TextBox
     Friend WithEvents Panel6 As Panel
     Friend WithEvents Label21 As Label
     Friend WithEvents Label22 As Label
@@ -1096,21 +1406,47 @@ Partial Class frmRegistrarPedido
     Friend WithEvents Label30 As Label
     Friend WithEvents txtArrVentana As TextBox
     Friend WithEvents Label31 As Label
-    Friend WithEvents TextBox6 As TextBox
+    Friend WithEvents txtTotalVentana As TextBox
     Friend WithEvents Label32 As Label
-    Friend WithEvents TextBox7 As TextBox
+    Friend WithEvents txtManoObraVentana As TextBox
     Friend WithEvents Label33 As Label
     Friend WithEvents Label35 As Label
-    Friend WithEvents TextBox9 As TextBox
+    Friend WithEvents txtPreciomaterialVentana As TextBox
     Friend WithEvents Label34 As Label
-    Friend WithEvents TextBox8 As TextBox
+    Friend WithEvents txtExtraVentana As TextBox
     Friend WithEvents CheckBox4 As CheckBox
     Friend WithEvents CheckBox3 As CheckBox
     Friend WithEvents Label36 As Label
-    Friend WithEvents txtCenVentana As TextBox
+    Friend WithEvents txtCenVentana2 As TextBox
     Friend WithEvents Label27 As Label
-    Friend WithEvents TextBox2 As TextBox
+    Friend WithEvents txtCenVentana1 As TextBox
     Friend WithEvents txtEspesor As ComboBox
     Friend WithEvents txtNombreVidrio As TextBox
     Friend WithEvents btnSelectVidrio As Button
+    Friend WithEvents Label15 As Label
+    Friend WithEvents Label16 As Label
+    Friend WithEvents txtNombreVidrioVentana As TextBox
+    Friend WithEvents cmbEspesorVentana As ComboBox
+    Friend WithEvents Label29 As Label
+    Friend WithEvents Label37 As Label
+    Friend WithEvents btnBuscarVidrioVentana As Button
+    Friend WithEvents tabModeloAluminio As TabPage
+    Friend WithEvents Panel7 As Panel
+    Friend WithEvents Label39 As Label
+    Friend WithEvents Label41 As Label
+    Friend WithEvents btnBuscarAluminio As Button
+    Friend WithEvents Panel8 As Panel
+    Friend WithEvents Label48 As Label
+    Friend WithEvents Label49 As Label
+    Friend WithEvents txtLargoAluminio As TextBox
+    Friend WithEvents Label50 As Label
+    Friend WithEvents txtNombreAluminio As TextBox
+    Friend WithEvents txtTotalAluminio As TextBox
+    Friend WithEvents Label38 As Label
+    Friend WithEvents txtManoObraAluminio As TextBox
+    Friend WithEvents Label40 As Label
+    Friend WithEvents txtPrecioMaterialesAluminio As TextBox
+    Friend WithEvents Label43 As Label
+    Friend WithEvents Label42 As Label
+    Friend WithEvents txtExtraAluminio As TextBox
 End Class

@@ -7,6 +7,19 @@ Public Class frmRegistrarPedido
     Public Property nombreClienteSeleccionado As String = ""
     Public Property idUsuario As Integer = 0
     Public Property tema As String = "CLARO" Implements IFormularioTema.tema
+
+    ' Datos que llegan desde frmCotizarVentana para precrear una pestaña
+    Public Property tieneCotizacion As Boolean = False
+    Public Property cotSeleccion As String = ""
+    Public Property cotAncho As Decimal = 0D
+    Public Property cotAlto As Decimal = 0D
+    Public Property cotEspesor As Decimal = 0D
+    Public Property cotManoObra As Decimal = 0D
+    Public Property cotExtra As Decimal = 0D
+    Public Property cotTipoVidrio As String = ""
+    Public Property cotColorVidrio As String = ""
+    Public Property cotTipoAluminio As String = ""
+    Public Property cotColorAluminio As String = ""
     Private contadores As New Dictionary(Of String, Integer)
     Private itemsPedido As New List(Of ItemPedidoDTO)
 
@@ -14,26 +27,48 @@ Public Class frmRegistrarPedido
         txtNombreCliente.Text = nombreClienteSeleccionado
     End Sub
 
+    ' Si no le pasaron el usuario, lo toma del formulario padre (MenuInicio.txtID)
+    Private Sub ResolverUsuario()
+        If idUsuario > 0 Then Return
+        Dim padre As MenuInicio = TryCast(Me.MdiParent, MenuInicio)
+        If padre IsNot Nothing Then
+            Integer.TryParse(padre.txtID.Text, idUsuario)
+        End If
+    End Sub
+
     Private Sub frmRegistrarPedido_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         AplicarTema(Me, tema)
+        ResolverUsuario()
         tabsPedidos.TabPages.Remove(tabModeloVidrio)
         tabsPedidos.TabPages.Remove(tabModeloVentana)
+        tabsPedidos.TabPages.Remove(tabModeloAluminio)
         CargarCombos()
         AplicarVisibilidadMedidas(chbAncho)
         AplicarVisibilidadMedidas(chbAlto)
+        AplicarVisibilidadMedidasVentana(CheckBox3)
+        AplicarVisibilidadMedidasVentana(CheckBox4)
+        If tieneCotizacion Then AgregarDesdeCotizacion()
     End Sub
 
     Private Sub CargarCombos()
+        ' Ningun combo debe permitir escribir: solo seleccionar
+        cmbPedido.DropDownStyle = ComboBoxStyle.DropDownList
+        txtEspesor.DropDownStyle = ComboBoxStyle.DropDownList
+        cmbEspesorVentana.DropDownStyle = ComboBoxStyle.DropDownList
+        cmbColorAlumnioVentana.DropDownStyle = ComboBoxStyle.DropDownList
+
+        txtEspesor.Items.Clear()
+        txtEspesor.Enabled = False
+
+        cmbEspesorVentana.Items.Clear()
+        cmbEspesorVentana.Enabled = False
+
         Try
             LlenarCombo(cmbPedido, New Producto().ListarCategorias())
             cmbPedido.Items.Add("Ventana")
         Catch
             Return
         End Try
-
-        txtEspesor.DropDownStyle = ComboBoxStyle.DropDownList
-        txtEspesor.Items.Clear()
-        txtEspesor.Enabled = False
     End Sub
 
     Private Sub LlenarCombo(cmb As ComboBox, valores As List(Of String))
@@ -62,10 +97,18 @@ Public Class frmRegistrarPedido
         CrearTab(cmbPedido.SelectedItem.ToString())
     End Sub
 
-    ' Crea una pestaña nueva a partir del modelo (Ventana = objeto especial, el resto = material)
+    ' Crea una pestaña nueva a partir del modelo (Ventana = objeto especial, Aluminio = solo largo, el resto = material)
     Private Sub CrearTab(seleccion As String)
         Dim esVentana As Boolean = seleccion.Equals("Ventana", StringComparison.OrdinalIgnoreCase)
-        Dim modelo As TabPage = If(esVentana, tabModeloVentana, tabModeloVidrio)
+        Dim esAluminio As Boolean = seleccion.Equals("ALUMINIO", StringComparison.OrdinalIgnoreCase)
+        Dim modelo As TabPage
+        If esVentana Then
+            modelo = tabModeloVentana
+        ElseIf esAluminio Then
+            modelo = tabModeloAluminio
+        Else
+            modelo = tabModeloVidrio
+        End If
 
         Dim numero As Integer = SiguienteNumero(seleccion)
         Dim nueva As TabPage = ClonarTabPage(modelo)
@@ -74,6 +117,7 @@ Public Class frmRegistrarPedido
         nueva.Text = seleccion & numero.ToString()
         tabsPedidos.TabPages.Add(nueva)
         tabsPedidos.SelectedTab = nueva
+        RecalcularTab(nueva)
     End Sub
 
     Private Function SiguienteNumero(clave As String) As Integer
@@ -118,6 +162,21 @@ Public Class frmRegistrarPedido
                 combo.Items.Add(item)
             Next
             combo.SelectedIndex = comboOrigen.SelectedIndex
+            If EsCampoCalculoCombo(combo.Name) Then
+                AddHandler combo.SelectedIndexChanged, AddressOf CampoCalculo_Changed
+            End If
+        End If
+
+        Dim txtCopia As TextBox = TryCast(copia, TextBox)
+        If txtCopia IsNot Nothing Then
+            If EsCampoCalculo(txtCopia.Name) Then
+                AddHandler txtCopia.TextChanged, AddressOf CampoCalculo_Changed
+            ElseIf EsCampoTotal(txtCopia.Name) Then
+                AddHandler txtCopia.TextChanged, AddressOf CampoTotal_Changed
+            End If
+            If EsCampoNumerico(txtCopia.Name) Then
+                AddHandler txtCopia.Leave, AddressOf CampoNumerico_Leave
+            End If
         End If
 
         Dim numOrigen As NumericUpDown = TryCast(origen, NumericUpDown)
@@ -133,14 +192,15 @@ Public Class frmRegistrarPedido
         Dim chbCopia As CheckBox = TryCast(copia, CheckBox)
         If chbOrigen IsNot Nothing AndAlso chbCopia IsNot Nothing Then
             chbCopia.Checked = chbOrigen.Checked
-            If chbCopia.Name = "chbAncho" OrElse chbCopia.Name = "chbAlto" Then
+            If chbCopia.Name = "chbAncho" OrElse chbCopia.Name = "chbAlto" OrElse
+               chbCopia.Name = "CheckBox3" OrElse chbCopia.Name = "CheckBox4" Then
                 AddHandler chbCopia.CheckedChanged, AddressOf chbMedida_CheckedChanged
             End If
         End If
 
         Dim btnCopia As Button = TryCast(copia, Button)
         If btnCopia IsNot Nothing Then
-            If btnCopia.Name = "btnSelectVidrio" Then
+            If btnCopia.Name = "btnSelectVidrio" OrElse btnCopia.Name = "btnBuscarVidrioVentana" OrElse btnCopia.Name = "btnBuscarAluminio" Then
                 AddHandler btnCopia.Click, AddressOf btnSelectVidrio_Click
             Else
                 Select Case btnCopia.Text
@@ -167,6 +227,12 @@ Public Class frmRegistrarPedido
             Return
         End If
 
+        ResolverUsuario()
+        If idUsuario <= 0 Then
+            UtilFormularios.MostrarError("No se pudo determinar el usuario conectado. Vuelva a abrir el formulario desde el menú.")
+            Return
+        End If
+
         If tabsPedidos.TabPages.Count = 0 Then
             UtilFormularios.MostrarError("Agregue al menos una pestaña antes de guardar el pedido.")
             Return
@@ -179,6 +245,7 @@ Public Class frmRegistrarPedido
 
             itemsPedido = New List(Of ItemPedidoDTO)
             tabsPedidos.TabPages.Clear()
+            RecalcularTotalTodo()
             idClienteSeleccionado = 0
             nombreClienteSeleccionado = ""
             actualizarCliente()
@@ -204,8 +271,11 @@ Public Class frmRegistrarPedido
         If seleccion.Equals("Ventana", StringComparison.OrdinalIgnoreCase) Then
             Throw New Exception("La pestaña '" & tab.Text & "' (Ventana) todavía no se puede guardar.")
         End If
+        If EsTabAluminio(tab) Then
+            Return ConstruirItemAluminio(tab)
+        End If
         If Not seleccion.Equals("VIDRIO", StringComparison.OrdinalIgnoreCase) Then
-            Throw New Exception("La pestaña '" & tab.Text & "' todavía no se puede guardar: por ahora solo se admiten ítems de vidrio.")
+            Throw New Exception("La pestaña '" & tab.Text & "' todavía no se puede guardar: por ahora solo se admiten ítems de vidrio o aluminio.")
         End If
 
         Dim txtNombre As TextBox = TryCast(BuscarControl(tab, "txtNombreVidrio"), TextBox)
@@ -270,6 +340,54 @@ Public Class frmRegistrarPedido
         }
     End Function
 
+    ' Aluminio: se vende por largo (una sola medida) y siempre se registra como compra nueva
+    Private Function ConstruirItemAluminio(tab As TabPage) As ItemPedidoDTO
+        Dim txtNombre As TextBox = TryCast(BuscarControl(tab, "txtNombreAluminio"), TextBox)
+        If txtNombre Is Nothing OrElse txtNombre.Tag Is Nothing OrElse CInt(txtNombre.Tag) <= 0 Then
+            Throw New Exception("En la pestaña '" & tab.Text & "' seleccione el aluminio con el botón Buscar Aluminio.")
+        End If
+        Dim idProducto As Integer = CInt(txtNombre.Tag)
+
+        Dim largo As Decimal = DecimalDe(tab, "txtLargoAluminio", "el largo de aluminio")
+        If largo <= 0D Then
+            Throw New Exception("En la pestaña '" & tab.Text & "' ingrese el largo de aluminio.")
+        End If
+
+        Dim precioMateriales As Decimal = DecimalDe(tab, "txtPrecioMaterialesAluminio", "el precio de los materiales")
+        Dim costoExtra As Decimal = DecimalDe(tab, "txtExtraAluminio", "los extras")
+        Dim manoObra As Decimal = DecimalDe(tab, "txtManoObraAluminio", "la mano de obra")
+        Dim total As Decimal = DecimalDe(tab, "txtTotalAluminio", "el total")
+        If total <= 0D Then total = precioMateriales + costoExtra + manoObra
+        If total <= 0D Then
+            Throw New Exception("En la pestaña '" & tab.Text & "' no hay precios calculados.")
+        End If
+
+        Dim idVariante As Integer = New ProductoVariante().ObtenerVariantePorProducto(idProducto)
+        If idVariante <= 0 Then
+            Throw New Exception("En la pestaña '" & tab.Text & "' el aluminio no tiene una variante con precio.")
+        End If
+
+        Dim detalle As New DetallePedidoDTO With {
+            .IdVariante = idVariante,
+            .Accion = "COMPRA_NUEVA",
+            .IdPieza = Nothing,
+            .AnchoCm = 0D,
+            .AltoCm = 0D,
+            .LargoCm = largo,
+            .Subtotal = precioMateriales
+        }
+
+        Return New ItemPedidoDTO With {
+            .Tipo = "ALUMINIO",
+            .Etiqueta = tab.Text,
+            .PrecioMateriales = precioMateriales,
+            .CostoExtra = costoExtra,
+            .ManoObra = manoObra,
+            .Total = total,
+            .Detalles = New List(Of DetallePedidoDTO) From {detalle}
+        }
+    End Function
+
     Private Function BuscarControl(tab As TabPage, nombre As String) As Control
         Dim hallados As Control() = tab.Controls.Find(nombre, True)
         If hallados Is Nothing OrElse hallados.Length = 0 Then Return Nothing
@@ -297,8 +415,13 @@ Public Class frmRegistrarPedido
         Return Convert.ToDecimal(valor)
     End Function
 
-    Private Sub chbMedida_CheckedChanged(sender As Object, e As EventArgs) Handles chbAncho.CheckedChanged, chbAlto.CheckedChanged
-        AplicarVisibilidadMedidas(DirectCast(sender, CheckBox))
+    Private Sub chbMedida_CheckedChanged(sender As Object, e As EventArgs) Handles chbAncho.CheckedChanged, chbAlto.CheckedChanged, CheckBox3.CheckedChanged, CheckBox4.CheckedChanged
+        Dim chb As CheckBox = DirectCast(sender, CheckBox)
+        If chb.Name = "CheckBox3" OrElse chb.Name = "CheckBox4" Then
+            AplicarVisibilidadMedidasVentana(chb)
+        Else
+            AplicarVisibilidadMedidas(chb)
+        End If
     End Sub
 
     Private Sub AplicarVisibilidadMedidas(chb As CheckBox)
@@ -321,9 +444,30 @@ Public Class frmRegistrarPedido
         Next
     End Sub
 
+    ' Muestra/oculta la fila de medidas de la ventana (Ancho = arriba/centro/abajo; Alto = derecha/centro/izquierda)
+    Private Sub AplicarVisibilidadMedidasVentana(chb As CheckBox)
+        Dim panel As Control = chb.Parent
+        If panel Is Nothing Then Return
+
+        Dim nombres() As String
+        If chb.Name = "CheckBox3" Then
+            nombres = New String() {"Label24", "txtArrVentana", "Label27", "txtCenVentana1", "Label22"}
+        ElseIf chb.Name = "CheckBox4" Then
+            nombres = New String() {"Label23", "txtDerVentana", "Label36", "txtCenVentana2", "Label21"}
+        Else
+            Return
+        End If
+
+        For Each nombre As String In nombres
+            If panel.Controls.ContainsKey(nombre) Then
+                panel.Controls(nombre).Visible = chb.Checked
+            End If
+        Next
+    End Sub
+
     ' Llena el combo de espesores segun el producto elegido (por su id)
-    Private Sub CargarEspesores(tab As TabPage, idProducto As Integer)
-        Dim cmbEspesor As ComboBox = TryCast(BuscarControl(tab, "txtEspesor"), ComboBox)
+    Private Sub CargarEspesoresEn(tab As TabPage, nombreCombo As String, idProducto As Integer)
+        Dim cmbEspesor As ComboBox = TryCast(BuscarControl(tab, nombreCombo), ComboBox)
         If cmbEspesor Is Nothing Then Return
 
         cmbEspesor.Items.Clear()
@@ -368,12 +512,14 @@ Public Class frmRegistrarPedido
         nueva.Text = seleccion & numero.ToString()
         tabsPedidos.TabPages.Add(nueva)
         tabsPedidos.SelectedTab = nueva
+        RecalcularTab(nueva)
     End Sub
 
     Private Sub btnLimpiar_Click(sender As Object, e As EventArgs) Handles btnLimpiar.Click
         Dim actual As TabPage = tabsPedidos.SelectedTab
         If actual Is Nothing Then Return
         LimpiarControles(actual)
+        RecalcularTab(actual)
     End Sub
 
     Private Sub LimpiarControles(contenedor As Control)
@@ -394,7 +540,11 @@ Public Class frmRegistrarPedido
                     Dim chb As CheckBox = TryCast(c, CheckBox)
                     If chb IsNot Nothing Then
                         chb.Checked = False
-                        AplicarVisibilidadMedidas(chb)
+                        If chb.Name = "CheckBox3" OrElse chb.Name = "CheckBox4" Then
+                            AplicarVisibilidadMedidasVentana(chb)
+                        Else
+                            AplicarVisibilidadMedidas(chb)
+                        End If
                     ElseIf c.HasChildren Then
                         LimpiarControles(c)
                     End If
@@ -407,22 +557,374 @@ Public Class frmRegistrarPedido
         Dim actual As TabPage = tabsPedidos.SelectedTab
         If actual Is Nothing Then Return
         tabsPedidos.TabPages.Remove(actual)
+        RecalcularTotalTodo()
     End Sub
 
-    Private Sub btnSelectVidrio_Click(sender As Object, e As EventArgs) Handles btnSelectVidrio.Click
+    Private Sub btnSelectVidrio_Click(sender As Object, e As EventArgs) Handles btnSelectVidrio.Click, btnBuscarAluminio.Click
         Dim boton As Button = TryCast(sender, Button)
         Dim tab As TabPage = TabDeControl(boton)
         If tab Is Nothing Then Return
 
-        Using formulario As New frmListadoProductos With {.tema = tema, .modoSeleccion = True, .categoriaFiltro = "VIDRIO"}
+        Dim categoria As String = "VIDRIO"
+        Dim nombreProducto As String = "txtNombreVidrio"
+        Dim nombreEspesor As String = "txtEspesor"
+
+        If boton IsNot Nothing Then
+            Select Case boton.Name
+                Case "btnBuscarVidrioVentana"
+                    nombreProducto = "txtNombreVidrioVentana"
+                    nombreEspesor = "cmbEspesorVentana"
+                Case "btnBuscarAluminio"
+                    categoria = "ALUMINIO"
+                    nombreProducto = "txtNombreAluminio"
+                    nombreEspesor = ""   ' el aluminio no usa espesor
+            End Select
+        End If
+
+        Using formulario As New frmListadoProductos With {.tema = tema, .modoSeleccion = True, .categoriaFiltro = categoria}
             If formulario.ShowDialog(Me) = DialogResult.OK Then
-                Dim txtNombre As TextBox = TryCast(BuscarControl(tab, "txtNombreVidrio"), TextBox)
+                Dim txtNombre As TextBox = TryCast(BuscarControl(tab, nombreProducto), TextBox)
                 If txtNombre IsNot Nothing Then
                     txtNombre.Text = formulario.nombreProductoSeleccionado
                     txtNombre.Tag = formulario.idProductoSeleccionado
                 End If
-                CargarEspesores(tab, formulario.idProductoSeleccionado)
+                If nombreEspesor <> "" Then
+                    CargarEspesoresEn(tab, nombreEspesor, formulario.idProductoSeleccionado)
+                End If
+                RecalcularTab(tab)
             End If
         End Using
     End Sub
+
+    ' ======================= CALCULOS AUTOMATICOS =======================
+
+    ' Campos que al cambiar disparan el recalculo completo (materiales, extras y total)
+    Private Shared ReadOnly CamposCalculo As String() = {
+        "txtAncho", "txtAncho2", "txtAlto", "txtAlto2",
+        "txtArrVentana", "txtCenVentana1", "txtAbaVentana", "txtDerVentana",
+        "txtCenVentana2", "txtIzqVentana", "txtLargoAluminio"}
+
+    ' Campos editables que solo deben recalcular el total (no se sobreescriben)
+    Private Shared ReadOnly CamposTotal As String() = {
+        "txtExtra", "txtExtraVentana", "txtManoObra", "txtManoObraVentana",
+        "txtExtraAluminio", "txtManoObraAluminio"}
+
+    Private Shared ReadOnly CombosCalculo As String() = {
+        "txtEspesor", "cmbEspesorVentana", "cmbColorAlumnioVentana"}
+
+    ' Campos numericos que se muestran con dos decimales al salir del campo
+    Private Shared ReadOnly CamposNumericos As String() = {
+        "txtAncho", "txtAncho2", "txtAlto", "txtAlto2",
+        "txtArrVentana", "txtCenVentana1", "txtAbaVentana", "txtDerVentana",
+        "txtCenVentana2", "txtIzqVentana",
+        "txtExtra", "txtManoObra", "txtExtraVentana", "txtManoObraVentana",
+        "txtLargoAluminio", "txtExtraAluminio", "txtManoObraAluminio"}
+
+    Private Shared Function EsCampoNumerico(nombre As String) As Boolean
+        Return Array.IndexOf(CamposNumericos, nombre) >= 0
+    End Function
+
+    Private Shared Function EsCampoCalculo(nombre As String) As Boolean
+        Return Array.IndexOf(CamposCalculo, nombre) >= 0
+    End Function
+
+    Private Shared Function EsCampoTotal(nombre As String) As Boolean
+        Return Array.IndexOf(CamposTotal, nombre) >= 0
+    End Function
+
+    Private Shared Function EsCampoCalculoCombo(nombre As String) As Boolean
+        Return Array.IndexOf(CombosCalculo, nombre) >= 0
+    End Function
+
+    Private Function EsTabVentana(tab As TabPage) As Boolean
+        Return BuscarControl(tab, "txtTotalVentana") IsNot Nothing
+    End Function
+
+    Private Function EsTabAluminio(tab As TabPage) As Boolean
+        Return BuscarControl(tab, "txtNombreAluminio") IsNot Nothing
+    End Function
+
+    Private Sub CampoCalculo_Changed(sender As Object, e As EventArgs)
+        Dim c As Control = TryCast(sender, Control)
+        If c Is Nothing Then Return
+        RecalcularTab(TabDeControl(c))
+    End Sub
+
+    Private Sub CampoTotal_Changed(sender As Object, e As EventArgs)
+        Dim c As Control = TryCast(sender, Control)
+        If c Is Nothing Then Return
+        RecalcularTotales(TabDeControl(c))
+    End Sub
+
+    ' Al salir de un campo numerico se normaliza a dos decimales
+    Private Sub CampoNumerico_Leave(sender As Object, e As EventArgs)
+        Dim txt As TextBox = TryCast(sender, TextBox)
+        If txt Is Nothing Then Return
+        Dim valor As Decimal
+        If Decimal.TryParse(txt.Text.Trim(), valor) Then
+            txt.Text = valor.ToString("0.00")
+        End If
+    End Sub
+
+    ' Recalcula materiales, extras (sugeridos) y total de una pestaña
+    Private Sub RecalcularTab(tab As TabPage)
+        If tab Is Nothing Then Return
+        Try
+            If EsTabVentana(tab) Then
+                AsignarDecimal(tab, "txtPreciomaterialVentana", MaterialVentana(tab))
+                AsignarDecimal(tab, "txtExtraVentana", ExtraSugeridoVentana(tab))
+            ElseIf EsTabAluminio(tab) Then
+                AsignarDecimal(tab, "txtPrecioMaterialesAluminio", MaterialAluminio(tab))
+            Else
+                AsignarDecimal(tab, "txtPreciomaterial", MaterialVidrio(tab))
+                AsignarDecimal(tab, "txtExtra", ExtraSugeridoVidrio(tab))
+            End If
+            RecalcularTotales(tab)
+        Catch
+        End Try
+    End Sub
+
+    ' Solo reevalua el total (cuando se editan extras o mano de obra)
+    Private Sub RecalcularTotales(tab As TabPage)
+        If tab Is Nothing Then Return
+        Try
+            If EsTabVentana(tab) Then
+                Dim materialV As Decimal = MaterialVentana(tab)
+                AsignarDecimal(tab, "txtPreciomaterialVentana", materialV)
+                AsignarTotal(tab, "txtTotalVentana", LeerDecimal(tab, "txtExtraVentana") + LeerDecimal(tab, "txtManoObraVentana") + materialV)
+            ElseIf EsTabAluminio(tab) Then
+                Dim materialA As Decimal = MaterialAluminio(tab)
+                AsignarDecimal(tab, "txtPrecioMaterialesAluminio", materialA)
+                AsignarTotal(tab, "txtTotalAluminio", LeerDecimal(tab, "txtExtraAluminio") + LeerDecimal(tab, "txtManoObraAluminio") + materialA)
+            Else
+                Dim materialV As Decimal = MaterialVidrio(tab)
+                AsignarDecimal(tab, "txtPreciomaterial", materialV)
+                AsignarTotal(tab, "txtTotal", LeerDecimal(tab, "txtExtra") + LeerDecimal(tab, "txtManoObra") + materialV)
+            End If
+        Catch
+        End Try
+        RecalcularTotalTodo()
+    End Sub
+
+    Private Function MaterialVidrio(tab As TabPage) As Decimal
+        Dim anchoMayor As Decimal = MayorDe(tab, "txtAncho", "txtAncho2")
+        Dim altoMayor As Decimal = MayorDe(tab, "txtAlto", "txtAlto2")
+        Dim precioUnitario As Decimal = PrecioMaterial(tab, "txtNombreVidrio", "txtEspesor")
+        If anchoMayor > 0D AndAlso altoMayor > 0D AndAlso precioUnitario > 0D Then
+            Return altoMayor * anchoMayor / 900D * precioUnitario
+        End If
+        Return 0D
+    End Function
+
+    ' ALUMINIO: se cobra por largo; material = precio_unitario de la variante * largo
+    Private Function MaterialAluminio(tab As TabPage) As Decimal
+        Dim idProducto As Integer = IdProductoDe(tab, "txtNombreAluminio")
+        If idProducto <= 0 Then Return 0D
+        Dim largo As Decimal = LeerDecimal(tab, "txtLargoAluminio")
+        If largo <= 0D Then Return 0D
+        Return New ProductoVariante().ObtenerPrecioUnitarioPorProducto(idProducto) * largo
+    End Function
+
+    ' Lee el id de producto guardado en el Tag de un TextBox dentro de la pestaña
+    Private Function IdProductoDe(tab As TabPage, nombre As String) As Integer
+        Dim txt As TextBox = TryCast(BuscarControl(tab, nombre), TextBox)
+        If txt Is Nothing OrElse txt.Tag Is Nothing Then Return 0
+        Dim id As Integer
+        If Not Integer.TryParse(txt.Tag.ToString(), id) Then Return 0
+        Return id
+    End Function
+
+    Private Function ExtraSugeridoVidrio(tab As TabPage) As Decimal
+        Dim anchoMayor As Decimal = MayorDe(tab, "txtAncho", "txtAncho2")
+        Dim altoMayor As Decimal = MayorDe(tab, "txtAlto", "txtAlto2")
+        If anchoMayor > 0D AndAlso altoMayor > 0D Then
+            Return New Pedido().TarifaSugerida(anchoMayor, altoMayor).silicona
+        End If
+        Return 0D
+    End Function
+
+    Private Function MaterialVentana(tab As TabPage) As Decimal
+        Dim anchoMayor As Decimal = MayorDe(tab, "txtArrVentana", "txtCenVentana1", "txtAbaVentana")
+        Dim altoMayor As Decimal = MayorDe(tab, "txtDerVentana", "txtCenVentana2", "txtIzqVentana")
+        Dim precioUnitario As Decimal = PrecioMaterial(tab, "txtNombreVidrioVentana", "cmbEspesorVentana")
+        If anchoMayor > 0D AndAlso altoMayor > 0D AndAlso precioUnitario > 0D Then
+            Return altoMayor * anchoMayor / 900D * precioUnitario
+        End If
+        Return 0D
+    End Function
+
+    Private Function ExtraSugeridoVentana(tab As TabPage) As Decimal
+        Dim anchoMayor As Decimal = MayorDe(tab, "txtArrVentana", "txtCenVentana1", "txtAbaVentana")
+        Dim altoMayor As Decimal = MayorDe(tab, "txtDerVentana", "txtCenVentana2", "txtIzqVentana")
+        Dim extra As Decimal = 0D
+        If anchoMayor > 0D AndAlso altoMayor > 0D Then
+            Dim tarifa = New Pedido().TarifaSugerida(anchoMayor, altoMayor)
+            extra = tarifa.aluminio + tarifa.silicona
+        End If
+
+        Dim color As String = TextoCombo(tab, "cmbColorAlumnioVentana")
+        If color.Equals("NEGRO", StringComparison.OrdinalIgnoreCase) Then
+            extra *= 1.02D
+        ElseIf color.Equals("MADERA", StringComparison.OrdinalIgnoreCase) Then
+            extra *= 1.05D
+        End If
+        Return extra
+    End Function
+
+    Private Sub RecalcularTotalTodo()
+        Dim suma As Decimal = 0D
+        For Each tab As TabPage In tabsPedidos.TabPages
+            Dim campoTotal As String
+            If EsTabVentana(tab) Then
+                campoTotal = "txtTotalVentana"
+            ElseIf EsTabAluminio(tab) Then
+                campoTotal = "txtTotalAluminio"
+            Else
+                campoTotal = "txtTotal"
+            End If
+            suma += LeerDecimal(tab, campoTotal)
+        Next
+        txtTotalTodo.Text = suma.ToString("0.00")
+    End Sub
+
+    Private Function MayorDe(tab As TabPage, ParamArray nombres() As String) As Decimal
+        Dim mayor As Decimal = 0D
+        For Each nombre As String In nombres
+            Dim valor As Decimal = LeerDecimal(tab, nombre)
+            If valor > mayor Then mayor = valor
+        Next
+        Return mayor
+    End Function
+
+    Private Function LeerDecimal(tab As TabPage, nombre As String) As Decimal
+        Dim texto As String = TextoDe(tab, nombre)
+        Dim valor As Decimal
+        If texto = "" OrElse Not Decimal.TryParse(texto, valor) Then Return 0D
+        Return valor
+    End Function
+
+    Private Function TextoCombo(tab As TabPage, nombre As String) As String
+        Dim cmb As ComboBox = TryCast(BuscarControl(tab, nombre), ComboBox)
+        If cmb Is Nothing OrElse cmb.SelectedItem Is Nothing Then Return ""
+        Return cmb.SelectedItem.ToString()
+    End Function
+
+    Private Sub AsignarDecimal(tab As TabPage, nombre As String, valor As Decimal)
+        Dim txt As TextBox = TryCast(BuscarControl(tab, nombre), TextBox)
+        If txt IsNot Nothing Then txt.Text = valor.ToString("0.00")
+    End Sub
+
+    ' Los totales se muestran con dos decimales (el valor interno sigue siendo Decimal)
+    Private Sub AsignarTotal(tab As TabPage, nombre As String, valor As Decimal)
+        Dim txt As TextBox = TryCast(BuscarControl(tab, nombre), TextBox)
+        If txt IsNot Nothing Then txt.Text = valor.ToString("0.00")
+    End Sub
+
+    Private Function PrecioMaterial(tab As TabPage, nombreProducto As String, nombreEspesor As String) As Decimal
+        Dim txtNombre As TextBox = TryCast(BuscarControl(tab, nombreProducto), TextBox)
+        If txtNombre Is Nothing OrElse txtNombre.Tag Is Nothing Then Return 0D
+
+        Dim idProducto As Integer
+        If Not Integer.TryParse(txtNombre.Tag.ToString(), idProducto) OrElse idProducto <= 0 Then Return 0D
+
+        Dim cmb As ComboBox = TryCast(BuscarControl(tab, nombreEspesor), ComboBox)
+        If cmb Is Nothing OrElse cmb.SelectedItem Is Nothing Then Return 0D
+
+        Dim espesor As Decimal = Convert.ToDecimal(cmb.SelectedItem)
+        Try
+            Return New ProductoVariante().ObtenerPrecioUnitario(idProducto, espesor)
+        Catch
+            Return 0D
+        End Try
+    End Function
+
+    ' ================== DATOS DESDE frmCotizarVentana ==================
+
+    ' Crea una pestaña con el tipo de pedido y los datos traidos del cotizador
+    Private Sub AgregarDesdeCotizacion()
+        Dim seleccion As String = cotSeleccion
+        If String.IsNullOrWhiteSpace(seleccion) Then Return
+
+        CrearTab(seleccion)
+        Dim tab As TabPage = tabsPedidos.SelectedTab
+        If tab Is Nothing Then Return
+
+        If EsTabVentana(tab) Then
+            AsignarTexto(tab, "txtArrVentana", cotAncho)
+            AsignarTexto(tab, "txtDerVentana", cotAlto)
+            AsignarTexto(tab, "txtManoObraVentana", cotManoObra)
+            MarcarCheck(tab, "CheckBox3")
+            MarcarCheck(tab, "CheckBox4")
+            PonerVidrioDesdeCotizacion(tab, "txtNombreVidrioVentana", "cmbEspesorVentana")
+            AsignarTexto(tab, "txtExtraVentana", cotExtra)
+        ElseIf EsTabAluminio(tab) Then
+            AsignarTexto(tab, "txtLargoAluminio", cotAncho)
+            AsignarTexto(tab, "txtManoObraAluminio", cotManoObra)
+            PonerAluminioDesdeCotizacion(tab)
+            AsignarTexto(tab, "txtExtraAluminio", cotExtra)
+        Else
+            AsignarTexto(tab, "txtAncho", cotAncho)
+            AsignarTexto(tab, "txtAlto", cotAlto)
+            AsignarTexto(tab, "txtManoObra", cotManoObra)
+            PonerVidrioDesdeCotizacion(tab, "txtNombreVidrio", "txtEspesor")
+            AsignarTexto(tab, "txtExtra", cotExtra)
+        End If
+
+        RecalcularTotales(tab)
+    End Sub
+
+    ' Coloca el producto de aluminio (color + tipo) traido del cotizador
+    Private Sub PonerAluminioDesdeCotizacion(tab As TabPage)
+        Dim idProducto As Integer = 0
+        Try
+            idProducto = New Producto().ObtenerIdPorTipoColor("ALUMINIO", cotTipoAluminio, cotColorAluminio)
+        Catch
+        End Try
+        If idProducto <= 0 Then Return
+
+        Dim txtNombre As TextBox = TryCast(BuscarControl(tab, "txtNombreAluminio"), TextBox)
+        If txtNombre IsNot Nothing Then
+            txtNombre.Text = (cotTipoAluminio & " " & cotColorAluminio).Trim()
+            txtNombre.Tag = idProducto
+        End If
+    End Sub
+
+    Private Sub PonerVidrioDesdeCotizacion(tab As TabPage, nombreProducto As String, nombreEspesor As String)
+        Dim idProducto As Integer = 0
+        Try
+            idProducto = New Producto().ObtenerIdPorTipoColor("VIDRIO", cotTipoVidrio, cotColorVidrio)
+        Catch
+        End Try
+        If idProducto <= 0 Then Return
+
+        Dim txtNombre As TextBox = TryCast(BuscarControl(tab, nombreProducto), TextBox)
+        If txtNombre IsNot Nothing Then
+            txtNombre.Text = (cotTipoVidrio & " " & cotColorVidrio).Trim()
+            txtNombre.Tag = idProducto
+        End If
+        CargarEspesoresEn(tab, nombreEspesor, idProducto)
+        SeleccionarEspesor(tab, nombreEspesor, cotEspesor)
+    End Sub
+
+    Private Sub SeleccionarEspesor(tab As TabPage, nombreCombo As String, espesor As Decimal)
+        Dim cmb As ComboBox = TryCast(BuscarControl(tab, nombreCombo), ComboBox)
+        If cmb Is Nothing Then Return
+        For i As Integer = 0 To cmb.Items.Count - 1
+            If Convert.ToDecimal(cmb.Items(i)) = espesor Then
+                cmb.SelectedIndex = i
+                Return
+            End If
+        Next
+    End Sub
+
+    Private Sub AsignarTexto(tab As TabPage, nombre As String, valor As Decimal)
+        Dim txt As TextBox = TryCast(BuscarControl(tab, nombre), TextBox)
+        If txt IsNot Nothing Then txt.Text = valor.ToString("0.00")
+    End Sub
+
+    Private Sub MarcarCheck(tab As TabPage, nombre As String)
+        Dim chb As CheckBox = TryCast(BuscarControl(tab, nombre), CheckBox)
+        If chb IsNot Nothing AndAlso Not chb.Checked Then chb.Checked = True
+    End Sub
+
 End Class

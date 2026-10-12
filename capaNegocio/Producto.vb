@@ -113,6 +113,21 @@ Public Class Producto
         End Try
     End Function
 
+    ' id del producto activo que coincide con categoria + tipo + color (0 si no existe)
+    Public Function ObtenerIdPorTipoColor(categoria As String, tipo As String, color As String) As Integer
+        Dim sql As String =
+            "select top 1 id_producto from productos " &
+            "where categoria=@categoria and tipo=@tipo and isnull(color,'')=isnull(@color,'') and activo=1"
+        Try
+            Dim dt As DataTable = objMan.consultarConParametros(sql, New Dictionary(Of String, Object) From {
+                {"categoria", categoria}, {"tipo", Limpiar(tipo)}, {"color", Limpiar(color)}})
+            If dt.Rows.Count = 0 Then Return 0
+            Return CInt(dt.Rows(0)("id_producto"))
+        Catch ex As Exception
+            Return 0
+        End Try
+    End Function
+
     ' Evita registrar dos veces el mismo producto (misma categoría, tipo y color)
     ' idExcluir: al modificar se pasa el id del propio producto para que no se compare consigo mismo
     Public Function ExisteProducto(categoria As String, tipo As String, color As String, idExcluir As Integer) As Boolean

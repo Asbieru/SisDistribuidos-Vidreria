@@ -24,6 +24,9 @@ Partial Class frmCotizarVentana
     Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmCotizarVentana))
         Me.Panel1 = New System.Windows.Forms.Panel()
+        Me.txtEspesor = New System.Windows.Forms.ComboBox()
+        Me.cmbTipoVidrio = New System.Windows.Forms.ComboBox()
+        Me.Label17 = New System.Windows.Forms.Label()
         Me.Label7 = New System.Windows.Forms.Label()
         Me.cmbPedido = New System.Windows.Forms.ComboBox()
         Me.Label4 = New System.Windows.Forms.Label()
@@ -53,9 +56,6 @@ Partial Class frmCotizarVentana
         Me.txtTotal = New System.Windows.Forms.TextBox()
         Me.Label16 = New System.Windows.Forms.Label()
         Me.btnDuplicar = New System.Windows.Forms.Button()
-        Me.cmbTipoVidrio = New System.Windows.Forms.ComboBox()
-        Me.Label17 = New System.Windows.Forms.Label()
-        Me.txtEspesor = New System.Windows.Forms.ComboBox()
         Me.Panel1.SuspendLayout()
         Me.Panel2.SuspendLayout()
         Me.SuspendLayout()
@@ -81,6 +81,33 @@ Partial Class frmCotizarVentana
         Me.Panel1.Name = "Panel1"
         Me.Panel1.Size = New System.Drawing.Size(431, 201)
         Me.Panel1.TabIndex = 0
+        '
+        'txtEspesor
+        '
+        Me.txtEspesor.FormattingEnabled = True
+        Me.txtEspesor.Location = New System.Drawing.Point(258, 169)
+        Me.txtEspesor.Name = "txtEspesor"
+        Me.txtEspesor.Size = New System.Drawing.Size(112, 21)
+        Me.txtEspesor.TabIndex = 8
+        '
+        'cmbTipoVidrio
+        '
+        Me.cmbTipoVidrio.FormattingEnabled = True
+        Me.cmbTipoVidrio.Location = New System.Drawing.Point(170, 117)
+        Me.cmbTipoVidrio.Name = "cmbTipoVidrio"
+        Me.cmbTipoVidrio.Size = New System.Drawing.Size(241, 21)
+        Me.cmbTipoVidrio.TabIndex = 7
+        '
+        'Label17
+        '
+        Me.Label17.AutoSize = True
+        Me.Label17.BackColor = System.Drawing.Color.Transparent
+        Me.Label17.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label17.Location = New System.Drawing.Point(10, 119)
+        Me.Label17.Name = "Label17"
+        Me.Label17.Size = New System.Drawing.Size(92, 16)
+        Me.Label17.TabIndex = 6
+        Me.Label17.Text = "Tipo de Vidrio"
         '
         'Label7
         '
@@ -153,6 +180,7 @@ Partial Class frmCotizarVentana
         'cmbColorAluminio
         '
         Me.cmbColorAluminio.FormattingEnabled = True
+        Me.cmbColorAluminio.Items.AddRange(New Object() {"ESTANDAR", "NEGRO", "MADERA"})
         Me.cmbColorAluminio.Location = New System.Drawing.Point(211, 92)
         Me.cmbColorAluminio.Name = "cmbColorAluminio"
         Me.cmbColorAluminio.Size = New System.Drawing.Size(200, 21)
@@ -367,33 +395,6 @@ Partial Class frmCotizarVentana
         Me.btnDuplicar.TabIndex = 12
         Me.btnDuplicar.Text = "Duplicar"
         Me.btnDuplicar.UseVisualStyleBackColor = True
-        '
-        'cmbTipoVidrio
-        '
-        Me.cmbTipoVidrio.FormattingEnabled = True
-        Me.cmbTipoVidrio.Location = New System.Drawing.Point(170, 117)
-        Me.cmbTipoVidrio.Name = "cmbTipoVidrio"
-        Me.cmbTipoVidrio.Size = New System.Drawing.Size(241, 21)
-        Me.cmbTipoVidrio.TabIndex = 7
-        '
-        'Label17
-        '
-        Me.Label17.AutoSize = True
-        Me.Label17.BackColor = System.Drawing.Color.Transparent
-        Me.Label17.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label17.Location = New System.Drawing.Point(10, 119)
-        Me.Label17.Name = "Label17"
-        Me.Label17.Size = New System.Drawing.Size(92, 16)
-        Me.Label17.TabIndex = 6
-        Me.Label17.Text = "Tipo de Vidrio"
-        '
-        'txtEspesor
-        '
-        Me.txtEspesor.FormattingEnabled = True
-        Me.txtEspesor.Location = New System.Drawing.Point(258, 169)
-        Me.txtEspesor.Name = "txtEspesor"
-        Me.txtEspesor.Size = New System.Drawing.Size(112, 21)
-        Me.txtEspesor.TabIndex = 8
         '
         'frmCotizarVentana
         '

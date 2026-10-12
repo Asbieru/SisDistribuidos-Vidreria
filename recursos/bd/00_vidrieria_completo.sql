@@ -293,7 +293,7 @@ CREATE TABLE dbo.pedido_item (
     id_item      INT IDENTITY(1,1) PRIMARY KEY,
     id_pedido    INT NOT NULL,
     tipo         NVARCHAR(15) NOT NULL
-        CONSTRAINT ck_item_tipo CHECK (tipo IN ('CAJA','VIDRIO_SUELTO','VENTANA','MAMPARA')),
+        CONSTRAINT ck_item_tipo CHECK (tipo IN ('CAJA','VIDRIO_SUELTO','VENTANA','MAMPARA', 'ALUMINIO')),
     descripcion  NVARCHAR(255) NULL,
     cantidad     INT NOT NULL DEFAULT 1
         CONSTRAINT ck_item_cantidad CHECK (cantidad > 0),
@@ -417,6 +417,13 @@ CREATE TABLE dbo.tarifas_ventana (
     costo_silicona    DECIMAL(10,2) NOT NULL,
     CONSTRAINT ck_tarifa_rango CHECK (perimetro_max_cm > perimetro_min_cm)
 );
+GO
+
+INSERT INTO tarifas_ventana (perimetro_min_cm, perimetro_max_cm, costo_aluminio, costo_silicona)
+VALUES (0, 300, 15, 5),
+       (300.01, 480, 30, 10),
+       (480.01, 700, 45, 15),
+       (700.01, 99999, 60, 20);
 GO
 
 -- ------------------------------------------------------------
