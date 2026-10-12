@@ -89,6 +89,8 @@ Public Class MenuInicio
     Private Sub MenuInicio_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         Try
             txtID.Text = objUsu.obtenerIDUsuario(txtUsuario.Text)
+            Dim dtUsu As DataTable = objUsu.obtenerUsuario(Integer.Parse(txtID.Text))
+            If dtUsu.Rows.Count > 0 Then txtRol.Text = dtUsu.Rows(0)("rol").ToString
             Dim dt As DataTable = objUsu.obtenerPreferencia(Integer.Parse(txtID.Text))
             If dt.Rows.Count > 0 Then
                 tema = dt.Rows(0).Item(0).ToString

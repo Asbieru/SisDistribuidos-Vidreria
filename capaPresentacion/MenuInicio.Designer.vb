@@ -49,6 +49,8 @@ Partial Class MenuInicio
         Me.txtID = New System.Windows.Forms.ToolStripStatusLabel()
         Me.lblUsuario = New System.Windows.Forms.ToolStripStatusLabel()
         Me.txtUsuario = New System.Windows.Forms.ToolStripStatusLabel()
+        Me.lblRol = New System.Windows.Forms.ToolStripStatusLabel()
+        Me.txtRol = New System.Windows.Forms.ToolStripStatusLabel()
         Me.toolBarra = New System.Windows.Forms.ToolStrip()
         Me.toolCotizar = New System.Windows.Forms.ToolStripButton()
         Me.ToolStripSeparator1 = New System.Windows.Forms.ToolStripSeparator()
@@ -65,7 +67,7 @@ Partial Class MenuInicio
         Me.menu.Location = New System.Drawing.Point(0, 0)
         Me.menu.Name = "menu"
         Me.menu.Padding = New System.Windows.Forms.Padding(5, 2, 0, 2)
-        Me.menu.Size = New System.Drawing.Size(900, 28)
+        Me.menu.Size = New System.Drawing.Size(900, 30)
         Me.menu.TabIndex = 0
         Me.menu.Text = "menu"
         '
@@ -73,7 +75,7 @@ Partial Class MenuInicio
         '
         Me.mnProcesos.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.smnRCompra, Me.smnRPedido, Me.smnRPago})
         Me.mnProcesos.Name = "mnProcesos"
-        Me.mnProcesos.Size = New System.Drawing.Size(81, 24)
+        Me.mnProcesos.Size = New System.Drawing.Size(81, 26)
         Me.mnProcesos.Text = "Procesos"
         '
         'smnRCompra
@@ -98,7 +100,7 @@ Partial Class MenuInicio
         '
         Me.mnTablas.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.smnVCompra, Me.smnVVenta, Me.smnVInventario})
         Me.mnTablas.Name = "mnTablas"
-        Me.mnTablas.Size = New System.Drawing.Size(64, 24)
+        Me.mnTablas.Size = New System.Drawing.Size(64, 26)
         Me.mnTablas.Text = "Tablas"
         '
         'smnVCompra
@@ -123,7 +125,7 @@ Partial Class MenuInicio
         '
         Me.MantenimientosToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.smnUsuarios, Me.smnClientes, Me.smnProductos, Me.smnPermisos})
         Me.MantenimientosToolStripMenuItem.Name = "MantenimientosToolStripMenuItem"
-        Me.MantenimientosToolStripMenuItem.Size = New System.Drawing.Size(124, 24)
+        Me.MantenimientosToolStripMenuItem.Size = New System.Drawing.Size(124, 26)
         Me.MantenimientosToolStripMenuItem.Text = "Mantenimiento"
         '
         'smnUsuarios
@@ -154,7 +156,7 @@ Partial Class MenuInicio
         '
         Me.mnConfiguracion.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.TemaToolStripMenuItem, Me.CerrarTodasLasVentanasToolStripMenuItem})
         Me.mnConfiguracion.Name = "mnConfiguracion"
-        Me.mnConfiguracion.Size = New System.Drawing.Size(116, 24)
+        Me.mnConfiguracion.Size = New System.Drawing.Size(116, 26)
         Me.mnConfiguracion.Text = "Configuración"
         '
         'TemaToolStripMenuItem
@@ -187,19 +189,19 @@ Partial Class MenuInicio
         'mnReportes
         '
         Me.mnReportes.Name = "mnReportes"
-        Me.mnReportes.Size = New System.Drawing.Size(82, 24)
+        Me.mnReportes.Size = New System.Drawing.Size(82, 26)
         Me.mnReportes.Text = "Reportes"
         '
         'mnCerrarS
         '
         Me.mnCerrarS.Name = "mnCerrarS"
-        Me.mnCerrarS.Size = New System.Drawing.Size(108, 24)
+        Me.mnCerrarS.Size = New System.Drawing.Size(108, 26)
         Me.mnCerrarS.Text = "Cerrar sesión"
         '
         'stripDatos
         '
         Me.stripDatos.ImageScalingSize = New System.Drawing.Size(20, 20)
-        Me.stripDatos.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.lblID, Me.txtID, Me.lblUsuario, Me.txtUsuario})
+        Me.stripDatos.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.lblID, Me.txtID, Me.lblUsuario, Me.txtUsuario, Me.lblRol, Me.txtRol})
         Me.stripDatos.Location = New System.Drawing.Point(0, 449)
         Me.stripDatos.Name = "stripDatos"
         Me.stripDatos.Padding = New System.Windows.Forms.Padding(1, 0, 19, 0)
@@ -233,13 +235,26 @@ Partial Class MenuInicio
         Me.txtUsuario.Name = "txtUsuario"
         Me.txtUsuario.Size = New System.Drawing.Size(150, 20)
         '
+        'lblRol
+        '
+        Me.lblRol.Name = "lblRol"
+        Me.lblRol.Size = New System.Drawing.Size(34, 20)
+        Me.lblRol.Text = "Rol:"
+        '
+        'txtRol
+        '
+        Me.txtRol.AutoSize = False
+        Me.txtRol.BackColor = System.Drawing.Color.Gainsboro
+        Me.txtRol.Name = "txtRol"
+        Me.txtRol.Size = New System.Drawing.Size(120, 20)
+        '
         'toolBarra
         '
         Me.toolBarra.ImageScalingSize = New System.Drawing.Size(20, 20)
         Me.toolBarra.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.toolCotizar, Me.ToolStripSeparator1, Me.toolInventario})
-        Me.toolBarra.Location = New System.Drawing.Point(0, 28)
+        Me.toolBarra.Location = New System.Drawing.Point(0, 30)
         Me.toolBarra.Name = "toolBarra"
-        Me.toolBarra.Size = New System.Drawing.Size(900, 27)
+        Me.toolBarra.Size = New System.Drawing.Size(900, 31)
         Me.toolBarra.TabIndex = 4
         Me.toolBarra.Text = "ToolStrip1"
         '
@@ -250,14 +265,14 @@ Partial Class MenuInicio
         Me.toolCotizar.Image = CType(resources.GetObject("toolCotizar.Image"), System.Drawing.Image)
         Me.toolCotizar.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.toolCotizar.Name = "toolCotizar"
-        Me.toolCotizar.Size = New System.Drawing.Size(29, 24)
+        Me.toolCotizar.Size = New System.Drawing.Size(29, 28)
         Me.toolCotizar.Tag = "CotizarVentana"
         Me.toolCotizar.Text = "Cotizar Ventana"
         '
         'ToolStripSeparator1
         '
         Me.ToolStripSeparator1.Name = "ToolStripSeparator1"
-        Me.ToolStripSeparator1.Size = New System.Drawing.Size(6, 27)
+        Me.ToolStripSeparator1.Size = New System.Drawing.Size(6, 31)
         '
         'toolInventario
         '
@@ -266,7 +281,7 @@ Partial Class MenuInicio
         Me.toolInventario.Image = CType(resources.GetObject("toolInventario.Image"), System.Drawing.Image)
         Me.toolInventario.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.toolInventario.Name = "toolInventario"
-        Me.toolInventario.Size = New System.Drawing.Size(29, 24)
+        Me.toolInventario.Size = New System.Drawing.Size(29, 28)
         Me.toolInventario.Tag = "Inventario"
         Me.toolInventario.Text = "Inventario"
         '
@@ -329,4 +344,6 @@ Partial Class MenuInicio
     Friend WithEvents smnProductos As ToolStripMenuItem
     Friend WithEvents mnReportes As ToolStripMenuItem
     Friend WithEvents smnPermisos As ToolStripMenuItem
+    Friend WithEvents lblRol As ToolStripStatusLabel
+    Friend WithEvents txtRol As ToolStripStatusLabel
 End Class
