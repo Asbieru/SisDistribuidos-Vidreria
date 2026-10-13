@@ -204,11 +204,17 @@ CREATE TABLE dbo.pedidos (
     estado      NVARCHAR(15) NOT NULL DEFAULT 'PENDIENTE'
         CHECK (estado IN ('PENDIENTE','PAGADO','PARCIAL','CANCELADO')),
     total       DECIMAL(10,2) NOT NULL DEFAULT 0,
+    fecha_termino DATETIME2 NULL,   -- cuando se entrego / se instalo el pedido (independiente del pago)
     CONSTRAINT fk_pedido_cliente FOREIGN KEY (id_cliente)
         REFERENCES dbo.clientes(id_cliente) ON DELETE NO ACTION,
     CONSTRAINT fk_pedido_usuario FOREIGN KEY (id_usuario)
         REFERENCES dbo.usuarios(id_usuario) ON DELETE NO ACTION
 );
+GO
+
+-- Bases anteriores: agrega la fecha de culminacion (entrega/instalacion) del pedido
+IF COL_LENGTH('dbo.pedidos','fecha_termino') IS NULL
+    ALTER TABLE dbo.pedidos ADD fecha_termino DATETIME2 NULL;
 GO
 
 -- ------------------------------------------------------------
@@ -750,7 +756,8 @@ GO
 -- Cambiar el estado de una pieza
 --   DISPONIBLE -> RESERVADA | VENDIDA | CONSUMIDA | DEFECTUOSA
 --   RESERVADA  -> DISPONIBLE | VENDIDA | CONSUMIDA | DEFECTUOSA
---   VENDIDA, CONSUMIDA y DEFECTUOSA son finales (la pieza ya salio)
+--   VENDIDA, CONSUMIDA -> DEFECTUOSA (una pieza ya usada puede resultar rota)
+--   DEFECTUOSA es final (la pieza quedo inutilizable)
 -- ------------------------------------------------------------
 CREATE OR ALTER PROCEDURE dbo.sp_inv_cambiar_estado_pieza
     @id_pieza     INT,
@@ -778,7 +785,9 @@ BEGIN
             THROW 50011, 'La pieza no existe.', 1;
         IF @estado_actual = @estado
             THROW 50012, 'La pieza ya tiene ese estado.', 1;
-        IF @estado_actual IN ('VENDIDA','CONSUMIDA','DEFECTUOSA')
+        -- Una pieza ya usada (vendida/consumida) solo puede pasar a DEFECTUOSA
+        -- (p.ej. se rompio durante la instalacion): es un estado terminal especial.
+        IF @estado_actual IN ('VENDIDA','CONSUMIDA','DEFECTUOSA') AND @estado <> 'DEFECTUOSA'
             THROW 50013, 'La pieza ya salio del inventario (vendida, consumida o defectuosa) y no puede cambiar de estado.', 1;
 
         UPDATE dbo.inventario_piezas SET estado = @estado WHERE id_pieza = @id_pieza;
@@ -1136,6 +1145,280 @@ BEGIN
             ROLLBACK TRANSACTION sp_ped;
         THROW;
     END CATCH
+END
+GO
+
+-- ------------------------------------------------------------
+-- frmPedidoUnitario: item roto / cancelar item / terminar pedido
+-- ------------------------------------------------------------
+
+-- Marca como rota una linea (detalle) del pedido: la pieza usada pasa a DEFECTUOSA,
+-- la linea vieja queda REEMPLAZADO y se crea una nueva linea ACTIVA con el mismo
+-- material/medidas/precio, recalculando la accion segun el stock disponible.
+CREATE OR ALTER PROCEDURE dbo.sp_ped_item_roto
+    @id_detalle INT,
+    @id_usuario INT = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+    DECLARE @tran_externa BIT = CASE WHEN @@TRANCOUNT > 0 THEN 1 ELSE 0 END;
+
+    DECLARE @id_item INT, @id_pedido INT, @id_variante INT, @id_pieza INT,
+            @estado NVARCHAR(15),
+            @ancho DECIMAL(10,2), @alto DECIMAL(10,2), @largo DECIMAL(10,2),
+            @cajas INT, @precio DECIMAL(10,2), @subtotal DECIMAL(10,2);
+
+    SELECT @id_item = id_item, @id_variante = id_variante, @id_pieza = id_pieza,
+           @estado = estado, @ancho = ancho_cm, @alto = alto_cm, @largo = largo_cm,
+           @cajas = cantidad_cajas, @precio = precio_unitario_aplicado, @subtotal = subtotal
+    FROM dbo.pedido_detalle
+    WHERE id_detalle = @id_detalle;
+
+    IF @id_item IS NULL
+        THROW 50050, 'El detalle indicado no existe.', 1;
+    IF @estado <> 'ACTIVO'
+        THROW 50051, 'Solo se puede marcar como roto un detalle activo.', 1;
+    -- Solo tiene sentido romper algo que ya salio del inventario (tiene pieza asociada)
+    IF @id_pieza IS NULL
+        THROW 50052, 'Solo se puede marcar como roto un material que ya esta registrado en el inventario.', 1;
+
+    SELECT @id_pedido = id_pedido FROM dbo.pedido_item WHERE id_item = @id_item;
+
+    DECLARE @id_nuevo INT = NULL, @accion_nueva NVARCHAR(20) = 'COMPRA_NUEVA',
+            @pieza_nueva INT = NULL, @pieza_final INT = NULL;
+
+    BEGIN TRY
+    IF @tran_externa = 0 BEGIN TRANSACTION; ELSE SAVE TRANSACTION sp_roto;
+
+        -- 1) La pieza usada en la linea rota queda DEFECTUOSA
+        IF @id_pieza IS NOT NULL
+            EXEC dbo.sp_inv_cambiar_estado_pieza
+                 @id_pieza    = @id_pieza,
+                 @estado      = 'DEFECTUOSA',
+                 @id_usuario  = @id_usuario,
+                 @id_pedido   = @id_pedido,
+                 @observacion = 'Pieza rota durante el pedido';
+
+        -- 2) La linea vieja queda REEMPLAZADA
+        UPDATE dbo.pedido_detalle SET estado = 'REEMPLAZADO' WHERE id_detalle = @id_detalle;
+
+        -- 3) Recalcular accion de la nueva linea segun stock (mismo criterio que sp_ped_registrar)
+        IF @cajas IS NULL AND (@ancho IS NOT NULL OR @largo IS NOT NULL)
+        BEGIN
+            SELECT TOP 1 @pieza_nueva = id_pieza
+            FROM dbo.inventario_piezas
+            WHERE id_variante = @id_variante AND estado = 'DISPONIBLE'
+              AND ( (@largo IS NOT NULL AND largo_cm >= @largo)
+                 OR (@ancho IS NOT NULL AND @alto IS NOT NULL AND
+                     ( (ancho_cm >= @ancho AND alto_cm >= @alto)
+                    OR (ancho_cm >= @alto  AND alto_cm >= @ancho) )) )
+            ORDER BY CASE WHEN ancho_cm IS NULL THEN largo_cm ELSE ancho_cm * alto_cm END, id_pieza;
+
+            IF @pieza_nueva IS NOT NULL
+            BEGIN
+                DECLARE @p_ancho DECIMAL(10,2), @p_alto DECIMAL(10,2), @p_largo DECIMAL(10,2);
+                SELECT @p_ancho = ancho_cm, @p_alto = alto_cm, @p_largo = largo_cm
+                FROM dbo.inventario_piezas WHERE id_pieza = @pieza_nueva;
+
+                IF @largo IS NOT NULL
+                    SET @accion_nueva = CASE WHEN @p_largo BETWEEN @largo - 0.01 AND @largo + 0.01
+                                             THEN 'USA_EXISTENTE' ELSE 'CORTA_PIEZA' END;
+                ELSE
+                    SET @accion_nueva = CASE
+                        WHEN (ABS(@p_ancho - @ancho) <= 0.01 AND ABS(@p_alto - @alto) <= 0.01)
+                          OR (ABS(@p_ancho - @alto)  <= 0.01 AND ABS(@p_alto - @ancho) <= 0.01)
+                        THEN 'USA_EXISTENTE' ELSE 'CORTA_PIEZA' END;
+
+                SET @pieza_final = @pieza_nueva;
+
+                IF @accion_nueva = 'CORTA_PIEZA'
+                    EXEC dbo.sp_inv_cortar_pieza
+                         @id_pieza    = @pieza_nueva,
+                         @ancho_corte = @ancho,
+                         @alto_corte  = @alto,
+                         @largo_corte = @largo,
+                         @id_usuario  = @id_usuario,
+                         @id_pedido   = @id_pedido;
+                ELSE
+                    EXEC dbo.sp_inv_cambiar_estado_pieza
+                         @id_pieza   = @pieza_nueva,
+                         @estado     = 'VENDIDA',
+                         @id_usuario = @id_usuario,
+                         @id_pedido  = @id_pedido;
+            END
+        END
+
+        -- 4) Nueva linea ACTIVA que reemplaza a la rota
+        INSERT INTO dbo.pedido_detalle (id_item, id_variante, accion, id_pieza, estado, id_detalle_origen,
+                                         cantidad_cajas, ancho_cm, alto_cm, largo_cm,
+                                         precio_unitario_aplicado, subtotal)
+        VALUES (@id_item, @id_variante, @accion_nueva, @pieza_final, 'ACTIVO', @id_detalle,
+                @cajas, @ancho, @alto, @largo, @precio, @subtotal);
+        SET @id_nuevo = CONVERT(INT, SCOPE_IDENTITY());
+
+        -- 5) El item vuelve a quedar PENDIENTE de atender
+        UPDATE dbo.pedido_item SET estado = 'PENDIENTE' WHERE id_item = @id_item;
+
+    IF @tran_externa = 0 COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        IF XACT_STATE() = -1 OR (XACT_STATE() = 1 AND @tran_externa = 0)
+            ROLLBACK TRANSACTION;
+        ELSE IF XACT_STATE() = 1
+            ROLLBACK TRANSACTION sp_roto;
+        THROW;
+    END CATCH
+
+    SELECT @id_nuevo AS id_detalle, @accion_nueva AS accion, @pieza_final AS id_pieza;
+END
+GO
+
+-- Cancela un item completo del pedido: sus detalles quedan CANCELADO, libera las
+-- piezas RESERVADA ligadas y recalcula el total del pedido.
+CREATE OR ALTER PROCEDURE dbo.sp_ped_cancelar_item
+    @id_item    INT,
+    @id_usuario INT = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+    DECLARE @tran_externa BIT = CASE WHEN @@TRANCOUNT > 0 THEN 1 ELSE 0 END;
+
+    DECLARE @id_pedido INT, @estado NVARCHAR(15);
+    SELECT @id_pedido = id_pedido, @estado = estado FROM dbo.pedido_item WHERE id_item = @id_item;
+
+    IF @id_pedido IS NULL
+        THROW 50060, 'El item indicado no existe.', 1;
+    IF @estado = 'CANCELADO'
+        THROW 50061, 'El item ya esta cancelado.', 1;
+
+    DECLARE @id_pieza INT;
+
+    BEGIN TRY
+    IF @tran_externa = 0 BEGIN TRANSACTION; ELSE SAVE TRANSACTION sp_cancel_item;
+
+        DECLARE cur_piezas CURSOR LOCAL FAST_FORWARD FOR
+            SELECT pd.id_pieza
+            FROM dbo.pedido_detalle pd
+            INNER JOIN dbo.inventario_piezas ip ON ip.id_pieza = pd.id_pieza
+            WHERE pd.id_item = @id_item AND pd.estado = 'ACTIVO' AND ip.estado = 'RESERVADA';
+        OPEN cur_piezas;
+        FETCH NEXT FROM cur_piezas INTO @id_pieza;
+        WHILE @@FETCH_STATUS = 0
+        BEGIN
+            EXEC dbo.sp_inv_cambiar_estado_pieza
+                 @id_pieza    = @id_pieza,
+                 @estado      = 'DISPONIBLE',
+                 @id_usuario  = @id_usuario,
+                 @id_pedido   = @id_pedido,
+                 @observacion = 'Pedido cancelado';
+            FETCH NEXT FROM cur_piezas INTO @id_pieza;
+        END
+        CLOSE cur_piezas; DEALLOCATE cur_piezas;
+
+        UPDATE dbo.pedido_detalle SET estado = 'CANCELADO'
+        WHERE id_item = @id_item AND estado = 'ACTIVO';
+
+        UPDATE dbo.pedido_item SET estado = 'CANCELADO' WHERE id_item = @id_item;
+
+        UPDATE dbo.pedidos
+        SET total = (SELECT ISNULL(SUM(total), 0) FROM dbo.pedido_item
+                     WHERE id_pedido = @id_pedido AND estado <> 'CANCELADO')
+        WHERE id_pedido = @id_pedido;
+
+        -- Si ya no queda ningun item activo, el pedido completo queda cancelado
+        IF NOT EXISTS (SELECT 1 FROM dbo.pedido_item
+                       WHERE id_pedido = @id_pedido AND estado <> 'CANCELADO')
+            UPDATE dbo.pedidos SET estado = 'CANCELADO' WHERE id_pedido = @id_pedido;
+
+    IF @tran_externa = 0 COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        IF XACT_STATE() = -1 OR (XACT_STATE() = 1 AND @tran_externa = 0)
+            ROLLBACK TRANSACTION;
+        ELSE IF XACT_STATE() = 1
+            ROLLBACK TRANSACTION sp_cancel_item;
+        THROW;
+    END CATCH
+END
+GO
+
+-- Recalcula el estado de los items de un pedido: un item PENDIENTE pasa a EN_PROCESO
+-- cuando TODOS sus detalles activos ya estan a mano (pieza en inventario o compra ya
+-- ingresada). Solo los items EN_PROCESO pueden completarse.
+CREATE OR ALTER PROCEDURE dbo.sp_ped_recalcular_estados
+    @id_pedido INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    UPDATE pi
+    SET estado = 'EN_PROCESO'
+    FROM dbo.pedido_item pi
+    WHERE pi.id_pedido = @id_pedido
+      AND pi.estado = 'PENDIENTE'
+      AND EXISTS (SELECT 1 FROM dbo.pedido_detalle pd
+                  WHERE pd.id_item = pi.id_item AND pd.estado = 'ACTIVO')
+      AND NOT EXISTS (SELECT 1 FROM dbo.pedido_detalle pd
+                      WHERE pd.id_item = pi.id_item AND pd.estado = 'ACTIVO'
+                        AND pd.id_pieza IS NULL AND pd.id_compra_detalle IS NULL);
+END
+GO
+
+-- Termina UN item del pedido (solo si esta EN_PROCESO, es decir con todo a mano).
+CREATE OR ALTER PROCEDURE dbo.sp_ped_terminar_item
+    @id_item    INT,
+    @id_usuario INT = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    DECLARE @id_pedido INT, @estado NVARCHAR(15);
+    SELECT @id_pedido = id_pedido, @estado = estado FROM dbo.pedido_item WHERE id_item = @id_item;
+
+    IF @id_pedido IS NULL
+        THROW 50080, 'El item indicado no existe.', 1;
+    IF @estado = 'CANCELADO'
+        THROW 50081, 'El item esta cancelado.', 1;
+    IF @estado = 'COMPLETADO'
+        THROW 50082, 'El item ya esta completado.', 1;
+
+    EXEC dbo.sp_ped_recalcular_estados @id_pedido = @id_pedido;
+
+    SELECT @estado = estado FROM dbo.pedido_item WHERE id_item = @id_item;
+    IF @estado <> 'EN_PROCESO'
+        THROW 50083, 'No se puede completar el item: aun faltan materiales en inventario.', 1;
+
+    UPDATE dbo.pedido_item SET estado = 'COMPLETADO' WHERE id_item = @id_item;
+
+    -- Si ya no queda ningun item pendiente o en proceso, el pedido queda terminado
+    IF NOT EXISTS (SELECT 1 FROM dbo.pedido_item
+                   WHERE id_pedido = @id_pedido AND estado IN ('PENDIENTE','EN_PROCESO'))
+        UPDATE dbo.pedidos SET fecha_termino = SYSDATETIME() WHERE id_pedido = @id_pedido;
+END
+GO
+
+-- Marca todo el pedido como terminado (entregado/instalado). Es independiente del pago.
+CREATE OR ALTER PROCEDURE dbo.sp_ped_terminar
+    @id_pedido  INT,
+    @id_usuario INT = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF NOT EXISTS (SELECT 1 FROM dbo.pedidos WHERE id_pedido = @id_pedido)
+        THROW 50070, 'El pedido indicado no existe.', 1;
+
+    EXEC dbo.sp_ped_recalcular_estados @id_pedido = @id_pedido;
+
+    IF EXISTS (SELECT 1 FROM dbo.pedido_item
+               WHERE id_pedido = @id_pedido AND estado = 'PENDIENTE')
+        THROW 50071, 'No se puede terminar el pedido: hay items cuyos materiales aun no estan en inventario.', 1;
+
+    UPDATE dbo.pedido_item SET estado = 'COMPLETADO'
+    WHERE id_pedido = @id_pedido AND estado = 'EN_PROCESO';
+
+    UPDATE dbo.pedidos SET fecha_termino = SYSDATETIME()
+    WHERE id_pedido = @id_pedido;
 END
 GO
 
@@ -1606,6 +1889,13 @@ IF NOT EXISTS (SELECT 1 FROM dbo.tipos_mensaje WHERE codigo = N'CANCELARPEDIDO')
 BEGIN
     INSERT INTO dbo.tipos_mensaje (codigo, titulo, texto)
     VALUES ('CANCELARPEDIDO', 'Cancelar pedido', '¿Deseas cancelar el pedido seleccionado?');
+END
+GO
+
+IF NOT EXISTS (SELECT 1 FROM dbo.tipos_mensaje WHERE codigo = N'ITEMROTO')
+BEGIN
+    INSERT INTO dbo.tipos_mensaje (codigo, titulo, texto)
+    VALUES ('ITEMROTO', 'Un item se rompió', '¿Estás seguro de que quieres colocar como roto el item?');
 END
 GO
 

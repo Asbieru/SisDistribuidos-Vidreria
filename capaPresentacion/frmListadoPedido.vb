@@ -1,5 +1,4 @@
 ﻿Imports capaNegocio
-Imports System.Data
 
 Public Class frmListadoPedido
     Implements IFormularioTema
@@ -74,6 +73,8 @@ Public Class frmListadoPedido
         If dtPedidos Is Nothing Then Return
         Dim texto As String = txtBuscar.Text.Trim().Replace("'", "''").Replace("[", "[[]").Replace("%", "[%]").Replace("*", "[*]")
         Dim filtro As String = ""
+        ' En modo selección no se ofrecen pedidos cancelados
+        If modoSeleccion Then filtro = "estado <> 'CANCELADO'"
         If texto <> "" Then
             Dim campo As String
             Select Case cboCategoria.Text
@@ -84,7 +85,8 @@ Public Class frmListadoPedido
                 Case Else
                     campo = "usuario"
             End Select
-            filtro = campo & " LIKE '%" & texto & "%'"
+            If filtro <> "" Then filtro &= " AND "
+            filtro &= campo & " LIKE '%" & texto & "%'"
         End If
         dtPedidos.DefaultView.RowFilter = filtro
         Dim encontrados As Integer = dtPedidos.DefaultView.Count
@@ -118,8 +120,9 @@ Public Class frmListadoPedido
 
     Private Sub actualizarBotones()
         Dim haySeleccion As Boolean = idSeleccionado() > 0
-        btnCancelar.Enabled = haySeleccion
-        btnVerPedido.Enabled = haySeleccion
+        Dim cancelado As Boolean = haySeleccion AndAlso estadoSeleccionado() = "CANCELADO"
+        btnCancelar.Enabled = haySeleccion AndAlso Not cancelado
+        btnVerPedido.Enabled = haySeleccion AndAlso Not cancelado
         btnSeleccionar.Enabled = haySeleccion
     End Sub
 
@@ -145,9 +148,13 @@ Public Class frmListadoPedido
     Private Sub verPedidoSeleccionado()
         Dim id As Integer = idSeleccionado()
         If id = 0 Then Return
-        Dim frm As New frmPedidoUnitario With {.idPedido = id, .tema = tema, .idUsuario = idUsuario}
-        frm.MdiParent = Me.MdiParent
-        frm.Show()
+        If estadoSeleccionado() = "CANCELADO" Then
+            UtilFormularios.MostrarInfo("El pedido seleccionado está cancelado y no puede abrirse.")
+        Else
+            Dim frm As New frmPedidoUnitario With {.idPedido = id, .tema = tema, .idUsuario = idUsuario}
+            frm.MdiParent = Me.MdiParent
+            frm.Show()
+        End If
     End Sub
 
     Private Sub btnNuevo_Click(sender As Object, e As EventArgs) Handles btnNuevo.Click

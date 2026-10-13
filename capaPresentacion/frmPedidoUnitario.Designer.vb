@@ -27,6 +27,7 @@ Partial Class frmPedidoUnitario
         Me.Panel1 = New System.Windows.Forms.Panel()
         Me.lblEstado = New System.Windows.Forms.Label()
         Me.tabModelo = New System.Windows.Forms.TabPage()
+        Me.btnCancelarItems = New System.Windows.Forms.Button()
         Me.btnItemRoto = New System.Windows.Forms.Button()
         Me.tblItems = New System.Windows.Forms.DataGridView()
         Me.txtPrecio = New System.Windows.Forms.TextBox()
@@ -37,6 +38,7 @@ Partial Class frmPedidoUnitario
         Me.btnCerrar = New System.Windows.Forms.Button()
         Me.btnPagar = New System.Windows.Forms.Button()
         Me.btnTerminar = New System.Windows.Forms.Button()
+        Me.btnTerminarUnitario = New System.Windows.Forms.Button()
         Me.Panel1.SuspendLayout()
         Me.tabModelo.SuspendLayout()
         CType(Me.tblItems, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -88,6 +90,8 @@ Partial Class frmPedidoUnitario
         '
         'tabModelo
         '
+        Me.tabModelo.Controls.Add(Me.btnTerminarUnitario)
+        Me.tabModelo.Controls.Add(Me.btnCancelarItems)
         Me.tabModelo.Controls.Add(Me.btnItemRoto)
         Me.tabModelo.Controls.Add(Me.tblItems)
         Me.tabModelo.Controls.Add(Me.txtPrecio)
@@ -102,9 +106,18 @@ Partial Class frmPedidoUnitario
         Me.tabModelo.Text = "Modelo"
         Me.tabModelo.UseVisualStyleBackColor = True
         '
+        'btnCancelarItems
+        '
+        Me.btnCancelarItems.Location = New System.Drawing.Point(578, 274)
+        Me.btnCancelarItems.Name = "btnCancelarItems"
+        Me.btnCancelarItems.Size = New System.Drawing.Size(100, 23)
+        Me.btnCancelarItems.TabIndex = 7
+        Me.btnCancelarItems.Text = "Cancelar Pedido"
+        Me.btnCancelarItems.UseVisualStyleBackColor = True
+        '
         'btnItemRoto
         '
-        Me.btnItemRoto.Location = New System.Drawing.Point(581, 274)
+        Me.btnItemRoto.Location = New System.Drawing.Point(472, 274)
         Me.btnItemRoto.Name = "btnItemRoto"
         Me.btnItemRoto.Size = New System.Drawing.Size(93, 23)
         Me.btnItemRoto.TabIndex = 7
@@ -203,6 +216,15 @@ Partial Class frmPedidoUnitario
         Me.btnTerminar.Text = "Terminar Pedido"
         Me.btnTerminar.UseVisualStyleBackColor = True
         '
+        'btnTerminarUnitario
+        '
+        Me.btnTerminarUnitario.Location = New System.Drawing.Point(16, 274)
+        Me.btnTerminarUnitario.Name = "btnTerminarUnitario"
+        Me.btnTerminarUnitario.Size = New System.Drawing.Size(117, 23)
+        Me.btnTerminarUnitario.TabIndex = 7
+        Me.btnTerminarUnitario.Text = "Registrar Culminación"
+        Me.btnTerminarUnitario.UseVisualStyleBackColor = True
+        '
         'frmPedidoUnitario
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -240,4 +262,6 @@ Partial Class frmPedidoUnitario
     Friend WithEvents btnPagar As Button
     Friend WithEvents btnTerminar As Button
     Friend WithEvents btnItemRoto As Button
+    Friend WithEvents btnCancelarItems As Button
+    Friend WithEvents btnTerminarUnitario As Button
 End Class

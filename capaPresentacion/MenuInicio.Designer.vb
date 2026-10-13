@@ -42,7 +42,6 @@ Partial Class MenuInicio
         Me.ClaroToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.OscuroToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.CerrarTodasLasVentanasToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.mnReportes = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnCerrarS = New System.Windows.Forms.ToolStripMenuItem()
         Me.stripDatos = New System.Windows.Forms.StatusStrip()
         Me.lblID = New System.Windows.Forms.ToolStripStatusLabel()
@@ -63,7 +62,7 @@ Partial Class MenuInicio
         'menu
         '
         Me.menu.ImageScalingSize = New System.Drawing.Size(20, 20)
-        Me.menu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnProcesos, Me.mnTablas, Me.MantenimientosToolStripMenuItem, Me.mnConfiguracion, Me.mnReportes, Me.mnCerrarS})
+        Me.menu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnProcesos, Me.mnTablas, Me.MantenimientosToolStripMenuItem, Me.mnConfiguracion, Me.mnCerrarS})
         Me.menu.Location = New System.Drawing.Point(0, 0)
         Me.menu.Name = "menu"
         Me.menu.Padding = New System.Windows.Forms.Padding(4, 2, 0, 2)
@@ -106,19 +105,19 @@ Partial Class MenuInicio
         'smnVCompra
         '
         Me.smnVCompra.Name = "smnVCompra"
-        Me.smnVCompra.Size = New System.Drawing.Size(180, 22)
+        Me.smnVCompra.Size = New System.Drawing.Size(146, 22)
         Me.smnVCompra.Text = "Ver Compras"
         '
         'smnVPedido
         '
         Me.smnVPedido.Name = "smnVPedido"
-        Me.smnVPedido.Size = New System.Drawing.Size(180, 22)
+        Me.smnVPedido.Size = New System.Drawing.Size(146, 22)
         Me.smnVPedido.Text = "Ver Pedidos"
         '
         'smnVInventario
         '
         Me.smnVInventario.Name = "smnVInventario"
-        Me.smnVInventario.Size = New System.Drawing.Size(180, 22)
+        Me.smnVInventario.Size = New System.Drawing.Size(146, 22)
         Me.smnVInventario.Text = "Ver Inventario"
         '
         'MantenimientosToolStripMenuItem
@@ -131,25 +130,25 @@ Partial Class MenuInicio
         'smnUsuarios
         '
         Me.smnUsuarios.Name = "smnUsuarios"
-        Me.smnUsuarios.Size = New System.Drawing.Size(180, 22)
+        Me.smnUsuarios.Size = New System.Drawing.Size(128, 22)
         Me.smnUsuarios.Text = "Usuarios"
         '
         'smnClientes
         '
         Me.smnClientes.Name = "smnClientes"
-        Me.smnClientes.Size = New System.Drawing.Size(180, 22)
+        Me.smnClientes.Size = New System.Drawing.Size(128, 22)
         Me.smnClientes.Text = "Clientes"
         '
         'smnProductos
         '
         Me.smnProductos.Name = "smnProductos"
-        Me.smnProductos.Size = New System.Drawing.Size(180, 22)
+        Me.smnProductos.Size = New System.Drawing.Size(128, 22)
         Me.smnProductos.Text = "Productos"
         '
         'smnPermisos
         '
         Me.smnPermisos.Name = "smnPermisos"
-        Me.smnPermisos.Size = New System.Drawing.Size(180, 22)
+        Me.smnPermisos.Size = New System.Drawing.Size(128, 22)
         Me.smnPermisos.Text = "Permisos"
         '
         'mnConfiguracion
@@ -185,12 +184,6 @@ Partial Class MenuInicio
             Or System.Windows.Forms.Keys.W), System.Windows.Forms.Keys)
         Me.CerrarTodasLasVentanasToolStripMenuItem.Size = New System.Drawing.Size(296, 22)
         Me.CerrarTodasLasVentanasToolStripMenuItem.Text = "Cerrar todas las ventanas"
-        '
-        'mnReportes
-        '
-        Me.mnReportes.Name = "mnReportes"
-        Me.mnReportes.Size = New System.Drawing.Size(65, 20)
-        Me.mnReportes.Text = "Reportes"
         '
         'mnCerrarS
         '
@@ -340,7 +333,6 @@ Partial Class MenuInicio
     Friend WithEvents smnClientes As ToolStripMenuItem
     Friend WithEvents CerrarTodasLasVentanasToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents smnProductos As ToolStripMenuItem
-    Friend WithEvents mnReportes As ToolStripMenuItem
     Friend WithEvents smnPermisos As ToolStripMenuItem
     Friend WithEvents lblRol As ToolStripStatusLabel
     Friend WithEvents txtRol As ToolStripStatusLabel

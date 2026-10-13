@@ -283,7 +283,7 @@ Public Class MenuInicio
             smnRPago.Available = permisos.Contains("PAGOS")
 
             ' Reportes
-            mnReportes.Available = permisos.Contains("REPORTES")
+            ' mnReportes.Available = permisos.Contains("REPORTES")
 
             ' Los menús principales se ocultan si no les queda ninguna opción
             MantenimientosToolStripMenuItem.Available = smnUsuarios.Available OrElse smnPermisos.Available OrElse

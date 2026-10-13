@@ -1,5 +1,4 @@
 ﻿Imports capaNegocio
-Imports System.Collections.Generic
 
 Public Class frmPermisos
     Implements IFormularioTema

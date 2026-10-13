@@ -1,5 +1,4 @@
 Imports capaNegocio
-Imports System.Data
 
 Public Class frmHistorialClientes
     Implements IFormularioTema

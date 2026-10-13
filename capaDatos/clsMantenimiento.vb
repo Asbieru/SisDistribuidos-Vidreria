@@ -20,7 +20,9 @@ Public Class clsMantenimiento
             objConecta.cerrarconexion()
         Catch ex As Exception
             'objConecta.cancelarconexionTrans()
-            Throw New Exception("Error al realizar la operación...")
+            Throw New Exception("Error al ejecutar el comando" & vbCrLf &
+                                "SQL: " & strConsulta & vbCrLf &
+                                "Detalle: " & ex.Message)
         End Try
     End Sub
 
@@ -41,7 +43,9 @@ Public Class clsMantenimiento
             Return dt
         Catch ex As Exception
             objConecta.cancelarconexionTrans()
-            Throw New Exception("Error al realizar la consulta...")
+            Throw New Exception("Error al ejecutar la consulta" & vbCrLf &
+                                "SQL: " & strConsulta & vbCrLf &
+                                "Detalle: " & ex.Message)
         End Try
         Return Nothing
     End Function
@@ -60,7 +64,9 @@ Public Class clsMantenimiento
             Return ds
         Catch ex As Exception
             objConecta.cancelarconexionTrans()
-            Throw New Exception("Error al realizar la consulta...")
+            Throw New Exception("Error al ejecutar la consulta" & vbCrLf &
+                                "SQL: " & strConsulta & vbCrLf &
+                                "Detalle: " & ex.Message)
         End Try
         Return Nothing
     End Function
@@ -128,8 +134,14 @@ Public Class clsMantenimiento
         Catch ex As SqlException When ex.Number >= 50000
             'Error de negocio lanzado con THROW desde la BD (ej: "Stock insuficiente..."): se muestra tal cual
             Throw New Exception(ex.Message)
+        Catch ex As SqlException
+            Dim enProc As String = If(String.IsNullOrEmpty(ex.Procedure), "", " en " & ex.Procedure)
+            Throw New Exception("Error al ejecutar " & tipo.ToString() & " '" & texto & "'" & vbCrLf &
+                                "SQL " & ex.Number & enProc & vbCrLf &
+                                "Detalle: " & ex.Message)
         Catch ex As Exception
-            Throw New Exception("Error al realizar la operación en la BD: " & ex.Message)
+            Throw New Exception("Error al ejecutar " & tipo.ToString() & " '" & texto & "'" & vbCrLf &
+                                "Detalle: " & ex.Message)
         Finally
             objConecta.cerrarconexion()
         End Try

@@ -50,7 +50,7 @@ Public Class Pedido
     ' Cabecera de un pedido con los nombres de cliente y vendedor
     Public Function Obtener(idPedido As Integer) As DataTable
         Return objMan.listarComando(
-            "select p.id_pedido, c.nombre as cliente, u.nombre as usuario, p.fecha, p.estado, p.total " &
+            "select p.id_pedido, c.nombre as cliente, u.nombre as usuario, p.fecha, p.estado, p.total, p.fecha_termino " &
             "from pedidos p " &
             "inner join clientes c on c.id_cliente = p.id_cliente " &
             "inner join usuarios u on u.id_usuario = p.id_usuario " &
@@ -82,7 +82,7 @@ Public Class Pedido
             "  where pd.id_item = pi.id_item and pd.estado = 'ACTIVO' and pd.ancho_cm is not null " &
             "  order by pd.id_detalle " &
             ") medidas " &
-            "where pi.id_pedido = " & idPedido & " " &
+            "where pi.id_pedido = " & idPedido & " and pi.estado <> 'CANCELADO' " &
             "order by pi.id_item")
     End Function
 
@@ -104,6 +104,46 @@ Public Class Pedido
     ' Marca una linea de material como resuelta (p.ej. despues de confirmar el corte)
     Public Sub ResolverDetalle(idDetalle As Integer)
         objMan.ejecutarComando("update pedido_detalle set accion='USA_EXISTENTE', id_pieza=NULL where id_detalle=" & idDetalle)
+    End Sub
+
+    ' Marca la linea (detalle) como rota: la pieza usada pasa a DEFECTUOSA, la linea
+    ' queda REEMPLAZADA y se crea una nueva linea con el mismo material y medidas.
+    ' Devuelve la linea nueva (id_detalle, accion, id_pieza).
+    Public Function MarcarItemRoto(idDetalle As Integer, Optional idUsuario As Integer? = Nothing) As DataTable
+        Dim parametros As New Dictionary(Of String, Object) From {
+            {"id_detalle", idDetalle},
+            {"id_usuario", If(idUsuario.HasValue, CObj(idUsuario.Value), Nothing)}}
+        Return objMan.listarProcedimiento("sp_ped_item_roto", parametros)
+    End Function
+
+    ' Cancela un item completo del pedido y libera sus piezas reservadas
+    Public Sub CancelarItem(idItem As Integer, Optional idUsuario As Integer? = Nothing)
+        Dim parametros As New Dictionary(Of String, Object) From {
+            {"id_item", idItem},
+            {"id_usuario", If(idUsuario.HasValue, CObj(idUsuario.Value), Nothing)}}
+        objMan.ejecutarProcedimiento("sp_ped_cancelar_item", parametros)
+    End Sub
+
+    ' Marca el pedido como terminado (entregado/instalado), sin importar el pago
+    Public Sub Terminar(idPedido As Integer, Optional idUsuario As Integer? = Nothing)
+        Dim parametros As New Dictionary(Of String, Object) From {
+            {"id_pedido", idPedido},
+            {"id_usuario", If(idUsuario.HasValue, CObj(idUsuario.Value), Nothing)}}
+        objMan.ejecutarProcedimiento("sp_ped_terminar", parametros)
+    End Sub
+
+    ' Termina un solo item (solo si esta EN_PROCESO, con todos sus materiales a mano)
+    Public Sub TerminarItem(idItem As Integer, Optional idUsuario As Integer? = Nothing)
+        Dim parametros As New Dictionary(Of String, Object) From {
+            {"id_item", idItem},
+            {"id_usuario", If(idUsuario.HasValue, CObj(idUsuario.Value), Nothing)}}
+        objMan.ejecutarProcedimiento("sp_ped_terminar_item", parametros)
+    End Sub
+
+    ' Promueve a EN_PROCESO los items cuyos detalles ya estan todos a mano
+    Public Sub RecalcularEstados(idPedido As Integer)
+        Dim parametros As New Dictionary(Of String, Object) From {{"id_pedido", idPedido}}
+        objMan.ejecutarProcedimiento("sp_ped_recalcular_estados", parametros)
     End Sub
 
     Public Function TarifaSugerida(anchoCm As Decimal, altoCm As Decimal) As (aluminio As Decimal, silicona As Decimal)

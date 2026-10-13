@@ -1,6 +1,4 @@
 ﻿Imports capaNegocio
-Imports System.Data
-Imports System.Linq
 Public Class frmRegistrarPedido
     Implements IFormularioTema
     Public Property idClienteSeleccionado As Integer = 0

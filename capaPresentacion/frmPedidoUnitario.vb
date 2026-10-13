@@ -1,5 +1,4 @@
 ﻿Imports capaNegocio
-Imports System.Data
 
 Public Class frmPedidoUnitario
     Implements IFormularioTema
@@ -20,7 +19,11 @@ Public Class frmPedidoUnitario
     Private tmplUseVisual As Boolean
     Private tmplGridLoc As Point
     Private tmplGridSize As Size
+    Private tmplItemRoto As Button
+    Private tmplCancelarItems As Button
+    Private tmplTerminarUnitario As Button
     Private tabsGenerados As New List(Of TabPage)
+    Private estadoActual As String = ""
 
     Private Sub frmPedidoUnitario_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         CapturarPlantilla()
@@ -42,6 +45,11 @@ Public Class frmPedidoUnitario
         AplicarTema(Me, tema)
         Panel1.BackColor = p.Fondo
         lblTitulo.ForeColor = p.Acento
+
+        If estadoActual = "CANCELADO" Then
+            MostrarInfo("Este pedido está cancelado y no puede abrirse.")
+            BeginInvoke(New Action(Sub() Close()))
+        End If
     End Sub
 
     Private Sub ResolverUsuario()
@@ -67,7 +75,12 @@ Public Class frmPedidoUnitario
             lblTitulo.Text = "Pedido #" & idPedido.ToString() & " - " & cliente
             lblSubTitulo.Text = fecha.ToString("dd/MM/yyyy HH:mm") & " - Vendedor: " & usuario &
                                 " - Total: S/." & FormatoNumero(total)
-            lblEstado.Text = fila("estado").ToString()
+            Dim estado As String = fila("estado").ToString()
+            estadoActual = estado
+            If dt.Columns.Contains("fecha_termino") AndAlso Not IsDBNull(fila("fecha_termino")) Then
+                estado &= " - Terminado: " & CDate(fila("fecha_termino")).ToString("dd/MM/yyyy HH:mm")
+            End If
+            lblEstado.Text = estado
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Pedido", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
@@ -82,6 +95,8 @@ Public Class frmPedidoUnitario
 
         If idPedido <= 0 Then Return
         Try
+            ' Los items cuyos materiales ya estan todos a mano pasan a EN_PROCESO
+            objPedido.RecalcularEstados(idPedido)
             Dim items As DataTable = objPedido.ListarItemsDetallado(idPedido)
             For Each fila As DataRow In items.Rows
                 Dim idItem As Integer = CInt(fila("id_item"))
@@ -125,12 +140,31 @@ Public Class frmPedidoUnitario
         tab.Controls.Add(txtPrecio)
         tab.Controls.Add(grid)
 
+        Dim btnRoto As Button = CopiarBoton(tmplItemRoto)
+        If btnRoto IsNot Nothing Then
+            AddHandler btnRoto.Click, AddressOf btnItemRotoTab_Click
+            tab.Controls.Add(btnRoto)
+        End If
+        Dim btnCancelar As Button = CopiarBoton(tmplCancelarItems)
+        If btnCancelar IsNot Nothing Then
+            AddHandler btnCancelar.Click, AddressOf btnCancelarItemsTab_Click
+            tab.Controls.Add(btnCancelar)
+        End If
+        Dim btnTerminarItem As Button = CopiarBoton(tmplTerminarUnitario)
+        If btnTerminarItem IsNot Nothing Then
+            AddHandler btnTerminarItem.Click, AddressOf btnTerminarUnitarioTab_Click
+            tab.Controls.Add(btnTerminarItem)
+        End If
+
+        tab.Tag = CInt(item("id_item"))
+
         LlenarGrid(grid, detalles)
         Return tab
     End Function
 
     Private Function CrearGrid() As DataGridView
         Dim grid As New DataGridView()
+        grid.Name = "gridItems"
         grid.Location = tmplGridLoc
         grid.Size = tmplGridSize
         grid.Anchor = AnchorStyles.Top Or AnchorStyles.Left
@@ -333,7 +367,22 @@ Public Class frmPedidoUnitario
 
         tmplGridLoc = tblItems.Location
         tmplGridSize = tblItems.Size
+
+        tmplItemRoto = CopiarBoton(TryCast(tabModelo.Controls("btnItemRoto"), Button))
+        tmplCancelarItems = CopiarBoton(TryCast(tabModelo.Controls("btnCancelarItems"), Button))
+        tmplTerminarUnitario = CopiarBoton(TryCast(tabModelo.Controls("btnTerminarUnitario"), Button))
     End Sub
+
+    Private Function CopiarBoton(origen As Button) As Button
+        If origen Is Nothing Then Return Nothing
+        Dim copia As New Button()
+        copia.Text = origen.Text
+        copia.Location = origen.Location
+        copia.Size = origen.Size
+        copia.Font = origen.Font
+        copia.UseVisualStyleBackColor = origen.UseVisualStyleBackColor
+        Return copia
+    End Function
 
     Private Function CopiarLabel(origen As Label) As Label
         Dim copia As New Label()
@@ -380,4 +429,109 @@ Public Class frmPedidoUnitario
     Private Function FormatoNumero(valor As Decimal) As String
         Return valor.ToString("0.00", Globalization.CultureInfo.InvariantCulture)
     End Function
+
+    ' ---------------- Acciones de la pestaña ----------------
+    Private Sub btnItemRotoTab_Click(sender As Object, e As EventArgs)
+        Dim tab As TabPage = TabDeBoton(sender)
+        If tab Is Nothing Then Return
+        Dim grid As DataGridView = GridDeTab(tab)
+        If grid Is Nothing OrElse grid.CurrentRow Is Nothing Then
+            MostrarInfo("Seleccione el material que se rompió.")
+            Return
+        End If
+
+        Dim fila As DataGridViewRow = grid.CurrentRow
+        If IsDBNull(fila.Cells("id_pieza").Value) OrElse CInt(fila.Cells("id_pieza").Value) <= 0 Then
+            MostrarInfo("Solo se puede marcar como roto un material que ya está en el inventario.")
+            Return
+        End If
+        Dim idDetalle As Integer = CInt(fila.Cells("id_detalle").Value)
+
+        Dim objUsu As New Usuario
+        Dim dlg As New MensajePersonalizado With {
+            .idUsuario = idUsuario,
+            .tema = tema,
+            .idMensaje = objUsu.obtenerIDMensaje("ITEMROTO")}
+        dlg.llenarDatos()
+        dlg.ShowDialog()
+        If Not dlg.respuesta Then Return
+
+        Try
+            Dim resultado As DataTable = objPedido.MarcarItemRoto(idDetalle, IdUsuarioONull())
+            Dim accion As String = ""
+            If resultado IsNot Nothing AndAlso resultado.Rows.Count > 0 Then
+                accion = resultado.Rows(0)("accion").ToString()
+            End If
+            cargar()
+            cargarItems()
+            MostrarInfo("El material se marcó como roto y se generó su reemplazo" &
+                        If(accion = "", ".", " (" & accion & ")."))
+        Catch ex As Exception
+            MostrarError(ex)
+        End Try
+    End Sub
+
+    Private Sub btnCancelarItemsTab_Click(sender As Object, e As EventArgs)
+        Dim tab As TabPage = TabDeBoton(sender)
+        If tab Is Nothing OrElse tab.Tag Is Nothing Then Return
+        Dim idItem As Integer = CInt(tab.Tag)
+        If Not Confirmar("¿Cancelar el item '" & tab.Text & "' y liberar sus piezas?") Then Return
+        Try
+            objPedido.CancelarItem(idItem, IdUsuarioONull())
+            cargar()
+            cargarItems()
+            If estadoActual = "CANCELADO" Then
+                MostrarInfo("Se cancelaron todos los items: el pedido quedó CANCELADO.")
+                Close()
+            Else
+                MostrarInfo("Item cancelado.")
+            End If
+        Catch ex As Exception
+            MostrarError(ex)
+        End Try
+    End Sub
+
+    Private Sub btnTerminarUnitarioTab_Click(sender As Object, e As EventArgs)
+        Dim tab As TabPage = TabDeBoton(sender)
+        If tab Is Nothing OrElse tab.Tag Is Nothing Then Return
+        Dim idItem As Integer = CInt(tab.Tag)
+        If Not Confirmar("¿Registrar la culminación del item '" & tab.Text & "'?") Then Return
+        Try
+            objPedido.TerminarItem(idItem, IdUsuarioONull())
+            cargar()
+            cargarItems()
+            MostrarInfo("Item marcado como COMPLETADO.")
+        Catch ex As Exception
+            MostrarError(ex)
+        End Try
+    End Sub
+
+    Private Function TabDeBoton(sender As Object) As TabPage
+        Dim btn As Button = TryCast(sender, Button)
+        If btn Is Nothing Then Return Nothing
+        Return TryCast(btn.Parent, TabPage)
+    End Function
+
+    Private Function GridDeTab(tab As TabPage) As DataGridView
+        Return TryCast(tab.Controls("gridItems"), DataGridView)
+    End Function
+
+    ' ---------------- Acciones del pedido completo ----------------
+    Private Sub btnTerminar_Click(sender As Object, e As EventArgs) Handles btnTerminar.Click
+        If idPedido <= 0 Then Return
+        If Not Confirmar("¿Marcar todo el pedido como terminado (entregado/instalado)?" & vbCrLf &
+                         "El pago es independiente y puede registrarse cuando corresponda.") Then Return
+        Try
+            objPedido.Terminar(idPedido, IdUsuarioONull())
+            cargar()
+            cargarItems()
+            MostrarInfo("Pedido marcado como terminado.")
+        Catch ex As Exception
+            MostrarError(ex)
+        End Try
+    End Sub
+
+    Private Sub btnCerrar_Click(sender As Object, e As EventArgs) Handles btnCerrar.Click
+        Close()
+    End Sub
 End Class

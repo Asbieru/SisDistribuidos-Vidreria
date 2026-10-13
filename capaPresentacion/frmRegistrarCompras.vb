@@ -1,6 +1,4 @@
 ﻿Imports capaNegocio
-Imports System.Data
-Imports System.Windows.Forms
 
 Public Class frmRegistrarCompras
     Implements IFormularioTema
