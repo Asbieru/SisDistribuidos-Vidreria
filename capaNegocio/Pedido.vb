@@ -89,7 +89,7 @@ Public Class Pedido
     ' Lineas de material de un item, con el nombre del producto y la pieza asociada
     Public Function ListarDetallesDeItem(idItem As Integer) As DataTable
         Return objMan.listarComando(
-            "select pd.id_detalle, v.producto as material, " &
+            "select pd.id_detalle, v.producto as material, v.unidad_costo, " &
             "pd.ancho_cm, pd.alto_cm, pd.largo_cm, pd.cantidad_cajas, " &
             "pd.accion, pd.subtotal, pd.id_variante, pd.id_compra_detalle, " &
             "ip.id_pieza as pieza_usada, ip.ancho_cm as pieza_ancho, " &

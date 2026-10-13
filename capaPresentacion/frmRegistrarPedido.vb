@@ -63,12 +63,7 @@ Public Class frmRegistrarPedido
         cmbEspesorVentana.Items.Clear()
         cmbEspesorVentana.Enabled = False
 
-        Try
-            LlenarCombo(cmbPedido, New Producto().ListarCategorias())
-            cmbPedido.Items.Add("Ventana")
-        Catch
-            Return
-        End Try
+        LlenarCombo(cmbPedido, New List(Of String) From {"ALUMINIO", "VIDRIO", "Ventana"})
     End Sub
 
     Private Sub LlenarCombo(cmb As ComboBox, valores As List(Of String))
@@ -269,13 +264,13 @@ Public Class frmRegistrarPedido
         If String.IsNullOrEmpty(seleccion) Then seleccion = ""
 
         If seleccion.Equals("Ventana", StringComparison.OrdinalIgnoreCase) Then
-            Throw New Exception("La pestaña '" & tab.Text & "' (Ventana) todavía no se puede guardar.")
+            Return ConstruirItemVentana(tab)
         End If
         If EsTabAluminio(tab) Then
             Return ConstruirItemAluminio(tab)
         End If
         If Not seleccion.Equals("VIDRIO", StringComparison.OrdinalIgnoreCase) Then
-            Throw New Exception("La pestaña '" & tab.Text & "' todavía no se puede guardar: por ahora solo se admiten ítems de vidrio o aluminio.")
+            Throw New Exception("La pestaña '" & tab.Text & "' todavía no se puede guardar: por ahora solo se admiten ítems de vidrio, aluminio o ventana.")
         End If
 
         Dim txtNombre As TextBox = TryCast(BuscarControl(tab, "txtNombreVidrio"), TextBox)
@@ -386,6 +381,218 @@ Public Class frmRegistrarPedido
             .Total = total,
             .Detalles = New List(Of DetallePedidoDTO) From {detalle}
         }
+    End Function
+
+    ' ================== VENTANA (2 fijos + 1 corrediza) ==================
+    ' El ancho debe tener 3 medidas (arriba/centro/abajo) o una sola (abajo).
+    ' El alto debe tener 3 medidas (izquierda/centro/derecha) o una sola (izquierda).
+    ' El alero (35 cm) se aplica automaticamente desde 90 cm de alto.
+    Private Const VENTANA_ANCHO_MINIMO_CM As Decimal = 105D
+    Private Const VENTANA_ALERO_CM As Decimal = 35D
+    Private Const VENTANA_ALERO_ALTO_MINIMO_CM As Decimal = 90D
+    Private Const VENTANA_ALERO_ANCHO_DOBLE_CM As Decimal = 120D
+
+    Private Function ConstruirItemVentana(tab As TabPage) As ItemPedidoDTO
+        Dim colorVentana As String = TextoCombo(tab, "cmbColorAlumnioVentana")
+        If String.IsNullOrWhiteSpace(colorVentana) Then
+            Throw New Exception("En la pestaña '" & tab.Text & "' seleccione el color de aluminio.")
+        End If
+        Dim colorMat As String = ColorMaterial(colorVentana)
+
+        Dim idProductoVidrio As Integer = IdProductoDe(tab, "txtNombreVidrioVentana")
+        If idProductoVidrio <= 0 Then
+            Throw New Exception("En la pestaña '" & tab.Text & "' seleccione el vidrio con el botón Buscar Vidrio.")
+        End If
+
+        Dim espesor As Decimal = 0D
+        Dim cmbEspesor As ComboBox = TryCast(BuscarControl(tab, "cmbEspesorVentana"), ComboBox)
+        If cmbEspesor IsNot Nothing AndAlso cmbEspesor.SelectedItem IsNot Nothing Then
+            espesor = Convert.ToDecimal(cmbEspesor.SelectedItem)
+        End If
+        If espesor <= 0D Then
+            Throw New Exception("En la pestaña '" & tab.Text & "' seleccione el espesor de vidrio.")
+        End If
+
+        Dim idVarianteVidrio As Integer = New ProductoVariante().ResolverVariantePorProducto(idProductoVidrio, espesor)
+        Dim precioVidrio As Decimal = New ProductoVariante().ObtenerPrecioUnitario(idProductoVidrio, espesor)
+
+        Dim tresAncho As Boolean = CheckMarcado(tab, "CheckBox3")
+        Dim tresAlto As Boolean = CheckMarcado(tab, "CheckBox4")
+
+        Dim anchoAbajo As Decimal = LeerDecimal(tab, "txtAbaVentana")
+        Dim anchoArriba As Decimal = If(tresAncho, LeerDecimal(tab, "txtArrVentana"), anchoAbajo)
+        Dim anchoCentro As Decimal = If(tresAncho, LeerDecimal(tab, "txtCenVentana1"), anchoAbajo)
+        Dim altoIzq As Decimal = LeerDecimal(tab, "txtIzqVentana")
+        Dim altoCentro As Decimal = If(tresAlto, LeerDecimal(tab, "txtCenVentana2"), altoIzq)
+        Dim altoDer As Decimal = If(tresAlto, LeerDecimal(tab, "txtDerVentana"), altoIzq)
+
+        Dim maxAncho As Decimal = Math.Max(anchoAbajo, Math.Max(anchoArriba, anchoCentro))
+        Dim maxAlto As Decimal = Math.Max(altoIzq, Math.Max(altoCentro, altoDer))
+
+        If maxAncho < VENTANA_ANCHO_MINIMO_CM Then
+            Throw New Exception("La ventana '" & tab.Text & "' debe medir al menos 105 cm de ancho.")
+        End If
+        If maxAlto <= 0D Then
+            Throw New Exception("En la pestaña '" & tab.Text & "' ingrese las medidas de alto.")
+        End If
+
+        Dim tieneAlero As Boolean = maxAlto >= VENTANA_ALERO_ALTO_MINIMO_CM
+        Dim medidaAlero As Decimal = If(tieneAlero, VENTANA_ALERO_CM, 0D)
+        Dim anclaje As Decimal = maxAlto - 3D - medidaAlero
+
+        Dim detalles As New List(Of DetallePedidoDTO)
+
+        ' Retazos de aluminio
+        detalles.Add(DetalleMaterial("ALUMINIO", "ANGULO GUIA", colorMat, anchoAbajo, Nothing))
+
+        Dim largoTubo As Decimal = If(tresAncho, Math.Max(anchoArriba, anchoCentro), anchoAbajo)
+        detalles.Add(DetalleMaterial("ALUMINIO", "TUBO MULTIPLE", colorMat, largoTubo, Nothing))
+        detalles.Add(DetalleMaterial("ACCESORIO", "FELPA 10", colorMat, largoTubo, Nothing))
+        detalles.Add(DetalleMaterial("ACCESORIO", "FELPA 20", colorMat, largoTubo, Nothing))
+
+        If tieneAlero Then
+            Dim anchoU13Alero As Decimal = If(tresAncho, anchoArriba, anchoAbajo)
+            detalles.Add(DetalleMaterial("ALUMINIO", "U13", colorMat, anchoU13Alero, Nothing))
+        End If
+
+        ' Vidrios fijos (2)
+        Dim altoFijos As Decimal = maxAlto - 3D - 1.5D - medidaAlero
+        Dim anchoFijoArriba As Decimal = If(tresAncho, anchoCentro, anchoAbajo) / 3D
+        Dim anchoFijoAbajo As Decimal = anchoAbajo / 3D
+
+        detalles.Add(DetalleVidrio(idVarianteVidrio, precioVidrio, anchoFijoArriba, altoFijos))
+        detalles.Add(DetalleVidrio(idVarianteVidrio, precioVidrio, anchoFijoAbajo, altoFijos))
+
+        detalles.Add(DetalleMaterial("ALUMINIO", "U13", colorMat, anchoFijoArriba, Nothing))
+        detalles.Add(DetalleMaterial("ALUMINIO", "U13", colorMat, anclaje, Nothing))
+        detalles.Add(DetalleMaterial("ALUMINIO", "U13", colorMat, anchoFijoAbajo, Nothing))
+        detalles.Add(DetalleMaterial("ALUMINIO", "U13", colorMat, anclaje, Nothing))
+
+        ' Vidrio corredizo
+        Dim maxFijoAncho As Decimal = Math.Max(anchoFijoArriba, anchoFijoAbajo)
+        Dim corredizoAncho As Decimal = anchoAbajo - 2D * maxFijoAncho
+        Dim corredizoAlto As Decimal = anclaje - 2.5D
+
+        detalles.Add(DetalleVidrio(idVarianteVidrio, precioVidrio, corredizoAncho, corredizoAlto))
+
+        detalles.Add(DetalleMaterial("ALUMINIO", "H8220", colorMat, corredizoAncho + 1D, Nothing))
+        detalles.Add(DetalleMaterial("ACCESORIO", "RUEDA 8220", Nothing, Nothing, 2))
+        detalles.Add(DetalleMaterial("ACCESORIO", "SEGURO PISTILLO", colorVentana, Nothing, 1))
+        detalles.Add(DetalleMaterial("ALUMINIO", "PORTA FELPA", colorMat, anclaje, Nothing))
+        detalles.Add(DetalleMaterial("ALUMINIO", "PORTA FELPA", colorMat, anclaje, Nothing))
+        detalles.Add(DetalleMaterial("ACCESORIO", "FELPA 15", colorMat, anclaje, Nothing))
+        detalles.Add(DetalleMaterial("ALUMINIO", "PORTA FELPA", colorMat, anclaje - 1D, Nothing))
+        detalles.Add(DetalleMaterial("ALUMINIO", "PORTA FELPA", colorMat, anclaje - 1D, Nothing))
+        detalles.Add(DetalleMaterial("ACCESORIO", "FELPA 20", colorMat, anclaje - 1D, Nothing))
+
+        ' Alero: vidrios y U13
+        If tieneAlero Then
+            Dim dosVidrios As Boolean = anchoAbajo > VENTANA_ALERO_ANCHO_DOBLE_CM OrElse anchoArriba > VENTANA_ALERO_ANCHO_DOBLE_CM
+            Dim anchoVidrioAlero As Decimal = If(dosVidrios, anchoArriba / 2D, anchoArriba)
+
+            If dosVidrios Then
+                Dim altoUno As Decimal = If(tresAlto, Math.Max(altoIzq, altoCentro), altoIzq) - 1D - anclaje
+                Dim altoDos As Decimal = If(tresAlto, Math.Max(altoCentro, altoDer), altoIzq) - 1D - anclaje
+                detalles.Add(DetalleVidrio(idVarianteVidrio, precioVidrio, anchoVidrioAlero, altoUno))
+                detalles.Add(DetalleVidrio(idVarianteVidrio, precioVidrio, anchoVidrioAlero, altoDos))
+                detalles.Add(DetalleMaterial("ALUMINIO", "U13", colorMat, maxAlto - 2D - anclaje, Nothing))
+                detalles.Add(DetalleMaterial("ALUMINIO", "U13", colorMat, maxAlto - 2D - anclaje, Nothing))
+                detalles.Add(DetalleMaterial("ALUMINIO", "U13", colorMat, maxAlto - 2D - anclaje, Nothing))
+            Else
+                Dim altoAlero As Decimal = If(tresAlto, maxAlto, altoIzq) - 1D - anclaje
+                detalles.Add(DetalleVidrio(idVarianteVidrio, precioVidrio, anchoVidrioAlero, altoAlero))
+                detalles.Add(DetalleMaterial("ALUMINIO", "U13", colorMat, maxAlto - 2D - anclaje, Nothing))
+                detalles.Add(DetalleMaterial("ALUMINIO", "U13", colorMat, maxAlto - 2D - anclaje, Nothing))
+            End If
+
+            detalles.Add(DetalleMaterial("ACCESORIO", "SILICONA", ColorSilicona(colorVentana), Nothing, 2))
+        End If
+
+        Dim precioMateriales As Decimal = DecimalDe(tab, "txtPreciomaterialVentana", "el precio de los materiales")
+        Dim costoExtra As Decimal = DecimalDe(tab, "txtExtraVentana", "los extras")
+        Dim manoObra As Decimal = DecimalDe(tab, "txtManoObraVentana", "la mano de obra")
+        Dim total As Decimal = DecimalDe(tab, "txtTotalVentana", "el total")
+        If total <= 0D Then total = precioMateriales + costoExtra + manoObra
+        If total <= 0D Then
+            Throw New Exception("En la pestaña '" & tab.Text & "' no hay precios calculados.")
+        End If
+
+        Return New ItemPedidoDTO With {
+            .Tipo = "VENTANA",
+            .Etiqueta = tab.Text,
+            .PrecioMateriales = precioMateriales,
+            .CostoExtra = costoExtra,
+            .ManoObra = manoObra,
+            .Total = total,
+            .Detalles = detalles
+        }
+    End Function
+
+    ' Detalle de vidrio: se cobra por area (ancho * alto / 900) al precio de la variante
+    Private Function DetalleVidrio(idVariante As Integer, precioUnitario As Decimal,
+                                   ancho As Decimal, alto As Decimal) As DetallePedidoDTO
+        Dim a As Decimal = Math.Round(ancho, 2)
+        Dim h As Decimal = Math.Round(alto, 2)
+        Return New DetallePedidoDTO With {
+            .IdVariante = idVariante,
+            .Accion = "COMPRA_NUEVA",
+            .IdPieza = Nothing,
+            .AnchoCm = a,
+            .AltoCm = h,
+            .Subtotal = Math.Round(precioUnitario * (a * h) / 900D, 2)
+        }
+    End Function
+
+    ' Detalle de un material del catalogo: resuelve la variante por categoria + tipo + color.
+    ' Si cantidad tiene valor se cobra por unidad; si no, por cm lineal (largo).
+    Private Function DetalleMaterial(categoria As String, tipo As String, color As String,
+                                     largo As Decimal?, cantidad As Integer?) As DetallePedidoDTO
+        Dim idProducto As Integer = New Producto().ObtenerIdPorTipoColor(categoria, tipo, color)
+        If idProducto <= 0 Then
+            Throw New Exception("No existe el material " & categoria & " '" & tipo & "' (" & color & ") en el catálogo.")
+        End If
+        Dim idVariante As Integer = New ProductoVariante().ObtenerVariantePorProducto(idProducto)
+        If idVariante <= 0 Then
+            Throw New Exception("El material " & categoria & " '" & tipo & "' no tiene una variante con precio.")
+        End If
+        Dim precioUnitario As Decimal = New ProductoVariante().ObtenerPrecioUnitarioPorProducto(idProducto)
+
+        Dim detalle As New DetallePedidoDTO With {
+            .IdVariante = idVariante,
+            .Accion = "COMPRA_NUEVA",
+            .IdPieza = Nothing
+        }
+
+        If cantidad.HasValue Then
+            detalle.CantidadCajas = cantidad.Value
+            detalle.Subtotal = Math.Round(precioUnitario * cantidad.Value, 2)
+        ElseIf largo.HasValue Then
+            Dim l As Decimal = Math.Round(largo.Value, 2)
+            detalle.LargoCm = l
+            detalle.Subtotal = Math.Round(precioUnitario * l, 2)
+        Else
+            detalle.Subtotal = 0D
+        End If
+
+        Return detalle
+    End Function
+
+    ' El aluminio (y las felpas de 10/15/20 cm) se piden en negro cuando la ventana es color madera.
+    Private Shared Function ColorMaterial(colorVentana As String) As String
+        If colorVentana.Equals("MADERA", StringComparison.OrdinalIgnoreCase) Then Return "NEGRO"
+        Return colorVentana
+    End Function
+
+    Private Shared Function ColorSilicona(colorVentana As String) As String
+        If colorVentana.Equals("MADERA", StringComparison.OrdinalIgnoreCase) OrElse
+           colorVentana.Equals("NEGRO", StringComparison.OrdinalIgnoreCase) Then Return "NEGRA"
+        If colorVentana.Equals("BLANCO", StringComparison.OrdinalIgnoreCase) Then Return "BLANCA"
+        Return "TRANSPARENTE"
+    End Function
+
+    Private Function CheckMarcado(tab As TabPage, nombre As String) As Boolean
+        Dim chb As CheckBox = TryCast(BuscarControl(tab, nombre), CheckBox)
+        Return chb IsNot Nothing AndAlso chb.Checked
     End Function
 
     Private Function BuscarControl(tab As TabPage, nombre As String) As Control

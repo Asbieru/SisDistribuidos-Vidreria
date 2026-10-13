@@ -27,6 +27,7 @@ Partial Class frmPedidoUnitario
         Me.Panel1 = New System.Windows.Forms.Panel()
         Me.lblEstado = New System.Windows.Forms.Label()
         Me.tabModelo = New System.Windows.Forms.TabPage()
+        Me.btnItemRoto = New System.Windows.Forms.Button()
         Me.tblItems = New System.Windows.Forms.DataGridView()
         Me.txtPrecio = New System.Windows.Forms.TextBox()
         Me.Label2 = New System.Windows.Forms.Label()
@@ -36,7 +37,6 @@ Partial Class frmPedidoUnitario
         Me.btnCerrar = New System.Windows.Forms.Button()
         Me.btnPagar = New System.Windows.Forms.Button()
         Me.btnTerminar = New System.Windows.Forms.Button()
-        Me.btnItemRoto = New System.Windows.Forms.Button()
         Me.Panel1.SuspendLayout()
         Me.tabModelo.SuspendLayout()
         CType(Me.tblItems, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -72,13 +72,13 @@ Partial Class frmPedidoUnitario
         Me.Panel1.Controls.Add(Me.lblTitulo)
         Me.Panel1.Location = New System.Drawing.Point(12, 12)
         Me.Panel1.Name = "Panel1"
-        Me.Panel1.Size = New System.Drawing.Size(664, 77)
+        Me.Panel1.Size = New System.Drawing.Size(705, 77)
         Me.Panel1.TabIndex = 4
         '
         'lblEstado
         '
         Me.lblEstado.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblEstado.Location = New System.Drawing.Point(474, 13)
+        Me.lblEstado.Location = New System.Drawing.Point(511, 14)
         Me.lblEstado.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.lblEstado.Name = "lblEstado"
         Me.lblEstado.Size = New System.Drawing.Size(178, 20)
@@ -97,10 +97,19 @@ Partial Class frmPedidoUnitario
         Me.tabModelo.Location = New System.Drawing.Point(4, 22)
         Me.tabModelo.Name = "tabModelo"
         Me.tabModelo.Padding = New System.Windows.Forms.Padding(3)
-        Me.tabModelo.Size = New System.Drawing.Size(656, 310)
+        Me.tabModelo.Size = New System.Drawing.Size(697, 310)
         Me.tabModelo.TabIndex = 0
         Me.tabModelo.Text = "Modelo"
         Me.tabModelo.UseVisualStyleBackColor = True
+        '
+        'btnItemRoto
+        '
+        Me.btnItemRoto.Location = New System.Drawing.Point(581, 274)
+        Me.btnItemRoto.Name = "btnItemRoto"
+        Me.btnItemRoto.Size = New System.Drawing.Size(93, 23)
+        Me.btnItemRoto.TabIndex = 7
+        Me.btnItemRoto.Text = "Item Roto"
+        Me.btnItemRoto.UseVisualStyleBackColor = True
         '
         'tblItems
         '
@@ -119,12 +128,12 @@ Partial Class frmPedidoUnitario
         Me.tblItems.RowHeadersVisible = False
         Me.tblItems.RowHeadersWidth = 51
         Me.tblItems.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
-        Me.tblItems.Size = New System.Drawing.Size(621, 206)
+        Me.tblItems.Size = New System.Drawing.Size(662, 206)
         Me.tblItems.TabIndex = 4
         '
         'txtPrecio
         '
-        Me.txtPrecio.Location = New System.Drawing.Point(530, 18)
+        Me.txtPrecio.Location = New System.Drawing.Point(571, 19)
         Me.txtPrecio.Name = "txtPrecio"
         Me.txtPrecio.Size = New System.Drawing.Size(107, 20)
         Me.txtPrecio.TabIndex = 3
@@ -134,7 +143,7 @@ Partial Class frmPedidoUnitario
         '
         Me.Label2.AutoSize = True
         Me.Label2.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label2.Location = New System.Drawing.Point(446, 19)
+        Me.Label2.Location = New System.Drawing.Point(489, 19)
         Me.Label2.Name = "Label2"
         Me.Label2.Size = New System.Drawing.Size(76, 16)
         Me.Label2.TabIndex = 2
@@ -144,7 +153,7 @@ Partial Class frmPedidoUnitario
         '
         Me.txtTipoPedido.Location = New System.Drawing.Point(123, 17)
         Me.txtTipoPedido.Name = "txtTipoPedido"
-        Me.txtTipoPedido.Size = New System.Drawing.Size(290, 20)
+        Me.txtTipoPedido.Size = New System.Drawing.Size(319, 20)
         Me.txtTipoPedido.TabIndex = 1
         Me.txtTipoPedido.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
         '
@@ -164,12 +173,12 @@ Partial Class frmPedidoUnitario
         Me.tabItems.Location = New System.Drawing.Point(12, 95)
         Me.tabItems.Name = "tabItems"
         Me.tabItems.SelectedIndex = 0
-        Me.tabItems.Size = New System.Drawing.Size(664, 336)
+        Me.tabItems.Size = New System.Drawing.Size(705, 336)
         Me.tabItems.TabIndex = 5
         '
         'btnCerrar
         '
-        Me.btnCerrar.Location = New System.Drawing.Point(597, 437)
+        Me.btnCerrar.Location = New System.Drawing.Point(619, 437)
         Me.btnCerrar.Name = "btnCerrar"
         Me.btnCerrar.Size = New System.Drawing.Size(75, 23)
         Me.btnCerrar.TabIndex = 6
@@ -194,20 +203,11 @@ Partial Class frmPedidoUnitario
         Me.btnTerminar.Text = "Terminar Pedido"
         Me.btnTerminar.UseVisualStyleBackColor = True
         '
-        'btnItemRoto
-        '
-        Me.btnItemRoto.Location = New System.Drawing.Point(544, 274)
-        Me.btnItemRoto.Name = "btnItemRoto"
-        Me.btnItemRoto.Size = New System.Drawing.Size(93, 23)
-        Me.btnItemRoto.TabIndex = 7
-        Me.btnItemRoto.Text = "Item Roto"
-        Me.btnItemRoto.UseVisualStyleBackColor = True
-        '
         'frmPedidoUnitario
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(688, 472)
+        Me.ClientSize = New System.Drawing.Size(729, 479)
         Me.Controls.Add(Me.btnTerminar)
         Me.Controls.Add(Me.btnPagar)
         Me.Controls.Add(Me.btnCerrar)

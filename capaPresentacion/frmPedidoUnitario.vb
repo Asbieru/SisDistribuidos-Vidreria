@@ -242,7 +242,7 @@ Public Class frmPedidoUnitario
         Return ""
     End Function
 
-    ' " · 120 x 120 cm" (vidrio), " · 480 cm" (aluminio) o " · N caja(s)" (tornillos)
+    ' " · 120 x 120 cm" (vidrio), " · 480 cm" (aluminio) o " · N unidad(es)/caja(s)"
     Private Function MedidaDetalle(d As DataRow) As String
         If Not IsDBNull(d("largo_cm")) AndAlso CDec(d("largo_cm")) > 0 Then
             Return " · " & Format(d("largo_cm"), "0.##") & " cm"
@@ -252,9 +252,18 @@ Public Class frmPedidoUnitario
             Return " · " & Format(d("ancho_cm"), "0.##") & " x " & Format(d("alto_cm"), "0.##") & " cm"
         End If
         If Not IsDBNull(d("cantidad_cajas")) Then
-            Return " · " & d("cantidad_cajas").ToString() & " caja(s)"
+            Return " · " & d("cantidad_cajas").ToString() & " " & EtiquetaUnidad(d)
         End If
         Return ""
+    End Function
+
+    ' Los accesorios por unidad (p. ej. seguro pistillo, silicona) muestran "unidad(es)"
+    Private Function EtiquetaUnidad(d As DataRow) As String
+        If d.Table.Columns.Contains("unidad_costo") AndAlso Not IsDBNull(d("unidad_costo")) AndAlso
+           d("unidad_costo").ToString().Equals("UNIDAD", StringComparison.OrdinalIgnoreCase) Then
+            Return "unidad(es)"
+        End If
+        Return "caja(s)"
     End Function
 
     ' ---------------- Acciones de la grilla ----------------

@@ -1669,26 +1669,19 @@ BEGIN
 END
 
 -- Caracteristicas (espesor del vidrio / medida del tornillo o tarugo)
-DECLARE @c_vid4 INT, @c_vid6 INT, @c_alu INT, @c_tor1 INT, @c_tar1 INT;
-INSERT INTO dbo.caracteristicas (espesor_cm, medida_cm) VALUES (0.40, NULL); SET @c_vid4 = SCOPE_IDENTITY();
-INSERT INTO dbo.caracteristicas (espesor_cm, medida_cm) VALUES (0.60, NULL); SET @c_vid6 = SCOPE_IDENTITY();
+DECLARE @c_alu INT, @c_tor1 INT, @c_tar1 INT;
 INSERT INTO dbo.caracteristicas (espesor_cm, medida_cm) VALUES (NULL, NULL); SET @c_alu  = SCOPE_IDENTITY();
 INSERT INTO dbo.caracteristicas (espesor_cm, medida_cm) VALUES (NULL, 2.54); SET @c_tor1 = SCOPE_IDENTITY();
 INSERT INTO dbo.caracteristicas (espesor_cm, medida_cm) VALUES (NULL, 0.80); SET @c_tar1 = SCOPE_IDENTITY();
 
 -- Productos
-DECLARE @p_trans INT, @p_cated INT, @p_u13 INT, @p_tor INT, @p_tar INT;
-INSERT INTO dbo.productos (categoria, tipo, color, nombre) VALUES ('VIDRIO',   'transparente', NULL,    'Vidrio transparente'); SET @p_trans = SCOPE_IDENTITY();
-INSERT INTO dbo.productos (categoria, tipo, color, nombre) VALUES ('VIDRIO',   'catedral',     NULL,    'Vidrio catedral');     SET @p_cated = SCOPE_IDENTITY();
-INSERT INTO dbo.productos (categoria, tipo, color, nombre) VALUES ('ALUMINIO', 'u13',          'negro', 'Aluminio U13');        SET @p_u13   = SCOPE_IDENTITY();
-INSERT INTO dbo.productos (categoria, tipo, color, nombre) VALUES ('TORNILLO', 'autorroscante', NULL,  'Tornillo autorroscante'); SET @p_tor = SCOPE_IDENTITY();
-INSERT INTO dbo.productos (categoria, tipo, color, nombre) VALUES ('TARUGO',   'plastico',     NULL,    'Tarugo plástico');     SET @p_tar   = SCOPE_IDENTITY();
+DECLARE @p_u13 INT, @p_tor INT, @p_tar INT;
+INSERT INTO dbo.productos (categoria, tipo, color, nombre) VALUES ('ALUMINIO', 'U13',          'NEGRO', 'Aluminio U13');        SET @p_u13   = SCOPE_IDENTITY();
+INSERT INTO dbo.productos (categoria, tipo, color, nombre) VALUES ('TORNILLO', 'AUTORROSCANTE', NULL,  'Tornillo Autorroscante'); SET @p_tor = SCOPE_IDENTITY();
+INSERT INTO dbo.productos (categoria, tipo, color, nombre) VALUES ('TARUGO',   'PLASTICO',     NULL,    'Tarugo Plástico');     SET @p_tar   = SCOPE_IDENTITY();
 
 -- Variantes (precio por cm2, por cm lineal o por caja) + stock minimo
-DECLARE @v_trans4 INT, @v_trans6 INT, @v_cated4 INT, @v_u13 INT, @v_tor INT, @v_tar INT;
-INSERT INTO dbo.producto_variante (id_producto, id_caracteristica, unidad_costo, precio_unitario, stock_minimo) VALUES (@p_trans, @c_vid4, 'CM2',       0.01,  3); SET @v_trans4 = SCOPE_IDENTITY();
-INSERT INTO dbo.producto_variante (id_producto, id_caracteristica, unidad_costo, precio_unitario, stock_minimo) VALUES (@p_trans, @c_vid6, 'CM2',       0.02,  2); SET @v_trans6 = SCOPE_IDENTITY();
-INSERT INTO dbo.producto_variante (id_producto, id_caracteristica, unidad_costo, precio_unitario, stock_minimo) VALUES (@p_cated, @c_vid4, 'CM2',       0.015, 2); SET @v_cated4 = SCOPE_IDENTITY();
+DECLARE @v_u13 INT, @v_tor INT, @v_tar INT;
 INSERT INTO dbo.producto_variante (id_producto, id_caracteristica, unidad_costo, precio_unitario, stock_minimo) VALUES (@p_u13,   @c_alu,  'CM_LINEAL', 0.10,  5); SET @v_u13    = SCOPE_IDENTITY();
 INSERT INTO dbo.producto_variante (id_producto, id_caracteristica, unidad_costo, precio_unitario, stock_minimo) VALUES (@p_tor,   @c_tor1, 'CAJA',      25.00, 4); SET @v_tor    = SCOPE_IDENTITY();
 INSERT INTO dbo.producto_variante (id_producto, id_caracteristica, unidad_costo, precio_unitario, stock_minimo) VALUES (@p_tar,   @c_tar1, 'CAJA',      12.50, 4); SET @v_tar    = SCOPE_IDENTITY();
@@ -1696,11 +1689,6 @@ INSERT INTO dbo.producto_variante (id_producto, id_caracteristica, unidad_costo,
 -- Inventario inicial (se registra por los procedimientos para que quede en el kardex)
 DECLARE @admin INT = (SELECT TOP 1 id_usuario FROM dbo.usuarios WHERE nombre = 'admin');
 
-EXEC dbo.sp_inv_ingresar_pieza @id_variante = @v_trans4, @ancho_cm = 180, @alto_cm = 120, @origen = 'INICIAL', @id_usuario = @admin;
-EXEC dbo.sp_inv_ingresar_pieza @id_variante = @v_trans4, @ancho_cm = 180, @alto_cm = 120, @origen = 'INICIAL', @id_usuario = @admin;
-EXEC dbo.sp_inv_ingresar_pieza @id_variante = @v_trans4, @ancho_cm = 90,  @alto_cm = 60,  @origen = 'INICIAL', @id_usuario = @admin;
-EXEC dbo.sp_inv_ingresar_pieza @id_variante = @v_trans6, @ancho_cm = 200, @alto_cm = 150, @origen = 'INICIAL', @id_usuario = @admin;
-EXEC dbo.sp_inv_ingresar_pieza @id_variante = @v_cated4, @ancho_cm = 150, @alto_cm = 100, @origen = 'INICIAL', @id_usuario = @admin;
 EXEC dbo.sp_inv_ingresar_pieza @id_variante = @v_u13,    @largo_cm = 600, @origen = 'INICIAL', @id_usuario = @admin;
 EXEC dbo.sp_inv_ingresar_pieza @id_variante = @v_u13,    @largo_cm = 600, @origen = 'INICIAL', @id_usuario = @admin;
 EXEC dbo.sp_inv_ingresar_pieza @id_variante = @v_u13,    @largo_cm = 350, @origen = 'INICIAL', @id_usuario = @admin;
@@ -1739,7 +1727,7 @@ IF @e10 IS NULL BEGIN INSERT INTO dbo.caracteristicas (espesor_cm, medida_cm) VA
 DECLARE @p_incoloro INT;
 IF NOT EXISTS (SELECT 1 FROM dbo.productos WHERE categoria='VIDRIO' AND tipo='COLOR' AND color='INCOLORO')
 BEGIN
-    INSERT INTO dbo.productos (categoria, tipo, color, nombre) VALUES ('VIDRIO','COLOR','INCOLORO','Vidrio incoloro');
+    INSERT INTO dbo.productos (categoria, tipo, color, nombre) VALUES ('VIDRIO','COLOR','INCOLORO','Vidrio Incoloro');
     SET @p_incoloro = SCOPE_IDENTITY();
     INSERT INTO dbo.producto_variante (id_producto, id_caracteristica, unidad_costo, precio_unitario, stock_minimo) VALUES
         (@p_incoloro, @e3,  'PIE2', 3.50, 0),
@@ -1752,7 +1740,7 @@ END
 DECLARE @p_azul INT;
 IF NOT EXISTS (SELECT 1 FROM dbo.productos WHERE categoria='VIDRIO' AND tipo='COLOR' AND color='AZUL')
 BEGIN
-    INSERT INTO dbo.productos (categoria, tipo, color, nombre) VALUES ('VIDRIO','COLOR','AZUL','Vidrio color azul');
+    INSERT INTO dbo.productos (categoria, tipo, color, nombre) VALUES ('VIDRIO','COLOR','AZUL','Vidrio Color Azul');
     SET @p_azul = SCOPE_IDENTITY();
     INSERT INTO dbo.producto_variante (id_producto, id_caracteristica, unidad_costo, precio_unitario, stock_minimo) VALUES
         (@p_azul, @e3,  'PIE2', 5.50, 0),
@@ -1765,7 +1753,7 @@ END
 DECLARE @p_marron INT;
 IF NOT EXISTS (SELECT 1 FROM dbo.productos WHERE categoria='VIDRIO' AND tipo='COLOR' AND color='MARRON')
 BEGIN
-    INSERT INTO dbo.productos (categoria, tipo, color, nombre) VALUES ('VIDRIO','COLOR','MARRON','Vidrio color marrón');
+    INSERT INTO dbo.productos (categoria, tipo, color, nombre) VALUES ('VIDRIO','COLOR','MARRON','Vidrio Color Marrón');
     SET @p_marron = SCOPE_IDENTITY();
     INSERT INTO dbo.producto_variante (id_producto, id_caracteristica, unidad_costo, precio_unitario, stock_minimo) VALUES
         (@p_marron, @e3,  'PIE2', 5.00, 0),
@@ -1781,7 +1769,7 @@ END
 DECLARE @p_esp_solido INT;
 IF NOT EXISTS (SELECT 1 FROM dbo.productos WHERE categoria='VIDRIO' AND tipo='ESPEJO' AND color='SOLIDO')
 BEGIN
-    INSERT INTO dbo.productos (categoria, tipo, color, nombre) VALUES ('VIDRIO','ESPEJO','SOLIDO','Espejo sólido');
+    INSERT INTO dbo.productos (categoria, tipo, color, nombre) VALUES ('VIDRIO','ESPEJO','SOLIDO','Espejo Sólido');
     SET @p_esp_solido = SCOPE_IDENTITY();
     INSERT INTO dbo.producto_variante (id_producto, id_caracteristica, unidad_costo, precio_unitario, stock_minimo) VALUES
         (@p_esp_solido, @e3,  'PIE2', 6.50, 0),
@@ -1792,7 +1780,7 @@ END
 DECLARE @p_esp_azul INT;
 IF NOT EXISTS (SELECT 1 FROM dbo.productos WHERE categoria='VIDRIO' AND tipo='ESPEJO' AND color='AZUL')
 BEGIN
-    INSERT INTO dbo.productos (categoria, tipo, color, nombre) VALUES ('VIDRIO','ESPEJO','AZUL','Espejo azul');
+    INSERT INTO dbo.productos (categoria, tipo, color, nombre) VALUES ('VIDRIO','ESPEJO','AZUL','Espejo Azul');
     SET @p_esp_azul = SCOPE_IDENTITY();
     INSERT INTO dbo.producto_variante (id_producto, id_caracteristica, unidad_costo, precio_unitario, stock_minimo) VALUES
         (@p_esp_azul, @e55, 'PIE2', 10.30, 0),
@@ -1803,7 +1791,7 @@ END
 DECLARE @p_esp_gris INT;
 IF NOT EXISTS (SELECT 1 FROM dbo.productos WHERE categoria='VIDRIO' AND tipo='ESPEJO' AND color='GRIS')
 BEGIN
-    INSERT INTO dbo.productos (categoria, tipo, color, nombre) VALUES ('VIDRIO','ESPEJO','GRIS','Espejo gris');
+    INSERT INTO dbo.productos (categoria, tipo, color, nombre) VALUES ('VIDRIO','ESPEJO','GRIS','Espejo Gris');
     SET @p_esp_gris = SCOPE_IDENTITY();
     INSERT INTO dbo.producto_variante (id_producto, id_caracteristica, unidad_costo, precio_unitario, stock_minimo) VALUES
         (@p_esp_gris, @e55, 'PIE2', 13.30, 0),
@@ -1818,7 +1806,7 @@ DECLARE @p_catedral INT, @p_cruz INT, @p_flor INT;
 
 IF NOT EXISTS (SELECT 1 FROM dbo.productos WHERE categoria='VIDRIO' AND tipo='FIGURA' AND color='CATEDRAL')
 BEGIN
-    INSERT INTO dbo.productos (categoria, tipo, color, nombre) VALUES ('VIDRIO','FIGURA','CATEDRAL','Vidrio figura catedral');
+    INSERT INTO dbo.productos (categoria, tipo, color, nombre) VALUES ('VIDRIO','FIGURA','CATEDRAL','Vidrio Figura Catedral');
     SET @p_catedral = SCOPE_IDENTITY();
     INSERT INTO dbo.producto_variante (id_producto, id_caracteristica, unidad_costo, precio_unitario, stock_minimo) VALUES
         (@p_catedral, @e3,  'PIE2', 3.50, 0),
@@ -1828,7 +1816,7 @@ END
 
 IF NOT EXISTS (SELECT 1 FROM dbo.productos WHERE categoria='VIDRIO' AND tipo='FIGURA' AND color='CRUZ')
 BEGIN
-    INSERT INTO dbo.productos (categoria, tipo, color, nombre) VALUES ('VIDRIO','FIGURA','CRUZ','Vidrio figura cruz');
+    INSERT INTO dbo.productos (categoria, tipo, color, nombre) VALUES ('VIDRIO','FIGURA','CRUZ','Vidrio Figura Cruz');
     SET @p_cruz = SCOPE_IDENTITY();
     INSERT INTO dbo.producto_variante (id_producto, id_caracteristica, unidad_costo, precio_unitario, stock_minimo) VALUES
         (@p_cruz, @e3,  'PIE2', 3.50, 0),
@@ -1838,7 +1826,7 @@ END
 
 IF NOT EXISTS (SELECT 1 FROM dbo.productos WHERE categoria='VIDRIO' AND tipo='FIGURA' AND color='FLOR')
 BEGIN
-    INSERT INTO dbo.productos (categoria, tipo, color, nombre) VALUES ('VIDRIO','FIGURA','FLOR','Vidrio figura flor');
+    INSERT INTO dbo.productos (categoria, tipo, color, nombre) VALUES ('VIDRIO','FIGURA','FLOR','Vidrio Figura Flor');
     SET @p_flor = SCOPE_IDENTITY();
     INSERT INTO dbo.producto_variante (id_producto, id_caracteristica, unidad_costo, precio_unitario, stock_minimo) VALUES
         (@p_flor, @e3,  'PIE2', 3.50, 0),
@@ -1910,34 +1898,34 @@ DECLARE @catalogo TABLE (
 );
 
 INSERT INTO @catalogo (categoria, tipo, color, nombre, unidad, precio) VALUES
-    ('ALUMINIO',  'ANGULO GUIA',     'NEGRO',        'ALUMINIO ANGULO GUIA',     'CM_LINEAL', 0.15),
-    ('ALUMINIO',  'ANGULO GUIA',     'ESTANDAR',     'ALUMINIO ANGULO GUIA',     'CM_LINEAL', 0.09),
-    ('ALUMINIO',  'ANGULO GUIA',     'MADERA',       'ALUMINIO ANGULO GUIA',     'CM_LINEAL', 0.29),
-    ('ALUMINIO',  'U13',             'NEGRO',        'ALUMINIO U13',             'CM_LINEAL', 0.06),
-    ('ALUMINIO',  'U13',             'ESTANDAR',     'ALUMINIO U13',             'CM_LINEAL', 0.20),
-    ('ALUMINIO',  'U13',             'MADERA',       'ALUMINIO U13',             'CM_LINEAL', 0.12),
-    ('ALUMINIO',  'H8220',           'NEGRO',        'ALUMINIO H8220',           'CM_LINEAL', 0.25),
-    ('ALUMINIO',  'H8220',           'ESTANDAR',     'ALUMINIO H8220',           'CM_LINEAL', 0.16),
-    ('ALUMINIO',  'H8220',           'MADERA',       'ALUMINIO H8220',           'CM_LINEAL', 0.32),
-    ('ALUMINIO',  'TUBO MULTIPLE',   'NEGRO',        'ALUMINIO TUBO MULTIPLE',   'CM_LINEAL', 0.14),
-    ('ALUMINIO',  'TUBO MULTIPLE',   'ESTANDAR',     'ALUMINIO TUBO MULTIPLE',   'CM_LINEAL', 0.07),
-    ('ALUMINIO',  'TUBO MULTIPLE',   'MADERA',       'ALUMINIO TUBO MULTIPLE',   'CM_LINEAL', 0.22),
-    ('ALUMINIO',  'PORTA FELPA',     'ESTANDAR',     'ALUMINIO PORTA FELPA',     'CM_LINEAL', 0.014),
-    ('ALUMINIO',  'PORTA FELPA',     'NEGRO',        'ALUMINIO PORTA FELPA',     'CM_LINEAL', 0.021),
-    ('ALUMINIO',  'PORTA FELPA',     'MADERA',       'ALUMINIO PORTA FELPA',     'CM_LINEAL', 0.04),
-    ('ACCESORIO', 'RUEDA 8220',      NULL,           'ACCESORIO RUEDA 8220',     'UNIDAD',    2.00),
-    ('ACCESORIO', 'FELPA 10',        'ESTANDAR',     'ACCESORIO FELPA 10',       'CM_LINEAL', 0.002),
-    ('ACCESORIO', 'FELPA 10',        'NEGRO',        'ACCESORIO FELPA 10',       'CM_LINEAL', 0.005),
-    ('ACCESORIO', 'FELPA 15',        'ESTANDAR',     'ACCESORIO FELPA 15',       'CM_LINEAL', 0.003),
-    ('ACCESORIO', 'FELPA 15',        'NEGRO',        'ACCESORIO FELPA 15',       'CM_LINEAL', 0.006),
-    ('ACCESORIO', 'FELPA 20',        'ESTANDAR',     'ACCESORIO FELPA 20',       'CM_LINEAL', 0.004),
-    ('ACCESORIO', 'FELPA 20',        'NEGRO',        'ACCESORIO FELPA 20',       'CM_LINEAL', 0.007),
-    ('ACCESORIO', 'SEGURO PISTILLO', 'NEGRO',        'ACCESORIO SEGURO PISTILLO','UNIDAD',    5.00),
-    ('ACCESORIO', 'SEGURO PISTILLO', 'ESTANDAR',     'ACCESORIO SEGURO PISTILLO','UNIDAD',    3.00),
-    ('ACCESORIO', 'SEGURO PISTILLO', 'MADERA',       'ACCESORIO SEGURO PISTILLO','UNIDAD',    6.00),
-    ('ACCESORIO', 'SILICONA',        'NEGRA',        'ACCESORIO SILICONA',       'UNIDAD',    12.00),
-    ('ACCESORIO', 'SILICONA',        'TRANSPARENTE', 'ACCESORIO SILICONA',       'UNIDAD',    10.00),
-    ('ACCESORIO', 'SILICONA',        'BLANCA',       'ACCESORIO SILICONA',       'UNIDAD',    11.00);
+    ('ALUMINIO',  'ANGULO GUIA',     'NEGRO',        'Aluminio Angulo Guia',     'CM_LINEAL', 0.15),
+    ('ALUMINIO',  'ANGULO GUIA',     'ESTANDAR',     'Aluminio Angulo Guia',     'CM_LINEAL', 0.09),
+    ('ALUMINIO',  'ANGULO GUIA',     'MADERA',       'Aluminio Angulo Guia',     'CM_LINEAL', 0.29),
+    ('ALUMINIO',  'U13',             'NEGRO',        'Aluminio U13',             'CM_LINEAL', 0.06),
+    ('ALUMINIO',  'U13',             'ESTANDAR',     'Aluminio U13',             'CM_LINEAL', 0.20),
+    ('ALUMINIO',  'U13',             'MADERA',       'Aluminio U13',             'CM_LINEAL', 0.12),
+    ('ALUMINIO',  'H8220',           'NEGRO',        'Aluminio H8220',           'CM_LINEAL', 0.25),
+    ('ALUMINIO',  'H8220',           'ESTANDAR',     'Aluminio H8220',           'CM_LINEAL', 0.16),
+    ('ALUMINIO',  'H8220',           'MADERA',       'Aluminio H8220',           'CM_LINEAL', 0.32),
+    ('ALUMINIO',  'TUBO MULTIPLE',   'NEGRO',        'Aluminio Tubo Multiple',   'CM_LINEAL', 0.14),
+    ('ALUMINIO',  'TUBO MULTIPLE',   'ESTANDAR',     'Aluminio Tubo Multiple',   'CM_LINEAL', 0.07),
+    ('ALUMINIO',  'TUBO MULTIPLE',   'MADERA',       'Aluminio Tubo Multiple',   'CM_LINEAL', 0.22),
+    ('ALUMINIO',  'PORTA FELPA',     'ESTANDAR',     'Aluminio Porta Felpa',     'CM_LINEAL', 0.014),
+    ('ALUMINIO',  'PORTA FELPA',     'NEGRO',        'Aluminio Porta Felpa',     'CM_LINEAL', 0.021),
+    ('ALUMINIO',  'PORTA FELPA',     'MADERA',       'Aluminio Porta Felpa',     'CM_LINEAL', 0.04),
+    ('ACCESORIO', 'RUEDA 8220',      NULL,           'Accesorio Rueda 8220',     'UNIDAD',    2.00),
+    ('ACCESORIO', 'FELPA 10',        'ESTANDAR',     'Accesorio Felpa 10',       'CM_LINEAL', 0.002),
+    ('ACCESORIO', 'FELPA 10',        'NEGRO',        'Accesorio Felpa 10',       'CM_LINEAL', 0.005),
+    ('ACCESORIO', 'FELPA 15',        'ESTANDAR',     'Accesorio Felpa 15',       'CM_LINEAL', 0.003),
+    ('ACCESORIO', 'FELPA 15',        'NEGRO',        'Accesorio Felpa 15',       'CM_LINEAL', 0.006),
+    ('ACCESORIO', 'FELPA 20',        'ESTANDAR',     'Accesorio Felpa 20',       'CM_LINEAL', 0.004),
+    ('ACCESORIO', 'FELPA 20',        'NEGRO',        'Accesorio Felpa 20',       'CM_LINEAL', 0.007),
+    ('ACCESORIO', 'SEGURO PISTILLO', 'NEGRO',        'Accesorio Seguro Pistillo','UNIDAD',    5.00),
+    ('ACCESORIO', 'SEGURO PISTILLO', 'ESTANDAR',     'Accesorio Seguro Pistillo','UNIDAD',    3.00),
+    ('ACCESORIO', 'SEGURO PISTILLO', 'MADERA',       'Accesorio Seguro Pistillo','UNIDAD',    6.00),
+    ('ACCESORIO', 'SILICONA',        'NEGRA',        'Accesorio Silicona',       'UNIDAD',    12.00),
+    ('ACCESORIO', 'SILICONA',        'TRANSPARENTE', 'Accesorio Silicona',       'UNIDAD',    10.00),
+    ('ACCESORIO', 'SILICONA',        'BLANCA',       'Accesorio Silicona',       'UNIDAD',    11.00);
 
 DECLARE @cat NVARCHAR(20), @tip NVARCHAR(50), @col NVARCHAR(30),
         @nom NVARCHAR(150), @uni NVARCHAR(10), @pre DECIMAL(10,2),
