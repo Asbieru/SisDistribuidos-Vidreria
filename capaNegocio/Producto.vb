@@ -5,7 +5,7 @@ Public Class Producto
     Dim objMan As New clsMantenimiento
 
     ' Categorías válidas (las usan inventario, compras y los datos de prueba)
-    Public Shared ReadOnly Categorias As String() = {"VIDRIO", "ALUMINIO", "TORNILLO", "TARUGO"}
+    Public Shared ReadOnly Categorias As String() = {"VIDRIO", "ALUMINIO", "ACCESORIO", "TORNILLO", "TARUGO"}
 
 
     Public Function Listar() As DataTable

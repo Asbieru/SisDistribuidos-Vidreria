@@ -143,7 +143,7 @@ GO
 IF OBJECT_ID(N'dbo.productos', N'U') IS NULL
 CREATE TABLE dbo.productos (
     id_producto  INT IDENTITY(1,1) PRIMARY KEY,
-    categoria    NVARCHAR(20) NOT NULL,  -- VIDRIO, ALUMINIO, TORNILLO, TARUGO
+    categoria    NVARCHAR(20) NOT NULL,  -- VIDRIO, ALUMINIO, ACCESORIO, TORNILLO, TARUGO
     tipo         NVARCHAR(50) NOT NULL,  -- transparente, catedral, espejo, u13, u21, triangulo...
     color        NVARCHAR(30),           -- principalmente aluminio: negro, normal, madera...
     nombre       NVARCHAR(150) NOT NULL,
@@ -167,11 +167,11 @@ CREATE TABLE dbo.producto_variante (
     id_variante        INT IDENTITY(1,1) PRIMARY KEY,
     id_producto        INT NOT NULL,
     id_caracteristica  INT NOT NULL,
-    unidad_costo       NVARCHAR(10) NOT NULL,  -- CM2, CM_LINEAL, CAJA, PIE2
+    unidad_costo       NVARCHAR(10) NOT NULL,  -- CM2, CM_LINEAL, CAJA, PIE2, UNIDAD
     precio_unitario    DECIMAL(10,2) NOT NULL,
     stock_minimo       INT NOT NULL CONSTRAINT df_variante_stock_minimo DEFAULT 0,
     CONSTRAINT uq_variante UNIQUE (id_producto, id_caracteristica),
-    CONSTRAINT ck_variante_unidad_costo CHECK (unidad_costo IN ('CM2','CM_LINEAL','CAJA','PIE2')),
+    CONSTRAINT ck_variante_unidad_costo CHECK (unidad_costo IN ('CM2','CM_LINEAL','CAJA','PIE2','UNIDAD')),
     CONSTRAINT fk_var_producto FOREIGN KEY (id_producto)
         REFERENCES dbo.productos(id_producto) ON DELETE NO ACTION,
     CONSTRAINT fk_var_caract FOREIGN KEY (id_caracteristica)
@@ -179,16 +179,16 @@ CREATE TABLE dbo.producto_variante (
 );
 GO
 
--- Si la tabla ya existia de una corrida anterior (sin PIE2), se actualiza el CHECK
+-- Si la tabla ya existia de una corrida anterior (sin PIE2 o sin UNIDAD), se actualiza el CHECK
 IF EXISTS (SELECT 1 FROM sys.check_constraints WHERE name = 'ck_variante_unidad_costo')
    AND NOT EXISTS (
        SELECT 1 FROM sys.check_constraints
-       WHERE name = 'ck_variante_unidad_costo' AND definition LIKE '%PIE2%'
+       WHERE name = 'ck_variante_unidad_costo' AND definition LIKE '%UNIDAD%'
    )
 BEGIN
     ALTER TABLE dbo.producto_variante DROP CONSTRAINT ck_variante_unidad_costo;
     ALTER TABLE dbo.producto_variante ADD CONSTRAINT ck_variante_unidad_costo
-        CHECK (unidad_costo IN ('CM2','CM_LINEAL','CAJA','PIE2'));
+        CHECK (unidad_costo IN ('CM2','CM_LINEAL','CAJA','PIE2','UNIDAD'));
 END
 GO
 
@@ -1847,4 +1847,139 @@ BEGIN
 END
 
 PRINT 'Catalogo de vidrios (color/espejo/figura) insertado.';
+GO
+
+-- ============================================================
+-- Catalogo real de aluminio y accesorios
+-- Aluminio: precio por cm lineal (CM_LINEAL).
+-- Accesorios: por unidad (UNIDAD) o por cm (CM_LINEAL, felpa).
+-- Idempotente: si el producto ya existe se actualiza su precio/nombre.
+-- ============================================================
+
+-- Caracteristica para materiales sin espesor ni medida (aluminio / accesorios)
+DECLARE @c_sinmedida INT;
+SELECT TOP 1 @c_sinmedida = id_caracteristica
+FROM dbo.caracteristicas
+WHERE espesor_cm IS NULL AND medida_cm IS NULL
+ORDER BY id_caracteristica;
+IF @c_sinmedida IS NULL
+BEGIN
+    INSERT INTO dbo.caracteristicas (espesor_cm, medida_cm) VALUES (NULL, NULL);
+    SET @c_sinmedida = SCOPE_IDENTITY();
+END
+
+-- Quita el "Aluminio U13" de prueba (0.10) para dejar solo el del catalogo real.
+-- Solo si no esta referenciado por un pedido o una compra (evita romper FKs).
+IF NOT EXISTS (
+    SELECT 1 FROM dbo.pedido_detalle pd
+        INNER JOIN dbo.producto_variante pv ON pv.id_variante = pd.id_variante
+        INNER JOIN dbo.productos p          ON p.id_producto = pv.id_producto
+    WHERE p.categoria = 'ALUMINIO' AND p.tipo = 'U13'
+    UNION ALL
+    SELECT 1 FROM dbo.compra_detalle cd
+        INNER JOIN dbo.producto_variante pv ON pv.id_variante = cd.id_variante
+        INNER JOIN dbo.productos p          ON p.id_producto = pv.id_producto
+    WHERE p.categoria = 'ALUMINIO' AND p.tipo = 'U13'
+)
+BEGIN
+    DELETE m FROM dbo.movimientos_inventario m
+        INNER JOIN dbo.producto_variante pv ON pv.id_variante = m.id_variante
+        INNER JOIN dbo.productos p          ON p.id_producto = pv.id_producto
+        WHERE p.categoria = 'ALUMINIO' AND p.tipo = 'U13';
+
+    DELETE ip FROM dbo.inventario_piezas ip
+        INNER JOIN dbo.producto_variante pv ON pv.id_variante = ip.id_variante
+        INNER JOIN dbo.productos p          ON p.id_producto = pv.id_producto
+        WHERE p.categoria = 'ALUMINIO' AND p.tipo = 'U13';
+
+    DELETE pv FROM dbo.producto_variante pv
+        INNER JOIN dbo.productos p ON p.id_producto = pv.id_producto
+        WHERE p.categoria = 'ALUMINIO' AND p.tipo = 'U13';
+
+    DELETE FROM dbo.productos WHERE categoria = 'ALUMINIO' AND tipo = 'U13';
+END
+
+-- (categoria, tipo, color, nombre, unidad de costo, precio)
+DECLARE @catalogo TABLE (
+    categoria NVARCHAR(20),
+    tipo      NVARCHAR(50),
+    color     NVARCHAR(30),
+    nombre    NVARCHAR(150),
+    unidad    NVARCHAR(10),
+    precio    DECIMAL(10,2)
+);
+
+INSERT INTO @catalogo (categoria, tipo, color, nombre, unidad, precio) VALUES
+    ('ALUMINIO',  'ANGULO GUIA',     'NEGRO',        'ALUMINIO ANGULO GUIA',     'CM_LINEAL', 0.15),
+    ('ALUMINIO',  'ANGULO GUIA',     'ESTANDAR',     'ALUMINIO ANGULO GUIA',     'CM_LINEAL', 0.09),
+    ('ALUMINIO',  'ANGULO GUIA',     'MADERA',       'ALUMINIO ANGULO GUIA',     'CM_LINEAL', 0.29),
+    ('ALUMINIO',  'U13',             'NEGRO',        'ALUMINIO U13',             'CM_LINEAL', 0.06),
+    ('ALUMINIO',  'U13',             'ESTANDAR',     'ALUMINIO U13',             'CM_LINEAL', 0.20),
+    ('ALUMINIO',  'U13',             'MADERA',       'ALUMINIO U13',             'CM_LINEAL', 0.12),
+    ('ALUMINIO',  'H8220',           'NEGRO',        'ALUMINIO H8220',           'CM_LINEAL', 0.25),
+    ('ALUMINIO',  'H8220',           'ESTANDAR',     'ALUMINIO H8220',           'CM_LINEAL', 0.16),
+    ('ALUMINIO',  'H8220',           'MADERA',       'ALUMINIO H8220',           'CM_LINEAL', 0.32),
+    ('ALUMINIO',  'TUBO MULTIPLE',   'NEGRO',        'ALUMINIO TUBO MULTIPLE',   'CM_LINEAL', 0.14),
+    ('ALUMINIO',  'TUBO MULTIPLE',   'ESTANDAR',     'ALUMINIO TUBO MULTIPLE',   'CM_LINEAL', 0.07),
+    ('ALUMINIO',  'TUBO MULTIPLE',   'MADERA',       'ALUMINIO TUBO MULTIPLE',   'CM_LINEAL', 0.22),
+    ('ALUMINIO',  'PORTA FELPA',     'ESTANDAR',     'ALUMINIO PORTA FELPA',     'CM_LINEAL', 0.014),
+    ('ALUMINIO',  'PORTA FELPA',     'NEGRO',        'ALUMINIO PORTA FELPA',     'CM_LINEAL', 0.021),
+    ('ALUMINIO',  'PORTA FELPA',     'MADERA',       'ALUMINIO PORTA FELPA',     'CM_LINEAL', 0.04),
+    ('ACCESORIO', 'RUEDA 8220',      NULL,           'ACCESORIO RUEDA 8220',     'UNIDAD',    2.00),
+    ('ACCESORIO', 'FELPA 10',        'ESTANDAR',     'ACCESORIO FELPA 10',       'CM_LINEAL', 0.002),
+    ('ACCESORIO', 'FELPA 10',        'NEGRO',        'ACCESORIO FELPA 10',       'CM_LINEAL', 0.005),
+    ('ACCESORIO', 'FELPA 15',        'ESTANDAR',     'ACCESORIO FELPA 15',       'CM_LINEAL', 0.003),
+    ('ACCESORIO', 'FELPA 15',        'NEGRO',        'ACCESORIO FELPA 15',       'CM_LINEAL', 0.006),
+    ('ACCESORIO', 'FELPA 20',        'ESTANDAR',     'ACCESORIO FELPA 20',       'CM_LINEAL', 0.004),
+    ('ACCESORIO', 'FELPA 20',        'NEGRO',        'ACCESORIO FELPA 20',       'CM_LINEAL', 0.007),
+    ('ACCESORIO', 'SEGURO PISTILLO', 'NEGRO',        'ACCESORIO SEGURO PISTILLO','UNIDAD',    5.00),
+    ('ACCESORIO', 'SEGURO PISTILLO', 'ESTANDAR',     'ACCESORIO SEGURO PISTILLO','UNIDAD',    3.00),
+    ('ACCESORIO', 'SEGURO PISTILLO', 'MADERA',       'ACCESORIO SEGURO PISTILLO','UNIDAD',    6.00),
+    ('ACCESORIO', 'SILICONA',        'NEGRA',        'ACCESORIO SILICONA',       'UNIDAD',    12.00),
+    ('ACCESORIO', 'SILICONA',        'TRANSPARENTE', 'ACCESORIO SILICONA',       'UNIDAD',    10.00),
+    ('ACCESORIO', 'SILICONA',        'BLANCA',       'ACCESORIO SILICONA',       'UNIDAD',    11.00);
+
+DECLARE @cat NVARCHAR(20), @tip NVARCHAR(50), @col NVARCHAR(30),
+        @nom NVARCHAR(150), @uni NVARCHAR(10), @pre DECIMAL(10,2),
+        @idProd INT, @idVar INT;
+
+DECLARE cur_cat CURSOR LOCAL FAST_FORWARD FOR
+    SELECT categoria, tipo, color, nombre, unidad, precio FROM @catalogo;
+OPEN cur_cat;
+FETCH NEXT FROM cur_cat INTO @cat, @tip, @col, @nom, @uni, @pre;
+WHILE @@FETCH_STATUS = 0
+BEGIN
+    SET @idProd = NULL;
+    SELECT TOP 1 @idProd = id_producto
+    FROM dbo.productos
+    WHERE categoria = @cat AND tipo = @tip AND ISNULL(color, '') = ISNULL(@col, '');
+
+    IF @idProd IS NULL
+    BEGIN
+        INSERT INTO dbo.productos (categoria, tipo, color, nombre)
+        VALUES (@cat, @tip, @col, @nom);
+        SET @idProd = SCOPE_IDENTITY();
+        INSERT INTO dbo.producto_variante (id_producto, id_caracteristica, unidad_costo, precio_unitario, stock_minimo)
+        VALUES (@idProd, @c_sinmedida, @uni, @pre, 0);
+    END
+    ELSE
+    BEGIN
+        UPDATE dbo.productos SET nombre = @nom, color = @col WHERE id_producto = @idProd;
+
+        SET @idVar = NULL;
+        SELECT TOP 1 @idVar = id_variante FROM dbo.producto_variante WHERE id_producto = @idProd;
+        IF @idVar IS NULL
+            INSERT INTO dbo.producto_variante (id_producto, id_caracteristica, unidad_costo, precio_unitario, stock_minimo)
+            VALUES (@idProd, @c_sinmedida, @uni, @pre, 0);
+        ELSE
+            UPDATE dbo.producto_variante SET unidad_costo = @uni, precio_unitario = @pre
+            WHERE id_variante = @idVar;
+    END
+
+    FETCH NEXT FROM cur_cat INTO @cat, @tip, @col, @nom, @uni, @pre;
+END
+CLOSE cur_cat;
+DEALLOCATE cur_cat;
+
+PRINT 'Catalogo de aluminio y accesorios insertado.';
 GO

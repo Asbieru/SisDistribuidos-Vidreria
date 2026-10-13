@@ -5,7 +5,7 @@
 Public Class Inventario
     Dim objMan As New clsMantenimiento
 
-    Public Shared ReadOnly Categorias As String() = {"VIDRIO", "ALUMINIO", "TORNILLO", "TARUGO"}
+    Public Shared ReadOnly Categorias As String() = {"VIDRIO", "ALUMINIO", "ACCESORIO", "TORNILLO", "TARUGO"}
     Public Shared ReadOnly EstadosPieza As String() = {"DISPONIBLE", "RESERVADA", "VENDIDA", "CONSUMIDA", "DEFECTUOSA"}
 
     ' Existencias por variante. categoria Nothing = todas
