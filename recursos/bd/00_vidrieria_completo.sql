@@ -29,6 +29,20 @@ GO
 USE vidrieria;
 GO
 
+-- ------------------------------------------------------------
+-- Hora de Peru (UTC-5) para todas las fechas del sistema.
+-- SYSDATETIME() devuelve la hora del SERVIDOR: en un hosting como somee.com
+-- el servidor esta en otra zona horaria y las fechas quedaban adelantadas
+-- (p. ej. el kardex no mostraba los movimientos de "hoy").
+-- 'SA Pacific Standard Time' = Lima/Bogota, UTC-5, sin horario de verano.
+-- ------------------------------------------------------------
+IF OBJECT_ID(N'dbo.fn_hora_peru', N'FN') IS NULL
+    EXEC(N'CREATE FUNCTION dbo.fn_hora_peru() RETURNS DATETIME2 AS
+BEGIN
+    RETURN CONVERT(DATETIME2, SYSDATETIMEOFFSET() AT TIME ZONE ''SA Pacific Standard Time'');
+END');
+GO
+
 -- ============================================================
 -- 1) TABLAS
 -- ============================================================
@@ -47,7 +61,7 @@ CREATE TABLE dbo.usuarios (
     rol                 NVARCHAR(20) NOT NULL DEFAULT 'VENDEDOR'  -- VENDEDOR = Trabajador, ADMINISTRADOR = Jefe
         CHECK (rol IN ('VENDEDOR','ADMINISTRADOR')),
     activo              BIT NOT NULL DEFAULT 1,
-    fecha_creacion      DATETIME2 NOT NULL DEFAULT SYSDATETIME()
+    fecha_creacion      DATETIME2 NOT NULL DEFAULT dbo.fn_hora_peru()
 );
 GO
 
@@ -75,7 +89,7 @@ IF OBJECT_ID(N'dbo.usuario_mensajes_descartados', N'U') IS NULL
 CREATE TABLE dbo.usuario_mensajes_descartados (
     id_usuario      INT NOT NULL,
     id_mensaje      INT NOT NULL,
-    fecha_descarte  DATETIME2 NOT NULL DEFAULT SYSDATETIME(),
+    fecha_descarte  DATETIME2 NOT NULL DEFAULT dbo.fn_hora_peru(),
     CONSTRAINT pk_usuario_mensaje PRIMARY KEY (id_usuario, id_mensaje),
     CONSTRAINT fk_desc_usuario FOREIGN KEY (id_usuario)
         REFERENCES dbo.usuarios(id_usuario) ON DELETE CASCADE,
@@ -200,7 +214,7 @@ CREATE TABLE dbo.pedidos (
     id_pedido   INT IDENTITY(1,1) PRIMARY KEY,
     id_cliente  INT NOT NULL,
     id_usuario  INT NOT NULL,
-    fecha       DATETIME2 NOT NULL DEFAULT SYSDATETIME(),
+    fecha       DATETIME2 NOT NULL DEFAULT dbo.fn_hora_peru(),
     estado      NVARCHAR(15) NOT NULL DEFAULT 'PENDIENTE'
         CHECK (estado IN ('PENDIENTE','PAGADO','PARCIAL','CANCELADO')),
     total       DECIMAL(10,2) NOT NULL DEFAULT 0,
@@ -266,7 +280,7 @@ CREATE TABLE dbo.inventario_piezas (
         CONSTRAINT ck_pieza_estado CHECK (estado IN ('DISPONIBLE','RESERVADA','VENDIDA','CONSUMIDA','DEFECTUOSA')),
     origen             NVARCHAR(10) NOT NULL
         CONSTRAINT ck_pieza_origen CHECK (origen IN ('COMPRA','RETAZO','INICIAL')),
-    fecha_ingreso      DATETIME2 NOT NULL DEFAULT SYSDATETIME(),
+    fecha_ingreso      DATETIME2 NOT NULL DEFAULT dbo.fn_hora_peru(),
     CONSTRAINT ck_pieza_medidas CHECK (
         (ancho_cm > 0 AND alto_cm > 0 AND largo_cm IS NULL)
      OR (largo_cm > 0 AND ancho_cm IS NULL AND alto_cm IS NULL)
@@ -439,7 +453,7 @@ GO
 IF OBJECT_ID(N'dbo.movimientos_inventario', N'U') IS NULL
 CREATE TABLE dbo.movimientos_inventario (
     id_movimiento      INT IDENTITY(1,1) PRIMARY KEY,
-    fecha              DATETIME2 NOT NULL DEFAULT SYSDATETIME(),
+    fecha              DATETIME2 NOT NULL DEFAULT dbo.fn_hora_peru(),
     id_variante        INT NOT NULL,
     id_pieza           INT NULL,               -- vidrio/aluminio: pieza afectada
     tipo               NVARCHAR(10) NOT NULL   -- ENTRADA suma, SALIDA resta, AJUSTE corrige, ESTADO solo cambia estado
@@ -479,7 +493,7 @@ IF OBJECT_ID(N'dbo.pagos', N'U') IS NULL
 CREATE TABLE dbo.pagos (
     id_pago       INT IDENTITY(1,1) PRIMARY KEY,
     id_pedido     INT NOT NULL,
-    fecha         DATETIME2 NOT NULL DEFAULT SYSDATETIME(),
+    fecha         DATETIME2 NOT NULL DEFAULT dbo.fn_hora_peru(),
     monto_total   DECIMAL(10,2) NOT NULL,
     CONSTRAINT fk_pago_pedido FOREIGN KEY (id_pedido)
         REFERENCES dbo.pedidos(id_pedido) ON DELETE CASCADE
@@ -507,7 +521,7 @@ CREATE TABLE dbo.comprobante_pago (
         CHECK (tipo_comprobante IN ('BOLETA','FACTURA')),
     serie             NVARCHAR(10) NOT NULL,
     numero            NVARCHAR(20) NOT NULL,
-    fecha_emision     DATETIME2 NOT NULL DEFAULT SYSDATETIME(),
+    fecha_emision     DATETIME2 NOT NULL DEFAULT dbo.fn_hora_peru(),
     CONSTRAINT fk_comp_pago FOREIGN KEY (id_pago)
         REFERENCES dbo.pagos(id_pago) ON DELETE CASCADE
 );
@@ -532,6 +546,46 @@ IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = 'idx_mov_fecha' AND object
     CREATE INDEX idx_mov_fecha ON dbo.movimientos_inventario(fecha);
 IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = 'idx_mov_variante' AND object_id = OBJECT_ID(N'dbo.movimientos_inventario'))
     CREATE INDEX idx_mov_variante ON dbo.movimientos_inventario(id_variante, fecha);
+GO
+
+-- ------------------------------------------------------------
+-- Bases ya creadas: cambia la fecha por defecto de SYSDATETIME() (hora del
+-- servidor) a dbo.fn_hora_peru() (hora de Peru). Solo toca el valor por
+-- defecto de cada columna; no modifica ningun dato guardado.
+-- ------------------------------------------------------------
+DECLARE @columnas TABLE (tabla SYSNAME, columna SYSNAME);
+INSERT INTO @columnas VALUES
+    ('usuarios', 'fecha_creacion'),
+    ('usuario_mensajes_descartados', 'fecha_descarte'),
+    ('pedidos', 'fecha'),
+    ('inventario_piezas', 'fecha_ingreso'),
+    ('movimientos_inventario', 'fecha'),
+    ('pagos', 'fecha'),
+    ('comprobante_pago', 'fecha_emision');
+
+DECLARE @tabla SYSNAME, @columna SYSNAME, @df SYSNAME, @sql NVARCHAR(MAX);
+DECLARE cur_fechas CURSOR LOCAL FAST_FORWARD FOR SELECT tabla, columna FROM @columnas;
+OPEN cur_fechas;
+FETCH NEXT FROM cur_fechas INTO @tabla, @columna;
+WHILE @@FETCH_STATUS = 0
+BEGIN
+    SET @df = NULL;
+    SELECT @df = dc.name
+    FROM sys.default_constraints dc
+    INNER JOIN sys.columns c ON c.object_id = dc.parent_object_id AND c.column_id = dc.parent_column_id
+    WHERE dc.parent_object_id = OBJECT_ID(N'dbo.' + @tabla) AND c.name = @columna
+      AND dc.definition NOT LIKE N'%fn_hora_peru%';
+
+    IF @df IS NOT NULL
+    BEGIN
+        SET @sql = N'ALTER TABLE dbo.' + QUOTENAME(@tabla) + N' DROP CONSTRAINT ' + QUOTENAME(@df) + N'; ' +
+                   N'ALTER TABLE dbo.' + QUOTENAME(@tabla) + N' ADD DEFAULT dbo.fn_hora_peru() FOR ' + QUOTENAME(@columna) + N';';
+        EXEC sp_executesql @sql;
+    END
+    FETCH NEXT FROM cur_fechas INTO @tabla, @columna;
+END
+CLOSE cur_fechas;
+DEALLOCATE cur_fechas;
 GO
 
 -- ============================================================
@@ -1044,7 +1098,7 @@ BEGIN
     IF @tran_externa = 0 BEGIN TRANSACTION; ELSE SAVE TRANSACTION sp_ped;
 
         INSERT INTO dbo.pedidos (id_cliente, id_usuario, fecha, estado, total)
-        VALUES (@id_cliente, @id_usuario, SYSDATETIME(), 'PENDIENTE', 0);
+        VALUES (@id_cliente, @id_usuario, dbo.fn_hora_peru(), 'PENDIENTE', 0);
         SET @id_pedido = CONVERT(INT, SCOPE_IDENTITY());
 
         -- mapeo id_temp (item) -> id real generado
@@ -1439,7 +1493,7 @@ BEGIN
     -- Si ya no queda ningun item pendiente o en proceso, el pedido queda terminado
     IF NOT EXISTS (SELECT 1 FROM dbo.pedido_item
                    WHERE id_pedido = @id_pedido AND estado IN ('PENDIENTE','EN_PROCESO'))
-        UPDATE dbo.pedidos SET fecha_termino = SYSDATETIME() WHERE id_pedido = @id_pedido;
+        UPDATE dbo.pedidos SET fecha_termino = dbo.fn_hora_peru() WHERE id_pedido = @id_pedido;
 END
 GO
 
@@ -1463,7 +1517,7 @@ BEGIN
     UPDATE dbo.pedido_item SET estado = 'COMPLETADO'
     WHERE id_pedido = @id_pedido AND estado = 'EN_PROCESO';
 
-    UPDATE dbo.pedidos SET fecha_termino = SYSDATETIME()
+    UPDATE dbo.pedidos SET fecha_termino = dbo.fn_hora_peru()
     WHERE id_pedido = @id_pedido;
 END
 GO
