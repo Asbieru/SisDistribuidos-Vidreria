@@ -99,6 +99,15 @@ Module UtilFormularios
         End If
     End Sub
 
+    ' En modo Fill las columnas se reparten el ancho disponible y se comprimen
+    ' hasta ser ilegibles (nunca aparece la barra horizontal). Fijando un ancho
+    ' minimo por columna, si el total no cabe se muestra el scroll horizontal.
+    Public Sub AnchoMinimoColumnas(dgv As DataGridView, minimo As Integer)
+        For Each col As DataGridViewColumn In dgv.Columns
+            If col.Visible Then col.MinimumWidth = Math.Max(minimo, col.MinimumWidth)
+        Next
+    End Sub
+
     ' ---------------- Combos de productos ----------------
 
     ' Llena un combo con variantes; opcionalmente agrega "(Todos)" con id 0 al inicio

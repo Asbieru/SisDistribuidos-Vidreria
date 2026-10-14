@@ -62,6 +62,10 @@ Public Class frmVerKardex
         dgvMovimientos.Columns("observacion").FillWeight = 200
         dgvMovimientos.Columns("fecha").DefaultCellStyle.Format = "dd/MM/yyyy HH:mm"
         dgvMovimientos.Columns("fecha").FillWeight = 140
+        ' Ancho minimo: si el total de columnas no cabe, aparece el scroll horizontal
+        AnchoMinimoColumnas(dgvMovimientos, 110)
+        dgvMovimientos.Columns("producto").MinimumWidth = 200
+        dgvMovimientos.Columns("observacion").MinimumWidth = 200
     End Sub
 
     ' Entradas en verde y salidas en rojo

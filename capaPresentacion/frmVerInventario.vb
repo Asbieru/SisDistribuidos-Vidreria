@@ -64,6 +64,9 @@ Public Class frmVerInventario
         dgvResumen.Columns("area_disponible_cm2").DefaultCellStyle.Format = "N0"
         dgvResumen.Columns("largo_disponible_cm").DefaultCellStyle.Format = "N2"
         dgvResumen.Columns("precio_unitario").DefaultCellStyle.Format = "N2"
+        ' Ancho minimo: si el total de columnas no cabe, aparece el scroll horizontal
+        AnchoMinimoColumnas(dgvResumen, 110)
+        dgvResumen.Columns("producto").MinimumWidth = 220
     End Sub
 
     Private Sub dgvResumen_CellFormatting(sender As Object, e As DataGridViewCellFormattingEventArgs) Handles dgvResumen.CellFormatting
