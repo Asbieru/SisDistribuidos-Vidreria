@@ -157,6 +157,8 @@ Partial Class frmHistorialClientes
         Me.dgvPedidos.MultiSelect = False
         Me.dgvPedidos.RowHeadersVisible = False
         Me.dgvPedidos.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
+        Me.dgvPedidos.ScrollBars = System.Windows.Forms.ScrollBars.Both
+
         Me.dgvPedidos.TabIndex = 7
         Me.lblPagos.Anchor = System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right
         Me.lblPagos.AutoEllipsis = True
@@ -175,6 +177,7 @@ Partial Class frmHistorialClientes
         Me.dgvPagos.MultiSelect = False
         Me.dgvPagos.RowHeadersVisible = False
         Me.dgvPagos.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
+        Me.dgvPagos.ScrollBars = System.Windows.Forms.ScrollBars.Both
         Me.dgvPagos.TabIndex = 8
         Me.lblCantidad.Anchor = System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right
         Me.lblCantidad.AutoEllipsis = True

@@ -2075,9 +2075,9 @@ INSERT INTO dbo.caracteristicas (espesor_cm, medida_cm) VALUES (NULL, 0.80); SET
 
 -- Productos
 DECLARE @p_u13 INT, @p_tor INT, @p_tar INT;
-INSERT INTO dbo.productos (categoria, tipo, color, nombre) VALUES ('ALUMINIO', 'U13',          'NEGRO', 'Aluminio U13');        SET @p_u13   = SCOPE_IDENTITY();
-INSERT INTO dbo.productos (categoria, tipo, color, nombre) VALUES ('TORNILLO', 'AUTORROSCANTE', NULL,  'Tornillo Autorroscante'); SET @p_tor = SCOPE_IDENTITY();
-INSERT INTO dbo.productos (categoria, tipo, color, nombre) VALUES ('TARUGO',   'PLASTICO',     NULL,    'Tarugo Plástico');     SET @p_tar   = SCOPE_IDENTITY();
+INSERT INTO dbo.productos (categoria, tipo, color, nombre) VALUES ('ALUMINIO',   'U13',      'NEGRO',         'Aluminio U13');           SET @p_u13 = SCOPE_IDENTITY();
+INSERT INTO dbo.productos (categoria, tipo, color, nombre) VALUES ('ACCESORIO', 'TARUGO',   'PLASTICO',      'Tarugo Plástico');        SET @p_tar = SCOPE_IDENTITY();
+INSERT INTO dbo.productos (categoria, tipo, color, nombre) VALUES ('ACCESORIO', 'TORNILLO', 'AUTORROSCANTE', 'Tornillo Autorroscante'); SET @p_tor = SCOPE_IDENTITY();
 
 -- Variantes (precio por cm2, por cm lineal o por caja) + stock minimo
 DECLARE @v_u13 INT, @v_tor INT, @v_tar INT;

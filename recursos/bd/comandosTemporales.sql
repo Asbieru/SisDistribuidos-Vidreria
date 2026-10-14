@@ -79,3 +79,13 @@ GO
 -- Como ese script es idempotente, la forma mas simple de poner al
 -- dia la BD remota es ejecutarlo completo.
 -- ------------------------------------------------------------
+
+-- ------------------------------------------------------------
+-- 4) Reclasificacion de productos 2 y 3 como accesorios:
+--    id 2 -> ACCESORIO / TARUGO   / PLASTICO
+--    id 3 -> ACCESORIO / TORNILLO / AUTORROSCANTE
+--    Solo ajusta categoria, tipo y color; no toca nombre ni variantes.
+-- ------------------------------------------------------------
+UPDATE dbo.productos SET categoria = 'ACCESORIO', tipo = 'TARUGO',   color = 'PLASTICO'      WHERE id_producto = 2;
+UPDATE dbo.productos SET categoria = 'ACCESORIO', tipo = 'TORNILLO', color = 'AUTORROSCANTE' WHERE id_producto = 3;
+GO

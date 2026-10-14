@@ -180,6 +180,7 @@ Partial Class frmListadoVentas
         Me.dgvVentas.ReadOnly = True
         Me.dgvVentas.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
         Me.dgvVentas.Size = New System.Drawing.Size(671, 150)
+        Me.dgvVentas.ScrollBars = System.Windows.Forms.ScrollBars.Both
         Me.dgvVentas.TabIndex = 11
         '
         'lblTotalPedidos

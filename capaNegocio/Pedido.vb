@@ -63,14 +63,14 @@ Public Class Pedido
     End Sub
 
     ' Sincroniza pedidos.estado con la suma de pagos:
-    ' sin pagos -> PENDIENTE, parcial -> PARCIAL, cubierto -> PAGADO.
-    ' Nunca toca un pedido CANCELADO.
+    ' sin pagos -> PENDIENTE, parcial (o con vuelto pendiente) -> PARCIAL,
+    ' cubierto exacto -> PAGADO. Nunca toca un pedido CANCELADO.
     Public Sub ActualizarEstadoPago(idPedido As Integer)
         objMan.ejecutarComando(
             "update p set estado = case " &
             "  when p.estado = 'CANCELADO' then 'CANCELADO' " &
             "  when isnull(pg.pagado, 0) <= 0 then 'PENDIENTE' " &
-            "  when p.total > 0 and isnull(pg.pagado, 0) >= p.total then 'PAGADO' " &
+            "  when p.total > 0 and isnull(pg.pagado, 0) = p.total then 'PAGADO' " &
             "  else 'PARCIAL' end " &
             "from pedidos p " &
             "outer apply (select sum(monto_total) as pagado from pagos where id_pedido = p.id_pedido) pg " &

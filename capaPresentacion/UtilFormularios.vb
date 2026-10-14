@@ -8,6 +8,19 @@ End Interface
 Module UtilFormularios
     Public Const TODOS As String = "(Todos)"
 
+    ' ---------------- Ventanas dentro del menu (MDI) ----------------
+
+    ' Los formularios que se abren dentro del menu principal no deben poder
+    ' maximizarse ni cambiar de tamano: borde fijo y sin botones de
+    ' maximizar/minimizar. Solo aplica cuando el formulario es ventana hija
+    ' del menu (no cuando se abre como dialogo con ShowDialog).
+    Public Sub ComoVentanaHija(frm As Form)
+        If frm Is Nothing Then Return
+        frm.FormBorderStyle = FormBorderStyle.FixedSingle
+        frm.MaximizeBox = False
+        frm.MinimizeBox = False
+    End Sub
+
     ' Aproxima un monto a soles enteros (redondeo comercial: el .5 sube)
     Public Function RedondearEntero(valor As Decimal) As Decimal
         Return Math.Round(valor, 0, MidpointRounding.AwayFromZero)

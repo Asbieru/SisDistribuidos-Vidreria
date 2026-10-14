@@ -138,6 +138,7 @@ Partial Class frmVerInventario
         Me.dgvResumen.RowHeadersWidth = 51
         Me.dgvResumen.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
         Me.dgvResumen.Size = New System.Drawing.Size(854, 330)
+        Me.dgvResumen.ScrollBars = System.Windows.Forms.ScrollBars.Both
         Me.dgvResumen.TabIndex = 6
         '
         'lblCantidad

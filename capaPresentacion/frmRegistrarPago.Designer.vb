@@ -207,6 +207,7 @@ Partial Class frmRegistrarPago
         Me.tblPagos.RowHeadersWidth = 51
         Me.tblPagos.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
         Me.tblPagos.Size = New System.Drawing.Size(662, 253)
+        Me.tblPagos.ScrollBars = System.Windows.Forms.ScrollBars.Both
         Me.tblPagos.TabIndex = 5
         '
         'Label1

@@ -107,6 +107,7 @@ Partial Class frmVerCajas
         Me.dgvCajas.RowHeadersWidth = 51
         Me.dgvCajas.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
         Me.dgvCajas.Size = New System.Drawing.Size(854, 330)
+        Me.dgvCajas.ScrollBars = System.Windows.Forms.ScrollBars.Both
         Me.dgvCajas.TabIndex = 4
         '
         'lblCantidad

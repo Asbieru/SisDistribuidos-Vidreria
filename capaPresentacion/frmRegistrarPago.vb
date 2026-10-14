@@ -155,15 +155,17 @@ Public Class frmRegistrarPago
         tblPagos.Rows(0).Selected = True
     End Sub
 
-    ' Pendiente si no hay pagos, Parcial si no cubre el total, Pagado si lo cubre
+    ' Pendiente si no hay pagos, Parcial si no coincide con el total, Pagado si coincide exacto
     Private Sub ActualizarEstado()
         Dim pagado As Decimal = objPago.TotalPagado(idPedidoSeleccionado)
         lblPagado.Text = "S/. " & FormatoNumero(pagado)
 
+        ' Pendiente si no hay pagos, Pagado solo si la suma coincide con el total.
+        ' Si se excedio y aun falta el vuelto, queda Parcial (no Pagado).
         If pagado <= 0D Then
             lblEstado.Text = "Pendiente"
             lblEstado.ForeColor = Color.OrangeRed
-        ElseIf totalPedidoActual > 0D AndAlso pagado >= totalPedidoActual Then
+        ElseIf totalPedidoActual > 0D AndAlso pagado = totalPedidoActual Then
             lblEstado.Text = "Pagado"
             lblEstado.ForeColor = Color.ForestGreen
         Else

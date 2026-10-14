@@ -158,6 +158,7 @@ Partial Class frmListadoCompras
         Me.dgvCompras.ReadOnly = True
         Me.dgvCompras.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
         Me.dgvCompras.Size = New System.Drawing.Size(624, 213)
+        Me.dgvCompras.ScrollBars = System.Windows.Forms.ScrollBars.Both
         Me.dgvCompras.TabIndex = 0
         '
         'btnEliminar

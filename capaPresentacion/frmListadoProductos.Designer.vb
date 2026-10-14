@@ -160,6 +160,7 @@ Partial Class frmListadoProductos
         Me.dgvProductos.RowHeadersWidth = 51
         Me.dgvProductos.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
         Me.dgvProductos.Size = New System.Drawing.Size(634, 255)
+        Me.dgvProductos.ScrollBars = System.Windows.Forms.ScrollBars.Both
         Me.dgvProductos.TabIndex = 17
         '
         'lblCantidad

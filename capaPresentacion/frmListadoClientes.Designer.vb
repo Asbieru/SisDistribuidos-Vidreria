@@ -121,6 +121,7 @@ Partial Class frmListadoClientes
         Me.dgvClientes.RowHeadersVisible = False
         Me.dgvClientes.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
         Me.dgvClientes.Size = New System.Drawing.Size(846, 295)
+        Me.dgvClientes.ScrollBars = System.Windows.Forms.ScrollBars.Both
         Me.dgvClientes.TabIndex = 5
         '
         'lblCantidad

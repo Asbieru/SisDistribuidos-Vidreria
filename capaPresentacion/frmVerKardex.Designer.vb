@@ -149,6 +149,7 @@ Partial Class frmVerKardex
         Me.dgvMovimientos.RowHeadersWidth = 51
         Me.dgvMovimientos.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
         Me.dgvMovimientos.Size = New System.Drawing.Size(854, 330)
+        Me.dgvMovimientos.ScrollBars = System.Windows.Forms.ScrollBars.Both
         Me.dgvMovimientos.TabIndex = 8
         '
         'lblCantidad

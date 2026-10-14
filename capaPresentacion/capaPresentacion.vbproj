@@ -160,7 +160,9 @@
     <Compile Include="frmRegistrarPago.Designer.vb">
       <DependentUpon>frmRegistrarPago.vb</DependentUpon>
     </Compile>
-    <Compile Include="frmRegistrarPago.vb" />
+    <Compile Include="frmRegistrarPago.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="frmRegistrarPedido.Designer.vb">
       <DependentUpon>frmRegistrarPedido.vb</DependentUpon>
     </Compile>

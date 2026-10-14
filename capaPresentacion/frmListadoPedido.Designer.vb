@@ -56,6 +56,7 @@ Partial Class frmListadoPedido
         Me.tblPedidos.RowHeadersWidth = 51
         Me.tblPedidos.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
         Me.tblPedidos.Size = New System.Drawing.Size(644, 257)
+        Me.tblPedidos.ScrollBars = System.Windows.Forms.ScrollBars.Both
         Me.tblPedidos.TabIndex = 0
         '
         'txtBuscar

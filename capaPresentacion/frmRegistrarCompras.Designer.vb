@@ -148,6 +148,7 @@ Partial Class frmRegistrarCompras
         Me.dgvDetalle.ReadOnly = True
         Me.dgvDetalle.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
         Me.dgvDetalle.Size = New System.Drawing.Size(574, 150)
+        Me.dgvDetalle.ScrollBars = System.Windows.Forms.ScrollBars.Both
         Me.dgvDetalle.TabIndex = 16
         '
         'btnAgregarDetalle

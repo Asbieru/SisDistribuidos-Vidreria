@@ -142,6 +142,7 @@ Partial Class frmPedidoUnitario
         Me.tblItems.RowHeadersWidth = 51
         Me.tblItems.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
         Me.tblItems.Size = New System.Drawing.Size(662, 206)
+        Me.tblItems.ScrollBars = System.Windows.Forms.ScrollBars.Both
         Me.tblItems.TabIndex = 4
         '
         'txtPrecio

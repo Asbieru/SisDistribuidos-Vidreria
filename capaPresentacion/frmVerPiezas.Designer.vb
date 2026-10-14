@@ -132,6 +132,7 @@ Partial Class frmVerPiezas
         Me.dgvPiezas.RowHeadersWidth = 51
         Me.dgvPiezas.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
         Me.dgvPiezas.Size = New System.Drawing.Size(854, 330)
+        Me.dgvPiezas.ScrollBars = System.Windows.Forms.ScrollBars.Both
         Me.dgvPiezas.TabIndex = 6
         '
         'lblCantidad
