@@ -40,12 +40,19 @@ Public Class frmRegistrarPago
         pnlProceso.Visible = False
         lblEstado.Visible = False
 
+        lblPagado.Text = "S/. 0.00"
+        chbVuelto.Visible = False
+        txtCantidad.Width = 191
+        Me.Height = 139
+
         If idPedido > 0 Then SeleccionarPedido(idPedido)
         ActualizarBotones()
     End Sub
 
     ' Cuando el formulario ya se mostró (handle creado) se asegura la selección inicial
     Private Sub frmRegistrarPago_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
+        Me.Height = If(pnlProceso.Visible, 495, 139)
+        ActualizarVueltoVisible()
         SeleccionarPrimeraFila()
         ActualizarBotones()
     End Sub
@@ -93,6 +100,7 @@ Public Class frmRegistrarPago
 
         pnlProceso.Visible = True
         lblEstado.Visible = True
+        Me.Height = 495
         CargarMetodos()
         cargarDetalles()
     End Sub
@@ -150,6 +158,8 @@ Public Class frmRegistrarPago
     ' Pendiente si no hay pagos, Parcial si no cubre el total, Pagado si lo cubre
     Private Sub ActualizarEstado()
         Dim pagado As Decimal = objPago.TotalPagado(idPedidoSeleccionado)
+        lblPagado.Text = "S/. " & FormatoNumero(pagado)
+
         If pagado <= 0D Then
             lblEstado.Text = "Pendiente"
             lblEstado.ForeColor = Color.OrangeRed
@@ -160,6 +170,42 @@ Public Class frmRegistrarPago
             lblEstado.Text = "Parcial"
             lblEstado.ForeColor = Color.DarkOrange
         End If
+
+        ' Si lo pagado supera el total queda un vuelto por cuadrar: chbVuelto se
+        ' mantiene activo (en efectivo) hasta que la suma coincida con el total.
+        Dim hayVueltoPendiente As Boolean = totalPedidoActual > 0D AndAlso pagado > totalPedidoActual
+        If hayVueltoPendiente Then SeleccionarMetodoPorNombre("EFECTIVO")
+        ActualizarVueltoVisible()
+        chbVuelto.Checked = hayVueltoPendiente AndAlso EsEfectivo()
+    End Sub
+
+    ' chbVuelto solo tiene sentido con pagos en efectivo
+    Private Sub cmbMetodoPago_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cmbMetodoPago.SelectedIndexChanged
+        ActualizarVueltoVisible()
+    End Sub
+
+    ' Muestra el checkbox solo en efectivo y ajusta el ancho de la cantidad
+    Private Sub ActualizarVueltoVisible()
+        Dim efectivo As Boolean = EsEfectivo()
+        chbVuelto.Visible = efectivo
+        txtCantidad.Width = If(efectivo, 148, 191)
+        If Not efectivo Then chbVuelto.Checked = False
+    End Sub
+
+    Private Function EsEfectivo() As Boolean
+        Return cmbMetodoPago IsNot Nothing AndAlso
+               cmbMetodoPago.Text.Trim().Equals("EFECTIVO", StringComparison.OrdinalIgnoreCase)
+    End Function
+
+    ' Selecciona en el combo el método cuyo nombre coincide (p. ej. "EFECTIVO")
+    Private Sub SeleccionarMetodoPorNombre(nombre As String)
+        For i As Integer = 0 To cmbMetodoPago.Items.Count - 1
+            Dim fila As DataRowView = TryCast(cmbMetodoPago.Items(i), DataRowView)
+            If fila IsNot Nothing AndAlso fila("nombre").ToString().Equals(nombre, StringComparison.OrdinalIgnoreCase) Then
+                cmbMetodoPago.SelectedIndex = i
+                Return
+            End If
+        Next
     End Sub
 
     ' Refleja en pedidos.estado la suma de pagos (nunca toca CANCELADO)
@@ -190,21 +236,46 @@ Public Class frmRegistrarPago
             Return
         End If
 
+        ' chbVuelto activo => se guarda como negativo (devolución)
+        Dim esVuelto As Boolean = chbVuelto.Visible AndAlso chbVuelto.Checked
+
         ' Lo ya pagado, sin contar el detalle que se está editando
         Dim pagado As Decimal = objPago.TotalPagado(idPedidoSeleccionado)
         If idDetalleEditando > 0 Then pagado -= montoEditando
 
-        If pagado + monto > totalPedidoActual Then
-            msj.Text = "La cantidad supera el total del pedido. Disponible: S/." &
-                       FormatoNumero(totalPedidoActual - pagado)
-            Return
+        If esVuelto Then
+            ' El vuelto necesita un pago previo
+            If pagado <= 0D Then
+                msj.Text = "El vuelto no puede ser el primer pago registrado."
+                Return
+            End If
+            ' No puede ser mayor al último registro de pago
+            Dim ultimo As Decimal = Math.Abs(objPago.UltimoMonto(idPedidoSeleccionado))
+            If monto > ultimo Then
+                msj.Text = "El vuelto no puede superar el último pago (S/." & FormatoNumero(ultimo) & ")."
+                Return
+            End If
+            ' No dejar lo pagado en negativo
+            If pagado - monto < 0D Then
+                msj.Text = "El vuelto supera lo pagado del pedido."
+                Return
+            End If
+        Else
+            ' Se permite superar el total solo con pago en efectivo (el vuelto lo devuelve)
+            If pagado + monto > totalPedidoActual AndAlso Not EsEfectivo() Then
+                msj.Text = "La cantidad supera el total del pedido. Disponible: S/." &
+                           FormatoNumero(totalPedidoActual - pagado)
+                Return
+            End If
         End If
+
+        Dim montoGuardar As Decimal = If(esVuelto, -monto, monto)
 
         Try
             If idDetalleEditando > 0 Then
-                objPago.ActualizarDetalle(idDetalleEditando, idMetodo, monto)
+                objPago.ActualizarDetalle(idDetalleEditando, idMetodo, montoGuardar)
             Else
-                objPago.RegistrarDetalle(idPedidoSeleccionado, idMetodo, monto)
+                objPago.RegistrarDetalle(idPedidoSeleccionado, idMetodo, montoGuardar)
             End If
             cargarDetalles()
             msj.Text = ""
@@ -219,7 +290,9 @@ Public Class frmRegistrarPago
         idDetalleEditando = CInt(fila.Cells("id_detalle_pago").Value)
         montoEditando = CDec(fila.Cells("monto").Value)
         SeleccionarMetodo(CInt(fila.Cells("id_metodo_pago").Value))
-        txtCantidad.Text = FormatoNumero(montoEditando)
+        ActualizarVueltoVisible()
+        chbVuelto.Checked = montoEditando < 0D AndAlso chbVuelto.Visible
+        txtCantidad.Text = FormatoNumero(Math.Abs(montoEditando))
         msj.Text = ""
         ActualizarBotones()
     End Sub

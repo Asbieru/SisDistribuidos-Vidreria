@@ -38,6 +38,8 @@ Partial Class frmRegistrarPago
         Me.btnEliminar = New System.Windows.Forms.Button()
         Me.tblPagos = New System.Windows.Forms.DataGridView()
         Me.Label1 = New System.Windows.Forms.Label()
+        Me.chbVuelto = New System.Windows.Forms.CheckBox()
+        Me.lblPagado = New System.Windows.Forms.Label()
         Me.Panel1.SuspendLayout()
         Me.pnlProceso.SuspendLayout()
         CType(Me.tblPagos, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -45,6 +47,7 @@ Partial Class frmRegistrarPago
         '
         'Panel1
         '
+        Me.Panel1.Controls.Add(Me.lblPagado)
         Me.Panel1.Controls.Add(Me.lblEstado)
         Me.Panel1.Controls.Add(Me.btnSelectPedido)
         Me.Panel1.Controls.Add(Me.lblSubTitulo)
@@ -56,12 +59,11 @@ Partial Class frmRegistrarPago
         '
         'lblEstado
         '
-        Me.lblEstado.AutoSize = True
         Me.lblEstado.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblEstado.Location = New System.Drawing.Point(625, 45)
+        Me.lblEstado.Location = New System.Drawing.Point(582, 45)
         Me.lblEstado.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.lblEstado.Name = "lblEstado"
-        Me.lblEstado.Size = New System.Drawing.Size(58, 20)
+        Me.lblEstado.Size = New System.Drawing.Size(110, 20)
         Me.lblEstado.TabIndex = 5
         Me.lblEstado.Text = "estado"
         Me.lblEstado.TextAlign = System.Drawing.ContentAlignment.TopRight
@@ -99,6 +101,7 @@ Partial Class frmRegistrarPago
         '
         'pnlProceso
         '
+        Me.pnlProceso.Controls.Add(Me.chbVuelto)
         Me.pnlProceso.Controls.Add(Me.msj)
         Me.pnlProceso.Controls.Add(Me.txtCantidad)
         Me.pnlProceso.Controls.Add(Me.Label2)
@@ -111,14 +114,14 @@ Partial Class frmRegistrarPago
         Me.pnlProceso.Controls.Add(Me.Label1)
         Me.pnlProceso.Location = New System.Drawing.Point(12, 108)
         Me.pnlProceso.Name = "pnlProceso"
-        Me.pnlProceso.Size = New System.Drawing.Size(705, 329)
+        Me.pnlProceso.Size = New System.Drawing.Size(705, 340)
         Me.pnlProceso.TabIndex = 6
         '
         'msj
         '
         Me.msj.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.msj.ForeColor = System.Drawing.Color.Red
-        Me.msj.Location = New System.Drawing.Point(21, 298)
+        Me.msj.Location = New System.Drawing.Point(21, 309)
         Me.msj.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.msj.Name = "msj"
         Me.msj.Size = New System.Drawing.Size(336, 18)
@@ -152,7 +155,7 @@ Partial Class frmRegistrarPago
         '
         'btnGuardar
         '
-        Me.btnGuardar.Location = New System.Drawing.Point(365, 293)
+        Me.btnGuardar.Location = New System.Drawing.Point(365, 304)
         Me.btnGuardar.Name = "btnGuardar"
         Me.btnGuardar.Size = New System.Drawing.Size(75, 23)
         Me.btnGuardar.TabIndex = 6
@@ -161,7 +164,7 @@ Partial Class frmRegistrarPago
         '
         'btnCancelar
         '
-        Me.btnCancelar.Location = New System.Drawing.Point(446, 293)
+        Me.btnCancelar.Location = New System.Drawing.Point(446, 304)
         Me.btnCancelar.Name = "btnCancelar"
         Me.btnCancelar.Size = New System.Drawing.Size(75, 23)
         Me.btnCancelar.TabIndex = 6
@@ -170,7 +173,7 @@ Partial Class frmRegistrarPago
         '
         'btnModificar
         '
-        Me.btnModificar.Location = New System.Drawing.Point(527, 293)
+        Me.btnModificar.Location = New System.Drawing.Point(527, 304)
         Me.btnModificar.Name = "btnModificar"
         Me.btnModificar.Size = New System.Drawing.Size(75, 23)
         Me.btnModificar.TabIndex = 6
@@ -179,7 +182,7 @@ Partial Class frmRegistrarPago
         '
         'btnEliminar
         '
-        Me.btnEliminar.Location = New System.Drawing.Point(608, 293)
+        Me.btnEliminar.Location = New System.Drawing.Point(608, 304)
         Me.btnEliminar.Name = "btnEliminar"
         Me.btnEliminar.Size = New System.Drawing.Size(75, 23)
         Me.btnEliminar.TabIndex = 6
@@ -195,7 +198,7 @@ Partial Class frmRegistrarPago
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.tblPagos.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill
         Me.tblPagos.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.tblPagos.Location = New System.Drawing.Point(21, 59)
+        Me.tblPagos.Location = New System.Drawing.Point(21, 46)
         Me.tblPagos.Margin = New System.Windows.Forms.Padding(2)
         Me.tblPagos.MultiSelect = False
         Me.tblPagos.Name = "tblPagos"
@@ -203,7 +206,7 @@ Partial Class frmRegistrarPago
         Me.tblPagos.RowHeadersVisible = False
         Me.tblPagos.RowHeadersWidth = 51
         Me.tblPagos.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
-        Me.tblPagos.Size = New System.Drawing.Size(662, 229)
+        Me.tblPagos.Size = New System.Drawing.Size(662, 253)
         Me.tblPagos.TabIndex = 5
         '
         'Label1
@@ -217,11 +220,32 @@ Partial Class frmRegistrarPago
         Me.Label1.TabIndex = 0
         Me.Label1.Text = "Metodo de Pago"
         '
+        'chbVuelto
+        '
+        Me.chbVuelto.AutoSize = True
+        Me.chbVuelto.Location = New System.Drawing.Point(646, 22)
+        Me.chbVuelto.Name = "chbVuelto"
+        Me.chbVuelto.Size = New System.Drawing.Size(56, 17)
+        Me.chbVuelto.TabIndex = 10
+        Me.chbVuelto.Text = "Vuelto"
+        Me.chbVuelto.UseVisualStyleBackColor = True
+        '
+        'lblPagado
+        '
+        Me.lblPagado.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblPagado.Location = New System.Drawing.Point(421, 45)
+        Me.lblPagado.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
+        Me.lblPagado.Name = "lblPagado"
+        Me.lblPagado.Size = New System.Drawing.Size(125, 20)
+        Me.lblPagado.TabIndex = 6
+        Me.lblPagado.Text = "estado"
+        Me.lblPagado.TextAlign = System.Drawing.ContentAlignment.TopRight
+        '
         'frmRegistrarPago
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(734, 460)
+        Me.ClientSize = New System.Drawing.Size(734, 456)
         Me.Controls.Add(Me.pnlProceso)
         Me.Controls.Add(Me.Panel1)
         Me.Name = "frmRegistrarPago"
@@ -251,4 +275,6 @@ Partial Class frmRegistrarPago
     Friend WithEvents cmbMetodoPago As ComboBox
     Friend WithEvents lblEstado As Label
     Friend WithEvents msj As Label
+    Friend WithEvents chbVuelto As CheckBox
+    Friend WithEvents lblPagado As Label
 End Class

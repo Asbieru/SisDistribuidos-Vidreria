@@ -8,6 +8,11 @@ End Interface
 Module UtilFormularios
     Public Const TODOS As String = "(Todos)"
 
+    ' Aproxima un monto a soles enteros (redondeo comercial: el .5 sube)
+    Public Function RedondearEntero(valor As Decimal) As Decimal
+        Return Math.Round(valor, 0, MidpointRounding.AwayFromZero)
+    End Function
+
     ' ---------------- Tema claro / oscuro ----------------
     Public Sub AplicarTema(frm As Form, tema As String)
         Dim p As Paleta = Temas.Obtener(tema)

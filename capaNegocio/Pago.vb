@@ -67,6 +67,17 @@ Public Class Pago
         Return CDec(dt.Rows(0)("pagado"))
     End Function
 
+    ' Monto del ultimo detalle de pago registrado en el pedido (el vuelto no puede superarlo)
+    Public Function UltimoMonto(idPedido As Integer) As Decimal
+        Dim dt As DataTable = objMan.listarComando(
+            "select top 1 dp.monto from detalle_pago dp " &
+            "inner join pagos p on p.id_pago = dp.id_pago " &
+            "where p.id_pedido = " & idPedido & " " &
+            "order by dp.id_detalle_pago desc")
+        If dt Is Nothing OrElse dt.Rows.Count = 0 OrElse IsDBNull(dt.Rows(0)("monto")) Then Return 0D
+        Return CDec(dt.Rows(0)("monto"))
+    End Function
+
     ' Cambia el metodo y el monto de un detalle; sincroniza el total de su cabecera
     Public Sub ActualizarDetalle(idDetallePago As Integer, idMetodoPago As Integer, monto As Decimal)
         objMan.ejecutarComando("update detalle_pago set id_metodo_pago=" & idMetodoPago &

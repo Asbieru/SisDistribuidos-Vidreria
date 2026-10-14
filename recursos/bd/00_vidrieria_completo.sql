@@ -18,6 +18,8 @@
 --   3) INSERT de datos
 --
 -- Es idempotente: se puede volver a ejecutar sin generar errores.
+-- Cambios puntuales para aplicar sobre una BD YA creada (p. ej. somee.com):
+--   ver recursos/bd/comandosTemporales.sql
 -- ============================================================
 
 IF DB_ID(N'vidrieria') IS NULL

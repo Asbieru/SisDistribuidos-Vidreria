@@ -296,6 +296,7 @@ Public Class frmRegistrarPedido
         If total <= 0D Then
             Throw New Exception("En la pestaña '" & tab.Text & "' no hay precios calculados.")
         End If
+        total = RedondearEntero(total)
 
         Dim idVariante As Integer = New ProductoVariante().ResolverVariantePorProducto(idProducto, espesor)
 
@@ -354,6 +355,7 @@ Public Class frmRegistrarPedido
         If total <= 0D Then
             Throw New Exception("En la pestaña '" & tab.Text & "' no hay precios calculados.")
         End If
+        total = RedondearEntero(total)
 
         Dim idVariante As Integer = New ProductoVariante().ObtenerVariantePorProducto(idProducto)
         If idVariante <= 0 Then
@@ -514,6 +516,7 @@ Public Class frmRegistrarPedido
         If total <= 0D Then
             Throw New Exception("En la pestaña '" & tab.Text & "' no hay precios calculados.")
         End If
+        total = RedondearEntero(total)
 
         Return New ItemPedidoDTO With {
             .Tipo = "VENTANA",
@@ -989,7 +992,7 @@ Public Class frmRegistrarPedido
             End If
             suma += LeerDecimal(tab, campoTotal)
         Next
-        txtTotalTodo.Text = suma.ToString("0.00")
+        txtTotalTodo.Text = RedondearEntero(suma).ToString("0")
     End Sub
 
     Private Function MayorDe(tab As TabPage, ParamArray nombres() As String) As Decimal
@@ -1019,10 +1022,10 @@ Public Class frmRegistrarPedido
         If txt IsNot Nothing Then txt.Text = valor.ToString("0.00")
     End Sub
 
-    ' Los totales se muestran con dos decimales (el valor interno sigue siendo Decimal)
+    ' Los totales se muestran como soles enteros (aproximados)
     Private Sub AsignarTotal(tab As TabPage, nombre As String, valor As Decimal)
         Dim txt As TextBox = TryCast(BuscarControl(tab, nombre), TextBox)
-        If txt IsNot Nothing Then txt.Text = valor.ToString("0.00")
+        If txt IsNot Nothing Then txt.Text = RedondearEntero(valor).ToString("0")
     End Sub
 
     Private Function PrecioMaterial(tab As TabPage, nombreProducto As String, nombreEspesor As String) As Decimal

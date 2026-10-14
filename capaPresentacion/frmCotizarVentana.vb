@@ -255,11 +255,11 @@ Public Class frmCotizarVentana
         End Try
     End Function
 
-    ' Los totales se muestran con dos decimales (el valor interno sigue siendo Decimal)
+    ' El total se muestra como soles enteros (aproximado)
     Private Sub RecalcularTotales()
         Try
             Dim total As Decimal = LeerDecimal(txtExtra) + LeerDecimal(txtManoObra) + LeerDecimal(txtPreciomaterial)
-            txtTotal.Text = total.ToString("0.00")
+            txtTotal.Text = RedondearEntero(total).ToString("0")
         Catch
         End Try
     End Sub

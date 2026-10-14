@@ -362,3 +362,12 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 Thumbs.db*
+
+# ------------------------------------------------------------
+# Credenciales locales (NO subir al repositorio publico)
+# capaDatos/clsConectaBD.vb contiene la cadena de conexion con la
+# contrasena de la BD. No se versiona. Copia el archivo de ejemplo
+# capaDatos/clsConectaBD.vb.example a capaDatos/clsConectaBD.vb
+# y coloca tus propias credenciales.
+# ------------------------------------------------------------
+capaDatos/clsConectaBD.vb
