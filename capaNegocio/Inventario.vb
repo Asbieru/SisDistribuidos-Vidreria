@@ -25,10 +25,20 @@ Public Class Inventario
         Return CInt(dt.Rows(0)(0))
     End Function
 
-    ' Variantes para llenar combos. porPiezas = True: vidrio y aluminio; False: tornillos y tarugos
+    ' Unidades de venta: el vidrio (CM2 o PIE2) y el aluminio (CM_LINEAL) se guardan por piezas;
+    ' tornillos y tarugos (CAJA) y accesorios (UNIDAD) se guardan por cantidad
+    Public Shared ReadOnly UnidadesPorPieza As String() = {"CM2", "PIE2", "CM_LINEAL"}
+    Public Shared ReadOnly UnidadesPorCantidad As String() = {"CAJA", "UNIDAD"}
+
+    Public Shared Function EsVidrio(unidadCosto As String) As Boolean
+        Return unidadCosto = "CM2" OrElse unidadCosto = "PIE2"
+    End Function
+
+    ' Variantes para llenar combos. porPiezas = True: vidrio y aluminio; False: tornillos, tarugos y accesorios por unidad
     Public Function ListarVariantes(porPiezas As Boolean) As DataTable
         Dim sql As String = "select id_variante, producto, unidad_costo from vw_inv_variantes " &
-                            "where (@piezas = 1 and unidad_costo in ('CM2','CM_LINEAL')) or (@piezas = 0 and unidad_costo = 'CAJA') " &
+                            "where (@piezas = 1 and unidad_costo in ('CM2','PIE2','CM_LINEAL')) " &
+                            "or (@piezas = 0 and unidad_costo in ('CAJA','UNIDAD')) " &
                             "order by categoria, producto"
         Return objMan.consultarConParametros(sql, New Dictionary(Of String, Object) From {{"piezas", porPiezas}})
     End Function

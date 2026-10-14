@@ -1,4 +1,4 @@
--- ============================================================
+﻿-- ============================================================
 -- Script UNICO y consolidado: Sistema para vidrieria
 -- Motor: Microsoft SQL Server (T-SQL)
 --
@@ -183,7 +183,7 @@ GO
 IF EXISTS (SELECT 1 FROM sys.check_constraints WHERE name = 'ck_variante_unidad_costo')
    AND NOT EXISTS (
        SELECT 1 FROM sys.check_constraints
-       WHERE name = 'ck_variante_unidad_costo' AND definition LIKE '%UNIDAD%'
+       WHERE name = 'ck_variante_unidad_costo' AND definition LIKE '%''UNIDAD''%'
    )
 BEGIN
     ALTER TABLE dbo.producto_variante DROP CONSTRAINT ck_variante_unidad_costo;
@@ -591,10 +591,11 @@ SELECT v.id_variante,
        ISNULL(pz.area_disponible_cm2, 0) AS area_disponible_cm2,
        ISNULL(pz.largo_disponible_cm, 0) AS largo_disponible_cm,
        ISNULL(ic.stock_cajas, 0)         AS stock_cajas,
-       CASE WHEN v.unidad_costo = 'CAJA' THEN ISNULL(ic.stock_cajas, 0)
+       -- CAJA (tornillos/tarugos) y UNIDAD (accesorios) se cuentan por cantidad; el resto por piezas
+       CASE WHEN v.unidad_costo IN ('CAJA','UNIDAD') THEN ISNULL(ic.stock_cajas, 0)
             ELSE ISNULL(pz.piezas_disponibles, 0) END AS existencias,
        v.stock_minimo,
-       CONVERT(BIT, CASE WHEN (CASE WHEN v.unidad_costo = 'CAJA' THEN ISNULL(ic.stock_cajas, 0)
+       CONVERT(BIT, CASE WHEN (CASE WHEN v.unidad_costo IN ('CAJA','UNIDAD') THEN ISNULL(ic.stock_cajas, 0)
                                      ELSE ISNULL(pz.piezas_disponibles, 0) END) <= v.stock_minimo
                          AND v.stock_minimo > 0
                     THEN 1 ELSE 0 END) AS bajo_minimo
@@ -712,8 +713,8 @@ BEGIN
 
     IF @unidad IS NULL
         THROW 50001, 'La variante de producto no existe.', 1;
-    IF @unidad = 'CAJA'
-        THROW 50002, 'Tornillos y tarugos se manejan por cajas, no por piezas.', 1;
+    IF @unidad IN ('CAJA','UNIDAD')
+        THROW 50002, 'Tornillos, tarugos y accesorios por unidad se manejan por cantidad, no por piezas.', 1;
     IF @unidad IN ('CM2','PIE2') AND (ISNULL(@ancho_cm, 0) <= 0 OR ISNULL(@alto_cm, 0) <= 0)
         THROW 50003, 'Para vidrio ingrese ancho y alto mayores a cero.', 1;
     IF @unidad = 'CM_LINEAL' AND ISNULL(@largo_cm, 0) <= 0
@@ -936,7 +937,7 @@ END
 GO
 
 -- ------------------------------------------------------------
--- Mover cajas (tornillos / tarugos)
+-- Mover cajas o unidades (tornillos / tarugos por CAJA, accesorios por UNIDAD)
 --   ENTRADA: suma @cantidad          (motivo COMPRA, INICIAL o AJUSTE)
 --   SALIDA:  resta @cantidad         (motivo VENTA, DEFECTO o AJUSTE) - valida stock
 --   AJUSTE:  el stock pasa a ser exactamente @cantidad (conteo fisico)
@@ -961,8 +962,9 @@ BEGIN
 
     IF @unidad IS NULL
         THROW 50030, 'La variante de producto no existe.', 1;
-    IF @unidad <> 'CAJA'
-        THROW 50031, 'Vidrio y aluminio se manejan por piezas, no por cajas.', 1;
+    IF @unidad NOT IN ('CAJA','UNIDAD')
+        THROW 50031, 'Vidrio y aluminio se manejan por piezas, no por cantidad.', 1;
+    DECLARE @nombre_unidad NVARCHAR(10) = CASE @unidad WHEN 'UNIDAD' THEN 'unidades' ELSE 'cajas' END;
     IF @tipo NOT IN ('ENTRADA','SALIDA','AJUSTE')
         THROW 50032, 'Tipo de movimiento no valido.', 1;
     IF @cantidad < 0 OR (@cantidad = 0 AND @tipo <> 'AJUSTE')
@@ -983,7 +985,7 @@ BEGIN
         IF @nuevo < 0
         BEGIN
             DECLARE @msg NVARCHAR(200) = 'Stock insuficiente: hay ' + CONVERT(NVARCHAR(12), @actual)
-                                       + ' cajas y se quieren sacar ' + CONVERT(NVARCHAR(12), @cantidad) + '.';
+                                       + ' ' + @nombre_unidad + ' y se quieren sacar ' + CONVERT(NVARCHAR(12), @cantidad) + '.';
             THROW 50034, @msg, 1;
         END
 
@@ -994,7 +996,7 @@ BEGIN
                 CASE WHEN @tipo = 'AJUSTE' THEN @nuevo - @actual ELSE @cantidad END,
                 @nuevo, @id_usuario, @id_pedido, @id_compra_detalle,
                 ISNULL(@observacion, CASE WHEN @tipo = 'AJUSTE'
-                                          THEN 'Ajuste de ' + CONVERT(NVARCHAR(12), @actual) + ' a ' + CONVERT(NVARCHAR(12), @nuevo) + ' cajas'
+                                          THEN 'Ajuste de ' + CONVERT(NVARCHAR(12), @actual) + ' a ' + CONVERT(NVARCHAR(12), @nuevo) + ' ' + @nombre_unidad
                                           END));
 
     IF @tran_externa = 0 COMMIT TRANSACTION;  -- si es de otro, el que la abrio decide el COMMIT

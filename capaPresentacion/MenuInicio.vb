@@ -142,6 +142,14 @@ Public Class MenuInicio
     End Sub
 
     Private Sub toolInventario_Click(sender As Object, e As EventArgs) Handles toolInventario.Click, smnVInventario.Click
+        For Each formulario As Form In Application.OpenForms
+            If TypeOf formulario Is frmVerInventario Then
+                formulario.WindowState = FormWindowState.Normal
+                DirectCast(formulario, frmVerInventario).cargarLista()
+                formulario.BringToFront()
+                Return
+            End If
+        Next
         Dim objInv As New frmVerInventario With {.idUsuario = Integer.Parse(txtID.Text), .tema = tema}
         objInv.MdiParent = Me
         objInv.Show()

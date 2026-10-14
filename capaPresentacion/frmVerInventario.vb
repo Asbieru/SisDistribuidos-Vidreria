@@ -13,28 +13,35 @@ Public Class frmVerInventario
 
     Private Sub frmVerInventario_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         AplicarTema(Me, tema)
+        Dim p As Paleta = Temas.Obtener(tema)
+        Panel2.BackColor = p.Fondo
+        lblTitulo.ForeColor = p.Acento
+        lblAlerta.ForeColor = ColorAlerta(tema)
+
         cmbCategoria.Items.Add(TODOS)
         cmbCategoria.Items.AddRange(Inventario.Categorias)
         cmbCategoria.SelectedIndex = 0
-        lblAlerta.ForeColor = ColorAlerta(tema)
         cargando = False
-        Cargar()
+        cargarLista()
     End Sub
 
-    Private Sub Cargar()
+    Public Sub cargarLista()
         Try
             Dim categoria As String = If(cmbCategoria.SelectedIndex <= 0, Nothing, cmbCategoria.SelectedItem.ToString())
             dgvResumen.DataSource = objInv.ListarResumen(categoria, chkBajoMinimo.Checked)
+            lblCantidad.Text = If(dgvResumen.Rows.Count = 0, "No se encontraron productos.",
+                                  "Productos encontrados: " & dgvResumen.Rows.Count.ToString())
 
             Dim cantidad As Integer = objInv.ContarBajoMinimo()
             lblAlerta.Text = If(cantidad = 0, "", "¡Atención! " & cantidad & " producto(s) en o por debajo del stock mínimo")
         Catch ex As Exception
             MostrarError(ex)
         End Try
+        btnEditarMinimo.Enabled = dgvResumen.CurrentRow IsNot Nothing
     End Sub
 
     Private Sub Filtro_Changed(sender As Object, e As EventArgs) Handles cmbCategoria.SelectedIndexChanged, chkBajoMinimo.CheckedChanged, btnActualizar.Click
-        If Not cargando Then Cargar()
+        If Not cargando Then cargarLista()
     End Sub
 
     Private Sub dgvResumen_DataBindingComplete(sender As Object, e As DataGridViewBindingCompleteEventArgs) Handles dgvResumen.DataBindingComplete
@@ -42,6 +49,8 @@ Public Class frmVerInventario
                     "stock_minimo|Mínimo", "piezas_reservadas|Reservadas", "area_disponible_cm2|Área disp. (cm²)",
                     "largo_disponible_cm|Largo disp. (cm)", "precio_unitario|Precio unit.")
         dgvResumen.Columns("producto").FillWeight = 250
+        dgvResumen.Columns("categoria").FillWeight = 120
+        dgvResumen.Columns("unidad_costo").FillWeight = 120
         dgvResumen.Columns("area_disponible_cm2").DefaultCellStyle.Format = "N0"
         dgvResumen.Columns("largo_disponible_cm").DefaultCellStyle.Format = "N2"
         dgvResumen.Columns("precio_unitario").DefaultCellStyle.Format = "N2"
@@ -49,6 +58,10 @@ Public Class frmVerInventario
 
     Private Sub dgvResumen_CellFormatting(sender As Object, e As DataGridViewCellFormattingEventArgs) Handles dgvResumen.CellFormatting
         PintarBajoMinimo(dgvResumen, e, tema)
+    End Sub
+
+    Private Sub dgvResumen_SelectionChanged(sender As Object, e As EventArgs) Handles dgvResumen.SelectionChanged
+        btnEditarMinimo.Enabled = dgvResumen.CurrentRow IsNot Nothing
     End Sub
 
     ' ---------------- Abre el form de EDICIÓN del stock mínimo ----------------
@@ -60,6 +73,7 @@ Public Class frmVerInventario
         If e.RowIndex >= 0 Then EditarMinimo()
     End Sub
 
+    ' ShowDialog abre la edición como ventana modal: al cerrarla, el código sigue en la línea siguiente
     Private Sub EditarMinimo()
         Dim fila As DataGridViewRow = dgvResumen.CurrentRow
         If fila Is Nothing Then
@@ -74,25 +88,43 @@ Public Class frmVerInventario
                 .stockMinimo = CInt(fila.Cells("stock_minimo").Value),
                 .tema = tema}
             If frm.ShowDialog(Me) = DialogResult.OK Then
-                Cargar()
+                cargarLista()
                 Reseleccionar(dgvResumen, indice)
             End If
         End Using
     End Sub
 
     ' ---------------- Abre los otros formularios de consulta ----------------
+    ' Igual que MenuInicio: si la ventana ya está abierta la trae al frente;
+    ' si no, la abre dentro del menú principal (MDI).
     Private Sub btnVerPiezas_Click(sender As Object, e As EventArgs) Handles btnVerPiezas.Click
-        Dim frm As New frmVerPiezas With {.idUsuario = idUsuario, .tema = tema}
-        frm.Show()
+        AbrirVentana(Of frmVerPiezas)(Sub(f) f.idUsuario = idUsuario)
     End Sub
 
     Private Sub btnVerCajas_Click(sender As Object, e As EventArgs) Handles btnVerCajas.Click
-        Dim frm As New frmVerCajas With {.idUsuario = idUsuario, .tema = tema}
-        frm.Show()
+        AbrirVentana(Of frmVerCajas)(Sub(f) f.idUsuario = idUsuario)
     End Sub
 
     Private Sub btnVerKardex_Click(sender As Object, e As EventArgs) Handles btnVerKardex.Click
-        Dim frm As New frmVerKardex With {.tema = tema}
+        AbrirVentana(Of frmVerKardex)(Nothing)
+    End Sub
+
+    Private Sub AbrirVentana(Of T As {Form, IFormularioTema, New})(configurar As Action(Of T))
+        For Each formulario As Form In Application.OpenForms
+            If TypeOf formulario Is T Then
+                formulario.WindowState = FormWindowState.Normal
+                formulario.BringToFront()
+                Return
+            End If
+        Next
+        Dim frm As New T
+        frm.tema = tema
+        If configurar IsNot Nothing Then configurar(frm)
+        frm.MdiParent = MdiParent
         frm.Show()
+    End Sub
+
+    Private Sub btnCerrar_Click(sender As Object, e As EventArgs) Handles btnCerrar.Click
+        Close()
     End Sub
 End Class

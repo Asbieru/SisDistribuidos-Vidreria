@@ -12,8 +12,9 @@ Public Class frmEditarPieza
 
     Private Sub frmEditarPieza_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         AplicarTema(Me, tema)
-        lblNotaCorte.ForeColor = Color.Gray
-        lblNotaEstado.ForeColor = Color.Gray
+        Dim p As Paleta = Temas.Obtener(tema)
+        Panel2.BackColor = p.Fondo
+        lblTitulo.ForeColor = p.Acento
         CargarPieza()
     End Sub
 

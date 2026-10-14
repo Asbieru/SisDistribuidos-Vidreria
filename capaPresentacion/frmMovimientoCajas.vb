@@ -1,16 +1,19 @@
 ﻿Imports capaNegocio
 
-' INGRESAR / EDITAR: registra una entrada, salida o ajuste de cajas (tornillos y tarugos).
+' INGRESAR / EDITAR: registra una entrada, salida o ajuste de stock de
+' tornillos y tarugos (por caja) o accesorios (por unidad).
 ' Lo abre frmVerCajas con el producto seleccionado.
 Public Class frmMovimientoCajas
     Implements IFormularioTema
     Public idVariante As Integer
     Public producto As String = ""
+    Public unidadCosto As String = "CAJA"   ' CAJA o UNIDAD
     Public stockActual As Integer
     Public idUsuario As Integer? = Nothing
     Public Property tema As String = "CLARO" Implements IFormularioTema.tema
 
     Dim objCaja As New InventarioCaja
+    Dim nombreUnidad As String = "cajas"    ' "cajas" o "unidades", para los mensajes
 
     ' El orden de esta lista es el que usa btnGuardar_Click
     Const ENTRADA_COMPRA As Integer = 0
@@ -20,25 +23,30 @@ Public Class frmMovimientoCajas
 
     Private Sub frmMovimientoCajas_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         AplicarTema(Me, tema)
-        lblProducto.Text = producto
-        lblStock.Text = "Stock actual: " & stockActual & " cajas"
+        Dim p As Paleta = Temas.Obtener(tema)
+        Panel2.BackColor = p.Fondo
+        lblTitulo.ForeColor = p.Acento
+
+        nombreUnidad = InventarioCaja.NombreUnidad(unidadCosto)
+        txtProducto.Text = producto
+        txtStock.Text = stockActual & " " & nombreUnidad
         cmbTipo.Items.AddRange(New String() {"Entrada (compra)", "Salida (venta)", "Salida por defecto", "Ajuste a conteo físico"})
         cmbTipo.SelectedIndex = ENTRADA_COMPRA
     End Sub
 
-    ' En el ajuste se escribe cuántas cajas hay realmente, no cuántas entran o salen
+    ' En el ajuste se escribe cuánto hay realmente, no cuánto entra o sale
     Private Sub cmbTipo_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cmbTipo.SelectedIndexChanged
-        lblCantidad.Text = If(cmbTipo.SelectedIndex = AJUSTE_CONTEO, "Stock real contado:", "Cantidad de cajas:")
+        lblCantidad.Text = If(cmbTipo.SelectedIndex = AJUSTE_CONTEO, "Stock real *", "Cantidad *")
     End Sub
 
     Private Sub btnGuardar_Click(sender As Object, e As EventArgs) Handles btnGuardar.Click
         Dim cantidad As Integer = CInt(nudCantidad.Value)
         If cmbTipo.SelectedIndex <> AJUSTE_CONTEO AndAlso cantidad <= 0 Then
-            MostrarAviso("Ingrese la cantidad de cajas.")
+            MostrarAviso("Ingrese la cantidad de " & nombreUnidad & ".")
             Return
         End If
         If cmbTipo.SelectedIndex = AJUSTE_CONTEO AndAlso
-           Not Confirmar("¿El conteo físico es de " & cantidad & " cajas? El stock quedará exactamente en ese valor.") Then Return
+           Not Confirmar("¿El conteo físico es de " & cantidad & " " & nombreUnidad & "? El stock quedará exactamente en ese valor.") Then Return
         Try
             Dim stock As Integer
             Select Case cmbTipo.SelectedIndex
@@ -47,7 +55,7 @@ Public Class frmMovimientoCajas
                 Case SALIDA_DEFECTO : stock = objCaja.RestarStock(idVariante, cantidad, "DEFECTO", idUsuario, Nothing, txtObs.Text)
                 Case Else : stock = objCaja.AjustarStock(idVariante, cantidad, idUsuario, txtObs.Text)
             End Select
-            MostrarInfo("Movimiento registrado. Stock actual: " & stock & " cajas.")
+            MostrarInfo("Movimiento registrado. Stock actual: " & stock & " " & nombreUnidad & ".")
             DialogResult = DialogResult.OK   ' cierra el form y avisa que hubo cambios
         Catch ex As Exception
             MostrarError(ex)

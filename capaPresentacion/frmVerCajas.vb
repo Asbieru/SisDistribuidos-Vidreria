@@ -1,6 +1,6 @@
 ﻿Imports capaNegocio
 
-' VER: stock de tornillos y tarugos (solo consulta).
+' VER: stock de tornillos y tarugos (por caja) y accesorios (por unidad). Solo consulta.
 ' "Registrar movimiento" abre frmMovimientoCajas.
 Public Class frmVerCajas
     Implements IFormularioTema
@@ -8,29 +8,61 @@ Public Class frmVerCajas
     Public Property tema As String = "CLARO" Implements IFormularioTema.tema
 
     Dim objCaja As New InventarioCaja
+    Dim dtCajas As DataTable
 
     Private Sub frmVerCajas_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         AplicarTema(Me, tema)
-        lblAyuda.ForeColor = Color.Gray
-        Cargar()
+        Dim p As Paleta = Temas.Obtener(tema)
+        Panel2.BackColor = p.Fondo
+        lblTitulo.ForeColor = p.Acento
+
+        cmbCategoria.Items.Add(TODOS)
+        cmbCategoria.Items.AddRange(New String() {"TORNILLO", "TARUGO", "ACCESORIO"})
+        cmbCategoria.SelectedIndex = 0
+        cargarLista()
     End Sub
 
-    Private Sub Cargar()
+    Public Sub cargarLista()
         Try
-            dgvCajas.DataSource = objCaja.Listar()
+            dtCajas = objCaja.Listar()
+            dgvCajas.DataSource = dtCajas
+            filtrar()
         Catch ex As Exception
             MostrarError(ex)
         End Try
     End Sub
 
+    ' Filtra por categoría sin volver a consultar la base
+    Private Sub filtrar()
+        If dtCajas Is Nothing Then Return
+        dtCajas.DefaultView.RowFilter = If(cmbCategoria.SelectedIndex <= 0, "",
+                                           "categoria = '" & cmbCategoria.SelectedItem.ToString() & "'")
+        lblCantidad.Text = If(dtCajas.DefaultView.Count = 0, "No se encontraron productos.",
+                              "Productos encontrados: " & dtCajas.DefaultView.Count.ToString())
+        btnMovimiento.Enabled = dgvCajas.CurrentRow IsNot Nothing
+    End Sub
+
+    Private Sub cmbCategoria_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cmbCategoria.SelectedIndexChanged
+        filtrar()
+    End Sub
+
+    Private Sub btnActualizar_Click(sender As Object, e As EventArgs) Handles btnActualizar.Click
+        cargarLista()
+    End Sub
+
     Private Sub dgvCajas_DataBindingComplete(sender As Object, e As DataGridViewBindingCompleteEventArgs) Handles dgvCajas.DataBindingComplete
-        Encabezados(dgvCajas, "categoria|Categoría", "producto|Producto", "stock_cajas|Stock (cajas)", "stock_minimo|Mínimo", "precio_unitario|Precio por caja")
+        Encabezados(dgvCajas, "categoria|Categoría", "producto|Producto", "stock_cajas|Stock", "unidad_costo|Unidad",
+                    "stock_minimo|Mínimo", "precio_unitario|Precio unit.")
         dgvCajas.Columns("producto").FillWeight = 250
         dgvCajas.Columns("precio_unitario").DefaultCellStyle.Format = "N2"
     End Sub
 
     Private Sub dgvCajas_CellFormatting(sender As Object, e As DataGridViewCellFormattingEventArgs) Handles dgvCajas.CellFormatting
         PintarBajoMinimo(dgvCajas, e, tema)
+    End Sub
+
+    Private Sub dgvCajas_SelectionChanged(sender As Object, e As EventArgs) Handles dgvCajas.SelectionChanged
+        btnMovimiento.Enabled = dgvCajas.CurrentRow IsNot Nothing
     End Sub
 
     ' ---------------- Abre el form para REGISTRAR un movimiento ----------------
@@ -52,13 +84,18 @@ Public Class frmVerCajas
         Using frm As New frmMovimientoCajas With {
                 .idVariante = CInt(fila.Cells("id_variante").Value),
                 .producto = fila.Cells("producto").Value.ToString(),
+                .unidadCosto = fila.Cells("unidad_costo").Value.ToString(),
                 .stockActual = CInt(fila.Cells("stock_cajas").Value),
                 .idUsuario = idUsuario,
                 .tema = tema}
             If frm.ShowDialog(Me) = DialogResult.OK Then
-                Cargar()
+                cargarLista()
                 Reseleccionar(dgvCajas, indice)
             End If
         End Using
+    End Sub
+
+    Private Sub btnCerrar_Click(sender As Object, e As EventArgs) Handles btnCerrar.Click
+        Close()
     End Sub
 End Class

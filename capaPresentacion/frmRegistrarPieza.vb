@@ -13,7 +13,9 @@ Public Class frmRegistrarPieza
 
     Private Sub frmRegistrarPieza_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         AplicarTema(Me, tema)
-        lblNota.ForeColor = Color.Gray
+        Dim p As Paleta = Temas.Obtener(tema)
+        Panel2.BackColor = p.Fondo
+        lblTitulo.ForeColor = p.Acento
         Try
             CargarComboVariantes(cmbVariante, objInv.ListarVariantes(True), False)
             If idVarianteInicial.HasValue Then cmbVariante.SelectedValue = idVarianteInicial.Value
@@ -27,11 +29,11 @@ Public Class frmRegistrarPieza
         ActualizarCampos()
     End Sub
 
-    ' Vidrio pide ancho y alto; aluminio pide largo
+    ' Vidrio (por cm² o por pie²) pide ancho y alto; aluminio (por cm lineal) pide largo
     Private Sub ActualizarCampos()
         Dim unidad As String = UnidadElegida(cmbVariante)
-        nudAncho.Enabled = (unidad = "CM2")
-        nudAlto.Enabled = (unidad = "CM2")
+        nudAncho.Enabled = Inventario.EsVidrio(unidad)
+        nudAlto.Enabled = Inventario.EsVidrio(unidad)
         nudLargo.Enabled = (unidad = "CM_LINEAL")
     End Sub
 

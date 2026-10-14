@@ -14,9 +14,12 @@ Public Class frmStockMinimo
 
     Private Sub frmStockMinimo_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         AplicarTema(Me, tema)
-        lblNota.ForeColor = Color.Gray
-        lblProducto.Text = producto
-        lblExistencias.Text = "Existencias actuales: " & existencias
+        Dim p As Paleta = Temas.Obtener(tema)
+        Panel2.BackColor = p.Fondo
+        lblTitulo.ForeColor = p.Acento
+
+        txtProducto.Text = producto
+        txtExistencias.Text = existencias.ToString()
         nudMinimo.Value = Math.Min(nudMinimo.Maximum, stockMinimo)
     End Sub
 

@@ -9,6 +9,10 @@ Public Class frmVerKardex
 
     Private Sub frmVerKardex_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         AplicarTema(Me, tema)
+        Dim p As Paleta = Temas.Obtener(tema)
+        Panel2.BackColor = p.Fondo
+        lblTitulo.ForeColor = p.Acento
+
         dtpDesde.Value = Date.Today.AddDays(-30)
         dtpHasta.Value = Date.Today
         Try
@@ -16,23 +20,25 @@ Public Class frmVerKardex
         Catch ex As Exception
             MostrarError(ex)
         End Try
-        Cargar()
+        cargarLista()
     End Sub
 
-    Private Sub Cargar()
+    Public Sub cargarLista()
         If dtpDesde.Value.Date > dtpHasta.Value.Date Then
             MostrarAviso("La fecha 'Desde' no puede ser mayor que 'Hasta'.")
             Return
         End If
         Try
             dgvMovimientos.DataSource = objInv.ListarMovimientos(dtpDesde.Value, dtpHasta.Value, VarianteElegida(cmbVariante))
+            lblCantidad.Text = If(dgvMovimientos.Rows.Count = 0, "No se encontraron movimientos.",
+                                  "Movimientos encontrados: " & dgvMovimientos.Rows.Count.ToString())
         Catch ex As Exception
             MostrarError(ex)
         End Try
     End Sub
 
     Private Sub btnFiltrar_Click(sender As Object, e As EventArgs) Handles btnFiltrar.Click
-        Cargar()
+        cargarLista()
     End Sub
 
     Private Sub dgvMovimientos_DataBindingComplete(sender As Object, e As DataGridViewBindingCompleteEventArgs) Handles dgvMovimientos.DataBindingComplete
@@ -52,5 +58,9 @@ Public Class frmVerKardex
             Case "ENTRADA" : e.CellStyle.ForeColor = If(oscuro, Color.LightGreen, Color.DarkGreen)
             Case "SALIDA" : e.CellStyle.ForeColor = If(oscuro, Color.LightCoral, Color.DarkRed)
         End Select
+    End Sub
+
+    Private Sub btnCerrar_Click(sender As Object, e As EventArgs) Handles btnCerrar.Click
+        Close()
     End Sub
 End Class

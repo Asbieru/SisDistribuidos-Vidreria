@@ -1,7 +1,7 @@
 ﻿Imports capaNegocio
 
 ' VER: listado de piezas de vidrio y aluminio (solo consulta).
-' "Nueva pieza" abre frmRegistrarPieza; "Editar" abre frmEditarPieza.
+' "Nueva pieza" abre frmRegistrarPieza; "Editar pieza" abre frmEditarPieza.
 Public Class frmVerPiezas
     Implements IFormularioTema
     Public idUsuario As Integer? = Nothing
@@ -13,7 +13,9 @@ Public Class frmVerPiezas
 
     Private Sub frmVerPiezas_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         AplicarTema(Me, tema)
-        lblAyuda.ForeColor = Color.Gray
+        Dim p As Paleta = Temas.Obtener(tema)
+        Panel2.BackColor = p.Fondo
+        lblTitulo.ForeColor = p.Acento
         Try
             cmbEstado.Items.Add(TODOS)
             cmbEstado.Items.AddRange(Inventario.EstadosPieza)
@@ -23,13 +25,15 @@ Public Class frmVerPiezas
             MostrarError(ex)
         End Try
         cargando = False
-        Cargar()
+        cargarLista()
     End Sub
 
-    Private Sub Cargar()
+    Public Sub cargarLista()
         Try
             Dim estado As String = If(cmbEstado.SelectedIndex <= 0, Nothing, cmbEstado.SelectedItem.ToString())
             dgvPiezas.DataSource = objPieza.Listar(VarianteElegida(cmbVariante), estado)
+            lblCantidad.Text = If(dgvPiezas.Rows.Count = 0, "No se encontraron piezas.",
+                                  "Piezas encontradas: " & dgvPiezas.Rows.Count.ToString())
         Catch ex As Exception
             MostrarError(ex)
         End Try
@@ -37,7 +41,7 @@ Public Class frmVerPiezas
     End Sub
 
     Private Sub Filtro_Changed(sender As Object, e As EventArgs) Handles cmbVariante.SelectedIndexChanged, cmbEstado.SelectedIndexChanged, btnBuscar.Click
-        If Not cargando Then Cargar()
+        If Not cargando Then cargarLista()
     End Sub
 
     Private Sub dgvPiezas_DataBindingComplete(sender As Object, e As DataGridViewBindingCompleteEventArgs) Handles dgvPiezas.DataBindingComplete
@@ -63,7 +67,7 @@ Public Class frmVerPiezas
     ' ---------------- Abre el form para INGRESAR ----------------
     Private Sub btnNuevaPieza_Click(sender As Object, e As EventArgs) Handles btnNuevaPieza.Click
         Using frm As New frmRegistrarPieza With {.idUsuario = idUsuario, .tema = tema, .idVarianteInicial = VarianteElegida(cmbVariante)}
-            If frm.ShowDialog(Me) = DialogResult.OK Then Cargar()
+            If frm.ShowDialog(Me) = DialogResult.OK Then cargarLista()
         End Using
     End Sub
 
@@ -80,7 +84,11 @@ Public Class frmVerPiezas
         Dim fila As DataGridViewRow = dgvPiezas.CurrentRow
         If fila Is Nothing Then Return
         Using frm As New frmEditarPieza With {.idPieza = CInt(fila.Cells("id_pieza").Value), .idUsuario = idUsuario, .tema = tema}
-            If frm.ShowDialog(Me) = DialogResult.OK Then Cargar()
+            If frm.ShowDialog(Me) = DialogResult.OK Then cargarLista()
         End Using
+    End Sub
+
+    Private Sub btnCerrar_Click(sender As Object, e As EventArgs) Handles btnCerrar.Click
+        Close()
     End Sub
 End Class

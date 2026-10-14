@@ -1,16 +1,21 @@
 ﻿Imports capaDatos
 
-' TORNILLOS y TARUGOS: se manejan por cantidad de cajas.
+' TORNILLOS y TARUGOS (por CAJA) y ACCESORIOS (por UNIDAD): se manejan por cantidad.
 ' Todo movimiento pasa por sp_inv_mover_cajas, que valida que el stock no quede
 ' negativo y lo registra en el kardex (movimientos_inventario).
 Public Class InventarioCaja
     Dim objMan As New clsMantenimiento
 
-    ' Variantes vendidas por caja con su stock y stock mínimo
+    ' Variantes vendidas por caja o por unidad, con su stock y stock mínimo
     Public Function Listar() As DataTable
         Return objMan.consultarConParametros(
-            "select id_variante, categoria, producto, stock_cajas, stock_minimo, bajo_minimo, precio_unitario " &
-            "from vw_inv_resumen where unidad_costo = 'CAJA' order by categoria, producto")
+            "select id_variante, categoria, producto, unidad_costo, stock_cajas, stock_minimo, bajo_minimo, precio_unitario " &
+            "from vw_inv_resumen where unidad_costo in ('CAJA','UNIDAD') order by categoria, producto")
+    End Function
+
+    ' "cajas" o "unidades", para los mensajes y etiquetas
+    Public Shared Function NombreUnidad(unidadCosto As String) As String
+        Return If(unidadCosto = "UNIDAD", "unidades", "cajas")
     End Function
 
     Public Function ObtenerStock(idVariante As Integer) As Integer
