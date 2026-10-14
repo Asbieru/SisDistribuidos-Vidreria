@@ -274,7 +274,8 @@ Public Class MenuInicio
     Public Sub aplicarPermisos()
         Try
             Dim objPer As New Permiso
-            Dim permisos As List(Of String) = objPer.codigosPermisoUsuario(Integer.Parse(txtID.Text))
+            Dim permisos As List(Of String) =
+            objPer.codigosPermisoUsuario(Integer.Parse(txtID.Text))
 
             ' Mantenimiento
             smnUsuarios.Available = permisos.Contains("USUARIOS")
@@ -290,7 +291,7 @@ Public Class MenuInicio
             smnRCompra.Available = permisos.Contains("COMPRAS")
             smnVCompra.Available = permisos.Contains("COMPRAS")
 
-            ' Pedidos y ventas
+            ' Pedidos
             smnRPedido.Available = permisos.Contains("PEDIDOS")
             smnVPedido.Available = permisos.Contains("PEDIDOS")
             toolCotizar.Available = permisos.Contains("PEDIDOS")
@@ -298,17 +299,36 @@ Public Class MenuInicio
             ' Pagos
             smnRPago.Available = permisos.Contains("PAGOS")
 
-            ' Reportes
-            ' mnReportes.Available = permisos.Contains("REPORTES")
+            ' Ventas: requiere acceso a pedidos y pagos
+            smnVVentas.Available =
+            permisos.Contains("PEDIDOS") AndAlso
+            permisos.Contains("PAGOS")
 
-            ' Los menús principales se ocultan si no les queda ninguna opción
-            MantenimientosToolStripMenuItem.Available = smnUsuarios.Available OrElse smnPermisos.Available OrElse
-                                                        smnClientes.Available OrElse smnProductos.Available
-            mnProcesos.Available = smnRCompra.Available OrElse smnRPedido.Available OrElse smnRPago.Available
-            mnTablas.Available = smnVCompra.Available OrElse smnVPedido.Available OrElse smnVInventario.Available
-            ToolStripSeparator1.Available = toolInventario.Available AndAlso toolCotizar.Available
+            ' Mostrar los menús que tienen opciones disponibles
+            MantenimientosToolStripMenuItem.Available =
+            smnUsuarios.Available OrElse
+            smnPermisos.Available OrElse
+            smnClientes.Available OrElse
+            smnProductos.Available
+
+            mnProcesos.Available =
+            smnRCompra.Available OrElse
+            smnRPedido.Available OrElse
+            smnRPago.Available
+
+            mnTablas.Available =
+            smnVCompra.Available OrElse
+            smnVPedido.Available OrElse
+            smnVInventario.Available OrElse
+            smnVVentas.Available
+
+            ToolStripSeparator1.Available =
+            toolInventario.Available AndAlso toolCotizar.Available
+
         Catch ex As Exception
-            MessageBox.Show("Error al cargar permisos: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show(
+            "Error al cargar permisos: " & ex.Message,
+            "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
     End Sub
 
@@ -343,6 +363,35 @@ Public Class MenuInicio
             nuevoListado.Show()
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Pedidos", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
+    End Sub
+
+    Private Sub smnVVentas_Click(sender As Object, e As EventArgs) Handles smnVVentas.Click
+        Try
+            For Each formulario As Form In Application.OpenForms
+                If TypeOf formulario Is frmListadoVentas Then
+                    Dim listado As frmListadoVentas =
+                        DirectCast(formulario, frmListadoVentas)
+
+                    listado.cargarLista()
+                    listado.WindowState = FormWindowState.Normal
+                    listado.BringToFront()
+                    Return
+                End If
+            Next
+
+            Dim nuevoListado As New frmListadoVentas With {
+                .tema = tema,
+                .idUsuario = Integer.Parse(txtID.Text)
+            }
+
+            nuevoListado.MdiParent = Me
+            nuevoListado.Show()
+
+        Catch ex As Exception
+            MessageBox.Show(
+                ex.Message, "Ventas",
+                MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
     End Sub
 End Class

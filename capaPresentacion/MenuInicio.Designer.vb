@@ -54,6 +54,7 @@ Partial Class MenuInicio
         Me.toolCotizar = New System.Windows.Forms.ToolStripButton()
         Me.ToolStripSeparator1 = New System.Windows.Forms.ToolStripSeparator()
         Me.toolInventario = New System.Windows.Forms.ToolStripButton()
+        Me.smnVVentas = New System.Windows.Forms.ToolStripMenuItem()
         Me.menu.SuspendLayout()
         Me.stripDatos.SuspendLayout()
         Me.toolBarra.SuspendLayout()
@@ -97,7 +98,7 @@ Partial Class MenuInicio
         '
         'mnTablas
         '
-        Me.mnTablas.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.smnVCompra, Me.smnVPedido, Me.smnVInventario})
+        Me.mnTablas.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.smnVCompra, Me.smnVPedido, Me.smnVInventario, Me.smnVVentas})
         Me.mnTablas.Name = "mnTablas"
         Me.mnTablas.Size = New System.Drawing.Size(51, 20)
         Me.mnTablas.Text = "Tablas"
@@ -105,19 +106,19 @@ Partial Class MenuInicio
         'smnVCompra
         '
         Me.smnVCompra.Name = "smnVCompra"
-        Me.smnVCompra.Size = New System.Drawing.Size(146, 22)
+        Me.smnVCompra.Size = New System.Drawing.Size(180, 22)
         Me.smnVCompra.Text = "Ver Compras"
         '
         'smnVPedido
         '
         Me.smnVPedido.Name = "smnVPedido"
-        Me.smnVPedido.Size = New System.Drawing.Size(146, 22)
+        Me.smnVPedido.Size = New System.Drawing.Size(180, 22)
         Me.smnVPedido.Text = "Ver Pedidos"
         '
         'smnVInventario
         '
         Me.smnVInventario.Name = "smnVInventario"
-        Me.smnVInventario.Size = New System.Drawing.Size(146, 22)
+        Me.smnVInventario.Size = New System.Drawing.Size(180, 22)
         Me.smnVInventario.Text = "Ver Inventario"
         '
         'MantenimientosToolStripMenuItem
@@ -277,6 +278,12 @@ Partial Class MenuInicio
         Me.toolInventario.Tag = "Inventario"
         Me.toolInventario.Text = "Inventario"
         '
+        'smnVVentas
+        '
+        Me.smnVVentas.Name = "smnVVentas"
+        Me.smnVVentas.Size = New System.Drawing.Size(180, 22)
+        Me.smnVVentas.Text = "Ver Ventas"
+        '
         'MenuInicio
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -336,4 +343,5 @@ Partial Class MenuInicio
     Friend WithEvents smnPermisos As ToolStripMenuItem
     Friend WithEvents lblRol As ToolStripStatusLabel
     Friend WithEvents txtRol As ToolStripStatusLabel
+    Friend WithEvents smnVVentas As ToolStripMenuItem
 End Class
