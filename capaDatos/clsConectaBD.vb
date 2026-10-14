@@ -9,7 +9,7 @@ Public Class clsConectaBD
         cn = New SqlConnection
         'BDLocal - Autenticaciòn windows
         'cn.ConnectionString = "data source=(localdb)\MSSQLLocalDB;Initial catalog=vidrieria;integrated security=SSPI;language=spanish"
-        cn.ConnectionString = "data source=DESKTOP-BPJRUBO;Initial catalog=vidrieria;integrated security=SSPI;language=spanish"
+        'cn.ConnectionString = "data source=DESKTOP-BPJRUBO;Initial catalog=vidrieria;integrated security=SSPI;language=spanish"
 
         'BDLocal - Autenticaciòn SQL Server
 
@@ -17,7 +17,7 @@ Public Class clsConectaBD
         'cn.ConnectionString = "data source=PCL108PROF;Initial catalog=BDDistribuidos_A;integrated security=SSPI;language=spanish"
 
         'BD en la nube somee.com
-        'cn.ConnectionString = "workstation id=BDPersonal2024.mssql.somee.com;packet size=4096;user id=cdelcastillo_SQLLogin_1;pwd=wptf98uw6j;data source=BDPersonal2024.mssql.somee.com;persist security info=False;initial catalog=BDPersonal2024;language=spanish"
+        cn.ConnectionString = "workstation id=vidrieria.mssql.somee.com;packet size=4096;user id=Cesarspc321_SQLLogin_1;pwd=41cs41wuyj;data source=vidrieria.mssql.somee.com;persist security info=False;initial catalog=vidrieria;TrustServerCertificate=True"
     End Sub
 
     Public Sub conectar()
@@ -68,7 +68,8 @@ Public Class clsConectaBD
             'transaccion = False
             If cn.State <> Data.ConnectionState.Open Then ' SI EL ESTADO DE  LA CONEXION ES DIFERENTE DE ABIERTO ENTONCES ABRE LA CONEXION
                 'cn.ConnectionString = "data source=(localdb)\MSSQLLocalDB;Initial catalog=vidrieria;integrated security=SSPI;language=spanish"
-                cn.ConnectionString = "data source=DESKTOP-BPJRUBO;Initial catalog=vidrieria;integrated security=SSPI;language=spanish"
+                'cn.ConnectionString = "data source=DESKTOP-BPJRUBO;Initial catalog=vidrieria;integrated security=SSPI;language=spanish"
+                cn.ConnectionString = "workstation id=vidrieria.mssql.somee.com;packet size=4096;user id=Cesarspc321_SQLLogin_1;pwd=41cs41wuyj;data source=vidrieria.mssql.somee.com;persist security info=False;initial catalog=vidrieria;TrustServerCertificate=True"
                 cn.Open()
             End If
         Catch Ex As Exception
