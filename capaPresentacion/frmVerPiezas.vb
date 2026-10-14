@@ -3,13 +3,15 @@
 ' VER: listado de piezas de vidrio y aluminio (solo consulta).
 ' "Nueva pieza" abre frmRegistrarPieza; "Editar pieza" abre frmEditarPieza.
 Public Class frmVerPiezas
-    Implements IFormularioTema
+    Implements IFormularioTema, IListaInventario
     Public idUsuario As Integer? = Nothing
     Public Property tema As String = "CLARO" Implements IFormularioTema.tema
 
     Dim objInv As New Inventario
     Dim objPieza As New InventarioPieza
     Dim cargando As Boolean = True
+    Dim ultimaCarga As Date = Date.MinValue
+    Dim ultimaCargaOk As Boolean = False
 
     Private Sub frmVerPiezas_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         AplicarTema(Me, tema)
@@ -28,16 +30,24 @@ Public Class frmVerPiezas
         cargarLista()
     End Sub
 
-    Public Sub cargarLista()
+    Public Sub cargarLista() Implements IListaInventario.cargarLista
+        ultimaCargaOk = False
         Try
             Dim estado As String = If(cmbEstado.SelectedIndex <= 0, Nothing, cmbEstado.SelectedItem.ToString())
             dgvPiezas.DataSource = objPieza.Listar(VarianteElegida(cmbVariante), estado)
             lblCantidad.Text = If(dgvPiezas.Rows.Count = 0, "No se encontraron piezas.",
                                   "Piezas encontradas: " & dgvPiezas.Rows.Count.ToString())
+            ultimaCargaOk = True
         Catch ex As Exception
             MostrarError(ex)
         End Try
+        ultimaCarga = Date.Now
         ActualizarBotones()
+    End Sub
+
+    ' Al volver a esta ventana se recarga sola (si la última carga falló, no se reintenta en bucle)
+    Private Sub frmVerPiezas_Activated(sender As Object, e As EventArgs) Handles Me.Activated
+        If ultimaCargaOk AndAlso (Date.Now - ultimaCarga).TotalSeconds > 2 Then cargarLista()
     End Sub
 
     Private Sub Filtro_Changed(sender As Object, e As EventArgs) Handles cmbVariante.SelectedIndexChanged, cmbEstado.SelectedIndexChanged, btnBuscar.Click

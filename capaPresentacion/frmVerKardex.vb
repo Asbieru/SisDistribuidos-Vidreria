@@ -2,10 +2,12 @@
 
 ' VER: kardex, el historial de entradas, salidas y cambios del inventario (solo consulta).
 Public Class frmVerKardex
-    Implements IFormularioTema
+    Implements IFormularioTema, IListaInventario
     Public Property tema As String = "CLARO" Implements IFormularioTema.tema
 
     Dim objInv As New Inventario
+    Dim ultimaCarga As Date = Date.MinValue
+    Dim ultimaCargaOk As Boolean = False
 
     Private Sub frmVerKardex_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         AplicarTema(Me, tema)
@@ -23,18 +25,30 @@ Public Class frmVerKardex
         cargarLista()
     End Sub
 
-    Public Sub cargarLista()
+    Public Sub cargarLista() Implements IListaInventario.cargarLista
+        ultimaCargaOk = False
         If dtpDesde.Value.Date > dtpHasta.Value.Date Then
             MostrarAviso("La fecha 'Desde' no puede ser mayor que 'Hasta'.")
             Return
         End If
         Try
-            dgvMovimientos.DataSource = objInv.ListarMovimientos(dtpDesde.Value, dtpHasta.Value, VarianteElegida(cmbVariante))
+            ' Si "Hasta" es hoy (o después) no se pone límite superior: así aparecen también los
+            ' movimientos que un servidor con otra zona horaria guardó con fecha "de mañana".
+            Dim hasta As Date? = If(dtpHasta.Value.Date >= Date.Today, CType(Nothing, Date?), dtpHasta.Value)
+            dgvMovimientos.DataSource = objInv.ListarMovimientos(dtpDesde.Value, hasta, VarianteElegida(cmbVariante))
             lblCantidad.Text = If(dgvMovimientos.Rows.Count = 0, "No se encontraron movimientos.",
                                   "Movimientos encontrados: " & dgvMovimientos.Rows.Count.ToString())
+            ultimaCargaOk = True
         Catch ex As Exception
             MostrarError(ex)
         End Try
+        ultimaCarga = Date.Now
+    End Sub
+
+    ' Al volver a esta ventana (después de registrar algo en otra) se recarga sola.
+    ' Si la última carga falló no se reintenta, para no repetir el mensaje de error en bucle.
+    Private Sub frmVerKardex_Activated(sender As Object, e As EventArgs) Handles Me.Activated
+        If ultimaCargaOk AndAlso (Date.Now - ultimaCarga).TotalSeconds > 2 Then cargarLista()
     End Sub
 
     Private Sub btnFiltrar_Click(sender As Object, e As EventArgs) Handles btnFiltrar.Click

@@ -53,14 +53,18 @@ Public Class Inventario
             New Dictionary(Of String, Object) From {{"minimo", stockMinimo}, {"id", idVariante}})
     End Sub
 
-    ' Kardex entre dos fechas (ambas incluidas). idVariante Nothing = todas
-    Public Function ListarMovimientos(desde As Date, hasta As Date, Optional idVariante As Integer? = Nothing) As DataTable
+    ' Kardex entre dos fechas (ambas incluidas). idVariante Nothing = todas.
+    ' hasta Nothing = sin límite superior: así no se esconden movimientos cuyo servidor
+    ' (p. ej. somee.com) tiene otra zona horaria y los guardó con fecha "de mañana".
+    Public Function ListarMovimientos(desde As Date, hasta As Date?, Optional idVariante As Integer? = Nothing) As DataTable
         Dim sql As String = "select id_movimiento, fecha, categoria, producto, id_pieza, tipo, motivo, cantidad, stock_resultante, " &
                             "usuario, id_pedido, observacion " &
                             "from vw_inv_movimientos " &
-                            "where fecha >= @desde and fecha < @hasta and (@id_variante is null or id_variante = @id_variante) " &
+                            "where fecha >= @desde and (@hasta is null or fecha < @hasta) " &
+                            "and (@id_variante is null or id_variante = @id_variante) " &
                             "order by fecha desc, id_movimiento desc"
+        Dim limite As Date? = If(hasta.HasValue, hasta.Value.Date.AddDays(1), CType(Nothing, Date?))
         Return objMan.consultarConParametros(sql, New Dictionary(Of String, Object) From {
-            {"desde", desde.Date}, {"hasta", hasta.Date.AddDays(1)}, {"id_variante", idVariante}})
+            {"desde", desde.Date}, {"hasta", limite}, {"id_variante", idVariante}})
     End Function
 End Class

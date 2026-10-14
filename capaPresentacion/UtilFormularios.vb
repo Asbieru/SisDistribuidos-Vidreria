@@ -1,4 +1,10 @@
-﻿' Funciones comunes que usan los formularios de inventario
+﻿' Ventanas de consulta del inventario que se pueden volver a cargar desde fuera
+' (p. ej. al reabrirlas desde el resumen, para no mostrar datos antiguos)
+Public Interface IListaInventario
+    Sub cargarLista()
+End Interface
+
+' Funciones comunes que usan los formularios de inventario
 Module UtilFormularios
     Public Const TODOS As String = "(Todos)"
 

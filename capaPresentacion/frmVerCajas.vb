@@ -3,12 +3,14 @@
 ' VER: stock de tornillos y tarugos (por caja) y accesorios (por unidad). Solo consulta.
 ' "Registrar movimiento" abre frmMovimientoCajas.
 Public Class frmVerCajas
-    Implements IFormularioTema
+    Implements IFormularioTema, IListaInventario
     Public idUsuario As Integer? = Nothing
     Public Property tema As String = "CLARO" Implements IFormularioTema.tema
 
     Dim objCaja As New InventarioCaja
     Dim dtCajas As DataTable
+    Dim ultimaCarga As Date = Date.MinValue
+    Dim ultimaCargaOk As Boolean = False
 
     Private Sub frmVerCajas_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         AplicarTema(Me, tema)
@@ -22,14 +24,22 @@ Public Class frmVerCajas
         cargarLista()
     End Sub
 
-    Public Sub cargarLista()
+    Public Sub cargarLista() Implements IListaInventario.cargarLista
+        ultimaCargaOk = False
         Try
             dtCajas = objCaja.Listar()
             dgvCajas.DataSource = dtCajas
             filtrar()
+            ultimaCargaOk = True
         Catch ex As Exception
             MostrarError(ex)
         End Try
+        ultimaCarga = Date.Now
+    End Sub
+
+    ' Al volver a esta ventana se recarga sola (si la última carga falló, no se reintenta en bucle)
+    Private Sub frmVerCajas_Activated(sender As Object, e As EventArgs) Handles Me.Activated
+        If ultimaCargaOk AndAlso (Date.Now - ultimaCarga).TotalSeconds > 2 Then cargarLista()
     End Sub
 
     ' Filtra por categoría sin volver a consultar la base

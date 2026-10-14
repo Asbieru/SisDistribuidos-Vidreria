@@ -3,13 +3,15 @@
 ' VER: resumen de existencias de todos los productos (solo consulta).
 ' Desde aquí se abren los demás formularios del inventario.
 Public Class frmVerInventario
-    Implements IFormularioTema
+    Implements IFormularioTema, IListaInventario
     ' Los envía MenuInicio al abrir el formulario
     Public idUsuario As Integer? = Nothing
     Public Property tema As String = "CLARO" Implements IFormularioTema.tema
 
     Dim objInv As New Inventario
     Dim cargando As Boolean = True
+    Dim ultimaCarga As Date = Date.MinValue
+    Dim ultimaCargaOk As Boolean = False
 
     Private Sub frmVerInventario_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         AplicarTema(Me, tema)
@@ -25,7 +27,8 @@ Public Class frmVerInventario
         cargarLista()
     End Sub
 
-    Public Sub cargarLista()
+    Public Sub cargarLista() Implements IListaInventario.cargarLista
+        ultimaCargaOk = False
         Try
             Dim categoria As String = If(cmbCategoria.SelectedIndex <= 0, Nothing, cmbCategoria.SelectedItem.ToString())
             dgvResumen.DataSource = objInv.ListarResumen(categoria, chkBajoMinimo.Checked)
@@ -34,10 +37,17 @@ Public Class frmVerInventario
 
             Dim cantidad As Integer = objInv.ContarBajoMinimo()
             lblAlerta.Text = If(cantidad = 0, "", "¡Atención! " & cantidad & " producto(s) en o por debajo del stock mínimo")
+            ultimaCargaOk = True
         Catch ex As Exception
             MostrarError(ex)
         End Try
+        ultimaCarga = Date.Now
         btnEditarMinimo.Enabled = dgvResumen.CurrentRow IsNot Nothing
+    End Sub
+
+    ' Al volver a esta ventana se recarga sola (si la última carga falló, no se reintenta en bucle)
+    Private Sub frmVerInventario_Activated(sender As Object, e As EventArgs) Handles Me.Activated
+        If ultimaCargaOk AndAlso (Date.Now - ultimaCarga).TotalSeconds > 2 Then cargarLista()
     End Sub
 
     Private Sub Filtro_Changed(sender As Object, e As EventArgs) Handles cmbCategoria.SelectedIndexChanged, chkBajoMinimo.CheckedChanged, btnActualizar.Click
@@ -113,6 +123,8 @@ Public Class frmVerInventario
         For Each formulario As Form In Application.OpenForms
             If TypeOf formulario Is T Then
                 formulario.WindowState = FormWindowState.Normal
+                Dim lista As IListaInventario = TryCast(formulario, IListaInventario)
+                If lista IsNot Nothing Then lista.cargarLista()   ' que no muestre datos antiguos
                 formulario.BringToFront()
                 Return
             End If
