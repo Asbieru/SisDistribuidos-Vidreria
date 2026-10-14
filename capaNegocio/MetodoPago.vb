@@ -12,4 +12,16 @@ Public Class MetodoPago
         Dim dt As DataTable = objMan.listarComando(sql)
         Return CInt(dt.Rows(0)("id"))
     End Function
+
+    ' Metodos registrados; si no hay ninguno, crea los basicos (YAPE, EFECTIVO, TARJETA, PLIN)
+    Public Function AsegurarPorDefecto() As DataTable
+        Dim dt As DataTable = Listar()
+        If dt Is Nothing OrElse dt.Rows.Count = 0 Then
+            For Each nombre As String In New String() {"YAPE", "EFECTIVO", "TARJETA", "PLIN"}
+                Insertar(nombre)
+            Next
+            dt = Listar()
+        End If
+        Return dt
+    End Function
 End Class

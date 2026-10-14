@@ -1342,6 +1342,50 @@ BEGIN
 END
 GO
 
+-- Cancela TODOS los items activos del pedido reutilizando sp_ped_cancelar_item
+-- (liberando piezas RESERVADA y recalculando el total). Deja el pedido CANCELADO.
+CREATE OR ALTER PROCEDURE dbo.sp_ped_cancelar_pedido
+    @id_pedido  INT,
+    @id_usuario INT = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF NOT EXISTS (SELECT 1 FROM dbo.pedidos WHERE id_pedido = @id_pedido)
+        THROW 50090, 'El pedido indicado no existe.', 1;
+
+    DECLARE @id_item INT;
+
+    BEGIN TRY
+        BEGIN TRANSACTION;
+
+        DECLARE cur_items CURSOR LOCAL FAST_FORWARD FOR
+            SELECT id_item FROM dbo.pedido_item
+            WHERE id_pedido = @id_pedido AND estado <> 'CANCELADO'
+            ORDER BY id_item;
+        OPEN cur_items;
+        FETCH NEXT FROM cur_items INTO @id_item;
+        WHILE @@FETCH_STATUS = 0
+        BEGIN
+            EXEC dbo.sp_ped_cancelar_item @id_item = @id_item, @id_usuario = @id_usuario;
+            FETCH NEXT FROM cur_items INTO @id_item;
+        END
+        CLOSE cur_items; DEALLOCATE cur_items;
+
+        -- Salvaguarda por si el pedido no tenia items
+        IF NOT EXISTS (SELECT 1 FROM dbo.pedido_item
+                       WHERE id_pedido = @id_pedido AND estado <> 'CANCELADO')
+            UPDATE dbo.pedidos SET estado = 'CANCELADO' WHERE id_pedido = @id_pedido;
+
+        COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        IF @@TRANCOUNT > 0 ROLLBACK TRANSACTION;
+        THROW;
+    END CATCH
+END
+GO
+
 -- Recalcula el estado de los items de un pedido: un item PENDIENTE pasa a EN_PROCESO
 -- cuando TODOS sus detalles activos ya estan a mano (pieza en inventario o compra ya
 -- ingresada). Solo los items EN_PROCESO pueden completarse.
@@ -1896,6 +1940,13 @@ IF NOT EXISTS (SELECT 1 FROM dbo.tipos_mensaje WHERE codigo = N'ITEMROTO')
 BEGIN
     INSERT INTO dbo.tipos_mensaje (codigo, titulo, texto)
     VALUES ('ITEMROTO', 'Un item se rompió', '¿Estás seguro de que quieres colocar como roto el item?');
+END
+GO
+
+IF NOT EXISTS (SELECT 1 FROM dbo.metodos_pago)
+BEGIN
+    INSERT INTO dbo.metodos_pago (nombre)
+    VALUES (N'EFECTIVO'), (N'YAPE'), (N'TARJETA'), (N'PLIN');
 END
 GO
 

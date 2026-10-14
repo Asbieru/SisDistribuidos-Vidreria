@@ -151,6 +151,12 @@
     <Compile Include="frmRegistrarClientes.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="frmRegistrarPago.Designer.vb">
+      <DependentUpon>frmRegistrarPago.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmRegistrarPago.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="frmRegistrarPedido.Designer.vb">
       <DependentUpon>frmRegistrarPedido.vb</DependentUpon>
     </Compile>
@@ -284,6 +290,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="frmMovimientoCajas.resx">
       <DependentUpon>frmMovimientoCajas.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmRegistrarPago.resx">
+      <DependentUpon>frmRegistrarPago.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmRegistrarPedido.resx">
       <DependentUpon>frmRegistrarPedido.vb</DependentUpon>

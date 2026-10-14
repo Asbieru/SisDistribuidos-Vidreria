@@ -9,6 +9,7 @@ Public Class frmListadoPedido
     Public Property idPedidoSeleccionado As Integer = 0
 
     Dim objPedido As New Pedido
+    Dim objPago As New Pago
     Dim dtPedidos As DataTable
 
     Private Sub frmListadoPedido_Load(sender As Object, e As EventArgs) Handles MyBase.Load
@@ -36,6 +37,10 @@ Public Class frmListadoPedido
         Dim padre As MenuInicio = TryCast(Me.MdiParent, MenuInicio)
         If padre IsNot Nothing Then Integer.TryParse(padre.txtID.Text, idUsuario)
     End Sub
+
+    Private Function IdUsuarioONull() As Integer?
+        Return If(idUsuario > 0, CType(idUsuario, Integer?), Nothing)
+    End Function
 
     ' idReseleccionar: deja seleccionado el pedido recién modificado
     Public Sub cargarLista(Optional idReseleccionar As Integer = 0)
@@ -179,9 +184,15 @@ Public Class frmListadoPedido
             objMsj.ShowDialog()
             If Not objMsj.respuesta Then Return
 
-            objPedido.CambiarEstado(id, "CANCELADO")
+            objPedido.Cancelar(id, IdUsuarioONull())
             cargarLista(id)
-            UtilFormularios.MostrarInfo("Pedido cancelado correctamente.")
+            Dim pagado As Decimal = objPago.TotalPagado(id)
+            Dim texto As String = "Pedido cancelado correctamente."
+            If pagado > 0D Then
+                texto &= vbCrLf & "Excedente a favor del cliente: S/." &
+                         pagado.ToString("0.00", Globalization.CultureInfo.InvariantCulture) & "."
+            End If
+            UtilFormularios.MostrarInfo(texto)
         Catch ex As Exception
             msj.Text = ex.Message
         End Try

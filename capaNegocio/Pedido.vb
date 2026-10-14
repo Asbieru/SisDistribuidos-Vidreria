@@ -62,6 +62,21 @@ Public Class Pedido
         objMan.ejecutarComando("update pedidos set estado='" & Esc(estado) & "' where id_pedido=" & idPedido)
     End Sub
 
+    ' Sincroniza pedidos.estado con la suma de pagos:
+    ' sin pagos -> PENDIENTE, parcial -> PARCIAL, cubierto -> PAGADO.
+    ' Nunca toca un pedido CANCELADO.
+    Public Sub ActualizarEstadoPago(idPedido As Integer)
+        objMan.ejecutarComando(
+            "update p set estado = case " &
+            "  when p.estado = 'CANCELADO' then 'CANCELADO' " &
+            "  when isnull(pg.pagado, 0) <= 0 then 'PENDIENTE' " &
+            "  when p.total > 0 and isnull(pg.pagado, 0) >= p.total then 'PAGADO' " &
+            "  else 'PARCIAL' end " &
+            "from pedidos p " &
+            "outer apply (select sum(monto_total) as pagado from pagos where id_pedido = p.id_pedido) pg " &
+            "where p.id_pedido = " & idPedido)
+    End Sub
+
     Public Function ListarItems(idPedido As Integer) As DataTable
         Return objMan.listarComando("select * from pedido_item where id_pedido=" & idPedido)
     End Function
@@ -122,6 +137,14 @@ Public Class Pedido
             {"id_item", idItem},
             {"id_usuario", If(idUsuario.HasValue, CObj(idUsuario.Value), Nothing)}}
         objMan.ejecutarProcedimiento("sp_ped_cancelar_item", parametros)
+    End Sub
+
+    ' Cancela TODOS los items activos del pedido (libera piezas y recalcula el total)
+    Public Sub Cancelar(idPedido As Integer, Optional idUsuario As Integer? = Nothing)
+        Dim parametros As New Dictionary(Of String, Object) From {
+            {"id_pedido", idPedido},
+            {"id_usuario", If(idUsuario.HasValue, CObj(idUsuario.Value), Nothing)}}
+        objMan.ejecutarProcedimiento("sp_ped_cancelar_pedido", parametros)
     End Sub
 
     ' Marca el pedido como terminado (entregado/instalado), sin importar el pago

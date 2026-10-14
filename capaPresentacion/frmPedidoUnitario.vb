@@ -8,6 +8,7 @@ Public Class frmPedidoUnitario
 
     Dim objPedido As New Pedido
     Dim objPieza As New InventarioPieza
+    Dim objPago As New Pago
 
     ' Plantilla (tabModelo) copiada una sola vez para no depender del control original
     Private tmplLabel1 As Label
@@ -24,6 +25,7 @@ Public Class frmPedidoUnitario
     Private tmplTerminarUnitario As Button
     Private tabsGenerados As New List(Of TabPage)
     Private estadoActual As String = ""
+    Private totalActual As Decimal = 0D
 
     Private Sub frmPedidoUnitario_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         CapturarPlantilla()
@@ -70,6 +72,7 @@ Public Class frmPedidoUnitario
             Dim usuario As String = fila("usuario").ToString()
             Dim fecha As DateTime = CDate(fila("fecha"))
             Dim total As Decimal = CDec(fila("total"))
+            totalActual = total
 
             Text = "Pedido #" & idPedido.ToString()
             lblTitulo.Text = "Pedido #" & idPedido.ToString() & " - " & cliente
@@ -430,6 +433,16 @@ Public Class frmPedidoUnitario
         Return valor.ToString("0.00", Globalization.CultureInfo.InvariantCulture)
     End Function
 
+    ' Texto informativo si el cliente ya pago mas que el total vigente del pedido
+    Private Function ExcedenteTexto() As String
+        If idPedido <= 0 Then Return ""
+        Dim pagado As Decimal = objPago.TotalPagado(idPedido)
+        If pagado <= totalActual Then Return ""
+        Return vbCrLf & vbCrLf & "El cliente ya pagó S/." & FormatoNumero(pagado) &
+               " y el pedido quedó en S/." & FormatoNumero(totalActual) & "." & vbCrLf &
+               "Excedente a favor del cliente: S/." & FormatoNumero(pagado - totalActual) & "."
+    End Function
+
     ' ---------------- Acciones de la pestaña ----------------
     Private Sub btnItemRotoTab_Click(sender As Object, e As EventArgs)
         Dim tab As TabPage = TabDeBoton(sender)
@@ -476,19 +489,21 @@ Public Class frmPedidoUnitario
         If tab Is Nothing OrElse tab.Tag Is Nothing Then Return
         Dim idItem As Integer = CInt(tab.Tag)
         If Not Confirmar("¿Cancelar el item '" & tab.Text & "' y liberar sus piezas?") Then Return
+        Dim quedoCancelado As Boolean = False
         Try
             objPedido.CancelarItem(idItem, IdUsuarioONull())
             cargar()
             cargarItems()
-            If estadoActual = "CANCELADO" Then
-                MostrarInfo("Se cancelaron todos los items: el pedido quedó CANCELADO.")
-                Close()
-            Else
-                MostrarInfo("Item cancelado.")
-            End If
+            quedoCancelado = (estadoActual = "CANCELADO")
+            Dim texto As String = If(quedoCancelado,
+                                     "Se cancelaron todos los items: el pedido quedó CANCELADO.",
+                                     "Item cancelado.")
+            texto &= ExcedenteTexto()
+            MostrarInfo(texto)
         Catch ex As Exception
             MostrarError(ex)
         End Try
+        If quedoCancelado Then Close()
     End Sub
 
     Private Sub btnTerminarUnitarioTab_Click(sender As Object, e As EventArgs)
@@ -529,6 +544,13 @@ Public Class frmPedidoUnitario
         Catch ex As Exception
             MostrarError(ex)
         End Try
+    End Sub
+
+    Private Sub btnPagar_Click(sender As Object, e As EventArgs) Handles btnPagar.Click
+        If idPedido <= 0 Then Return
+        Dim frm As New frmRegistrarPago With {.tema = tema, .idUsuario = idUsuario, .idPedido = idPedido}
+        frm.MdiParent = Me.MdiParent
+        frm.Show()
     End Sub
 
     Private Sub btnCerrar_Click(sender As Object, e As EventArgs) Handles btnCerrar.Click

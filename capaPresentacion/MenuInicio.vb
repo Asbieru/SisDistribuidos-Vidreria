@@ -249,6 +249,22 @@ Public Class MenuInicio
         objFrm.Show()
     End Sub
 
+    Private Sub smnRPago_Click(sender As Object, e As EventArgs) Handles smnRPago.Click
+        For Each formulario As Form In Application.OpenForms
+            If TypeOf formulario Is frmRegistrarPago Then
+                Dim pago As frmRegistrarPago = DirectCast(formulario, frmRegistrarPago)
+                If pago.idPedido = 0 Then
+                    pago.WindowState = FormWindowState.Normal
+                    pago.BringToFront()
+                    Return
+                End If
+            End If
+        Next
+        Dim objFrm As New frmRegistrarPago With {.tema = tema, .idUsuario = Integer.Parse(txtID.Text)}
+        objFrm.MdiParent = Me
+        objFrm.Show()
+    End Sub
+
     ' =========================================================
     ' ROLES Y PERMISOS (pegar dentro de la clase MenuInicio)
     ' =========================================================
