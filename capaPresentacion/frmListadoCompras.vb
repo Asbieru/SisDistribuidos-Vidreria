@@ -1,4 +1,4 @@
-Imports capaNegocio
+﻿Imports capaNegocio
 
 Public Class frmListadoCompras
     Implements IFormularioTema
@@ -126,9 +126,15 @@ Public Class frmListadoCompras
                     .AllowUserToAddRows = False, .AllowUserToDeleteRows = False,
                     .AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill,
                     .SelectionMode = DataGridViewSelectionMode.FullRowSelect,
-                    .MultiSelect = False, .DataSource = datos}
+                    .MultiSelect = False, .AutoGenerateColumns = False}
+                Dim campos As String() = {"producto", "cantidad", "costo_unitario", "subtotal"}
+                Dim titulos As String() = {"Producto / variante", "Cantidad", "Costo unitario", "Subtotal"}
+                For i As Integer = 0 To campos.Length - 1
+                    tabla.Columns.Add(New DataGridViewTextBoxColumn With {
+                        .Name = campos(i), .DataPropertyName = campos(i), .HeaderText = titulos(i)})
+                Next
+                tabla.DataSource = datos
                 ventana.Controls.Add(tabla)
-                tabla.Columns("id_variante").Visible = False
                 tabla.Columns("producto").HeaderText = "Producto / variante"
                 tabla.Columns("producto").FillWeight = 250
                 tabla.Columns("cantidad").HeaderText = "Cantidad"
