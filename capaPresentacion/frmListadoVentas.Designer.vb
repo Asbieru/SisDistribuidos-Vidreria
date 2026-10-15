@@ -42,6 +42,7 @@ Partial Class frmListadoVentas
         Me.btnActualizar = New System.Windows.Forms.Button()
         Me.btnCerrar = New System.Windows.Forms.Button()
         Me.lblResultados = New System.Windows.Forms.Label()
+        Me.lblTotalExcedentes = New System.Windows.Forms.Label()
         Me.pnlVentas.SuspendLayout()
         CType(Me.dgvVentas, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
@@ -53,6 +54,7 @@ Partial Class frmListadoVentas
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.pnlVentas.BackColor = System.Drawing.Color.White
         Me.pnlVentas.Controls.Add(Me.lblResultados)
+        Me.pnlVentas.Controls.Add(Me.lblTotalExcedentes)
         Me.pnlVentas.Controls.Add(Me.btnCerrar)
         Me.pnlVentas.Controls.Add(Me.btnActualizar)
         Me.pnlVentas.Controls.Add(Me.btnVerDetalle)
@@ -214,9 +216,15 @@ Partial Class frmListadoVentas
         Me.lblTotalSaldo.Name = "lblTotalSaldo"
         Me.lblTotalSaldo.Size = New System.Drawing.Size(114, 18)
         Me.lblTotalSaldo.TabIndex = 14
-        Me.lblTotalSaldo.Text = "SALDO: S/ 0.00"
+        Me.lblTotalSaldo.Text = "DEUDA PENDIENTE: S/ 0.00"
         Me.lblTotalSaldo.AutoSize = True
         Me.lblTotalSaldo.Anchor = System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left
+        Me.lblTotalExcedentes.Font = Me.lblTotalSaldo.Font
+        Me.lblTotalExcedentes.Location = New System.Drawing.Point(59, 422)
+        Me.lblTotalExcedentes.Name = "lblTotalExcedentes"
+        Me.lblTotalExcedentes.AutoSize = True
+        Me.lblTotalExcedentes.Text = "EXCEDENTES: S/ 0.00"
+        Me.lblTotalExcedentes.Anchor = System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left
         '
         'btnVerDetalle
         '
@@ -292,4 +300,5 @@ Partial Class frmListadoVentas
     Friend WithEvents lblTotalSaldo As Label
     Friend WithEvents lblTotalCobrado As Label
     Friend WithEvents lblResultados As Label
+    Friend WithEvents lblTotalExcedentes As Label
 End Class

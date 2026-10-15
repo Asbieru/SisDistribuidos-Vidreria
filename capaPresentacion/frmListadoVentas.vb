@@ -13,6 +13,26 @@ Public Class frmListadoVentas
     Private hastaAplicado As Date? = Nothing
     Private clienteAplicado As String = ""
     Private estadoAplicado As String = "TODOS"
+    Private formularioListo As Boolean = False
+    Private WithEvents temporizadorBusqueda As New Timer With {.Interval = 400}
+
+    Private Sub filtrosAutomaticos_Changed(sender As Object, e As EventArgs) Handles txtBuscarCliente.TextChanged, cboEstadoPago.SelectedIndexChanged
+        If Not formularioListo Then Return
+        temporizadorBusqueda.Stop()
+        temporizadorBusqueda.Start()
+    End Sub
+
+    Private Sub temporizadorBusqueda_Tick(sender As Object, e As EventArgs) Handles temporizadorBusqueda.Tick
+        temporizadorBusqueda.Stop()
+        cargarVentas(desdeAplicado, hastaAplicado, txtBuscarCliente.Text.Trim(),
+            If(cboEstadoPago.SelectedItem Is Nothing, "TODOS", cboEstadoPago.SelectedItem.ToString()))
+    End Sub
+
+    Private Sub frmListadoVentas_FormClosed(sender As Object, e As FormClosedEventArgs) Handles MyBase.FormClosed
+        formularioListo = False
+        temporizadorBusqueda.Stop()
+        temporizadorBusqueda.Dispose()
+    End Sub
 
     Private Sub frmListadoVentas_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         AplicarTema(Me, tema)
@@ -44,6 +64,7 @@ Public Class frmListadoVentas
         dgvVentas.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill
 
         cargarLista()
+        formularioListo = True
     End Sub
 
     Public Sub cargarLista()
@@ -101,17 +122,24 @@ Public Class frmListadoVentas
 
             Dim importe As Decimal = 0
             Dim cobrado As Decimal = 0
-            Dim saldo As Decimal = 0
+            Dim deuda As Decimal = 0
+            Dim excedentes As Decimal = 0
 
             For Each fila As DataRow In datos.Rows
                 importe += CDec(fila("total"))
                 cobrado += CDec(fila("pagado"))
-                saldo += CDec(fila("saldo"))
+                Dim saldoVenta As Decimal = CDec(fila("saldo"))
+                If saldoVenta > 0D Then
+                    deuda += saldoVenta
+                ElseIf saldoVenta < 0D Then
+                    excedentes -= saldoVenta
+                End If
             Next
 
             lblTotalPedidos.Text = "IMPORTE PEDIDOS: S/ " & importe.ToString("N2")
             lblTotalCobrado.Text = "COBRADO: S/ " & cobrado.ToString("N2")
-            lblTotalSaldo.Text = "SALDO: S/ " & saldo.ToString("N2")
+            lblTotalSaldo.Text = "DEUDA PENDIENTE: S/ " & deuda.ToString("N2")
+            lblTotalExcedentes.Text = "EXCEDENTES: S/ " & excedentes.ToString("N2")
 
             desdeAplicado = desde
             hastaAplicado = hasta
@@ -151,18 +179,22 @@ Public Class frmListadoVentas
             Return
         End If
 
+        temporizadorBusqueda.Stop()
         cargarVentas(dtpDesde.Value.Date, dtpHasta.Value.Date, txtBuscarCliente.Text.Trim(),
             If(cboEstadoPago.SelectedItem Is Nothing, "TODOS", cboEstadoPago.SelectedItem.ToString()))
     End Sub
 
     Private Sub btnVerTodas_Click(sender As Object, e As EventArgs) Handles btnVerTodas.Click
+        temporizadorBusqueda.Stop()
+        formularioListo = False
         txtBuscarCliente.Clear()
         cboEstadoPago.SelectedIndex = 0
+        formularioListo = True
         cargarVentas(Nothing, Nothing, "", "TODOS")
     End Sub
 
     Private Sub btnActualizar_Click(sender As Object, e As EventArgs) Handles btnActualizar.Click
-        cargarLista()
+        temporizadorBusqueda_Tick(sender, e)
     End Sub
 
     Private Sub actualizarBotonDetalle()
