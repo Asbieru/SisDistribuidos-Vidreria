@@ -186,6 +186,8 @@ Partial Class frmRegistrarCompras
         'txtProductoSeleccionado
         '
         Me.txtProductoSeleccionado.ReadOnly = True
+        Me.txtProductoSeleccionado.Enabled = False
+        Me.txtProductoSeleccionado.TabStop = False
 
         Me.txtProductoSeleccionado.Location = New System.Drawing.Point(427, 99)
         Me.txtProductoSeleccionado.Name = "txtProductoSeleccionado"
