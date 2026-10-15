@@ -1,4 +1,4 @@
-﻿Imports capaNegocio
+Imports capaNegocio
 
 Public Class frmRegistrarCompras
     Implements IFormularioTema
@@ -7,6 +7,8 @@ Public Class frmRegistrarCompras
     Public Property idVarianteInicial As Integer? = Nothing
     Private objVariante As New ProductoVariante
     Private objCompra As New Compra
+    Private variantes As DataTable
+    Private idVarianteSeleccionada As Integer = 0
     Private detalle As DataTable
     Private idCompraActual As Integer = 0
     Private detalleEnEdicion As DataRow = Nothing
@@ -20,8 +22,6 @@ Public Class frmRegistrarCompras
             cboMotivo.Items.AddRange(
                 New String() {"REPOSICION", "REEMPLAZO_DEFECTO"})
 
-            cboVariante.DropDownStyle = ComboBoxStyle.DropDownList
-            cboVariante.DropDownWidth = 550
 
             nudCantidad.DecimalPlaces = 0
             nudCantidad.Minimum = 1D
@@ -75,8 +75,7 @@ Public Class frmRegistrarCompras
             btnGuardar.Enabled = True
 
             If idVarianteInicial.HasValue AndAlso idVarianteInicial.Value > 0 Then
-                cboVariante.SelectedValue = idVarianteInicial.Value
-                If cboVariante.SelectedIndex >= 0 Then nudCantidad.Focus()
+                If seleccionarVariante(idVarianteInicial.Value) Then nudCantidad.Focus()
             End If
 
         Catch ex As Exception
@@ -86,7 +85,7 @@ Public Class frmRegistrarCompras
     End Sub
 
     Private Sub cargarVariantes()
-        Dim variantes As DataTable = objVariante.Listar()
+        variantes = objVariante.Listar()
         variantes.Columns.Add("descripcion", GetType(String))
 
         For Each fila As DataRow In variantes.Rows
@@ -108,10 +107,74 @@ Public Class frmRegistrarCompras
             fila("descripcion") = descripcion
         Next
 
-        cboVariante.DisplayMember = "descripcion"
-        cboVariante.ValueMember = "id_variante"
-        cboVariante.DataSource = variantes
-        cboVariante.SelectedIndex = -1
+
+    End Sub
+
+    Private Function seleccionarVariante(id As Integer) As Boolean
+        If variantes Is Nothing Then Return False
+        Dim filas As DataRow() = variantes.Select("id_variante = " & id.ToString())
+        If filas.Length = 0 Then Return False
+        Dim fila As DataRow = filas(0)
+        Dim costo As Decimal = If(IsDBNull(fila("precio_unitario")), 0D, CDec(fila("precio_unitario")))
+        nudCostoUnitario.Maximum = Math.Max(nudCostoUnitario.Maximum, costo)
+        nudCostoUnitario.Value = Math.Max(nudCostoUnitario.Minimum, costo)
+        idVarianteSeleccionada = id
+        txtProductoSeleccionado.Text = fila("descripcion").ToString()
+        Return True
+    End Function
+
+    Private Sub btnBuscarProducto_Click(sender As Object, e As EventArgs) Handles btnBuscarProducto.Click
+        Try
+            cargarVariantes()
+            Using selector As New Form With {
+                .Text = "Seleccionar producto para compra",
+                .Size = New Size(950, 500),
+                .MinimumSize = New Size(700, 350),
+                .StartPosition = FormStartPosition.CenterParent,
+                .MinimizeBox = False, .MaximizeBox = False}
+
+                Dim tabla As New DataGridView With {
+                    .Dock = DockStyle.Fill, .ReadOnly = True,
+                    .AllowUserToAddRows = False, .AllowUserToDeleteRows = False,
+                    .MultiSelect = False, .SelectionMode = DataGridViewSelectionMode.FullRowSelect,
+                    .AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill,
+                    .AutoGenerateColumns = False, .DataSource = variantes}
+                Dim campos As String() = {"nombre", "categoria", "tipo", "color", "espesor_cm", "medida_cm", "unidad_costo", "precio_unitario"}
+                Dim titulos As String() = {"Producto", "Categoría", "Tipo", "Color", "Espesor (cm)", "Medida (cm)", "Unidad", "Costo unitario"}
+                For i As Integer = 0 To campos.Length - 1
+                    tabla.Columns.Add(New DataGridViewTextBoxColumn With {
+                        .Name = campos(i), .DataPropertyName = campos(i), .HeaderText = titulos(i)})
+                Next
+                tabla.Columns("precio_unitario").DefaultCellStyle.Format = "N2"
+                tabla.Columns("nombre").FillWeight = 180
+
+                Dim acciones As New FlowLayoutPanel With {
+                    .Dock = DockStyle.Bottom, .Height = 45, .FlowDirection = FlowDirection.RightToLeft,
+                    .Padding = New Padding(5)}
+                Dim cancelar As New Button With {.Text = "CANCELAR", .AutoSize = True, .DialogResult = DialogResult.Cancel}
+                Dim agregar As New Button With {.Text = "AGREGAR", .AutoSize = True}
+                AddHandler agregar.Click,
+                    Sub()
+                        If tabla.CurrentRow Is Nothing Then
+                            MessageBox.Show(selector, "Seleccione un producto.")
+                            Return
+                        End If
+                        Dim fila As DataRowView = TryCast(tabla.CurrentRow.DataBoundItem, DataRowView)
+                        If fila IsNot Nothing AndAlso seleccionarVariante(CInt(fila("id_variante"))) Then
+                            selector.DialogResult = DialogResult.OK
+                        End If
+                    End Sub
+                acciones.Controls.Add(cancelar)
+                acciones.Controls.Add(agregar)
+                selector.Controls.Add(tabla)
+                selector.Controls.Add(acciones)
+                selector.CancelButton = cancelar
+                AplicarTema(selector, tema)
+                If selector.ShowDialog(Me) = DialogResult.OK Then nudCantidad.Focus()
+            End Using
+        Catch ex As Exception
+            MessageBox.Show(ex.Message, "Productos", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
     End Sub
 
     Private Sub limpiar()
@@ -123,7 +186,8 @@ Public Class frmRegistrarCompras
         cboMotivo.SelectedIndex = 0
         nudPedidoOrigen.Value = 1
         nudPedidoOrigen.Enabled = False
-        cboVariante.SelectedIndex = -1
+        idVarianteSeleccionada = 0
+        txtProductoSeleccionado.Clear()
         nudCantidad.Value = 1
         nudCostoUnitario.Value = 0
 
@@ -142,7 +206,7 @@ Public Class frmRegistrarCompras
     Private Sub btnAgregarDetalle_Click(sender As Object, e As EventArgs) Handles btnAgregarDetalle.Click
         If detalle Is Nothing Then Return
 
-        If cboVariante.SelectedIndex = -1 Then
+        If idVarianteSeleccionada = 0 Then
             MessageBox.Show("Seleccione un producto.")
             Return
         End If
@@ -157,7 +221,7 @@ Public Class frmRegistrarCompras
             Return
         End If
 
-        Dim id As Integer = CInt(cboVariante.SelectedValue)
+        Dim id As Integer = idVarianteSeleccionada
         Dim totalOtros As Decimal = 0
 
         For Each fila As DataRow In detalle.Rows
@@ -182,11 +246,11 @@ Public Class frmRegistrarCompras
 
         If detalleEnEdicion Is Nothing Then
             detalle.Rows.Add(
-            id, cboVariante.Text, nudCantidad.Value,
+            id, txtProductoSeleccionado.Text, nudCantidad.Value,
             nudCostoUnitario.Value, subtotal)
         Else
             detalleEnEdicion("id_variante") = id
-            detalleEnEdicion("producto") = cboVariante.Text
+            detalleEnEdicion("producto") = txtProductoSeleccionado.Text
             detalleEnEdicion("cantidad") = nudCantidad.Value
             detalleEnEdicion("costo_unitario") = nudCostoUnitario.Value
             detalleEnEdicion("subtotal") = subtotal
@@ -358,7 +422,8 @@ Public Class frmRegistrarCompras
             restablecerEntradaProducto()
             btnGuardar.Text = "GUARDAR CAMBIOS"
             lblModo.Text = "MODIFICAR COMPRA - ID " & id.ToString()
-            cboVariante.SelectedIndex = -1
+            idVarianteSeleccionada = 0
+            txtProductoSeleccionado.Clear()
             nudCantidad.Value = 1
             nudCostoUnitario.Value = 0
             actualizarTotal()
@@ -372,7 +437,8 @@ Public Class frmRegistrarCompras
 
     Private Sub restablecerEntradaProducto()
         detalleEnEdicion = Nothing
-        cboVariante.SelectedIndex = -1
+        idVarianteSeleccionada = 0
+        txtProductoSeleccionado.Clear()
         nudCantidad.Value = 1
         nudCostoUnitario.Value = 0
         btnAgregarDetalle.Text = "AGREGAR"
@@ -394,9 +460,7 @@ Public Class frmRegistrarCompras
         nudCantidad.Maximum = Math.Max(nudCantidad.Maximum, cantidad)
         nudCostoUnitario.Maximum = Math.Max(nudCostoUnitario.Maximum, costo)
 
-        cboVariante.SelectedValue = CInt(fila("id_variante"))
-
-        If cboVariante.SelectedIndex = -1 Then
+        If Not seleccionarVariante(CInt(fila("id_variante"))) Then
             MessageBox.Show("No se encontró la variante de este producto.")
             Return
         End If

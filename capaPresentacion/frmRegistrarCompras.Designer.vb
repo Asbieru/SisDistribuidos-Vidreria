@@ -32,7 +32,8 @@ Partial Class frmRegistrarCompras
         Me.btnAgregarDetalle = New System.Windows.Forms.Button()
         Me.nudCostoUnitario = New System.Windows.Forms.NumericUpDown()
         Me.nudCantidad = New System.Windows.Forms.NumericUpDown()
-        Me.cboVariante = New System.Windows.Forms.ComboBox()
+        Me.txtProductoSeleccionado = New System.Windows.Forms.TextBox()
+        Me.btnBuscarProducto = New System.Windows.Forms.Button()
         Me.lblCosto = New System.Windows.Forms.Label()
         Me.lblCantidad = New System.Windows.Forms.Label()
         Me.lblProducto = New System.Windows.Forms.Label()
@@ -64,7 +65,8 @@ Partial Class frmRegistrarCompras
         Me.pnlRegistroCompra.Controls.Add(Me.btnAgregarDetalle)
         Me.pnlRegistroCompra.Controls.Add(Me.nudCostoUnitario)
         Me.pnlRegistroCompra.Controls.Add(Me.nudCantidad)
-        Me.pnlRegistroCompra.Controls.Add(Me.cboVariante)
+        Me.pnlRegistroCompra.Controls.Add(Me.txtProductoSeleccionado)
+        Me.pnlRegistroCompra.Controls.Add(Me.btnBuscarProducto)
         Me.pnlRegistroCompra.Controls.Add(Me.lblCosto)
         Me.pnlRegistroCompra.Controls.Add(Me.lblCantidad)
         Me.pnlRegistroCompra.Controls.Add(Me.lblProducto)
@@ -148,7 +150,7 @@ Partial Class frmRegistrarCompras
         Me.dgvDetalle.ReadOnly = True
         Me.dgvDetalle.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
         Me.dgvDetalle.Size = New System.Drawing.Size(574, 150)
-        Me.dgvDetalle.ScrollBars = System.Windows.Forms.ScrollBars.Both
+        Me.dgvDetalle.ScrollBars = System.Windows.Forms.ScrollBars.Both
         Me.dgvDetalle.TabIndex = 16
         '
         'btnAgregarDetalle
@@ -181,14 +183,20 @@ Partial Class frmRegistrarCompras
         Me.nudCantidad.TabIndex = 13
         Me.nudCantidad.Value = New Decimal(New Integer() {1, 0, 0, 0})
         '
-        'cboVariante
+        'txtProductoSeleccionado
         '
-        Me.cboVariante.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.cboVariante.FormattingEnabled = True
-        Me.cboVariante.Location = New System.Drawing.Point(427, 99)
-        Me.cboVariante.Name = "cboVariante"
-        Me.cboVariante.Size = New System.Drawing.Size(185, 21)
-        Me.cboVariante.TabIndex = 12
+        Me.txtProductoSeleccionado.ReadOnly = True
+
+        Me.txtProductoSeleccionado.Location = New System.Drawing.Point(427, 99)
+        Me.txtProductoSeleccionado.Name = "txtProductoSeleccionado"
+        Me.txtProductoSeleccionado.Size = New System.Drawing.Size(185, 21)
+        Me.txtProductoSeleccionado.TabIndex = 12
+        Me.btnBuscarProducto.Location = New System.Drawing.Point(427, 125)
+        Me.btnBuscarProducto.Size = New System.Drawing.Size(185, 27)
+        Me.btnBuscarProducto.Name = "btnBuscarProducto"
+        Me.btnBuscarProducto.Text = "BUSCAR PRODUCTO"
+        Me.btnBuscarProducto.TabIndex = 22
+        Me.btnBuscarProducto.UseVisualStyleBackColor = True
         '
         'lblCosto
         '
@@ -330,7 +338,8 @@ Partial Class frmRegistrarCompras
     Friend WithEvents btnAgregarDetalle As Button
     Friend WithEvents nudCostoUnitario As NumericUpDown
     Friend WithEvents nudCantidad As NumericUpDown
-    Friend WithEvents cboVariante As ComboBox
+    Friend WithEvents txtProductoSeleccionado As TextBox
+    Friend WithEvents btnBuscarProducto As Button
     Friend WithEvents lblCosto As Label
     Friend WithEvents lblCantidad As Label
     Friend WithEvents lblProducto As Label
