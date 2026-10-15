@@ -9,7 +9,10 @@ Public Class frmListadoVentas
     Public Property idUsuario As Integer = 0
 
     Private objVenta As New Venta()
-    Private usarFechas As Boolean = False
+    Private desdeAplicado As Date? = Nothing
+    Private hastaAplicado As Date? = Nothing
+    Private clienteAplicado As String = ""
+    Private estadoAplicado As String = "TODOS"
 
     Private Sub frmListadoVentas_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         AplicarTema(Me, tema)
@@ -44,22 +47,18 @@ Public Class frmListadoVentas
     End Sub
 
     Public Sub cargarLista()
+        cargarVentas(desdeAplicado, hastaAplicado, clienteAplicado, estadoAplicado)
+    End Sub
+
+    Private Sub cargarVentas(desde As Date?, hasta As Date?, cliente As String, estado As String)
         Try
-            Dim desde As Date? = Nothing
-            Dim hasta As Date? = Nothing
-
-            If usarFechas Then
-                desde = dtpDesde.Value.Date
-                hasta = dtpHasta.Value.Date
-            End If
-
-            Dim estado As String = "TODOS"
-            If cboEstadoPago.SelectedItem IsNot Nothing Then
-                estado = cboEstadoPago.SelectedItem.ToString()
+            Dim idSeleccionado As Integer? = Nothing
+            If dgvVentas.CurrentRow IsNot Nothing Then
+                idSeleccionado = CInt(dgvVentas.CurrentRow.Cells("id_pedido").Value)
             End If
 
             Dim datos As DataTable = objVenta.Listar(
-                desde, hasta, txtBuscarCliente.Text, estado)
+                desde, hasta, cliente, estado)
 
             dgvVentas.DataSource = datos
 
@@ -81,6 +80,12 @@ Public Class frmListadoVentas
             dgvVentas.Columns("fecha").FillWeight = 100
             dgvVentas.Columns("estado_trabajo").FillWeight = 100
             dgvVentas.Columns("estado_pago").FillWeight = 90
+            dgvVentas.Columns("id_pedido").MinimumWidth = 60
+            dgvVentas.Columns("cliente").MinimumWidth = 150
+            dgvVentas.Columns("vendedor").MinimumWidth = 110
+            dgvVentas.Columns("fecha").MinimumWidth = 110
+            dgvVentas.Columns("estado_trabajo").MinimumWidth = 115
+            dgvVentas.Columns("estado_pago").MinimumWidth = 100
 
             dgvVentas.Columns("fecha").DefaultCellStyle.Format = "dd/MM/yyyy"
 
@@ -91,6 +96,7 @@ Public Class frmListadoVentas
                 dgvVentas.Columns(nombre).DefaultCellStyle.Alignment =
                     DataGridViewContentAlignment.MiddleRight
                 dgvVentas.Columns(nombre).FillWeight = 90
+                dgvVentas.Columns(nombre).MinimumWidth = 115
             Next
 
             Dim importe As Decimal = 0
@@ -107,11 +113,26 @@ Public Class frmListadoVentas
             lblTotalCobrado.Text = "COBRADO: S/ " & cobrado.ToString("N2")
             lblTotalSaldo.Text = "SALDO: S/ " & saldo.ToString("N2")
 
-            Text = "Listado de ventas - " &
-                If(usarFechas,
-                   "Fechas: " & dtpDesde.Value.ToString("dd/MM/yyyy") &
-                   " al " & dtpHasta.Value.ToString("dd/MM/yyyy"),
-                   "Todas las fechas")
+            desdeAplicado = desde
+            hastaAplicado = hasta
+            clienteAplicado = cliente
+            estadoAplicado = estado
+            Text = "Listado de ventas - " & If(desde.HasValue AndAlso hasta.HasValue,
+                "Fechas: " & desde.GetValueOrDefault().ToString("dd/MM/yyyy") &
+                " al " & hasta.GetValueOrDefault().ToString("dd/MM/yyyy"), "Todas las fechas")
+            lblResultados.Text = If(datos.Rows.Count = 0,
+                "No se encontraron ventas con los filtros aplicados.",
+                "Ventas encontradas: " & datos.Rows.Count.ToString())
+
+            If idSeleccionado.HasValue Then
+                For Each fila As DataGridViewRow In dgvVentas.Rows
+                    If CInt(fila.Cells("id_pedido").Value) = idSeleccionado.Value Then
+                        dgvVentas.CurrentCell = fila.Cells("cliente")
+                        fila.Selected = True
+                        Exit For
+                    End If
+                Next
+            End If
 
             actualizarBotonDetalle()
 
@@ -130,15 +151,14 @@ Public Class frmListadoVentas
             Return
         End If
 
-        usarFechas = True
-        cargarLista()
+        cargarVentas(dtpDesde.Value.Date, dtpHasta.Value.Date, txtBuscarCliente.Text.Trim(),
+            If(cboEstadoPago.SelectedItem Is Nothing, "TODOS", cboEstadoPago.SelectedItem.ToString()))
     End Sub
 
     Private Sub btnVerTodas_Click(sender As Object, e As EventArgs) Handles btnVerTodas.Click
-        usarFechas = False
         txtBuscarCliente.Clear()
         cboEstadoPago.SelectedIndex = 0
-        cargarLista()
+        cargarVentas(Nothing, Nothing, "", "TODOS")
     End Sub
 
     Private Sub btnActualizar_Click(sender As Object, e As EventArgs) Handles btnActualizar.Click

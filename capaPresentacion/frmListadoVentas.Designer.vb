@@ -41,6 +41,7 @@ Partial Class frmListadoVentas
         Me.btnVerDetalle = New System.Windows.Forms.Button()
         Me.btnActualizar = New System.Windows.Forms.Button()
         Me.btnCerrar = New System.Windows.Forms.Button()
+        Me.lblResultados = New System.Windows.Forms.Label()
         Me.pnlVentas.SuspendLayout()
         CType(Me.dgvVentas, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
@@ -51,6 +52,7 @@ Partial Class frmListadoVentas
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.pnlVentas.BackColor = System.Drawing.Color.White
+        Me.pnlVentas.Controls.Add(Me.lblResultados)
         Me.pnlVentas.Controls.Add(Me.btnCerrar)
         Me.pnlVentas.Controls.Add(Me.btnActualizar)
         Me.pnlVentas.Controls.Add(Me.btnVerDetalle)
@@ -71,7 +73,7 @@ Partial Class frmListadoVentas
         Me.pnlVentas.Controls.Add(Me.lblDesde)
         Me.pnlVentas.Location = New System.Drawing.Point(12, 12)
         Me.pnlVentas.Name = "pnlVentas"
-        Me.pnlVentas.Size = New System.Drawing.Size(776, 426)
+        Me.pnlVentas.Size = New System.Drawing.Size(776, 496)
         Me.pnlVentas.TabIndex = 0
         '
         'lblDesde
@@ -191,29 +193,36 @@ Partial Class frmListadoVentas
         Me.lblTotalPedidos.Size = New System.Drawing.Size(187, 18)
         Me.lblTotalPedidos.TabIndex = 12
         Me.lblTotalPedidos.Text = "IMPORTE PEDIDOS: S/ 0.00"
+        Me.lblTotalPedidos.AutoSize = True
+        Me.lblTotalPedidos.Anchor = System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left
         '
         'lblTotalCobrado
         '
         Me.lblTotalCobrado.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblTotalCobrado.Location = New System.Drawing.Point(331, 353)
+        Me.lblTotalCobrado.Location = New System.Drawing.Point(59, 376)
         Me.lblTotalCobrado.Name = "lblTotalCobrado"
         Me.lblTotalCobrado.Size = New System.Drawing.Size(126, 18)
         Me.lblTotalCobrado.TabIndex = 13
         Me.lblTotalCobrado.Text = "COBRADO: S/ 0.00"
+        Me.lblTotalCobrado.AutoSize = True
+        Me.lblTotalCobrado.Anchor = System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left
         '
         'lblTotalSaldo
         '
         Me.lblTotalSaldo.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblTotalSaldo.Location = New System.Drawing.Point(606, 353)
+        Me.lblTotalSaldo.Location = New System.Drawing.Point(59, 399)
         Me.lblTotalSaldo.Name = "lblTotalSaldo"
         Me.lblTotalSaldo.Size = New System.Drawing.Size(114, 18)
         Me.lblTotalSaldo.TabIndex = 14
         Me.lblTotalSaldo.Text = "SALDO: S/ 0.00"
+        Me.lblTotalSaldo.AutoSize = True
+        Me.lblTotalSaldo.Anchor = System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left
         '
         'btnVerDetalle
         '
         Me.btnVerDetalle.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnVerDetalle.Location = New System.Drawing.Point(194, 384)
+        Me.btnVerDetalle.Location = New System.Drawing.Point(194, 454)
+        Me.btnVerDetalle.Anchor = System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left
         Me.btnVerDetalle.Name = "btnVerDetalle"
         Me.btnVerDetalle.Size = New System.Drawing.Size(102, 23)
         Me.btnVerDetalle.TabIndex = 15
@@ -223,7 +232,8 @@ Partial Class frmListadoVentas
         'btnActualizar
         '
         Me.btnActualizar.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnActualizar.Location = New System.Drawing.Point(334, 384)
+        Me.btnActualizar.Location = New System.Drawing.Point(334, 454)
+        Me.btnActualizar.Anchor = System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left
         Me.btnActualizar.Name = "btnActualizar"
         Me.btnActualizar.Size = New System.Drawing.Size(102, 23)
         Me.btnActualizar.TabIndex = 16
@@ -233,7 +243,8 @@ Partial Class frmListadoVentas
         'btnCerrar
         '
         Me.btnCerrar.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnCerrar.Location = New System.Drawing.Point(472, 384)
+        Me.btnCerrar.Location = New System.Drawing.Point(472, 454)
+        Me.btnCerrar.Anchor = System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left
         Me.btnCerrar.Name = "btnCerrar"
         Me.btnCerrar.Size = New System.Drawing.Size(102, 23)
         Me.btnCerrar.TabIndex = 17
@@ -244,7 +255,12 @@ Partial Class frmListadoVentas
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(800, 450)
+        Me.lblResultados.Location = New System.Drawing.Point(49, 158)
+        Me.lblResultados.AutoSize = True
+        Me.lblResultados.Name = "lblResultados"
+        Me.lblResultados.Text = "Ventas encontradas: 0"
+        Me.ClientSize = New System.Drawing.Size(800, 520)
+        Me.MinimumSize = New System.Drawing.Size(816, 559)
         Me.Controls.Add(Me.pnlVentas)
         Me.Name = "frmListadoVentas"
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
@@ -275,4 +291,5 @@ Partial Class frmListadoVentas
     Friend WithEvents btnVerDetalle As Button
     Friend WithEvents lblTotalSaldo As Label
     Friend WithEvents lblTotalCobrado As Label
+    Friend WithEvents lblResultados As Label
 End Class
