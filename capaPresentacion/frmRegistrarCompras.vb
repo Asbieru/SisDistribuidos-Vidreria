@@ -23,8 +23,8 @@ Public Class frmRegistrarCompras
             cboVariante.DropDownStyle = ComboBoxStyle.DropDownList
             cboVariante.DropDownWidth = 550
 
-            nudCantidad.DecimalPlaces = 2
-            nudCantidad.Minimum = 0.01D
+            nudCantidad.DecimalPlaces = 0
+            nudCantidad.Minimum = 1D
             nudCantidad.Maximum = 1000000D
 
             nudCostoUnitario.DecimalPlaces = 2
@@ -63,10 +63,12 @@ Public Class frmRegistrarCompras
             dgvDetalle.Columns("producto").FillWeight = 200
 
             For Each nombre As String In
-                New String() {"cantidad", "costo_unitario", "subtotal"}
+                New String() {"costo_unitario", "subtotal"}
 
                 dgvDetalle.Columns(nombre).DefaultCellStyle.Format = "N2"
             Next
+
+            dgvDetalle.Columns("cantidad").DefaultCellStyle.Format = "N0"
 
             cargarVariantes()
             limpiar()
@@ -145,7 +147,12 @@ Public Class frmRegistrarCompras
             Return
         End If
 
-        If nudCantidad.Value <= 0 OrElse nudCostoUnitario.Value <= 0 Then
+        If nudCantidad.Value < 1D OrElse nudCantidad.Value <> Decimal.Truncate(nudCantidad.Value) Then
+            MessageBox.Show("La cantidad debe ser un número entero desde 1.")
+            Return
+        End If
+
+        If nudCostoUnitario.Value <= 0 Then
             MessageBox.Show("La cantidad y el costo deben ser mayores a cero.")
             Return
         End If
