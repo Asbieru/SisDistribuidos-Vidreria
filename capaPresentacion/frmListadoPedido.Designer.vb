@@ -217,7 +217,7 @@ Partial Class frmListadoPedido
         Me.Controls.Add(Me.txtBuscar)
         Me.Controls.Add(Me.tblPedidos)
         Me.Name = "frmListadoPedido"
-        Me.Text = "frmListadoPedido"
+        Me.Text = "Listado de pedidos"
         CType(Me.tblPedidos, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()

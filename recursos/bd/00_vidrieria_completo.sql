@@ -71,7 +71,7 @@ IF OBJECT_ID(N'dbo.usuario_preferencias', N'U') IS NULL
 CREATE TABLE dbo.usuario_preferencias (
     id_usuario  INT PRIMARY KEY,
     tema        NVARCHAR(10) NOT NULL DEFAULT 'CLARO'
-        CHECK (tema IN ('CLARO','OSCURO')),
+        CHECK (tema IN ('CLARO','OSCURO','AZULCLARO','AZULOSCURO')),
     fuente      NVARCHAR(50) NOT NULL DEFAULT 'Arial',
     CONSTRAINT fk_pref_usuario FOREIGN KEY (id_usuario)
         REFERENCES dbo.usuarios(id_usuario) ON DELETE CASCADE

@@ -32,6 +32,7 @@ Partial Class MenuInicio
         Me.smnVCompra = New System.Windows.Forms.ToolStripMenuItem()
         Me.smnVPedido = New System.Windows.Forms.ToolStripMenuItem()
         Me.smnVInventario = New System.Windows.Forms.ToolStripMenuItem()
+        Me.smnVVentas = New System.Windows.Forms.ToolStripMenuItem()
         Me.MantenimientosToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.smnUsuarios = New System.Windows.Forms.ToolStripMenuItem()
         Me.smnClientes = New System.Windows.Forms.ToolStripMenuItem()
@@ -54,7 +55,8 @@ Partial Class MenuInicio
         Me.toolCotizar = New System.Windows.Forms.ToolStripButton()
         Me.ToolStripSeparator1 = New System.Windows.Forms.ToolStripSeparator()
         Me.toolInventario = New System.Windows.Forms.ToolStripButton()
-        Me.smnVVentas = New System.Windows.Forms.ToolStripMenuItem()
+        Me.AzulClaroToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.AzulOscuroToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.menu.SuspendLayout()
         Me.stripDatos.SuspendLayout()
         Me.toolBarra.SuspendLayout()
@@ -106,20 +108,26 @@ Partial Class MenuInicio
         'smnVCompra
         '
         Me.smnVCompra.Name = "smnVCompra"
-        Me.smnVCompra.Size = New System.Drawing.Size(180, 22)
+        Me.smnVCompra.Size = New System.Drawing.Size(146, 22)
         Me.smnVCompra.Text = "Ver Compras"
         '
         'smnVPedido
         '
         Me.smnVPedido.Name = "smnVPedido"
-        Me.smnVPedido.Size = New System.Drawing.Size(180, 22)
+        Me.smnVPedido.Size = New System.Drawing.Size(146, 22)
         Me.smnVPedido.Text = "Ver Pedidos"
         '
         'smnVInventario
         '
         Me.smnVInventario.Name = "smnVInventario"
-        Me.smnVInventario.Size = New System.Drawing.Size(180, 22)
+        Me.smnVInventario.Size = New System.Drawing.Size(146, 22)
         Me.smnVInventario.Text = "Ver Inventario"
+        '
+        'smnVVentas
+        '
+        Me.smnVVentas.Name = "smnVVentas"
+        Me.smnVVentas.Size = New System.Drawing.Size(146, 22)
+        Me.smnVVentas.Text = "Ver Ventas"
         '
         'MantenimientosToolStripMenuItem
         '
@@ -161,7 +169,7 @@ Partial Class MenuInicio
         '
         'TemaToolStripMenuItem
         '
-        Me.TemaToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ClaroToolStripMenuItem, Me.OscuroToolStripMenuItem})
+        Me.TemaToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ClaroToolStripMenuItem, Me.OscuroToolStripMenuItem, Me.AzulClaroToolStripMenuItem, Me.AzulOscuroToolStripMenuItem})
         Me.TemaToolStripMenuItem.Name = "TemaToolStripMenuItem"
         Me.TemaToolStripMenuItem.Size = New System.Drawing.Size(296, 22)
         Me.TemaToolStripMenuItem.Text = "Tema"
@@ -169,13 +177,13 @@ Partial Class MenuInicio
         'ClaroToolStripMenuItem
         '
         Me.ClaroToolStripMenuItem.Name = "ClaroToolStripMenuItem"
-        Me.ClaroToolStripMenuItem.Size = New System.Drawing.Size(112, 22)
+        Me.ClaroToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
         Me.ClaroToolStripMenuItem.Text = "Claro"
         '
         'OscuroToolStripMenuItem
         '
         Me.OscuroToolStripMenuItem.Name = "OscuroToolStripMenuItem"
-        Me.OscuroToolStripMenuItem.Size = New System.Drawing.Size(112, 22)
+        Me.OscuroToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
         Me.OscuroToolStripMenuItem.Text = "Oscuro"
         '
         'CerrarTodasLasVentanasToolStripMenuItem
@@ -278,11 +286,17 @@ Partial Class MenuInicio
         Me.toolInventario.Tag = "Inventario"
         Me.toolInventario.Text = "Inventario"
         '
-        'smnVVentas
+        'AzulClaroToolStripMenuItem
         '
-        Me.smnVVentas.Name = "smnVVentas"
-        Me.smnVVentas.Size = New System.Drawing.Size(180, 22)
-        Me.smnVVentas.Text = "Ver Ventas"
+        Me.AzulClaroToolStripMenuItem.Name = "AzulClaroToolStripMenuItem"
+        Me.AzulClaroToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
+        Me.AzulClaroToolStripMenuItem.Text = "Azul Claro"
+        '
+        'AzulOscuroToolStripMenuItem
+        '
+        Me.AzulOscuroToolStripMenuItem.Name = "AzulOscuroToolStripMenuItem"
+        Me.AzulOscuroToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
+        Me.AzulOscuroToolStripMenuItem.Text = "Azul Oscuro"
         '
         'MenuInicio
         '
@@ -299,7 +313,7 @@ Partial Class MenuInicio
         Me.IsMdiContainer = True
         Me.MainMenuStrip = Me.menu
         Me.Name = "MenuInicio"
-        Me.Text = "Página de Incio"
+        Me.Text = "Página de Inicio"
         Me.WindowState = System.Windows.Forms.FormWindowState.Maximized
         Me.menu.ResumeLayout(False)
         Me.menu.PerformLayout()
@@ -344,4 +358,6 @@ Partial Class MenuInicio
     Friend WithEvents lblRol As ToolStripStatusLabel
     Friend WithEvents txtRol As ToolStripStatusLabel
     Friend WithEvents smnVVentas As ToolStripMenuItem
+    Friend WithEvents AzulClaroToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents AzulOscuroToolStripMenuItem As ToolStripMenuItem
 End Class

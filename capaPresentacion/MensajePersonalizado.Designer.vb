@@ -94,7 +94,7 @@ Partial Class MensajePersonalizado
         Me.MinimizeBox = False
         Me.Name = "MensajePersonalizado"
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
-        Me.Text = "MensajePersonalizado"
+        Me.Text = "Mensaje"
         Me.ResumeLayout(False)
         Me.PerformLayout()
 

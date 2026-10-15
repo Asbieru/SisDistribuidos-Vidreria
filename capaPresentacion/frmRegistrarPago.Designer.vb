@@ -250,7 +250,7 @@ Partial Class frmRegistrarPago
         Me.Controls.Add(Me.pnlProceso)
         Me.Controls.Add(Me.Panel1)
         Me.Name = "frmRegistrarPago"
-        Me.Text = "frmRegistrarPago"
+        Me.Text = "Registrar pago"
         Me.Panel1.ResumeLayout(False)
         Me.Panel1.PerformLayout()
         Me.pnlProceso.ResumeLayout(False)

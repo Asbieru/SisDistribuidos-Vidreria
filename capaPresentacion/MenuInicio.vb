@@ -16,9 +16,13 @@ Public Class MenuInicio
         ' Status strip
         stripDatos.BackColor = p.Fondo
         AplicarStatusStrip(stripDatos.Items, p)
-        ' Imagen de fondo según el tema
-        Dim sufijo As String = If(tema.Equals("OSCURO"), "Oscuro", "Claro")
+        ' Imagen de fondo según el tema (los temas azules caen a claro/oscuro si no tienen la suya)
+        Dim sufijo As String = Temas.Carpeta(tema)
         Dim rutaFondo As String = Path.Combine(Application.StartupPath, "Imagenes", "Fondos", "fondoInicio" & sufijo & ".jpg")
+        If Not File.Exists(rutaFondo) Then
+            sufijo = If(Temas.EsOscuro(tema), "Oscuro", "Claro")
+            rutaFondo = Path.Combine(Application.StartupPath, "Imagenes", "Fondos", "fondoInicio" & sufijo & ".jpg")
+        End If
         If File.Exists(rutaFondo) Then
             Dim fondoViejo As Image = Me.BackgroundImage
             Me.BackgroundImage = Image.FromFile(rutaFondo)
@@ -46,14 +50,18 @@ Public Class MenuInicio
     End Sub
 
     Private Sub AplicarTemaToolStrip(items As ToolStripItemCollection, p As Paleta)
-        Dim carpeta As String = If(tema.Equals("OSCURO"), "Oscuro", "Claro")
+        Dim carpeta As String = Temas.Carpeta(tema)
+        Dim baseIconos As String = Path.Combine(Application.StartupPath, "Imagenes", "Iconos")
+        If Not Directory.Exists(Path.Combine(baseIconos, carpeta)) Then
+            carpeta = If(Temas.EsOscuro(tema), "Oscuro", "Claro")
+        End If
         For Each item As ToolStripItem In items
             item.ForeColor = p.Texto
             item.BackColor = p.Fondo
 
             Dim nombreIcono As String = If(item.Tag IsNot Nothing, item.Tag.ToString(), item.Name)
             If Not String.IsNullOrEmpty(nombreIcono) Then
-                Dim ruta As String = Path.Combine(Application.StartupPath, "Imagenes", "Iconos", carpeta, nombreIcono & ".png")
+                Dim ruta As String = Path.Combine(baseIconos, carpeta, nombreIcono & ".png")
                 If File.Exists(ruta) Then
                     Dim imgVieja As Image = item.Image
                     item.Image = Image.FromFile(ruta)
@@ -408,5 +416,13 @@ Public Class MenuInicio
                 ex.Message, "Ventas",
                 MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
+    End Sub
+
+    Private Sub AzulClaroToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles AzulClaroToolStripMenuItem.Click
+        CambiarTema("AZULCLARO")
+    End Sub
+
+    Private Sub AzulOscuroToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles AzulOscuroToolStripMenuItem.Click
+        CambiarTema("AZULOSCURO")
     End Sub
 End Class

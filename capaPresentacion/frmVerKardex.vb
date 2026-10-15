@@ -71,7 +71,7 @@ Public Class frmVerKardex
     ' Entradas en verde y salidas en rojo
     Private Sub dgvMovimientos_CellFormatting(sender As Object, e As DataGridViewCellFormattingEventArgs) Handles dgvMovimientos.CellFormatting
         If e.RowIndex < 0 OrElse dgvMovimientos.Columns(e.ColumnIndex).Name <> "tipo" Then Return
-        Dim oscuro As Boolean = tema.Equals("OSCURO")
+        Dim oscuro As Boolean = Temas.EsOscuro(tema)
         Select Case e.Value?.ToString()
             Case "ENTRADA" : e.CellStyle.ForeColor = If(oscuro, Color.LightGreen, Color.DarkGreen)
             Case "SALIDA" : e.CellStyle.ForeColor = If(oscuro, Color.LightCoral, Color.DarkRed)

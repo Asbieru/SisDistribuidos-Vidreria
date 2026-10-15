@@ -25,6 +25,20 @@ Module Temas
                 p.BotonTexto = Color.White
                 p.BotonFondo = Color.Gray
                 p.Acento = Color.LightBlue
+            Case "AZULCLARO"
+                p.Fondo = Color.FromArgb(235, 244, 255)
+                p.FondoPanel = Color.FromArgb(205, 225, 245)
+                p.Texto = Color.FromArgb(12, 40, 80)
+                p.BotonTexto = Color.White
+                p.BotonFondo = Color.FromArgb(51, 122, 183)
+                p.Acento = Color.FromArgb(0, 90, 158)
+            Case "AZULOSCURO"
+                p.Fondo = Color.FromArgb(16, 28, 52)
+                p.FondoPanel = Color.FromArgb(26, 42, 74)
+                p.Texto = Color.White
+                p.BotonTexto = Color.White
+                p.BotonFondo = Color.FromArgb(40, 70, 120)
+                p.Acento = Color.FromArgb(120, 190, 255)
             Case "CLARO"
                 p.Fondo = Color.White
                 p.FondoPanel = Color.LightGray
@@ -34,5 +48,21 @@ Module Temas
                 p.Acento = Color.DarkBlue
         End Select
         Return p
+    End Function
+
+    ' True para los temas de fondo oscuro (oscuridad del texto/fondo).
+    Public Function EsOscuro(tema As String) As Boolean
+        Return tema = "OSCURO" OrElse tema = "AZULOSCURO"
+    End Function
+
+    ' Carpeta de imagenes/iconos del tema. Los temas azules pueden tener su
+    ' propia carpeta; si no existe, en MenuInicio se cae a la equivalente.
+    Public Function Carpeta(tema As String) As String
+        Select Case tema
+            Case "AZULCLARO" : Return "AzulClaro"
+            Case "AZULOSCURO" : Return "AzulOscuro"
+            Case "OSCURO" : Return "Oscuro"
+            Case Else : Return "Claro"
+        End Select
     End Function
 End Module

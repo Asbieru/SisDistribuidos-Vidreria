@@ -245,7 +245,7 @@ Partial Class frmListadoProductos
         Me.Margin = New System.Windows.Forms.Padding(2)
         Me.Name = "frmListadoProductos"
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
-        Me.Text = "frmListadoProductos"
+        Me.Text = "Listado de productos"
         Me.Panel2.ResumeLayout(False)
         Me.Panel2.PerformLayout()
         CType(Me.dgvProductos, System.ComponentModel.ISupportInitialize).EndInit()

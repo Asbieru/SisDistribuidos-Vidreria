@@ -31,7 +31,7 @@ Public Class frmRegistrarPago
         lblSubTitulo.ForeColor = p.Texto
         msj.ForeColor = ColorAlerta(tema)
 
-        Text = "Registrar Pago"
+        Text = "Registrar pago"
         lblTitulo.Text = "Registrar Pago"
 
         ' Desde el menú no hay pedido: se ofrece buscarlo y el proceso queda oculto

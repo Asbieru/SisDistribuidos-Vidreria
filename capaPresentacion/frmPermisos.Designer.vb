@@ -212,7 +212,7 @@ Partial Class frmPermisos
         Me.ClientSize = New System.Drawing.Size(987, 594)
         Me.Controls.Add(Me.Panel2)
         Me.Name = "frmPermisos"
-        Me.Text = "frmPermisos"
+        Me.Text = "Gestión de permisos"
         Me.Panel2.ResumeLayout(False)
         Me.Panel2.PerformLayout()
         Me.ResumeLayout(False)

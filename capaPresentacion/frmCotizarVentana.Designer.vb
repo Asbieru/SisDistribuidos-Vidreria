@@ -414,7 +414,7 @@ Partial Class frmCotizarVentana
         Me.Controls.Add(Me.Panel1)
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.Name = "frmCotizarVentana"
-        Me.Text = "frmCotizarVentana"
+        Me.Text = "Cotizar ventana"
         Me.Panel1.ResumeLayout(False)
         Me.Panel1.PerformLayout()
         Me.Panel2.ResumeLayout(False)

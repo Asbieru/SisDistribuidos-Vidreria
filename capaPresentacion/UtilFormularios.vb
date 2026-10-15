@@ -11,14 +11,14 @@ Module UtilFormularios
     ' ---------------- Ventanas dentro del menu (MDI) ----------------
 
     ' Los formularios que se abren dentro del menu principal no deben poder
-    ' maximizarse ni cambiar de tamano: borde fijo y sin botones de
-    ' maximizar/minimizar. Solo aplica cuando el formulario es ventana hija
-    ' del menu (no cuando se abre como dialogo con ShowDialog).
+    ' maximizarse ni cambiar de tamano (si minimizarse): borde fijo, con boton
+    ' de minimizar pero sin el de maximizar. Solo aplica cuando el formulario es
+    ' ventana hija del menu (no cuando se abre como dialogo con ShowDialog).
     Public Sub ComoVentanaHija(frm As Form)
         If frm Is Nothing Then Return
         frm.FormBorderStyle = FormBorderStyle.FixedSingle
         frm.MaximizeBox = False
-        frm.MinimizeBox = False
+        frm.MinimizeBox = True
     End Sub
 
     ' Aproxima un monto a soles enteros (redondeo comercial: el .5 sube)
@@ -33,13 +33,45 @@ Module UtilFormularios
         AplicarTemaControles(frm.Controls, p)
     End Sub
 
+    ' Los botones con estilo del sistema ignoran el BackColor y dibujan un borde
+    ' que no coincide con el: se pasan a plano y se pinta el borde del mismo color
+    ' de fondo, quedando un borde que coincide con el color elegido.
+    Public Sub AplicarEstiloBoton(btn As Button, p As Paleta)
+        btn.UseVisualStyleBackColor = False
+        btn.FlatStyle = FlatStyle.Flat
+        btn.BackColor = p.BotonFondo
+        btn.ForeColor = p.BotonTexto
+        btn.FlatAppearance.BorderColor = p.BotonFondo
+        btn.FlatAppearance.BorderSize = 1
+        btn.FlatAppearance.MouseOverBackColor = ControlPaint.Light(p.BotonFondo, 0.25F)
+        btn.FlatAppearance.MouseDownBackColor = ControlPaint.Dark(p.BotonFondo, 0.1F)
+    End Sub
+
+    ' Los campos de texto traen un borde 3D que no coincide con el fondo: se deja
+    ' un borde simple y se colorean con el tema (fondo y texto).
+    Public Sub AplicarEstiloCampo(campo As Control, p As Paleta)
+        campo.BackColor = p.Fondo
+        campo.ForeColor = p.Texto
+        If TypeOf campo Is TextBoxBase Then
+            DirectCast(campo, TextBoxBase).BorderStyle = BorderStyle.FixedSingle
+        ElseIf TypeOf campo Is NumericUpDown Then
+            DirectCast(campo, NumericUpDown).BorderStyle = BorderStyle.FixedSingle
+        End If
+    End Sub
+
     Private Sub AplicarTemaControles(controles As Control.ControlCollection, p As Paleta)
         For Each c As Control In controles
             If TypeOf c Is Button Then
-                c.ForeColor = p.BotonTexto
-                c.BackColor = p.BotonFondo
+                AplicarEstiloBoton(DirectCast(c, Button), p)
+            ElseIf TypeOf c Is ComboBox Then
+                Dim cb As ComboBox = DirectCast(c, ComboBox)
+                cb.FlatStyle = FlatStyle.Flat
+                cb.BackColor = p.Fondo
+                cb.ForeColor = p.Texto
+            ElseIf TypeOf c Is TextBoxBase OrElse TypeOf c Is NumericUpDown Then
+                AplicarEstiloCampo(c, p)
             ElseIf TypeOf c Is DataGridView Then
-                Dim dgv As DataGridView = CType(c, DataGridView)
+                Dim dgv As DataGridView = DirectCast(c, DataGridView)
                 dgv.BackgroundColor = p.Fondo
                 dgv.DefaultCellStyle.BackColor = p.Fondo
                 dgv.DefaultCellStyle.ForeColor = p.Texto
@@ -56,12 +88,12 @@ Module UtilFormularios
     End Sub
 
     Public Function ColorAlerta(tema As String) As Color
-        Return If(tema.Equals("OSCURO"), Color.LightCoral, Color.DarkRed)
+        Return If(Temas.EsOscuro(tema), Color.LightCoral, Color.DarkRed)
     End Function
 
     ' Fondo de las filas que están en o por debajo del stock mínimo
     Public Function ColorBajoMinimo(tema As String) As Color
-        Return If(tema.Equals("OSCURO"), Color.FromArgb(100, 30, 30), Color.MistyRose)
+        Return If(Temas.EsOscuro(tema), Color.FromArgb(100, 30, 30), Color.MistyRose)
     End Function
 
     ' ---------------- Grillas ----------------

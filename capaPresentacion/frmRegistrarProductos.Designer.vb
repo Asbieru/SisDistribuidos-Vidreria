@@ -242,7 +242,7 @@ Partial Class frmRegistrarProductos
         Me.Controls.Add(Me.Panel2)
         Me.Name = "frmRegistrarProductos"
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent
-        Me.Text = "frmRegistrarProductos"
+        Me.Text = "Registrar producto"
         Me.Panel2.ResumeLayout(False)
         Me.Panel2.PerformLayout()
         Me.ResumeLayout(False)

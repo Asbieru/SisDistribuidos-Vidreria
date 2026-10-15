@@ -89,3 +89,26 @@ GO
 UPDATE dbo.productos SET categoria = 'ACCESORIO', tipo = 'TARUGO',   color = 'PLASTICO'      WHERE id_producto = 2;
 UPDATE dbo.productos SET categoria = 'ACCESORIO', tipo = 'TORNILLO', color = 'AUTORROSCANTE' WHERE id_producto = 3;
 GO
+
+-- ------------------------------------------------------------
+-- 5) Nuevos temas de la interfaz (azul claro / azul oscuro).
+--    usuario_preferencias.tema tenia un CHECK que solo permitia
+--    CLARO y OSCURO: hay que reemplazarlo para aceptar los nuevos
+--    valores. (No hay tabla de temas, la preferencia se guarda por
+--    usuario en usuario_preferencias.tema.)
+-- ------------------------------------------------------------
+DECLARE @ck SYSNAME, @sql NVARCHAR(MAX);
+SELECT @ck = name
+FROM sys.check_constraints
+WHERE parent_object_id = OBJECT_ID(N'dbo.usuario_preferencias')
+  AND definition LIKE N'%tema%';
+
+IF @ck IS NOT NULL
+BEGIN
+    SET @sql = N'ALTER TABLE dbo.usuario_preferencias DROP CONSTRAINT ' + QUOTENAME(@ck) + N';';
+    EXEC sp_executesql @sql;
+END
+
+ALTER TABLE dbo.usuario_preferencias ADD CONSTRAINT ck_pref_tema
+    CHECK (tema IN ('CLARO', 'OSCURO', 'AZULCLARO', 'AZULOSCURO'));
+GO

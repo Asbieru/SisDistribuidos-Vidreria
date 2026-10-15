@@ -26,10 +26,10 @@ Public Class MensajePersonalizado
 
     Public Sub modoError()
         temaColor()
-        If tema.Equals("CLARO") Then
-            lblTitulo.ForeColor = Color.DarkRed
-        ElseIf tema.Equals("OSCURO") Then
+        If Temas.EsOscuro(tema) Then
             lblTitulo.ForeColor = Color.LightCoral
+        Else
+            lblTitulo.ForeColor = Color.DarkRed
         End If
         btnAceptar.Visible = False
         btnCancelar.Text = "Cerrar"
