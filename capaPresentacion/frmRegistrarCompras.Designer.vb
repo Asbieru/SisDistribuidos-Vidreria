@@ -34,6 +34,7 @@ Partial Class frmRegistrarCompras
         Me.nudCantidad = New System.Windows.Forms.NumericUpDown()
         Me.txtProductoSeleccionado = New System.Windows.Forms.TextBox()
         Me.btnBuscarProducto = New System.Windows.Forms.Button()
+        Me.btnCancelarEdicion = New System.Windows.Forms.Button()
         Me.lblCosto = New System.Windows.Forms.Label()
         Me.lblCantidad = New System.Windows.Forms.Label()
         Me.lblProducto = New System.Windows.Forms.Label()
@@ -67,6 +68,7 @@ Partial Class frmRegistrarCompras
         Me.pnlRegistroCompra.Controls.Add(Me.nudCantidad)
         Me.pnlRegistroCompra.Controls.Add(Me.txtProductoSeleccionado)
         Me.pnlRegistroCompra.Controls.Add(Me.btnBuscarProducto)
+        Me.pnlRegistroCompra.Controls.Add(Me.btnCancelarEdicion)
         Me.pnlRegistroCompra.Controls.Add(Me.lblCosto)
         Me.pnlRegistroCompra.Controls.Add(Me.lblCantidad)
         Me.pnlRegistroCompra.Controls.Add(Me.lblProducto)
@@ -157,7 +159,7 @@ Partial Class frmRegistrarCompras
         '
         Me.btnAgregarDetalle.AutoSize = True
         Me.btnAgregarDetalle.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnAgregarDetalle.Location = New System.Drawing.Point(236, 290)
+        Me.btnAgregarDetalle.Location = New System.Drawing.Point(38, 290)
         Me.btnAgregarDetalle.Name = "btnAgregarDetalle"
         Me.btnAgregarDetalle.Size = New System.Drawing.Size(111, 31)
         Me.btnAgregarDetalle.TabIndex = 15
@@ -199,6 +201,13 @@ Partial Class frmRegistrarCompras
         Me.btnBuscarProducto.Text = "BUSCAR PRODUCTO"
         Me.btnBuscarProducto.TabIndex = 22
         Me.btnBuscarProducto.UseVisualStyleBackColor = True
+        Me.btnCancelarEdicion.Location = New System.Drawing.Point(300, 290)
+        Me.btnCancelarEdicion.Size = New System.Drawing.Size(170, 31)
+        Me.btnCancelarEdicion.Name = "btnCancelarEdicion"
+        Me.btnCancelarEdicion.Text = "CANCELAR EDICIÓN"
+        Me.btnCancelarEdicion.TabIndex = 23
+        Me.btnCancelarEdicion.Visible = False
+        Me.btnCancelarEdicion.UseVisualStyleBackColor = True
         '
         'lblCosto
         '
@@ -342,6 +351,7 @@ Partial Class frmRegistrarCompras
     Friend WithEvents nudCantidad As NumericUpDown
     Friend WithEvents txtProductoSeleccionado As TextBox
     Friend WithEvents btnBuscarProducto As Button
+    Friend WithEvents btnCancelarEdicion As Button
     Friend WithEvents lblCosto As Label
     Friend WithEvents lblCantidad As Label
     Friend WithEvents lblProducto As Label

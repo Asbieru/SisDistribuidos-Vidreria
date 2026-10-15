@@ -12,6 +12,35 @@ Public Class frmRegistrarCompras
     Private detalle As DataTable
     Private idCompraActual As Integer = 0
     Private detalleEnEdicion As DataRow = Nothing
+    Private estadoGuardado As String = Nothing
+
+    Private Function estadoCompra() As String
+        Dim estado As New System.Text.StringBuilder()
+        For Each valor As String In {txtProveedor.Text, dtpFecha.Value.Date.Ticks.ToString(),
+            cboMotivo.Text, If(nudPedidoOrigen.Enabled, nudPedidoOrigen.Value.ToString(), ""),
+            If(detalle Is Nothing, "", detalle.Rows.Count.ToString())}
+            estado.Append(valor.Length).Append(":"c).Append(valor)
+        Next
+        If detalle IsNot Nothing Then
+            For Each fila As DataRow In detalle.Rows
+                For Each valor As Object In fila.ItemArray
+                    Dim texto As String = Convert.ToString(valor, Globalization.CultureInfo.InvariantCulture)
+                    estado.Append(texto.Length).Append(":"c).Append(texto)
+                Next
+            Next
+        End If
+        Return estado.ToString()
+    End Function
+
+    Private Sub frmRegistrarCompras_FormClosing(sender As Object, e As FormClosingEventArgs) Handles MyBase.FormClosing
+        If estadoGuardado Is Nothing Then Return
+        Dim entradaPendiente As Boolean = idVarianteSeleccionada > 0 OrElse
+            detalleEnEdicion IsNot Nothing OrElse nudCantidad.Value <> 1D OrElse nudCostoUnitario.Value <> 0D
+        If Not entradaPendiente AndAlso estadoCompra() = estadoGuardado Then Return
+        If MessageBox.Show(Me, "Hay datos sin guardar. ¿Desea cerrar y descartarlos?",
+            "Cerrar compra", MessageBoxButtons.YesNo, MessageBoxIcon.Warning,
+            MessageBoxDefaultButton.Button2) <> DialogResult.Yes Then e.Cancel = True
+    End Sub
     Private Sub frmRegistrarCompras_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         AplicarTema(Me, tema)
         btnGuardar.Enabled = False
@@ -133,27 +162,42 @@ Public Class frmRegistrarCompras
                 .StartPosition = FormStartPosition.CenterParent,
                 .MinimizeBox = False, .MaximizeBox = False}
 
-                Dim tabla As New DataGridView With {
+                Using vista As New DataView(variantes)
+                    Dim busqueda As New Panel With {.Dock = DockStyle.Top, .Height = 42}
+                    Dim etiqueta As New Label With {.Text = "Buscar producto:", .AutoSize = True, .Location = New Point(10, 13)}
+                    Dim buscar As New TextBox With {.Location = New Point(120, 9), .Width = 500,
+                    .Anchor = AnchorStyles.Top Or AnchorStyles.Left Or AnchorStyles.Right}
+                    busqueda.Controls.Add(etiqueta)
+                    busqueda.Controls.Add(buscar)
+                    AddHandler buscar.TextChanged,
+                    Sub()
+                        Dim texto As String = buscar.Text.Trim().Replace("'", "''").Replace("[", "[[]").Replace("%", "[%]").Replace("*", "[*]")
+                        vista.RowFilter = If(texto = "", "", "descripcion LIKE '%" & texto &
+                            "%' OR categoria LIKE '%" & texto & "%' OR tipo LIKE '%" & texto &
+                            "%' OR color LIKE '%" & texto & "%'")
+                    End Sub
+
+                    Dim tabla As New DataGridView With {
                     .Dock = DockStyle.Fill, .ReadOnly = True,
                     .AllowUserToAddRows = False, .AllowUserToDeleteRows = False,
                     .MultiSelect = False, .SelectionMode = DataGridViewSelectionMode.FullRowSelect,
                     .AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill,
-                    .AutoGenerateColumns = False, .DataSource = variantes}
-                Dim campos As String() = {"nombre", "categoria", "tipo", "color", "espesor_cm", "medida_cm", "unidad_costo", "precio_unitario"}
-                Dim titulos As String() = {"Producto", "Categoría", "Tipo", "Color", "Espesor (cm)", "Medida (cm)", "Unidad", "Costo unitario"}
-                For i As Integer = 0 To campos.Length - 1
-                    tabla.Columns.Add(New DataGridViewTextBoxColumn With {
+                    .AutoGenerateColumns = False, .DataSource = vista}
+                    Dim campos As String() = {"nombre", "categoria", "tipo", "color", "espesor_cm", "medida_cm", "unidad_costo", "precio_unitario"}
+                    Dim titulos As String() = {"Producto", "Categoría", "Tipo", "Color", "Espesor (cm)", "Medida (cm)", "Unidad", "Costo unitario"}
+                    For i As Integer = 0 To campos.Length - 1
+                        tabla.Columns.Add(New DataGridViewTextBoxColumn With {
                         .Name = campos(i), .DataPropertyName = campos(i), .HeaderText = titulos(i)})
-                Next
-                tabla.Columns("precio_unitario").DefaultCellStyle.Format = "N2"
-                tabla.Columns("nombre").FillWeight = 180
+                    Next
+                    tabla.Columns("precio_unitario").DefaultCellStyle.Format = "N2"
+                    tabla.Columns("nombre").FillWeight = 180
 
-                Dim acciones As New FlowLayoutPanel With {
+                    Dim acciones As New FlowLayoutPanel With {
                     .Dock = DockStyle.Bottom, .Height = 45, .FlowDirection = FlowDirection.RightToLeft,
                     .Padding = New Padding(5)}
-                Dim cancelar As New Button With {.Text = "CANCELAR", .AutoSize = True, .DialogResult = DialogResult.Cancel}
-                Dim agregar As New Button With {.Text = "AGREGAR", .AutoSize = True}
-                AddHandler agregar.Click,
+                    Dim cancelar As New Button With {.Text = "CANCELAR", .AutoSize = True, .DialogResult = DialogResult.Cancel}
+                    Dim agregar As New Button With {.Text = "AGREGAR", .AutoSize = True}
+                    AddHandler agregar.Click,
                     Sub()
                         If tabla.CurrentRow Is Nothing Then
                             MessageBox.Show(selector, "Seleccione un producto.")
@@ -164,13 +208,16 @@ Public Class frmRegistrarCompras
                             selector.DialogResult = DialogResult.OK
                         End If
                     End Sub
-                acciones.Controls.Add(cancelar)
-                acciones.Controls.Add(agregar)
-                selector.Controls.Add(tabla)
-                selector.Controls.Add(acciones)
-                selector.CancelButton = cancelar
-                AplicarTema(selector, tema)
-                If selector.ShowDialog(Me) = DialogResult.OK Then nudCantidad.Focus()
+                    acciones.Controls.Add(cancelar)
+                    acciones.Controls.Add(agregar)
+                    selector.Controls.Add(tabla)
+                    selector.Controls.Add(acciones)
+                    selector.Controls.Add(busqueda)
+                    selector.CancelButton = cancelar
+                    selector.ActiveControl = buscar
+                    AplicarTema(selector, tema)
+                    If selector.ShowDialog(Me) = DialogResult.OK Then nudCantidad.Focus()
+                End Using
             End Using
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Productos", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -196,6 +243,7 @@ Public Class frmRegistrarCompras
         lblModo.Text = "NUEVA COMPRA"
         actualizarTotal()
         txtProveedor.Focus()
+        estadoGuardado = estadoCompra()
     End Sub
 
     Private Sub cboMotivo_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboMotivo.SelectedIndexChanged
@@ -296,6 +344,12 @@ Public Class frmRegistrarCompras
             "Pulse ACTUALIZAR PRODUCTO para aplicar la cantidad y el costo " &
             "antes de guardar la compra.",
             "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+            Return
+        End If
+
+        If idVarianteSeleccionada > 0 Then
+            MessageBox.Show(Me, "Hay un producto seleccionado pendiente. Pulse AGREGAR antes de guardar la compra.",
+                "Producto pendiente", MessageBoxButtons.OK, MessageBoxIcon.Warning)
             Return
         End If
 
@@ -428,6 +482,7 @@ Public Class frmRegistrarCompras
             nudCostoUnitario.Value = 0
             actualizarTotal()
             txtProveedor.Focus()
+            estadoGuardado = estadoCompra()
 
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Error",
@@ -442,6 +497,11 @@ Public Class frmRegistrarCompras
         nudCantidad.Value = 1
         nudCostoUnitario.Value = 0
         btnAgregarDetalle.Text = "AGREGAR"
+        btnCancelarEdicion.Visible = False
+    End Sub
+
+    Private Sub btnCancelarEdicion_Click(sender As Object, e As EventArgs) Handles btnCancelarEdicion.Click
+        restablecerEntradaProducto()
     End Sub
 
     Private Sub dgvDetalle_CellDoubleClick(sender As Object, e As DataGridViewCellEventArgs) Handles dgvDetalle.CellDoubleClick
@@ -469,6 +529,7 @@ Public Class frmRegistrarCompras
         nudCantidad.Value = cantidad
         nudCostoUnitario.Value = costo
         btnAgregarDetalle.Text = "ACTUALIZAR PRODUCTO"
+        btnCancelarEdicion.Visible = True
         nudCantidad.Focus()
     End Sub
 End Class
