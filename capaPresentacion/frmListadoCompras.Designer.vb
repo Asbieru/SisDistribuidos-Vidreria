@@ -34,6 +34,10 @@ Partial Class frmListadoCompras
         Me.lblDesde = New System.Windows.Forms.Label()
         Me.dgvCompras = New System.Windows.Forms.DataGridView()
         Me.btnEliminar = New System.Windows.Forms.Button()
+        Me.txtBuscarProveedor = New System.Windows.Forms.TextBox()
+        Me.lblBuscarProveedor = New System.Windows.Forms.Label()
+        Me.lblResumen = New System.Windows.Forms.Label()
+        Me.btnVerDetalle = New System.Windows.Forms.Button()
         Me.pnlCompras.SuspendLayout()
         CType(Me.dgvCompras, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
@@ -41,6 +45,10 @@ Partial Class frmListadoCompras
         'pnlCompras
         '
         Me.pnlCompras.BackColor = System.Drawing.Color.White
+        Me.pnlCompras.Controls.Add(Me.txtBuscarProveedor)
+        Me.pnlCompras.Controls.Add(Me.lblBuscarProveedor)
+        Me.pnlCompras.Controls.Add(Me.lblResumen)
+        Me.pnlCompras.Controls.Add(Me.btnVerDetalle)
         Me.pnlCompras.Controls.Add(Me.btnEliminar)
         Me.pnlCompras.Controls.Add(Me.btnCerrar)
         Me.pnlCompras.Controls.Add(Me.btnModificar)
@@ -61,7 +69,7 @@ Partial Class frmListadoCompras
         '
         Me.btnCerrar.AutoSize = True
         Me.btnCerrar.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnCerrar.Location = New System.Drawing.Point(533, 364)
+        Me.btnCerrar.Location = New System.Drawing.Point(598, 364)
         Me.btnCerrar.Name = "btnCerrar"
         Me.btnCerrar.Size = New System.Drawing.Size(88, 23)
         Me.btnCerrar.TabIndex = 9
@@ -83,7 +91,7 @@ Partial Class frmListadoCompras
         '
         Me.btnNuevaCompra.AutoSize = True
         Me.btnNuevaCompra.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnNuevaCompra.Location = New System.Drawing.Point(113, 364)
+        Me.btnNuevaCompra.Location = New System.Drawing.Point(62, 364)
         Me.btnNuevaCompra.Name = "btnNuevaCompra"
         Me.btnNuevaCompra.Size = New System.Drawing.Size(115, 23)
         Me.btnNuevaCompra.TabIndex = 7
@@ -115,7 +123,7 @@ Partial Class frmListadoCompras
         'dtpHasta
         '
         Me.dtpHasta.Format = System.Windows.Forms.DateTimePickerFormat.[Short]
-        Me.dtpHasta.Location = New System.Drawing.Point(232, 41)
+        Me.dtpHasta.Location = New System.Drawing.Point(232, 80)
         Me.dtpHasta.Name = "dtpHasta"
         Me.dtpHasta.Size = New System.Drawing.Size(96, 20)
         Me.dtpHasta.TabIndex = 4
@@ -123,7 +131,7 @@ Partial Class frmListadoCompras
         'dtpDesde
         '
         Me.dtpDesde.Format = System.Windows.Forms.DateTimePickerFormat.[Short]
-        Me.dtpDesde.Location = New System.Drawing.Point(232, 80)
+        Me.dtpDesde.Location = New System.Drawing.Point(232, 41)
         Me.dtpDesde.Name = "dtpDesde"
         Me.dtpDesde.Size = New System.Drawing.Size(96, 20)
         Me.dtpDesde.TabIndex = 3
@@ -165,12 +173,36 @@ Partial Class frmListadoCompras
         '
         Me.btnEliminar.AutoSize = True
         Me.btnEliminar.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnEliminar.Location = New System.Drawing.Point(406, 364)
+        Me.btnEliminar.Location = New System.Drawing.Point(486, 364)
         Me.btnEliminar.Name = "btnEliminar"
         Me.btnEliminar.Size = New System.Drawing.Size(88, 23)
         Me.btnEliminar.TabIndex = 10
         Me.btnEliminar.Text = "ELIMINAR"
         Me.btnEliminar.UseVisualStyleBackColor = True
+        '
+        'Controles de búsqueda, resumen y consulta
+        '
+        Me.lblBuscarProveedor.Location = New System.Drawing.Point(62, 12)
+        Me.lblBuscarProveedor.AutoSize = True
+        Me.lblBuscarProveedor.Name = "lblBuscarProveedor"
+        Me.lblBuscarProveedor.Text = "Buscar proveedor:"
+        Me.txtBuscarProveedor.Location = New System.Drawing.Point(180, 9)
+        Me.txtBuscarProveedor.Size = New System.Drawing.Size(506, 20)
+        Me.txtBuscarProveedor.Name = "txtBuscarProveedor"
+        Me.txtBuscarProveedor.TabIndex = 1
+        Me.lblResumen.Location = New System.Drawing.Point(62, 338)
+        Me.lblResumen.AutoSize = True
+        Me.lblResumen.Name = "lblResumen"
+        Me.lblResumen.Text = "Compras: 0    Total: S/ 0.00"
+        Me.btnVerDetalle.Location = New System.Drawing.Point(368, 364)
+        Me.btnVerDetalle.Size = New System.Drawing.Size(106, 23)
+        Me.btnVerDetalle.Name = "btnVerDetalle"
+        Me.btnVerDetalle.Text = "VER DETALLE"
+        Me.btnVerDetalle.TabIndex = 9
+        Me.btnVerDetalle.UseVisualStyleBackColor = True
+        Me.btnModificar.Enabled = False
+        Me.btnEliminar.Enabled = False
+        Me.btnVerDetalle.Enabled = False
         '
         'frmListadoCompras
         '
@@ -199,4 +231,8 @@ Partial Class frmListadoCompras
     Friend WithEvents btnModificar As Button
     Friend WithEvents btnNuevaCompra As Button
     Friend WithEvents btnEliminar As Button
+    Friend WithEvents txtBuscarProveedor As TextBox
+    Friend WithEvents lblBuscarProveedor As Label
+    Friend WithEvents lblResumen As Label
+    Friend WithEvents btnVerDetalle As Button
 End Class
