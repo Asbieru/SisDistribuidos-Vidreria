@@ -22,6 +22,11 @@ Partial Class frmVerInventario
     'No lo modifique con el editor de código.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
+        Me.tlpContenido = New System.Windows.Forms.TableLayoutPanel()
+        Me.flpFiltros = New System.Windows.Forms.FlowLayoutPanel()
+        Me.pnlFiltro0 = New System.Windows.Forms.Panel()
+        Me.flpResumen = New System.Windows.Forms.FlowLayoutPanel()
+        Me.flpAcciones = New System.Windows.Forms.FlowLayoutPanel()
         Me.Panel2 = New System.Windows.Forms.Panel()
         Me.lblTitulo = New System.Windows.Forms.Label()
         Me.lblCategoria = New System.Windows.Forms.Label()
@@ -42,19 +47,6 @@ Partial Class frmVerInventario
         '
         'Panel2
         '
-        Me.Panel2.Controls.Add(Me.lblTitulo)
-        Me.Panel2.Controls.Add(Me.lblCategoria)
-        Me.Panel2.Controls.Add(Me.cmbCategoria)
-        Me.Panel2.Controls.Add(Me.chkBajoMinimo)
-        Me.Panel2.Controls.Add(Me.btnActualizar)
-        Me.Panel2.Controls.Add(Me.lblAlerta)
-        Me.Panel2.Controls.Add(Me.dgvResumen)
-        Me.Panel2.Controls.Add(Me.lblCantidad)
-        Me.Panel2.Controls.Add(Me.btnEditarMinimo)
-        Me.Panel2.Controls.Add(Me.btnVerPiezas)
-        Me.Panel2.Controls.Add(Me.btnVerCajas)
-        Me.Panel2.Controls.Add(Me.btnVerKardex)
-        Me.Panel2.Controls.Add(Me.btnCerrar)
         Me.Panel2.Dock = System.Windows.Forms.DockStyle.Fill
         Me.Panel2.Location = New System.Drawing.Point(0, 0)
         Me.Panel2.Name = "Panel2"
@@ -66,6 +58,8 @@ Partial Class frmVerInventario
         Me.lblTitulo.AutoSize = True
         Me.lblTitulo.Font = New System.Drawing.Font("Microsoft Sans Serif", 15.75!, System.Drawing.FontStyle.Bold)
         Me.lblTitulo.Location = New System.Drawing.Point(21, 22)
+        Me.lblTitulo.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.lblTitulo.Margin = New System.Windows.Forms.Padding(0, 0, 0, 12)
         Me.lblTitulo.Name = "lblTitulo"
         Me.lblTitulo.Size = New System.Drawing.Size(461, 25)
         Me.lblTitulo.TabIndex = 0
@@ -73,11 +67,11 @@ Partial Class frmVerInventario
         '
         'lblCategoria
         '
-        Me.lblCategoria.AutoSize = True
+        Me.lblCategoria.AutoSize = False
         Me.lblCategoria.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
-        Me.lblCategoria.Location = New System.Drawing.Point(23, 68)
+        Me.lblCategoria.Location = New System.Drawing.Point(0, 0)
         Me.lblCategoria.Name = "lblCategoria"
-        Me.lblCategoria.Size = New System.Drawing.Size(69, 17)
+        Me.lblCategoria.Size = New System.Drawing.Size(190, 20)
         Me.lblCategoria.TabIndex = 1
         Me.lblCategoria.Text = "Categoría"
         '
@@ -85,9 +79,10 @@ Partial Class frmVerInventario
         '
         Me.cmbCategoria.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.cmbCategoria.FormattingEnabled = True
-        Me.cmbCategoria.Location = New System.Drawing.Point(23, 88)
+        Me.cmbCategoria.Location = New System.Drawing.Point(0, 24)
+        Me.cmbCategoria.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right
         Me.cmbCategoria.Name = "cmbCategoria"
-        Me.cmbCategoria.Size = New System.Drawing.Size(180, 24)
+        Me.cmbCategoria.Size = New System.Drawing.Size(190, 24)
         Me.cmbCategoria.TabIndex = 2
         '
         'chkBajoMinimo
@@ -95,8 +90,10 @@ Partial Class frmVerInventario
         Me.chkBajoMinimo.AutoSize = True
         Me.chkBajoMinimo.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
         Me.chkBajoMinimo.Location = New System.Drawing.Point(222, 89)
+        Me.chkBajoMinimo.Margin = New System.Windows.Forms.Padding(0, 18, 8, 12)
+        Me.chkBajoMinimo.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left
         Me.chkBajoMinimo.Name = "chkBajoMinimo"
-        Me.chkBajoMinimo.Size = New System.Drawing.Size(196, 21)
+        Me.chkBajoMinimo.Size = New System.Drawing.Size(220, 34)
         Me.chkBajoMinimo.TabIndex = 3
         Me.chkBajoMinimo.Text = "Solo bajo el stock mínimo"
         Me.chkBajoMinimo.UseVisualStyleBackColor = True
@@ -105,8 +102,10 @@ Partial Class frmVerInventario
         '
         Me.btnActualizar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
         Me.btnActualizar.Location = New System.Drawing.Point(432, 85)
+        Me.btnActualizar.Margin = New System.Windows.Forms.Padding(0, 18, 8, 12)
+        Me.btnActualizar.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left
         Me.btnActualizar.Name = "btnActualizar"
-        Me.btnActualizar.Size = New System.Drawing.Size(97, 28)
+        Me.btnActualizar.Size = New System.Drawing.Size(120, 34)
         Me.btnActualizar.TabIndex = 4
         Me.btnActualizar.Text = "ACTUALIZAR"
         Me.btnActualizar.UseVisualStyleBackColor = True
@@ -117,6 +116,8 @@ Partial Class frmVerInventario
         Me.lblAlerta.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
         Me.lblAlerta.ForeColor = System.Drawing.Color.DarkRed
         Me.lblAlerta.Location = New System.Drawing.Point(545, 92)
+        Me.lblAlerta.Margin = New System.Windows.Forms.Padding(0, 0, 20, 8)
+        Me.lblAlerta.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left
         Me.lblAlerta.Name = "lblAlerta"
         Me.lblAlerta.Size = New System.Drawing.Size(0, 13)
         Me.lblAlerta.TabIndex = 5
@@ -132,6 +133,8 @@ Partial Class frmVerInventario
         Me.dgvResumen.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
         Me.dgvResumen.Location = New System.Drawing.Point(23, 125)
         Me.dgvResumen.MultiSelect = False
+        Me.dgvResumen.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.dgvResumen.Margin = New System.Windows.Forms.Padding(0, 0, 0, 12)
         Me.dgvResumen.Name = "dgvResumen"
         Me.dgvResumen.ReadOnly = True
         Me.dgvResumen.RowHeadersVisible = False
@@ -144,10 +147,11 @@ Partial Class frmVerInventario
         '
         'lblCantidad
         '
-        Me.lblCantidad.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.lblCantidad.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left
         Me.lblCantidad.AutoSize = True
         Me.lblCantidad.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
         Me.lblCantidad.Location = New System.Drawing.Point(23, 464)
+        Me.lblCantidad.Margin = New System.Windows.Forms.Padding(0, 0, 20, 8)
         Me.lblCantidad.Name = "lblCantidad"
         Me.lblCantidad.Size = New System.Drawing.Size(178, 17)
         Me.lblCantidad.TabIndex = 7
@@ -155,56 +159,61 @@ Partial Class frmVerInventario
         '
         'btnEditarMinimo
         '
-        Me.btnEditarMinimo.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.btnEditarMinimo.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left
         Me.btnEditarMinimo.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
         Me.btnEditarMinimo.Location = New System.Drawing.Point(22, 495)
+        Me.btnEditarMinimo.Margin = New System.Windows.Forms.Padding(0, 0, 8, 8)
         Me.btnEditarMinimo.Name = "btnEditarMinimo"
-        Me.btnEditarMinimo.Size = New System.Drawing.Size(130, 28)
+        Me.btnEditarMinimo.Size = New System.Drawing.Size(120, 34)
         Me.btnEditarMinimo.TabIndex = 8
         Me.btnEditarMinimo.Text = "STOCK MÍNIMO"
         Me.btnEditarMinimo.UseVisualStyleBackColor = True
         '
         'btnVerPiezas
         '
-        Me.btnVerPiezas.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.btnVerPiezas.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left
         Me.btnVerPiezas.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
         Me.btnVerPiezas.Location = New System.Drawing.Point(164, 495)
+        Me.btnVerPiezas.Margin = New System.Windows.Forms.Padding(0, 0, 8, 8)
         Me.btnVerPiezas.Name = "btnVerPiezas"
-        Me.btnVerPiezas.Size = New System.Drawing.Size(130, 28)
+        Me.btnVerPiezas.Size = New System.Drawing.Size(110, 34)
         Me.btnVerPiezas.TabIndex = 9
         Me.btnVerPiezas.Text = "VER PIEZAS"
         Me.btnVerPiezas.UseVisualStyleBackColor = True
         '
         'btnVerCajas
         '
-        Me.btnVerCajas.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.btnVerCajas.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left
         Me.btnVerCajas.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
         Me.btnVerCajas.Location = New System.Drawing.Point(306, 495)
+        Me.btnVerCajas.Margin = New System.Windows.Forms.Padding(0, 0, 8, 8)
         Me.btnVerCajas.Name = "btnVerCajas"
-        Me.btnVerCajas.Size = New System.Drawing.Size(200, 28)
+        Me.btnVerCajas.Size = New System.Drawing.Size(160, 34)
         Me.btnVerCajas.TabIndex = 10
         Me.btnVerCajas.Text = "VER CAJAS Y ACCESORIOS"
         Me.btnVerCajas.UseVisualStyleBackColor = True
         '
         'btnVerKardex
         '
-        Me.btnVerKardex.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.btnVerKardex.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left
         Me.btnVerKardex.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
         Me.btnVerKardex.Location = New System.Drawing.Point(518, 495)
+        Me.btnVerKardex.Margin = New System.Windows.Forms.Padding(0, 0, 8, 8)
         Me.btnVerKardex.Name = "btnVerKardex"
-        Me.btnVerKardex.Size = New System.Drawing.Size(130, 28)
+        Me.btnVerKardex.Size = New System.Drawing.Size(110, 34)
         Me.btnVerKardex.TabIndex = 11
         Me.btnVerKardex.Text = "VER KARDEX"
         Me.btnVerKardex.UseVisualStyleBackColor = True
         '
         'btnCerrar
         '
-        Me.btnCerrar.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.btnCerrar.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left
         Me.btnCerrar.DialogResult = System.Windows.Forms.DialogResult.Cancel
         Me.btnCerrar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
         Me.btnCerrar.Location = New System.Drawing.Point(795, 495)
+        Me.btnCerrar.Margin = New System.Windows.Forms.Padding(16, 0, 0, 8)
         Me.btnCerrar.Name = "btnCerrar"
-        Me.btnCerrar.Size = New System.Drawing.Size(82, 28)
+        Me.btnCerrar.Size = New System.Drawing.Size(110, 34)
         Me.btnCerrar.TabIndex = 12
         Me.btnCerrar.Text = "CERRAR"
         Me.btnCerrar.UseVisualStyleBackColor = True
@@ -214,16 +223,68 @@ Partial Class frmVerInventario
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.CancelButton = Me.btnCerrar
-        Me.ClientSize = New System.Drawing.Size(900, 535)
+        Me.ClientSize = New System.Drawing.Size(960, 560)
         Me.Controls.Add(Me.Panel2)
         Me.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
-        Me.MinimumSize = New System.Drawing.Size(916, 574)
+        Me.MinimumSize = New System.Drawing.Size(800, 480)
+        Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable
         Me.Name = "frmVerInventario"
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent
         Me.Text = "Inventario - Resumen de existencias"
         Me.Panel2.ResumeLayout(False)
         Me.Panel2.PerformLayout()
         CType(Me.dgvResumen, System.ComponentModel.ISupportInitialize).EndInit()
+
+        Me.tlpContenido.Name = "tlpContenido"
+        Me.tlpContenido.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.tlpContenido.Padding = New System.Windows.Forms.Padding(24, 20, 24, 16)
+        Me.tlpContenido.ColumnCount = 1
+        Me.tlpContenido.RowCount = 5
+        Me.tlpContenido.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
+        Me.tlpContenido.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize))
+        Me.tlpContenido.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize))
+        Me.tlpContenido.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
+        Me.tlpContenido.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize))
+        Me.tlpContenido.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize))
+        Me.flpFiltros.Name = "flpFiltros"
+        Me.flpFiltros.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.flpFiltros.AutoSize = True
+        Me.flpFiltros.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+        Me.flpFiltros.WrapContents = True
+        Me.flpFiltros.Margin = New System.Windows.Forms.Padding(0)
+        Me.pnlFiltro0.Name = "pnlFiltro0"
+        Me.pnlFiltro0.Size = New System.Drawing.Size(190, 58)
+        Me.pnlFiltro0.Margin = New System.Windows.Forms.Padding(0, 0, 12, 6)
+        Me.pnlFiltro0.Controls.Add(Me.lblCategoria)
+        Me.pnlFiltro0.Controls.Add(Me.cmbCategoria)
+        Me.flpFiltros.Controls.Add(Me.pnlFiltro0)
+        Me.flpFiltros.Controls.Add(Me.chkBajoMinimo)
+        Me.flpFiltros.Controls.Add(Me.btnActualizar)
+        Me.flpResumen.Name = "flpResumen"
+        Me.flpResumen.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.flpResumen.AutoSize = True
+        Me.flpResumen.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+        Me.flpResumen.WrapContents = True
+        Me.flpResumen.Margin = New System.Windows.Forms.Padding(0, 8, 0, 8)
+        Me.flpResumen.Controls.Add(Me.lblCantidad)
+        Me.flpResumen.Controls.Add(Me.lblAlerta)
+        Me.flpAcciones.Name = "flpAcciones"
+        Me.flpAcciones.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.flpAcciones.AutoSize = True
+        Me.flpAcciones.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+        Me.flpAcciones.WrapContents = True
+        Me.flpAcciones.Margin = New System.Windows.Forms.Padding(0)
+        Me.flpAcciones.Controls.Add(Me.btnEditarMinimo)
+        Me.flpAcciones.Controls.Add(Me.btnVerPiezas)
+        Me.flpAcciones.Controls.Add(Me.btnVerCajas)
+        Me.flpAcciones.Controls.Add(Me.btnVerKardex)
+        Me.flpAcciones.Controls.Add(Me.btnCerrar)
+        Me.tlpContenido.Controls.Add(Me.lblTitulo, 0, 0)
+        Me.tlpContenido.Controls.Add(Me.flpFiltros, 0, 1)
+        Me.tlpContenido.Controls.Add(Me.dgvResumen, 0, 2)
+        Me.tlpContenido.Controls.Add(Me.flpResumen, 0, 3)
+        Me.tlpContenido.Controls.Add(Me.flpAcciones, 0, 4)
+        Me.Panel2.Controls.Add(Me.tlpContenido)
         Me.ResumeLayout(False)
 
     End Sub
@@ -242,4 +303,9 @@ Partial Class frmVerInventario
     Friend WithEvents btnVerCajas As Button
     Friend WithEvents btnVerKardex As Button
     Friend WithEvents btnCerrar As Button
+    Friend WithEvents tlpContenido As System.Windows.Forms.TableLayoutPanel
+    Friend WithEvents flpFiltros As System.Windows.Forms.FlowLayoutPanel
+    Friend WithEvents pnlFiltro0 As System.Windows.Forms.Panel
+    Friend WithEvents flpResumen As System.Windows.Forms.FlowLayoutPanel
+    Friend WithEvents flpAcciones As System.Windows.Forms.FlowLayoutPanel
 End Class

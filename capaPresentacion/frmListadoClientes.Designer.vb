@@ -15,6 +15,11 @@ Partial Class frmListadoClientes
 
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
+        Me.tlpContenido = New System.Windows.Forms.TableLayoutPanel()
+        Me.flpFiltros = New System.Windows.Forms.FlowLayoutPanel()
+        Me.pnlFiltro0 = New System.Windows.Forms.Panel()
+        Me.flpResumen = New System.Windows.Forms.FlowLayoutPanel()
+        Me.flpAcciones = New System.Windows.Forms.FlowLayoutPanel()
         Me.Panel2 = New System.Windows.Forms.Panel()
         Me.lblTitulo = New System.Windows.Forms.Label()
         Me.lblBuscar = New System.Windows.Forms.Label()
@@ -35,19 +40,6 @@ Partial Class frmListadoClientes
         '
         'Panel2
         '
-        Me.Panel2.Controls.Add(Me.lblTitulo)
-        Me.Panel2.Controls.Add(Me.lblBuscar)
-        Me.Panel2.Controls.Add(Me.txtBuscar)
-        Me.Panel2.Controls.Add(Me.btnBuscar)
-        Me.Panel2.Controls.Add(Me.btnVerTodos)
-        Me.Panel2.Controls.Add(Me.dgvClientes)
-        Me.Panel2.Controls.Add(Me.lblCantidad)
-        Me.Panel2.Controls.Add(Me.btnNuevo)
-        Me.Panel2.Controls.Add(Me.btnModificar)
-        Me.Panel2.Controls.Add(Me.btnEliminar)
-        Me.Panel2.Controls.Add(Me.btnSeleccionar)
-        Me.Panel2.Controls.Add(Me.btnCerrar)
-        Me.Panel2.Controls.Add(Me.btnHistorial)
         Me.Panel2.Dock = System.Windows.Forms.DockStyle.Fill
         Me.Panel2.Location = New System.Drawing.Point(0, 0)
         Me.Panel2.Name = "Panel2"
@@ -59,6 +51,8 @@ Partial Class frmListadoClientes
         Me.lblTitulo.AutoSize = True
         Me.lblTitulo.Font = New System.Drawing.Font("Microsoft Sans Serif", 15.75!, System.Drawing.FontStyle.Bold)
         Me.lblTitulo.Location = New System.Drawing.Point(24, 20)
+        Me.lblTitulo.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.lblTitulo.Margin = New System.Windows.Forms.Padding(0, 0, 0, 12)
         Me.lblTitulo.Name = "lblTitulo"
         Me.lblTitulo.Size = New System.Drawing.Size(263, 25)
         Me.lblTitulo.TabIndex = 0
@@ -66,41 +60,42 @@ Partial Class frmListadoClientes
         '
         'lblBuscar
         '
-        Me.lblBuscar.AutoSize = True
-        Me.lblBuscar.Location = New System.Drawing.Point(27, 69)
+        Me.lblBuscar.AutoSize = False
+        Me.lblBuscar.Location = New System.Drawing.Point(0, 0)
         Me.lblBuscar.Name = "lblBuscar"
-        Me.lblBuscar.Size = New System.Drawing.Size(191, 16)
+        Me.lblBuscar.Size = New System.Drawing.Size(400, 20)
         Me.lblBuscar.TabIndex = 1
         Me.lblBuscar.Text = "Nombre, documento o teléfono"
         '
         'txtBuscar
         '
-        Me.txtBuscar.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.txtBuscar.Location = New System.Drawing.Point(27, 93)
+        Me.txtBuscar.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right
+        Me.txtBuscar.Location = New System.Drawing.Point(0, 24)
         Me.txtBuscar.MaxLength = 150
         Me.txtBuscar.Name = "txtBuscar"
-        Me.txtBuscar.Size = New System.Drawing.Size(580, 22)
+        Me.txtBuscar.Size = New System.Drawing.Size(400, 24)
         Me.txtBuscar.TabIndex = 2
         '
         'btnBuscar
         '
-        Me.btnBuscar.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.btnBuscar.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left
         Me.btnBuscar.Location = New System.Drawing.Point(622, 87)
+        Me.btnBuscar.Margin = New System.Windows.Forms.Padding(0, 18, 8, 12)
         Me.btnBuscar.Name = "btnBuscar"
         Me.btnBuscar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
-        Me.btnBuscar.Size = New System.Drawing.Size(110, 32)
+        Me.btnBuscar.Size = New System.Drawing.Size(110, 34)
         Me.btnBuscar.TabIndex = 3
         Me.btnBuscar.Text = "BUSCAR"
         Me.btnBuscar.UseVisualStyleBackColor = True
         '
         'btnVerTodos
         '
-        Me.btnVerTodos.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.btnVerTodos.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left
         Me.btnVerTodos.Location = New System.Drawing.Point(747, 87)
+        Me.btnVerTodos.Margin = New System.Windows.Forms.Padding(0, 18, 8, 12)
         Me.btnVerTodos.Name = "btnVerTodos"
         Me.btnVerTodos.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
-        Me.btnVerTodos.Size = New System.Drawing.Size(126, 32)
+        Me.btnVerTodos.Size = New System.Drawing.Size(120, 34)
         Me.btnVerTodos.TabIndex = 4
         Me.btnVerTodos.Text = "VER TODOS"
         Me.btnVerTodos.UseVisualStyleBackColor = True
@@ -116,6 +111,8 @@ Partial Class frmListadoClientes
         Me.dgvClientes.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
         Me.dgvClientes.Location = New System.Drawing.Point(27, 139)
         Me.dgvClientes.MultiSelect = False
+        Me.dgvClientes.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.dgvClientes.Margin = New System.Windows.Forms.Padding(0, 0, 0, 12)
         Me.dgvClientes.Name = "dgvClientes"
         Me.dgvClientes.ReadOnly = True
         Me.dgvClientes.RowHeadersVisible = False
@@ -127,9 +124,10 @@ Partial Class frmListadoClientes
         '
         'lblCantidad
         '
-        Me.lblCantidad.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.lblCantidad.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left
         Me.lblCantidad.AutoSize = True
         Me.lblCantidad.Location = New System.Drawing.Point(27, 447)
+        Me.lblCantidad.Margin = New System.Windows.Forms.Padding(0, 0, 20, 8)
         Me.lblCantidad.Name = "lblCantidad"
         Me.lblCantidad.Size = New System.Drawing.Size(146, 16)
         Me.lblCantidad.TabIndex = 6
@@ -137,44 +135,48 @@ Partial Class frmListadoClientes
         '
         'btnNuevo
         '
-        Me.btnNuevo.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.btnNuevo.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left
         Me.btnNuevo.Location = New System.Drawing.Point(27, 477)
+        Me.btnNuevo.Margin = New System.Windows.Forms.Padding(0, 0, 8, 8)
         Me.btnNuevo.Name = "btnNuevo"
         Me.btnNuevo.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
-        Me.btnNuevo.Size = New System.Drawing.Size(110, 32)
+        Me.btnNuevo.Size = New System.Drawing.Size(110, 34)
         Me.btnNuevo.TabIndex = 7
         Me.btnNuevo.Text = "NUEVO"
         Me.btnNuevo.UseVisualStyleBackColor = True
         '
         'btnModificar
         '
-        Me.btnModificar.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.btnModificar.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left
         Me.btnModificar.Location = New System.Drawing.Point(152, 477)
+        Me.btnModificar.Margin = New System.Windows.Forms.Padding(0, 0, 8, 8)
         Me.btnModificar.Name = "btnModificar"
         Me.btnModificar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
-        Me.btnModificar.Size = New System.Drawing.Size(110, 32)
+        Me.btnModificar.Size = New System.Drawing.Size(110, 34)
         Me.btnModificar.TabIndex = 8
         Me.btnModificar.Text = "MODIFICAR"
         Me.btnModificar.UseVisualStyleBackColor = True
         '
         'btnEliminar
         '
-        Me.btnEliminar.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.btnEliminar.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left
         Me.btnEliminar.Location = New System.Drawing.Point(277, 477)
+        Me.btnEliminar.Margin = New System.Windows.Forms.Padding(0, 0, 8, 8)
         Me.btnEliminar.Name = "btnEliminar"
         Me.btnEliminar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
-        Me.btnEliminar.Size = New System.Drawing.Size(110, 32)
+        Me.btnEliminar.Size = New System.Drawing.Size(110, 34)
         Me.btnEliminar.TabIndex = 9
         Me.btnEliminar.Text = "ELIMINAR"
         Me.btnEliminar.UseVisualStyleBackColor = True
         '
         'btnSeleccionar
         '
-        Me.btnSeleccionar.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.btnSeleccionar.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left
         Me.btnSeleccionar.Location = New System.Drawing.Point(597, 477)
+        Me.btnSeleccionar.Margin = New System.Windows.Forms.Padding(0, 0, 8, 8)
         Me.btnSeleccionar.Name = "btnSeleccionar"
         Me.btnSeleccionar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
-        Me.btnSeleccionar.Size = New System.Drawing.Size(145, 32)
+        Me.btnSeleccionar.Size = New System.Drawing.Size(120, 34)
         Me.btnSeleccionar.TabIndex = 10
         Me.btnSeleccionar.Text = "SELECCIONAR"
         Me.btnSeleccionar.UseVisualStyleBackColor = True
@@ -182,23 +184,25 @@ Partial Class frmListadoClientes
         '
         'btnCerrar
         '
-        Me.btnCerrar.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.btnCerrar.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left
         Me.btnCerrar.DialogResult = System.Windows.Forms.DialogResult.Cancel
         Me.btnCerrar.Location = New System.Drawing.Point(763, 477)
+        Me.btnCerrar.Margin = New System.Windows.Forms.Padding(16, 0, 0, 8)
         Me.btnCerrar.Name = "btnCerrar"
         Me.btnCerrar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
-        Me.btnCerrar.Size = New System.Drawing.Size(110, 32)
+        Me.btnCerrar.Size = New System.Drawing.Size(110, 34)
         Me.btnCerrar.TabIndex = 11
         Me.btnCerrar.Text = "CERRAR"
         Me.btnCerrar.UseVisualStyleBackColor = True
         '
         'btnHistorial
         '
-        Me.btnHistorial.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.btnHistorial.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left
         Me.btnHistorial.Location = New System.Drawing.Point(402, 477)
+        Me.btnHistorial.Margin = New System.Windows.Forms.Padding(0, 0, 8, 8)
         Me.btnHistorial.Name = "btnHistorial"
         Me.btnHistorial.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
-        Me.btnHistorial.Size = New System.Drawing.Size(150, 32)
+        Me.btnHistorial.Size = New System.Drawing.Size(140, 34)
         Me.btnHistorial.TabIndex = 12
         Me.btnHistorial.Text = "VER HISTORIAL"
         Me.btnHistorial.UseVisualStyleBackColor = True
@@ -208,16 +212,68 @@ Partial Class frmListadoClientes
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.CancelButton = Me.btnCerrar
-        Me.ClientSize = New System.Drawing.Size(900, 535)
+        Me.ClientSize = New System.Drawing.Size(960, 560)
         Me.Controls.Add(Me.Panel2)
         Me.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
-        Me.MinimumSize = New System.Drawing.Size(916, 574)
+        Me.MinimumSize = New System.Drawing.Size(800, 480)
+        Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable
         Me.Name = "frmListadoClientes"
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent
         Me.Text = "Mantenimiento de clientes"
         Me.Panel2.ResumeLayout(False)
         Me.Panel2.PerformLayout()
         CType(Me.dgvClientes, System.ComponentModel.ISupportInitialize).EndInit()
+
+        Me.tlpContenido.Name = "tlpContenido"
+        Me.tlpContenido.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.tlpContenido.Padding = New System.Windows.Forms.Padding(24, 20, 24, 16)
+        Me.tlpContenido.ColumnCount = 1
+        Me.tlpContenido.RowCount = 5
+        Me.tlpContenido.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
+        Me.tlpContenido.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize))
+        Me.tlpContenido.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize))
+        Me.tlpContenido.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
+        Me.tlpContenido.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize))
+        Me.tlpContenido.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize))
+        Me.flpFiltros.Name = "flpFiltros"
+        Me.flpFiltros.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.flpFiltros.AutoSize = True
+        Me.flpFiltros.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+        Me.flpFiltros.WrapContents = True
+        Me.flpFiltros.Margin = New System.Windows.Forms.Padding(0)
+        Me.pnlFiltro0.Name = "pnlFiltro0"
+        Me.pnlFiltro0.Size = New System.Drawing.Size(400, 58)
+        Me.pnlFiltro0.Margin = New System.Windows.Forms.Padding(0, 0, 12, 6)
+        Me.pnlFiltro0.Controls.Add(Me.lblBuscar)
+        Me.pnlFiltro0.Controls.Add(Me.txtBuscar)
+        Me.flpFiltros.Controls.Add(Me.pnlFiltro0)
+        Me.flpFiltros.Controls.Add(Me.btnBuscar)
+        Me.flpFiltros.Controls.Add(Me.btnVerTodos)
+        Me.flpResumen.Name = "flpResumen"
+        Me.flpResumen.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.flpResumen.AutoSize = True
+        Me.flpResumen.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+        Me.flpResumen.WrapContents = True
+        Me.flpResumen.Margin = New System.Windows.Forms.Padding(0, 8, 0, 8)
+        Me.flpResumen.Controls.Add(Me.lblCantidad)
+        Me.flpAcciones.Name = "flpAcciones"
+        Me.flpAcciones.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.flpAcciones.AutoSize = True
+        Me.flpAcciones.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+        Me.flpAcciones.WrapContents = True
+        Me.flpAcciones.Margin = New System.Windows.Forms.Padding(0)
+        Me.flpAcciones.Controls.Add(Me.btnNuevo)
+        Me.flpAcciones.Controls.Add(Me.btnModificar)
+        Me.flpAcciones.Controls.Add(Me.btnEliminar)
+        Me.flpAcciones.Controls.Add(Me.btnHistorial)
+        Me.flpAcciones.Controls.Add(Me.btnSeleccionar)
+        Me.flpAcciones.Controls.Add(Me.btnCerrar)
+        Me.tlpContenido.Controls.Add(Me.lblTitulo, 0, 0)
+        Me.tlpContenido.Controls.Add(Me.flpFiltros, 0, 1)
+        Me.tlpContenido.Controls.Add(Me.dgvClientes, 0, 2)
+        Me.tlpContenido.Controls.Add(Me.flpResumen, 0, 3)
+        Me.tlpContenido.Controls.Add(Me.flpAcciones, 0, 4)
+        Me.Panel2.Controls.Add(Me.tlpContenido)
         Me.ResumeLayout(False)
 
     End Sub
@@ -236,4 +292,9 @@ Partial Class frmListadoClientes
     Friend WithEvents btnSeleccionar As System.Windows.Forms.Button
     Friend WithEvents btnCerrar As System.Windows.Forms.Button
     Friend WithEvents btnHistorial As System.Windows.Forms.Button
+    Friend WithEvents tlpContenido As System.Windows.Forms.TableLayoutPanel
+    Friend WithEvents flpFiltros As System.Windows.Forms.FlowLayoutPanel
+    Friend WithEvents pnlFiltro0 As System.Windows.Forms.Panel
+    Friend WithEvents flpResumen As System.Windows.Forms.FlowLayoutPanel
+    Friend WithEvents flpAcciones As System.Windows.Forms.FlowLayoutPanel
 End Class
