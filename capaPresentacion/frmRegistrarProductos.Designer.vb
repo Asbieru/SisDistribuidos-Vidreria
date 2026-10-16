@@ -187,7 +187,6 @@ Partial Class frmRegistrarProductos
         Me.txtId.Location = New System.Drawing.Point(171, 91)
         Me.txtId.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left
         Me.txtId.Margin = New System.Windows.Forms.Padding(0, 4, 8, 8)
-        Me.txtId.Width = 130
         Me.txtId.Name = "txtId"
         Me.txtId.ReadOnly = True
         Me.txtId.Size = New System.Drawing.Size(130, 22)

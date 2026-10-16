@@ -117,7 +117,8 @@ Public Class frmListadoCompras
             Dim datos As DataTable = objCompra.ObtenerDetalleParaEditar(id)
             Using ventana As New Form With {.Text = "Detalle de compra " & id.ToString(),
                 .Size = New Size(850, 450), .MinimumSize = New Size(650, 350),
-                .StartPosition = FormStartPosition.CenterParent, .MinimizeBox = False}
+                .StartPosition = FormStartPosition.CenterParent, .MinimizeBox = False,
+                .Font = New Font("Microsoft Sans Serif", 9.75F)}
                 Dim encabezado As New Label With {.Dock = DockStyle.Top, .Height = 60,
                     .Padding = New Padding(10), .Text = "Proveedor: " & cabecera.Rows(0)("proveedor").ToString() &
                     vbCrLf & "Fecha: " & CDate(cabecera.Rows(0)("fecha")).ToString("dd/MM/yyyy") &

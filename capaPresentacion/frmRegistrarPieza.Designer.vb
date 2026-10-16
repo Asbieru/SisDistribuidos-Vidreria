@@ -108,9 +108,8 @@ Partial Class frmRegistrarPieza
         Me.nudAncho.Maximum = New Decimal(New Integer() {100000, 0, 0, 0})
         Me.nudAncho.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left
         Me.nudAncho.Margin = New System.Windows.Forms.Padding(0, 4, 8, 8)
-        Me.nudAncho.Width = 225
         Me.nudAncho.Name = "nudAncho"
-        Me.nudAncho.Size = New System.Drawing.Size(130, 22)
+        Me.nudAncho.Size = New System.Drawing.Size(225, 22)
         Me.nudAncho.TabIndex = 4
         '
         'lblAlto
@@ -132,9 +131,8 @@ Partial Class frmRegistrarPieza
         Me.nudAlto.Maximum = New Decimal(New Integer() {100000, 0, 0, 0})
         Me.nudAlto.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left
         Me.nudAlto.Margin = New System.Windows.Forms.Padding(0, 4, 8, 8)
-        Me.nudAlto.Width = 225
         Me.nudAlto.Name = "nudAlto"
-        Me.nudAlto.Size = New System.Drawing.Size(130, 22)
+        Me.nudAlto.Size = New System.Drawing.Size(225, 22)
         Me.nudAlto.TabIndex = 6
         '
         'lblLargo
@@ -156,9 +154,8 @@ Partial Class frmRegistrarPieza
         Me.nudLargo.Maximum = New Decimal(New Integer() {100000, 0, 0, 0})
         Me.nudLargo.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left
         Me.nudLargo.Margin = New System.Windows.Forms.Padding(0, 4, 8, 8)
-        Me.nudLargo.Width = 225
         Me.nudLargo.Name = "nudLargo"
-        Me.nudLargo.Size = New System.Drawing.Size(130, 22)
+        Me.nudLargo.Size = New System.Drawing.Size(225, 22)
         Me.nudLargo.TabIndex = 8
         '
         'lblObs

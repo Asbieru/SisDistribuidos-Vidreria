@@ -124,9 +124,8 @@ Partial Class frmStockMinimo
         Me.nudMinimo.Maximum = New Decimal(New Integer() {100000, 0, 0, 0})
         Me.nudMinimo.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left
         Me.nudMinimo.Margin = New System.Windows.Forms.Padding(0, 4, 8, 8)
-        Me.nudMinimo.Width = 225
         Me.nudMinimo.Name = "nudMinimo"
-        Me.nudMinimo.Size = New System.Drawing.Size(130, 22)
+        Me.nudMinimo.Size = New System.Drawing.Size(225, 22)
         Me.nudMinimo.TabIndex = 6
         '
         'lblAyuda

@@ -44,17 +44,23 @@ Partial Class CambiarContraseña
         '
         resources.ApplyResources(Me.Label1, "Label1")
         Me.Label1.ForeColor = System.Drawing.Color.White
+        Me.Label1.Location = New System.Drawing.Point(152, 64)
+        Me.Label1.Size = New System.Drawing.Size(320, 34)
         Me.Label1.Name = "Label1"
         '
         'lbl1
         '
         resources.ApplyResources(Me.lbl1, "lbl1")
         Me.lbl1.ForeColor = System.Drawing.Color.White
+        Me.lbl1.Location = New System.Drawing.Point(152, 26)
+        Me.lbl1.Size = New System.Drawing.Size(320, 34)
         Me.lbl1.Name = "lbl1"
         '
         'PictureBox1
         '
         resources.ApplyResources(Me.PictureBox1, "PictureBox1")
+        Me.PictureBox1.Location = New System.Drawing.Point(24, 20)
+        Me.PictureBox1.Size = New System.Drawing.Size(88, 88)
         Me.PictureBox1.Name = "PictureBox1"
         Me.PictureBox1.TabStop = False
         '
@@ -63,6 +69,8 @@ Partial Class CambiarContraseña
         resources.ApplyResources(Me.USUARIO, "USUARIO")
         Me.USUARIO.BackColor = System.Drawing.Color.Transparent
         Me.USUARIO.ForeColor = System.Drawing.Color.White
+        Me.USUARIO.Location = New System.Drawing.Point(16, 20)
+        Me.USUARIO.Size = New System.Drawing.Size(215, 24)
         Me.USUARIO.Name = "USUARIO"
         '
         'Label2
@@ -70,6 +78,8 @@ Partial Class CambiarContraseña
         resources.ApplyResources(Me.Label2, "Label2")
         Me.Label2.BackColor = System.Drawing.Color.Transparent
         Me.Label2.ForeColor = System.Drawing.Color.White
+        Me.Label2.Location = New System.Drawing.Point(16, 66)
+        Me.Label2.Size = New System.Drawing.Size(215, 24)
         Me.Label2.Name = "Label2"
         '
         'Label3
@@ -77,40 +87,60 @@ Partial Class CambiarContraseña
         resources.ApplyResources(Me.Label3, "Label3")
         Me.Label3.BackColor = System.Drawing.Color.Transparent
         Me.Label3.ForeColor = System.Drawing.Color.White
+        Me.Label3.Location = New System.Drawing.Point(16, 112)
+        Me.Label3.Size = New System.Drawing.Size(215, 24)
         Me.Label3.Name = "Label3"
         '
         'chkMostrar
         '
         resources.ApplyResources(Me.chkMostrar, "chkMostrar")
         Me.chkMostrar.ForeColor = System.Drawing.Color.White
+        Me.chkMostrar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
+        Me.chkMostrar.Location = New System.Drawing.Point(244, 154)
+        Me.chkMostrar.Size = New System.Drawing.Size(250, 24)
         Me.chkMostrar.Name = "chkMostrar"
         Me.chkMostrar.UseVisualStyleBackColor = True
         '
         'btnGuardar
         '
         resources.ApplyResources(Me.btnGuardar, "btnGuardar")
+        Me.btnGuardar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
+        Me.btnGuardar.Location = New System.Drawing.Point(244, 220)
+        Me.btnGuardar.Size = New System.Drawing.Size(120, 34)
         Me.btnGuardar.Name = "btnGuardar"
         Me.btnGuardar.UseVisualStyleBackColor = True
         '
         'btnCancelar
         '
         resources.ApplyResources(Me.btnCancelar, "btnCancelar")
+        Me.btnCancelar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
+        Me.btnCancelar.Location = New System.Drawing.Point(376, 220)
+        Me.btnCancelar.Size = New System.Drawing.Size(120, 34)
         Me.btnCancelar.Name = "btnCancelar"
         Me.btnCancelar.UseVisualStyleBackColor = True
         '
         'txtUsuario
         '
         resources.ApplyResources(Me.txtUsuario, "txtUsuario")
+        Me.txtUsuario.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
+        Me.txtUsuario.Location = New System.Drawing.Point(244, 18)
+        Me.txtUsuario.Size = New System.Drawing.Size(250, 24)
         Me.txtUsuario.Name = "txtUsuario"
         '
         'txtContraseña
         '
         resources.ApplyResources(Me.txtContraseña, "txtContraseña")
+        Me.txtContraseña.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
+        Me.txtContraseña.Location = New System.Drawing.Point(244, 64)
+        Me.txtContraseña.Size = New System.Drawing.Size(250, 24)
         Me.txtContraseña.Name = "txtContraseña"
         '
         'txtConfirmar
         '
         resources.ApplyResources(Me.txtConfirmar, "txtConfirmar")
+        Me.txtConfirmar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
+        Me.txtConfirmar.Location = New System.Drawing.Point(244, 110)
+        Me.txtConfirmar.Size = New System.Drawing.Size(250, 24)
         Me.txtConfirmar.Name = "txtConfirmar"
         '
         'pnlDatos
@@ -125,6 +155,8 @@ Partial Class CambiarContraseña
         Me.pnlDatos.Controls.Add(Me.Label2)
         Me.pnlDatos.Controls.Add(Me.USUARIO)
         resources.ApplyResources(Me.pnlDatos, "pnlDatos")
+        Me.pnlDatos.Location = New System.Drawing.Point(24, 132)
+        Me.pnlDatos.Size = New System.Drawing.Size(512, 280)
         Me.pnlDatos.Name = "pnlDatos"
         '
         'CambiarContraseña
@@ -136,9 +168,15 @@ Partial Class CambiarContraseña
         Me.Controls.Add(Me.Label1)
         Me.Controls.Add(Me.lbl1)
         Me.Controls.Add(Me.PictureBox1)
-        Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None
+        Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog
         Me.MaximizeBox = False
         Me.MinimizeBox = False
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
+        Me.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
+        Me.ClientSize = New System.Drawing.Size(560, 432)
+        Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent
+        Me.AcceptButton = Me.btnGuardar
+        Me.CancelButton = Me.btnCancelar
         Me.Name = "CambiarContraseña"
         CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).EndInit()
         Me.pnlDatos.ResumeLayout(False)

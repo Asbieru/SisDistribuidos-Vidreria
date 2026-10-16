@@ -78,9 +78,8 @@ Partial Class frmPedidoUnitario
         Me.Panel1.Controls.Add(Me.lblTitulo)
         Me.Panel1.Location = New System.Drawing.Point(12, 12)
         Me.Panel1.Dock = System.Windows.Forms.DockStyle.Top
-        Me.Panel1.Height = 100
         Me.Panel1.Name = "Panel1"
-        Me.Panel1.Size = New System.Drawing.Size(705, 77)
+        Me.Panel1.Size = New System.Drawing.Size(705, 100)
         Me.Panel1.TabIndex = 4
         '
         'lblEstado
@@ -146,13 +145,12 @@ Partial Class frmPedidoUnitario
         Me.tblItems.Location = New System.Drawing.Point(16, 63)
         Me.tblItems.Margin = New System.Windows.Forms.Padding(2)
         Me.tblItems.MultiSelect = False
-        Me.tblItems.Height = 196
         Me.tblItems.Name = "tblItems"
         Me.tblItems.ReadOnly = True
         Me.tblItems.RowHeadersVisible = False
         Me.tblItems.RowHeadersWidth = 51
         Me.tblItems.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
-        Me.tblItems.Size = New System.Drawing.Size(662, 206)
+        Me.tblItems.Size = New System.Drawing.Size(662, 196)
         Me.tblItems.ScrollBars = System.Windows.Forms.ScrollBars.Both
 
         Me.tblItems.TabIndex = 4

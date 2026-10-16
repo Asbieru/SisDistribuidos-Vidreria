@@ -33,17 +33,19 @@ Partial Class MensajePersonalizado
         '
         Me.lblTitulo.BackColor = System.Drawing.Color.Transparent
         Me.lblTitulo.Font = New System.Drawing.Font("Microsoft Sans Serif", 15.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblTitulo.Location = New System.Drawing.Point(13, 13)
+        Me.lblTitulo.Location = New System.Drawing.Point(24, 20)
+        Me.lblTitulo.AutoSize = False
         Me.lblTitulo.Name = "lblTitulo"
-        Me.lblTitulo.Size = New System.Drawing.Size(600, 25)
+        Me.lblTitulo.Size = New System.Drawing.Size(592, 32)
         Me.lblTitulo.TabIndex = 0
         '
         'btnCancelar
         '
         Me.btnCancelar.BackColor = System.Drawing.Color.Gainsboro
-        Me.btnCancelar.Location = New System.Drawing.Point(555, 111)
+        Me.btnCancelar.Location = New System.Drawing.Point(496, 188)
+        Me.btnCancelar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
         Me.btnCancelar.Name = "btnCancelar"
-        Me.btnCancelar.Size = New System.Drawing.Size(75, 23)
+        Me.btnCancelar.Size = New System.Drawing.Size(120, 34)
         Me.btnCancelar.TabIndex = 3
         Me.btnCancelar.Text = "Cancelar"
         Me.btnCancelar.UseVisualStyleBackColor = False
@@ -51,9 +53,10 @@ Partial Class MensajePersonalizado
         'btnAceptar
         '
         Me.btnAceptar.BackColor = System.Drawing.Color.Gainsboro
-        Me.btnAceptar.Location = New System.Drawing.Point(474, 111)
+        Me.btnAceptar.Location = New System.Drawing.Point(364, 188)
+        Me.btnAceptar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
         Me.btnAceptar.Name = "btnAceptar"
-        Me.btnAceptar.Size = New System.Drawing.Size(75, 23)
+        Me.btnAceptar.Size = New System.Drawing.Size(120, 34)
         Me.btnAceptar.TabIndex = 2
         Me.btnAceptar.Text = "Aceptar"
         Me.btnAceptar.UseVisualStyleBackColor = False
@@ -63,9 +66,10 @@ Partial Class MensajePersonalizado
         Me.chbNMostrar.AutoSize = True
         Me.chbNMostrar.BackColor = System.Drawing.Color.Transparent
         Me.chbNMostrar.ForeColor = System.Drawing.Color.DarkBlue
-        Me.chbNMostrar.Location = New System.Drawing.Point(18, 96)
+        Me.chbNMostrar.Location = New System.Drawing.Point(24, 146)
+        Me.chbNMostrar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
         Me.chbNMostrar.Name = "chbNMostrar"
-        Me.chbNMostrar.Size = New System.Drawing.Size(184, 17)
+        Me.chbNMostrar.Size = New System.Drawing.Size(330, 28)
         Me.chbNMostrar.TabIndex = 1
         Me.chbNMostrar.Text = "No volver a mostrar este Mensaje"
         Me.chbNMostrar.UseVisualStyleBackColor = False
@@ -74,26 +78,28 @@ Partial Class MensajePersonalizado
         '
         Me.lblContenido.BackColor = System.Drawing.Color.Transparent
         Me.lblContenido.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblContenido.Location = New System.Drawing.Point(20, 51)
+        Me.lblContenido.Location = New System.Drawing.Point(24, 64)
+        Me.lblContenido.AutoSize = False
         Me.lblContenido.Name = "lblContenido"
-        Me.lblContenido.Size = New System.Drawing.Size(600, 18)
+        Me.lblContenido.Size = New System.Drawing.Size(592, 72)
         Me.lblContenido.TabIndex = 0
         '
         'MensajePersonalizado
         '
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(642, 143)
+        Me.ClientSize = New System.Drawing.Size(640, 242)
         Me.Controls.Add(Me.lblContenido)
         Me.Controls.Add(Me.chbNMostrar)
         Me.Controls.Add(Me.btnAceptar)
         Me.Controls.Add(Me.btnCancelar)
         Me.Controls.Add(Me.lblTitulo)
-        Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None
+        Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog
         Me.MaximizeBox = False
         Me.MinimizeBox = False
+        Me.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
         Me.Name = "MensajePersonalizado"
-        Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
+        Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent
         Me.Text = "Mensaje"
         Me.ResumeLayout(False)
         Me.PerformLayout()

@@ -7,6 +7,9 @@ End Interface
 ' Funciones comunes que usan los formularios de inventario
 Module UtilFormularios
     Public Const TODOS As String = "(Todos)"
+    Private ReadOnly FuenteTabla As New Font("Microsoft Sans Serif", 9.75F)
+    Private ReadOnly FuenteBoton As New Font("Microsoft Sans Serif", 9.0F, FontStyle.Bold)
+    Private ReadOnly FuenteEncabezado As New Font("Microsoft Sans Serif", 9.75F, FontStyle.Bold)
 
     ' ---------------- Ventanas dentro del menu (MDI) ----------------
 
@@ -79,6 +82,8 @@ Module UtilFormularios
     ' que no coincide con el: se pasan a plano y se pinta el borde del mismo color
     ' de fondo, quedando un borde que coincide con el color elegido.
     Public Sub AplicarEstiloBoton(btn As Button, p As Paleta)
+        btn.Font = FuenteBoton
+        btn.MinimumSize = New Size(If(btn.AutoSize, 110, 0), CInt(34 * btn.DeviceDpi / 96.0))
         btn.UseVisualStyleBackColor = False
         btn.FlatStyle = FlatStyle.Flat
         btn.BackColor = p.BotonFondo
@@ -96,6 +101,7 @@ Module UtilFormularios
         campo.ForeColor = p.Texto
         If TypeOf campo Is TextBoxBase Then
             DirectCast(campo, TextBoxBase).BorderStyle = BorderStyle.FixedSingle
+            If DirectCast(campo, TextBoxBase).ReadOnly Then campo.BackColor = p.FondoPanel
         ElseIf TypeOf campo Is NumericUpDown Then
             DirectCast(campo, NumericUpDown).BorderStyle = BorderStyle.FixedSingle
         End If
@@ -118,16 +124,16 @@ Module UtilFormularios
                 dgv.BorderStyle = BorderStyle.FixedSingle
                 dgv.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal
                 dgv.GridColor = p.FondoPanel
-                dgv.Font = New Font("Microsoft Sans Serif", 9.75F)
+                dgv.Font = FuenteTabla
                 dgv.DefaultCellStyle.Font = dgv.Font
                 dgv.DefaultCellStyle.BackColor = p.Fondo
                 dgv.DefaultCellStyle.ForeColor = p.Texto
-                dgv.DefaultCellStyle.SelectionBackColor = p.BotonFondo
-                dgv.DefaultCellStyle.SelectionForeColor = p.BotonTexto
+                dgv.DefaultCellStyle.SelectionBackColor = p.Acento
+                dgv.DefaultCellStyle.SelectionForeColor = p.Fondo
                 dgv.DefaultCellStyle.Padding = New Padding(4, 2, 4, 2)
                 dgv.ColumnHeadersDefaultCellStyle.BackColor = p.BotonFondo
                 dgv.ColumnHeadersDefaultCellStyle.ForeColor = p.BotonTexto
-                dgv.ColumnHeadersDefaultCellStyle.Font = New Font(dgv.Font, FontStyle.Bold)
+                dgv.ColumnHeadersDefaultCellStyle.Font = FuenteEncabezado
                 dgv.ColumnHeadersDefaultCellStyle.SelectionBackColor = p.BotonFondo
                 dgv.ColumnHeadersDefaultCellStyle.SelectionForeColor = p.BotonTexto
                 dgv.ColumnHeadersHeight = Math.Max(32, dgv.Font.Height + 14)

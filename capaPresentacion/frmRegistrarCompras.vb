@@ -157,15 +157,16 @@ Public Class frmRegistrarCompras
             cargarVariantes()
             Using selector As New Form With {
                 .Text = "Seleccionar producto para compra",
+                .Font = New Font("Microsoft Sans Serif", 9.75F),
                 .Size = New Size(950, 500),
                 .MinimumSize = New Size(700, 350),
                 .StartPosition = FormStartPosition.CenterParent,
                 .MinimizeBox = False, .MaximizeBox = False}
 
                 Using vista As New DataView(variantes)
-                    Dim busqueda As New Panel With {.Dock = DockStyle.Top, .Height = 42}
+                    Dim busqueda As New Panel With {.Dock = DockStyle.Top, .Height = 50, .Width = selector.ClientSize.Width}
                     Dim etiqueta As New Label With {.Text = "Buscar producto:", .AutoSize = True, .Location = New Point(10, 13)}
-                    Dim buscar As New TextBox With {.Location = New Point(120, 9), .Width = 500,
+                    Dim buscar As New TextBox With {.Location = New Point(140, 9), .Width = selector.ClientSize.Width - 164,
                     .Anchor = AnchorStyles.Top Or AnchorStyles.Left Or AnchorStyles.Right}
                     busqueda.Controls.Add(etiqueta)
                     busqueda.Controls.Add(buscar)

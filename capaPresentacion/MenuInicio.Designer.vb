@@ -67,6 +67,7 @@ Partial Class MenuInicio
         Me.menu.ImageScalingSize = New System.Drawing.Size(20, 20)
         Me.menu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnProcesos, Me.mnTablas, Me.MantenimientosToolStripMenuItem, Me.mnConfiguracion, Me.mnCerrarS})
         Me.menu.Location = New System.Drawing.Point(0, 0)
+        Me.menu.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
         Me.menu.Name = "menu"
         Me.menu.Padding = New System.Windows.Forms.Padding(4, 2, 0, 2)
         Me.menu.Size = New System.Drawing.Size(675, 24)
@@ -205,6 +206,7 @@ Partial Class MenuInicio
         Me.stripDatos.ImageScalingSize = New System.Drawing.Size(20, 20)
         Me.stripDatos.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.lblID, Me.txtID, Me.lblUsuario, Me.txtUsuario, Me.lblRol, Me.txtRol})
         Me.stripDatos.Location = New System.Drawing.Point(0, 360)
+        Me.stripDatos.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Regular)
         Me.stripDatos.Name = "stripDatos"
         Me.stripDatos.Size = New System.Drawing.Size(675, 26)
         Me.stripDatos.TabIndex = 2
@@ -251,9 +253,10 @@ Partial Class MenuInicio
         '
         'toolBarra
         '
-        Me.toolBarra.ImageScalingSize = New System.Drawing.Size(20, 20)
+        Me.toolBarra.ImageScalingSize = New System.Drawing.Size(24, 24)
         Me.toolBarra.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.toolCotizar, Me.ToolStripSeparator1, Me.toolInventario})
         Me.toolBarra.Location = New System.Drawing.Point(0, 24)
+        Me.toolBarra.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
         Me.toolBarra.Name = "toolBarra"
         Me.toolBarra.Size = New System.Drawing.Size(675, 27)
         Me.toolBarra.TabIndex = 4
@@ -300,7 +303,7 @@ Partial Class MenuInicio
         '
         'MenuInicio
         '
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackgroundImage = CType(resources.GetObject("$this.BackgroundImage"), System.Drawing.Image)
         Me.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
@@ -312,6 +315,7 @@ Partial Class MenuInicio
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.IsMdiContainer = True
         Me.MainMenuStrip = Me.menu
+        Me.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
         Me.Name = "MenuInicio"
         Me.Text = "Página de Inicio"
         Me.WindowState = System.Windows.Forms.FormWindowState.Maximized
@@ -326,7 +330,7 @@ Partial Class MenuInicio
 
     End Sub
 
-    Friend WithEvents menu As MenuStrip
+    Friend Shadows WithEvents menu As MenuStrip
     Friend WithEvents mnProcesos As ToolStripMenuItem
     Friend WithEvents mnTablas As ToolStripMenuItem
     Friend WithEvents mnConfiguracion As ToolStripMenuItem

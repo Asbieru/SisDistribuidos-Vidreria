@@ -179,10 +179,9 @@ Partial Class frmHistorialClientes
         Me.lblPagos.AutoEllipsis = True
         Me.lblPagos.Location = New System.Drawing.Point(24, 508)
         Me.lblPagos.Dock = System.Windows.Forms.DockStyle.Top
-        Me.lblPagos.Height = 30
         Me.lblPagos.AutoSize = False
         Me.lblPagos.Name = "lblPagos"
-        Me.lblPagos.Size = New System.Drawing.Size(1002, 22)
+        Me.lblPagos.Size = New System.Drawing.Size(1002, 30)
         Me.lblPagos.Text = "PAGOS DEL PEDIDO"
         Me.dgvPagos.AllowUserToAddRows = False
         Me.dgvPagos.AllowUserToDeleteRows = False

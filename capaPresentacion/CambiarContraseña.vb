@@ -2,6 +2,10 @@
 Public Class CambiarContraseña
     Dim objUsu As New Usuario
 
+    Private Sub CambiarContrasena_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        AplicarTema(Me, "OSCURO")
+    End Sub
+
     Private Sub btnGuardar_Click(sender As Object, e As EventArgs) Handles btnGuardar.Click
 
         Try

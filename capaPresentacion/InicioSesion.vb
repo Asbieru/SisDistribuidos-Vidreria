@@ -12,7 +12,7 @@ Public Class InicioSesion
                 ElseIf Not objUsu.validarNombreUsuario(txtUsuario.Text) Then
                     msj.Text = "¡Usuario no encontrado!"
                 Else
-                    Me.Height = 549
+                    AjustarTamanoAcceso()
                     txtUsuario.Enabled = False
                     txtPregunta.Text = objUsu.obtenerPregunta(txtUsuario.Text)
                     Return
@@ -20,9 +20,9 @@ Public Class InicioSesion
                 txtUsuario.Focus()
                 chbMostrar.Checked = False
                 pnlCambio.Visible = False
-                Me.Height = 375
+                AjustarTamanoAcceso()
             Else
-                Me.Height = 375
+                AjustarTamanoAcceso()
                 txtUsuario.Enabled = True
                 txtPregunta.Clear()
                 txtRespuesta.Clear()
@@ -101,6 +101,13 @@ Public Class InicioSesion
     End Sub
 
     Private Sub InicioSesion_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        AplicarTema(Me, "OSCURO")
+        AjustarTamanoAcceso()
+    End Sub
 
+    Private Sub AjustarTamanoAcceso()
+        ClientSize = New Size(ClientSize.Width,
+            If(pnlCambio.Visible, pnlCambio.Bottom, chbMostrar.Bottom) + CInt(24 * DeviceDpi / 96.0))
+        AjustarVentana(Me, True)
     End Sub
 End Class

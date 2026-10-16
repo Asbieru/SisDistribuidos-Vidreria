@@ -188,9 +188,8 @@ Partial Class frmRegistrarPedido
         Me.txtNombreCliente.Enabled = False
         Me.txtNombreCliente.Location = New System.Drawing.Point(95, 33)
         Me.txtNombreCliente.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left
-        Me.txtNombreCliente.Width = 250
         Me.txtNombreCliente.Name = "txtNombreCliente"
-        Me.txtNombreCliente.Size = New System.Drawing.Size(256, 20)
+        Me.txtNombreCliente.Size = New System.Drawing.Size(250, 20)
         Me.txtNombreCliente.TabIndex = 0
         '
         'Label1
@@ -210,9 +209,8 @@ Partial Class frmRegistrarPedido
         Me.cmbPedido.Items.AddRange(New Object() {"Vidrio", "Ventana"})
         Me.cmbPedido.Location = New System.Drawing.Point(116, 35)
         Me.cmbPedido.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left
-        Me.cmbPedido.Width = 225
         Me.cmbPedido.Name = "cmbPedido"
-        Me.cmbPedido.Size = New System.Drawing.Size(280, 21)
+        Me.cmbPedido.Size = New System.Drawing.Size(225, 21)
         Me.cmbPedido.TabIndex = 3
         '
         'Label4
@@ -1259,11 +1257,10 @@ Partial Class frmRegistrarPedido
         '
         Me.txtTotalTodo.Enabled = False
         Me.txtTotalTodo.Location = New System.Drawing.Point(417, 500)
-        Me.txtTotalTodo.Width = 140
         Me.txtTotalTodo.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left
         Me.txtTotalTodo.Margin = New System.Windows.Forms.Padding(0, 0, 8, 8)
         Me.txtTotalTodo.Name = "txtTotalTodo"
-        Me.txtTotalTodo.Size = New System.Drawing.Size(200, 20)
+        Me.txtTotalTodo.Size = New System.Drawing.Size(140, 20)
         Me.txtTotalTodo.TabIndex = 18
         Me.txtTotalTodo.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
