@@ -36,7 +36,6 @@ Partial Class frmListadoVentas
         Me.lblHasta = New System.Windows.Forms.Label()
         Me.lblCliente = New System.Windows.Forms.Label()
         Me.lblEstadoPago = New System.Windows.Forms.Label()
-        Me.Label5 = New System.Windows.Forms.Label()
         Me.dtpDesde = New System.Windows.Forms.DateTimePicker()
         Me.dtpHasta = New System.Windows.Forms.DateTimePicker()
         Me.btnFiltrar = New System.Windows.Forms.Button()
@@ -62,7 +61,6 @@ Partial Class frmListadoVentas
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.pnlVentas.BackColor = System.Drawing.Color.White
-        Me.pnlVentas.Controls.Add(Me.Label5)
         Me.pnlVentas.Location = New System.Drawing.Point(12, 12)
         Me.pnlVentas.Dock = System.Windows.Forms.DockStyle.Fill
         Me.pnlVentas.Name = "pnlVentas"
@@ -107,10 +105,6 @@ Partial Class frmListadoVentas
         '
         'Label5
         '
-        Me.Label5.Location = New System.Drawing.Point(393, 231)
-        Me.Label5.Name = "Label5"
-        Me.Label5.Size = New System.Drawing.Size(39, 13)
-        Me.Label5.TabIndex = 4
         '
         'dtpDesde
         '
@@ -375,7 +369,6 @@ Partial Class frmListadoVentas
     End Sub
 
     Friend WithEvents pnlVentas As Panel
-    Friend WithEvents Label5 As Label
     Friend WithEvents lblEstadoPago As Label
     Friend WithEvents lblCliente As Label
     Friend WithEvents lblHasta As Label

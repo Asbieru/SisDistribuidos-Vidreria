@@ -240,6 +240,7 @@ Partial Class frmRegistrarPedido
         '
         Me.btnAgregarPedido.Location = New System.Drawing.Point(284, 68)
         Me.btnAgregarPedido.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
+        Me.btnAgregarPedido.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right
         Me.btnAgregarPedido.Name = "btnAgregarPedido"
         Me.btnAgregarPedido.Size = New System.Drawing.Size(112, 34)
         Me.btnAgregarPedido.TabIndex = 4

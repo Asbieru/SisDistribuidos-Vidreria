@@ -151,6 +151,7 @@ Partial Class frmMovimientoCajas
         Me.nudCantidad.Maximum = New Decimal(New Integer() {100000, 0, 0, 0})
         Me.nudCantidad.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left
         Me.nudCantidad.Margin = New System.Windows.Forms.Padding(0, 4, 8, 8)
+        Me.nudCantidad.MinimumSize = New System.Drawing.Size(225, 0)
         Me.nudCantidad.Name = "nudCantidad"
         Me.nudCantidad.Size = New System.Drawing.Size(225, 22)
         Me.nudCantidad.TabIndex = 8

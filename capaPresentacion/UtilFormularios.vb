@@ -34,7 +34,7 @@ Module UtilFormularios
         Dim area As Rectangle = Screen.FromControl(frm).WorkingArea
         If frm.MdiParent IsNot Nothing Then
             Dim escritorio As MdiClient = frm.MdiParent.Controls.OfType(Of MdiClient)().FirstOrDefault()
-            If escritorio Is Nothing OrElse escritorio.ClientSize.Width < 100 Then Return
+            If escritorio Is Nothing OrElse escritorio.ClientSize.Width < 100 OrElse escritorio.ClientSize.Height < 100 Then Return
             area = escritorio.ClientRectangle
         End If
         area.Inflate(-8, -8)
@@ -57,8 +57,13 @@ Module UtilFormularios
             frm.Size = New Size(ancho, alto)
         End If
         If centrar Then
-            frm.Location = New Point(area.Left + (area.Width - frm.Width) \ 2,
-                                     area.Top + (area.Height - frm.Height) \ 2)
+            Dim referencia As Rectangle = area
+            If frm.MdiParent Is Nothing AndAlso frm.Owner IsNot Nothing Then
+                referencia = Rectangle.Intersect(area, frm.Owner.RectangleToScreen(frm.Owner.ClientRectangle))
+                If referencia.IsEmpty Then referencia = area
+            End If
+            frm.Location = New Point(Math.Max(area.Left, Math.Min(area.Right - frm.Width, referencia.Left + (referencia.Width - frm.Width) \ 2)),
+                                     Math.Max(area.Top, Math.Min(area.Bottom - frm.Height, referencia.Top + (referencia.Height - frm.Height) \ 2)))
         Else
             frm.Location = New Point(Math.Max(area.Left, Math.Min(frm.Left, area.Right - frm.Width)),
                                      Math.Max(area.Top, Math.Min(frm.Top, area.Bottom - frm.Height)))
@@ -131,18 +136,24 @@ Module UtilFormularios
                 dgv.DefaultCellStyle.SelectionBackColor = p.Acento
                 dgv.DefaultCellStyle.SelectionForeColor = p.Fondo
                 dgv.DefaultCellStyle.Padding = New Padding(4, 2, 4, 2)
+                dgv.DefaultCellStyle.WrapMode = DataGridViewTriState.False
                 dgv.ColumnHeadersDefaultCellStyle.BackColor = p.BotonFondo
                 dgv.ColumnHeadersDefaultCellStyle.ForeColor = p.BotonTexto
                 dgv.ColumnHeadersDefaultCellStyle.Font = FuenteEncabezado
                 dgv.ColumnHeadersDefaultCellStyle.SelectionBackColor = p.BotonFondo
                 dgv.ColumnHeadersDefaultCellStyle.SelectionForeColor = p.BotonTexto
                 dgv.ColumnHeadersHeight = Math.Max(32, dgv.Font.Height + 14)
+                dgv.ColumnHeadersDefaultCellStyle.WrapMode = DataGridViewTriState.True
+                dgv.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
                 dgv.RowTemplate.Height = Math.Max(28, dgv.Font.Height + 10)
-                dgv.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCellsExceptHeaders
+                dgv.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.None
                 dgv.ScrollBars = ScrollBars.Both
                 dgv.EnableHeadersVisualStyles = False
             ElseIf TypeOf c Is Label Then
                 c.ForeColor = If(c.Font.SizeInPoints >= 14, p.Acento, p.Texto)
+                If c.Name = "msj" OrElse c.Name = "msj2" OrElse c.Name = "lblAlerta" Then
+                    c.ForeColor = If(p.Fondo.GetBrightness() < 0.5F, Color.LightCoral, Color.DarkRed)
+                End If
             ElseIf TypeOf c Is CheckBox OrElse TypeOf c Is RadioButton OrElse TypeOf c Is GroupBox Then
                 c.ForeColor = p.Texto
             ElseIf TypeOf c Is ListView Then
@@ -182,6 +193,9 @@ Module UtilFormularios
                     .HeaderText = partes(1)
                     .Visible = True
                     .DisplayIndex = i
+                    Dim anchoTitulo As Integer = TextRenderer.MeasureText(.HeaderText, FuenteEncabezado).Width + 20
+                    Dim anchoFecha As Integer = If(.ValueType Is GetType(DateTime), CInt(145 * dgv.DeviceDpi / 96.0), 0)
+                    .MinimumWidth = Math.Max(.MinimumWidth, Math.Max(anchoTitulo, anchoFecha))
                 End With
             End If
         Next

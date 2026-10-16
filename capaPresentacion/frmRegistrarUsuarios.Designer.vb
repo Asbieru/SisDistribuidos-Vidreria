@@ -245,6 +245,7 @@ Partial Class frmRegistrarUsuarios
         Me.txtId.Location = New System.Drawing.Point(207, 55)
         Me.txtId.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left
         Me.txtId.Margin = New System.Windows.Forms.Padding(0, 4, 8, 8)
+        Me.txtId.MinimumSize = New System.Drawing.Size(130, 0)
         Me.txtId.Name = "txtId"
         Me.txtId.Size = New System.Drawing.Size(130, 22)
         Me.txtId.TabIndex = 6

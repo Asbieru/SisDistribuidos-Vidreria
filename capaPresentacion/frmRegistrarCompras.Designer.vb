@@ -321,7 +321,7 @@ Partial Class frmRegistrarCompras
         'lblModo
         '
         Me.lblModo.AutoSize = True
-        Me.lblModo.Enabled = False
+        Me.lblModo.Enabled = True
         Me.lblModo.Font = New System.Drawing.Font("Microsoft Sans Serif", 15.75!, System.Drawing.FontStyle.Bold)
         Me.lblModo.Location = New System.Drawing.Point(24, 20)
         Me.lblModo.Name = "lblModo"

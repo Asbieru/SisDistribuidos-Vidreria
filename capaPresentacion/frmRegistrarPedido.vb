@@ -169,6 +169,11 @@ Public Class frmRegistrarPedido
 
         Dim txtCopia As TextBox = TryCast(copia, TextBox)
         If txtCopia IsNot Nothing Then
+            Dim txtOrigen As TextBox = DirectCast(origen, TextBox)
+            txtCopia.ReadOnly = txtOrigen.ReadOnly
+            txtCopia.MaxLength = txtOrigen.MaxLength
+            txtCopia.Multiline = txtOrigen.Multiline
+            txtCopia.TextAlign = txtOrigen.TextAlign
             If EsCampoCalculo(txtCopia.Name) Then
                 AddHandler txtCopia.TextChanged, AddressOf CampoCalculo_Changed
             ElseIf EsCampoTotal(txtCopia.Name) Then

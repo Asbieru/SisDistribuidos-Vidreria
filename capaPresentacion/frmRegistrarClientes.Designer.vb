@@ -99,6 +99,7 @@ Partial Class frmRegistrarClientes
         Me.txtId.Location = New System.Drawing.Point(200, 80)
         Me.txtId.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left
         Me.txtId.Margin = New System.Windows.Forms.Padding(0, 4, 8, 8)
+        Me.txtId.MinimumSize = New System.Drawing.Size(130, 0)
         Me.txtId.Name = "txtId"
         Me.txtId.ReadOnly = True
         Me.txtId.Size = New System.Drawing.Size(130, 22)
@@ -131,6 +132,7 @@ Partial Class frmRegistrarClientes
         Me.txtDocumento.MaxLength = 20
         Me.txtDocumento.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left
         Me.txtDocumento.Margin = New System.Windows.Forms.Padding(0, 4, 8, 8)
+        Me.txtDocumento.MinimumSize = New System.Drawing.Size(225, 0)
         Me.txtDocumento.Name = "txtDocumento"
         Me.txtDocumento.Size = New System.Drawing.Size(225, 22)
         Me.txtDocumento.TabIndex = 6
@@ -146,6 +148,7 @@ Partial Class frmRegistrarClientes
         Me.txtTelefono.MaxLength = 20
         Me.txtTelefono.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left
         Me.txtTelefono.Margin = New System.Windows.Forms.Padding(0, 4, 8, 8)
+        Me.txtTelefono.MinimumSize = New System.Drawing.Size(225, 0)
         Me.txtTelefono.Name = "txtTelefono"
         Me.txtTelefono.Size = New System.Drawing.Size(225, 22)
         Me.txtTelefono.TabIndex = 8
