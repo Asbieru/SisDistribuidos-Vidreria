@@ -22,6 +22,9 @@ Partial Class frmRegistrarUsuarios
     'No lo modifique con el editor de código.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
+        Me.tlpContenido = New System.Windows.Forms.TableLayoutPanel()
+        Me.tlpCampos = New System.Windows.Forms.TableLayoutPanel()
+        Me.flpAcciones = New System.Windows.Forms.FlowLayoutPanel()
         Me.Panel2 = New System.Windows.Forms.Panel()
         Me.btnCancelar = New System.Windows.Forms.Button()
         Me.btnGuardar = New System.Windows.Forms.Button()
@@ -47,25 +50,8 @@ Partial Class frmRegistrarUsuarios
         'Panel2
         '
         Me.Panel2.BackColor = System.Drawing.Color.White
-        Me.Panel2.Controls.Add(Me.btnCancelar)
-        Me.Panel2.Controls.Add(Me.btnGuardar)
-        Me.Panel2.Controls.Add(Me.chkActivo)
-        Me.Panel2.Controls.Add(Me.cboRol)
-        Me.Panel2.Controls.Add(Me.txtRespuesta)
-        Me.Panel2.Controls.Add(Me.txtPregunta)
-        Me.Panel2.Controls.Add(Me.txtContrasena)
-        Me.Panel2.Controls.Add(Me.Label5)
-        Me.Panel2.Controls.Add(Me.txtCorreo)
-        Me.Panel2.Controls.Add(Me.Label4)
-        Me.Panel2.Controls.Add(Me.Label3)
-        Me.Panel2.Controls.Add(Me.Label2)
-        Me.Panel2.Controls.Add(Me.Label1)
-        Me.Panel2.Controls.Add(Me.Label12)
-        Me.Panel2.Controls.Add(Me.txtUsuario)
-        Me.Panel2.Controls.Add(Me.Label9)
-        Me.Panel2.Controls.Add(Me.txtId)
-        Me.Panel2.Controls.Add(Me.lblModo)
         Me.Panel2.Location = New System.Drawing.Point(27, 27)
+        Me.Panel2.Dock = System.Windows.Forms.DockStyle.Fill
         Me.Panel2.Name = "Panel2"
         Me.Panel2.Size = New System.Drawing.Size(710, 450)
         Me.Panel2.TabIndex = 1
@@ -74,8 +60,10 @@ Partial Class frmRegistrarUsuarios
         '
         Me.btnCancelar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
         Me.btnCancelar.Location = New System.Drawing.Point(388, 385)
+        Me.btnCancelar.Margin = New System.Windows.Forms.Padding(8, 8, 0, 0)
+        Me.btnCancelar.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left
         Me.btnCancelar.Name = "btnCancelar"
-        Me.btnCancelar.Size = New System.Drawing.Size(122, 30)
+        Me.btnCancelar.Size = New System.Drawing.Size(120, 34)
         Me.btnCancelar.TabIndex = 20
         Me.btnCancelar.Text = "CANCELAR"
         Me.btnCancelar.UseVisualStyleBackColor = True
@@ -84,8 +72,10 @@ Partial Class frmRegistrarUsuarios
         '
         Me.btnGuardar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
         Me.btnGuardar.Location = New System.Drawing.Point(207, 385)
+        Me.btnGuardar.Margin = New System.Windows.Forms.Padding(8, 8, 0, 0)
+        Me.btnGuardar.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left
         Me.btnGuardar.Name = "btnGuardar"
-        Me.btnGuardar.Size = New System.Drawing.Size(122, 30)
+        Me.btnGuardar.Size = New System.Drawing.Size(120, 34)
         Me.btnGuardar.TabIndex = 19
         Me.btnGuardar.Text = "GUARDAR"
         Me.btnGuardar.UseVisualStyleBackColor = True
@@ -95,6 +85,8 @@ Partial Class frmRegistrarUsuarios
         Me.chkActivo.AutoSize = True
         Me.chkActivo.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
         Me.chkActivo.Location = New System.Drawing.Point(207, 319)
+        Me.chkActivo.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right
+        Me.chkActivo.Margin = New System.Windows.Forms.Padding(0, 4, 8, 8)
         Me.chkActivo.Name = "chkActivo"
         Me.chkActivo.Size = New System.Drawing.Size(77, 24)
         Me.chkActivo.TabIndex = 18
@@ -105,6 +97,8 @@ Partial Class frmRegistrarUsuarios
         '
         Me.cboRol.FormattingEnabled = True
         Me.cboRol.Location = New System.Drawing.Point(207, 269)
+        Me.cboRol.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right
+        Me.cboRol.Margin = New System.Windows.Forms.Padding(0, 4, 8, 8)
         Me.cboRol.Name = "cboRol"
         Me.cboRol.Size = New System.Drawing.Size(200, 24)
         Me.cboRol.TabIndex = 17
@@ -112,6 +106,8 @@ Partial Class frmRegistrarUsuarios
         'txtRespuesta
         '
         Me.txtRespuesta.Location = New System.Drawing.Point(207, 231)
+        Me.txtRespuesta.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right
+        Me.txtRespuesta.Margin = New System.Windows.Forms.Padding(0, 4, 8, 8)
         Me.txtRespuesta.Name = "txtRespuesta"
         Me.txtRespuesta.Size = New System.Drawing.Size(200, 22)
         Me.txtRespuesta.TabIndex = 16
@@ -119,6 +115,8 @@ Partial Class frmRegistrarUsuarios
         'txtPregunta
         '
         Me.txtPregunta.Location = New System.Drawing.Point(207, 195)
+        Me.txtPregunta.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right
+        Me.txtPregunta.Margin = New System.Windows.Forms.Padding(0, 4, 8, 8)
         Me.txtPregunta.Name = "txtPregunta"
         Me.txtPregunta.Size = New System.Drawing.Size(200, 22)
         Me.txtPregunta.TabIndex = 15
@@ -126,6 +124,8 @@ Partial Class frmRegistrarUsuarios
         'txtContrasena
         '
         Me.txtContrasena.Location = New System.Drawing.Point(207, 157)
+        Me.txtContrasena.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right
+        Me.txtContrasena.Margin = New System.Windows.Forms.Padding(0, 4, 8, 8)
         Me.txtContrasena.Name = "txtContrasena"
         Me.txtContrasena.PasswordChar = Global.Microsoft.VisualBasic.ChrW(42)
         Me.txtContrasena.Size = New System.Drawing.Size(200, 22)
@@ -133,10 +133,12 @@ Partial Class frmRegistrarUsuarios
         '
         'Label5
         '
-        Me.Label5.AutoSize = True
+        Me.Label5.AutoSize = False
         Me.Label5.BackColor = System.Drawing.Color.Transparent
         Me.Label5.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
         Me.Label5.Location = New System.Drawing.Point(9, 271)
+        Me.Label5.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.Label5.Margin = New System.Windows.Forms.Padding(0, 7, 8, 0)
         Me.Label5.Name = "Label5"
         Me.Label5.Size = New System.Drawing.Size(34, 20)
         Me.Label5.TabIndex = 13
@@ -145,16 +147,20 @@ Partial Class frmRegistrarUsuarios
         'txtCorreo
         '
         Me.txtCorreo.Location = New System.Drawing.Point(207, 122)
+        Me.txtCorreo.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right
+        Me.txtCorreo.Margin = New System.Windows.Forms.Padding(0, 4, 8, 8)
         Me.txtCorreo.Name = "txtCorreo"
         Me.txtCorreo.Size = New System.Drawing.Size(200, 22)
         Me.txtCorreo.TabIndex = 12
         '
         'Label4
         '
-        Me.Label4.AutoSize = True
+        Me.Label4.AutoSize = False
         Me.Label4.BackColor = System.Drawing.Color.Transparent
         Me.Label4.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
         Me.Label4.Location = New System.Drawing.Point(8, 125)
+        Me.Label4.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.Label4.Margin = New System.Windows.Forms.Padding(0, 7, 8, 0)
         Me.Label4.Name = "Label4"
         Me.Label4.Size = New System.Drawing.Size(60, 20)
         Me.Label4.TabIndex = 11
@@ -162,10 +168,12 @@ Partial Class frmRegistrarUsuarios
         '
         'Label3
         '
-        Me.Label3.AutoSize = True
+        Me.Label3.AutoSize = False
         Me.Label3.BackColor = System.Drawing.Color.Transparent
         Me.Label3.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
         Me.Label3.Location = New System.Drawing.Point(8, 158)
+        Me.Label3.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.Label3.Margin = New System.Windows.Forms.Padding(0, 7, 8, 0)
         Me.Label3.Name = "Label3"
         Me.Label3.Size = New System.Drawing.Size(95, 20)
         Me.Label3.TabIndex = 10
@@ -173,10 +181,12 @@ Partial Class frmRegistrarUsuarios
         '
         'Label2
         '
-        Me.Label2.AutoSize = True
+        Me.Label2.AutoSize = False
         Me.Label2.BackColor = System.Drawing.Color.Transparent
         Me.Label2.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
         Me.Label2.Location = New System.Drawing.Point(8, 195)
+        Me.Label2.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.Label2.Margin = New System.Windows.Forms.Padding(0, 7, 8, 0)
         Me.Label2.Name = "Label2"
         Me.Label2.Size = New System.Drawing.Size(177, 20)
         Me.Label2.TabIndex = 9
@@ -184,10 +194,12 @@ Partial Class frmRegistrarUsuarios
         '
         'Label1
         '
-        Me.Label1.AutoSize = True
+        Me.Label1.AutoSize = False
         Me.Label1.BackColor = System.Drawing.Color.Transparent
         Me.Label1.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
         Me.Label1.Location = New System.Drawing.Point(9, 233)
+        Me.Label1.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.Label1.Margin = New System.Windows.Forms.Padding(0, 7, 8, 0)
         Me.Label1.Name = "Label1"
         Me.Label1.Size = New System.Drawing.Size(89, 20)
         Me.Label1.TabIndex = 8
@@ -195,10 +207,12 @@ Partial Class frmRegistrarUsuarios
         '
         'Label12
         '
-        Me.Label12.AutoSize = True
+        Me.Label12.AutoSize = False
         Me.Label12.BackColor = System.Drawing.Color.Transparent
         Me.Label12.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
         Me.Label12.Location = New System.Drawing.Point(8, 91)
+        Me.Label12.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.Label12.Margin = New System.Windows.Forms.Padding(0, 7, 8, 0)
         Me.Label12.Name = "Label12"
         Me.Label12.Size = New System.Drawing.Size(67, 20)
         Me.Label12.TabIndex = 0
@@ -207,16 +221,20 @@ Partial Class frmRegistrarUsuarios
         'txtUsuario
         '
         Me.txtUsuario.Location = New System.Drawing.Point(207, 89)
+        Me.txtUsuario.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right
+        Me.txtUsuario.Margin = New System.Windows.Forms.Padding(0, 4, 8, 8)
         Me.txtUsuario.Name = "txtUsuario"
         Me.txtUsuario.Size = New System.Drawing.Size(200, 22)
         Me.txtUsuario.TabIndex = 7
         '
         'Label9
         '
-        Me.Label9.AutoSize = True
+        Me.Label9.AutoSize = False
         Me.Label9.BackColor = System.Drawing.Color.Transparent
         Me.Label9.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
         Me.Label9.Location = New System.Drawing.Point(8, 61)
+        Me.Label9.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.Label9.Margin = New System.Windows.Forms.Padding(0, 7, 8, 0)
         Me.Label9.Name = "Label9"
         Me.Label9.Size = New System.Drawing.Size(26, 20)
         Me.Label9.TabIndex = 0
@@ -225,6 +243,9 @@ Partial Class frmRegistrarUsuarios
         'txtId
         '
         Me.txtId.Location = New System.Drawing.Point(207, 55)
+        Me.txtId.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left
+        Me.txtId.Margin = New System.Windows.Forms.Padding(0, 4, 8, 8)
+        Me.txtId.Width = 130
         Me.txtId.Name = "txtId"
         Me.txtId.Size = New System.Drawing.Size(66, 22)
         Me.txtId.TabIndex = 6
@@ -235,6 +256,8 @@ Partial Class frmRegistrarUsuarios
         Me.lblModo.BackColor = System.Drawing.Color.Transparent
         Me.lblModo.Font = New System.Drawing.Font("Microsoft Sans Serif", 15.75!, System.Drawing.FontStyle.Bold)
         Me.lblModo.Location = New System.Drawing.Point(4, 10)
+        Me.lblModo.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.lblModo.Margin = System.Windows.Forms.Padding.Empty
         Me.lblModo.Name = "lblModo"
         Me.lblModo.Size = New System.Drawing.Size(256, 31)
         Me.lblModo.TabIndex = 0
@@ -244,14 +267,72 @@ Partial Class frmRegistrarUsuarios
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(761, 508)
+        Me.ClientSize = New System.Drawing.Size(700, 480)
         Me.Controls.Add(Me.Panel2)
         Me.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
+        Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog
+        Me.MaximizeBox = False
         Me.Name = "frmRegistrarUsuarios"
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent
         Me.Text = "Registrar usuarios"
         Me.Panel2.ResumeLayout(False)
         Me.Panel2.PerformLayout()
+
+        Me.tlpContenido.Name = "tlpContenido"
+        Me.tlpContenido.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.tlpContenido.ColumnCount = 1
+        Me.tlpContenido.RowCount = 4
+        Me.tlpContenido.Margin = System.Windows.Forms.Padding.Empty
+        Me.tlpContenido.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
+        Me.tlpContenido.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 48.0!))
+        Me.tlpContenido.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
+        Me.tlpContenido.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize))
+        Me.tlpContenido.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize))
+        Me.tlpContenido.Padding = New System.Windows.Forms.Padding(24, 20, 24, 16)
+        Me.tlpCampos.Name = "tlpCampos"
+        Me.tlpCampos.Dock = System.Windows.Forms.DockStyle.Top
+        Me.tlpCampos.AutoSize = True
+        Me.tlpCampos.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+        Me.tlpCampos.ColumnCount = 2
+        Me.tlpCampos.RowCount = 8
+        Me.tlpCampos.Margin = System.Windows.Forms.Padding.Empty
+        Me.tlpCampos.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 180.0!))
+        Me.tlpCampos.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
+        Me.tlpCampos.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 38.0!))
+        Me.tlpCampos.Controls.Add(Me.Label9, 0, 0)
+        Me.tlpCampos.Controls.Add(Me.txtId, 1, 0)
+        Me.tlpCampos.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 38.0!))
+        Me.tlpCampos.Controls.Add(Me.Label12, 0, 1)
+        Me.tlpCampos.Controls.Add(Me.txtUsuario, 1, 1)
+        Me.tlpCampos.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 38.0!))
+        Me.tlpCampos.Controls.Add(Me.Label4, 0, 2)
+        Me.tlpCampos.Controls.Add(Me.txtCorreo, 1, 2)
+        Me.tlpCampos.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 38.0!))
+        Me.tlpCampos.Controls.Add(Me.Label3, 0, 3)
+        Me.tlpCampos.Controls.Add(Me.txtContrasena, 1, 3)
+        Me.tlpCampos.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 38.0!))
+        Me.tlpCampos.Controls.Add(Me.Label2, 0, 4)
+        Me.tlpCampos.Controls.Add(Me.txtPregunta, 1, 4)
+        Me.tlpCampos.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 38.0!))
+        Me.tlpCampos.Controls.Add(Me.Label1, 0, 5)
+        Me.tlpCampos.Controls.Add(Me.txtRespuesta, 1, 5)
+        Me.tlpCampos.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 38.0!))
+        Me.tlpCampos.Controls.Add(Me.Label5, 0, 6)
+        Me.tlpCampos.Controls.Add(Me.cboRol, 1, 6)
+        Me.tlpCampos.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 38.0!))
+        Me.tlpCampos.Controls.Add(Me.chkActivo, 1, 7)
+        Me.flpAcciones.Name = "flpAcciones"
+        Me.flpAcciones.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.flpAcciones.AutoSize = True
+        Me.flpAcciones.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+        Me.flpAcciones.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft
+        Me.flpAcciones.Margin = System.Windows.Forms.Padding.Empty
+        Me.flpAcciones.Controls.Add(Me.btnCancelar)
+        Me.flpAcciones.Controls.Add(Me.btnGuardar)
+        Me.tlpContenido.Controls.Add(Me.lblModo, 0, 0)
+        Me.tlpContenido.Controls.Add(Me.tlpCampos, 0, 1)
+        Me.tlpContenido.Controls.Add(Me.flpAcciones, 0, 3)
+        Me.Panel2.Controls.Add(Me.tlpContenido)
         Me.ResumeLayout(False)
 
     End Sub
@@ -275,4 +356,7 @@ Partial Class frmRegistrarUsuarios
     Friend WithEvents txtRespuesta As TextBox
     Friend WithEvents txtPregunta As TextBox
     Friend WithEvents btnCancelar As Button
+    Friend WithEvents tlpContenido As System.Windows.Forms.TableLayoutPanel
+    Friend WithEvents tlpCampos As System.Windows.Forms.TableLayoutPanel
+    Friend WithEvents flpAcciones As System.Windows.Forms.FlowLayoutPanel
 End Class

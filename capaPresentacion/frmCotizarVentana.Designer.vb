@@ -77,9 +77,10 @@ Partial Class frmCotizarVentana
         Me.Panel1.Controls.Add(Me.Label3)
         Me.Panel1.Controls.Add(Me.Label2)
         Me.Panel1.Controls.Add(Me.Label1)
-        Me.Panel1.Location = New System.Drawing.Point(12, 12)
+        Me.Panel1.Location = New System.Drawing.Point(24, 20)
+        Me.Panel1.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right
         Me.Panel1.Name = "Panel1"
-        Me.Panel1.Size = New System.Drawing.Size(431, 201)
+        Me.Panel1.Size = New System.Drawing.Size(472, 212)
         Me.Panel1.TabIndex = 0
         '
         'txtEspesor
@@ -229,9 +230,10 @@ Partial Class frmCotizarVentana
         Me.Panel2.Controls.Add(Me.Label9)
         Me.Panel2.Controls.Add(Me.txtAncho)
         Me.Panel2.Controls.Add(Me.Label8)
-        Me.Panel2.Location = New System.Drawing.Point(12, 219)
+        Me.Panel2.Location = New System.Drawing.Point(24, 244)
+        Me.Panel2.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right
         Me.Panel2.Name = "Panel2"
-        Me.Panel2.Size = New System.Drawing.Size(431, 108)
+        Me.Panel2.Size = New System.Drawing.Size(472, 110)
         Me.Panel2.TabIndex = 0
         '
         'Label11
@@ -305,10 +307,11 @@ Partial Class frmCotizarVentana
         '
         'btnLlevarPedido
         '
-        Me.btnLlevarPedido.Location = New System.Drawing.Point(335, 463)
+        Me.btnLlevarPedido.Location = New System.Drawing.Point(336, 520)
         Me.btnLlevarPedido.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
+        Me.btnLlevarPedido.Anchor = System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right
         Me.btnLlevarPedido.Name = "btnLlevarPedido"
-        Me.btnLlevarPedido.Size = New System.Drawing.Size(108, 23)
+        Me.btnLlevarPedido.Size = New System.Drawing.Size(160, 34)
         Me.btnLlevarPedido.TabIndex = 10
         Me.btnLlevarPedido.Text = "Llevar a pedido"
         Me.btnLlevarPedido.UseVisualStyleBackColor = True
@@ -318,18 +321,19 @@ Partial Class frmCotizarVentana
         Me.Label13.AutoSize = True
         Me.Label13.BackColor = System.Drawing.Color.Transparent
         Me.Label13.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
-        Me.Label13.Location = New System.Drawing.Point(19, 377)
+        Me.Label13.Location = New System.Drawing.Point(24, 408)
         Me.Label13.Name = "Label13"
-        Me.Label13.Size = New System.Drawing.Size(182, 16)
+        Me.Label13.Size = New System.Drawing.Size(212, 24)
         Me.Label13.TabIndex = 0
         Me.Label13.Text = "Precio de los materiales (S/.):"
         '
         'txtPreciomaterial
         '
         Me.txtPreciomaterial.Enabled = False
-        Me.txtPreciomaterial.Location = New System.Drawing.Point(223, 375)
+        Me.txtPreciomaterial.Location = New System.Drawing.Point(250, 404)
+        Me.txtPreciomaterial.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right
         Me.txtPreciomaterial.Name = "txtPreciomaterial"
-        Me.txtPreciomaterial.Size = New System.Drawing.Size(200, 20)
+        Me.txtPreciomaterial.Size = New System.Drawing.Size(246, 24)
         Me.txtPreciomaterial.TabIndex = 0
         '
         'Label14
@@ -337,24 +341,26 @@ Partial Class frmCotizarVentana
         Me.Label14.AutoSize = True
         Me.Label14.BackColor = System.Drawing.Color.Transparent
         Me.Label14.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
-        Me.Label14.Location = New System.Drawing.Point(127, 352)
+        Me.Label14.Location = New System.Drawing.Point(24, 374)
         Me.Label14.Name = "Label14"
-        Me.Label14.Size = New System.Drawing.Size(74, 16)
+        Me.Label14.Size = New System.Drawing.Size(212, 24)
         Me.Label14.TabIndex = 0
         Me.Label14.Text = "Extras (S/.):"
         '
         'txtExtra
         '
-        Me.txtExtra.Location = New System.Drawing.Point(223, 349)
+        Me.txtExtra.Location = New System.Drawing.Point(250, 370)
+        Me.txtExtra.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right
         Me.txtExtra.Name = "txtExtra"
-        Me.txtExtra.Size = New System.Drawing.Size(200, 20)
+        Me.txtExtra.Size = New System.Drawing.Size(246, 24)
         Me.txtExtra.TabIndex = 8
         '
         'txtManoObra
         '
-        Me.txtManoObra.Location = New System.Drawing.Point(223, 401)
+        Me.txtManoObra.Location = New System.Drawing.Point(250, 438)
+        Me.txtManoObra.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right
         Me.txtManoObra.Name = "txtManoObra"
-        Me.txtManoObra.Size = New System.Drawing.Size(200, 20)
+        Me.txtManoObra.Size = New System.Drawing.Size(246, 24)
         Me.txtManoObra.TabIndex = 9
         '
         'Label15
@@ -362,18 +368,19 @@ Partial Class frmCotizarVentana
         Me.Label15.AutoSize = True
         Me.Label15.BackColor = System.Drawing.Color.Transparent
         Me.Label15.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
-        Me.Label15.Location = New System.Drawing.Point(80, 403)
+        Me.Label15.Location = New System.Drawing.Point(24, 442)
         Me.Label15.Name = "Label15"
-        Me.Label15.Size = New System.Drawing.Size(121, 16)
+        Me.Label15.Size = New System.Drawing.Size(212, 24)
         Me.Label15.TabIndex = 0
         Me.Label15.Text = "Mano de obra (S/.):"
         '
         'txtTotal
         '
         Me.txtTotal.Enabled = False
-        Me.txtTotal.Location = New System.Drawing.Point(223, 427)
+        Me.txtTotal.Location = New System.Drawing.Point(250, 472)
+        Me.txtTotal.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right
         Me.txtTotal.Name = "txtTotal"
-        Me.txtTotal.Size = New System.Drawing.Size(200, 20)
+        Me.txtTotal.Size = New System.Drawing.Size(246, 24)
         Me.txtTotal.TabIndex = 0
         Me.txtTotal.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
@@ -382,26 +389,27 @@ Partial Class frmCotizarVentana
         Me.Label16.AutoSize = True
         Me.Label16.BackColor = System.Drawing.Color.Transparent
         Me.Label16.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
-        Me.Label16.Location = New System.Drawing.Point(133, 427)
+        Me.Label16.Location = New System.Drawing.Point(24, 476)
         Me.Label16.Name = "Label16"
-        Me.Label16.Size = New System.Drawing.Size(68, 16)
+        Me.Label16.Size = New System.Drawing.Size(212, 24)
         Me.Label16.TabIndex = 0
         Me.Label16.Text = "Total (S/.):"
         '
         'btnDuplicar
         '
-        Me.btnDuplicar.Location = New System.Drawing.Point(12, 463)
+        Me.btnDuplicar.Location = New System.Drawing.Point(24, 520)
         Me.btnDuplicar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
+        Me.btnDuplicar.Anchor = System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left
         Me.btnDuplicar.Name = "btnDuplicar"
-        Me.btnDuplicar.Size = New System.Drawing.Size(108, 23)
+        Me.btnDuplicar.Size = New System.Drawing.Size(120, 34)
         Me.btnDuplicar.TabIndex = 12
         Me.btnDuplicar.Text = "Duplicar"
         Me.btnDuplicar.UseVisualStyleBackColor = True
         '
         'frmCotizarVentana
         '
-        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None
-        Me.ClientSize = New System.Drawing.Size(455, 494)
+        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
+        Me.ClientSize = New System.Drawing.Size(520, 578)
         Me.Controls.Add(Me.btnDuplicar)
         Me.Controls.Add(Me.txtTotal)
         Me.Controls.Add(Me.Label16)
@@ -417,6 +425,8 @@ Partial Class frmCotizarVentana
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
         Me.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
+        Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog
+        Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent
         Me.Name = "frmCotizarVentana"
         Me.Text = "Cotizar ventana"
         Me.Panel1.ResumeLayout(False)
