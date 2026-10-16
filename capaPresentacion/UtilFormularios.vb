@@ -119,7 +119,7 @@ Module UtilFormularios
             ElseIf TypeOf c Is ComboBox Then
                 Dim cb As ComboBox = DirectCast(c, ComboBox)
                 cb.FlatStyle = FlatStyle.Flat
-                cb.BackColor = p.Fondo
+                cb.BackColor = If(cb.Parent IsNot Nothing AndAlso cb.Parent.BackColor = p.Fondo, p.FondoPanel, p.Fondo)
                 cb.ForeColor = p.Texto
             ElseIf TypeOf c Is TextBoxBase OrElse TypeOf c Is NumericUpDown Then
                 AplicarEstiloCampo(c, p)
