@@ -10,15 +10,52 @@ Module UtilFormularios
 
     ' ---------------- Ventanas dentro del menu (MDI) ----------------
 
-    ' Los formularios que se abren dentro del menu principal no deben poder
-    ' maximizarse ni cambiar de tamano (si minimizarse): borde fijo, con boton
-    ' de minimizar pero sin el de maximizar. Solo aplica cuando el formulario es
-    ' ventana hija del menu (no cuando se abre como dialogo con ShowDialog).
     Public Sub ComoVentanaHija(frm As Form)
         If frm Is Nothing Then Return
-        frm.FormBorderStyle = FormBorderStyle.FixedSingle
-        frm.MaximizeBox = False
         frm.MinimizeBox = True
+        frm.MaximizeBox = (frm.FormBorderStyle = FormBorderStyle.Sizable)
+    End Sub
+
+    ' Se ajusta una sola vez al abrir; al cambiar de ventana se conserva su posición.
+    Public Sub PrepararVentana(frm As Form)
+        RemoveHandler frm.Shown, AddressOf VentanaMostrada
+        AddHandler frm.Shown, AddressOf VentanaMostrada
+    End Sub
+
+    Private Sub VentanaMostrada(sender As Object, e As EventArgs)
+        AjustarVentana(DirectCast(sender, Form), True)
+    End Sub
+
+    Public Sub AjustarVentana(frm As Form, Optional centrar As Boolean = False)
+        If frm Is Nothing OrElse frm.WindowState <> FormWindowState.Normal Then Return
+        Dim area As Rectangle = Screen.FromControl(frm).WorkingArea
+        If frm.MdiParent IsNot Nothing Then
+            Dim escritorio As MdiClient = frm.MdiParent.Controls.OfType(Of MdiClient)().FirstOrDefault()
+            If escritorio Is Nothing OrElse escritorio.ClientSize.Width < 100 Then Return
+            area = escritorio.ClientRectangle
+        End If
+        area.Inflate(-8, -8)
+        Dim ancho As Integer = Math.Min(frm.Width, area.Width)
+        Dim alto As Integer = Math.Min(frm.Height, area.Height)
+        If ancho < frm.Width OrElse alto < frm.Height Then
+            If frm.FormBorderStyle <> FormBorderStyle.Sizable Then
+                ' Los diálogos conservan el tamaño de sus campos y permiten desplazarse.
+                frm.AutoScroll = True
+                frm.AutoScrollMinSize = frm.ClientSize
+                For Each panel As Panel In frm.Controls.OfType(Of Panel)()
+                    If panel.Dock = DockStyle.Fill Then panel.MinimumSize = panel.Size
+                Next
+            End If
+            frm.MinimumSize = New Size(Math.Min(frm.MinimumSize.Width, ancho), Math.Min(frm.MinimumSize.Height, alto))
+            frm.Size = New Size(ancho, alto)
+        End If
+        If centrar Then
+            frm.Location = New Point(area.Left + (area.Width - frm.Width) \ 2,
+                                     area.Top + (area.Height - frm.Height) \ 2)
+        Else
+            frm.Location = New Point(Math.Max(area.Left, Math.Min(frm.Left, area.Right - frm.Width)),
+                                     Math.Max(area.Top, Math.Min(frm.Top, area.Bottom - frm.Height)))
+        End If
     End Sub
 
     ' Aproxima un monto a soles enteros (redondeo comercial: el .5 sube)
@@ -31,6 +68,7 @@ Module UtilFormularios
         Dim p As Paleta = Temas.Obtener(tema)
         frm.BackColor = p.Fondo
         AplicarTemaControles(frm.Controls, p)
+        PrepararVentana(frm)
     End Sub
 
     ' Los botones con estilo del sistema ignoran el BackColor y dibujan un borde

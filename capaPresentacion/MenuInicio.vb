@@ -94,11 +94,14 @@ Public Class MenuInicio
         End Try
     End Sub
 
-    ' Ninguna ventana que se abre dentro del menu debe maximizarse ni cambiar
-    ' de tamano. Todas cuelgan de este formulario (incluso las que se abren
-    ' desde otras ventanas), asi que este unico punto las cubre a todas.
     Private Sub MenuInicio_MdiChildActivate(sender As Object, e As EventArgs) Handles MyBase.MdiChildActivate
         ComoVentanaHija(Me.ActiveMdiChild)
+    End Sub
+
+    Private Sub MenuInicio_Resize(sender As Object, e As EventArgs) Handles MyBase.Resize
+        For Each ventana As Form In MdiChildren
+            AjustarVentana(ventana)
+        Next
     End Sub
 
     Private Sub MenuInicio_Load(sender As Object, e As EventArgs) Handles MyBase.Load
