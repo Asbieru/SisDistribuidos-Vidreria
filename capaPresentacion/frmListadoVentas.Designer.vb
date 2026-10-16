@@ -135,7 +135,7 @@ Partial Class frmListadoVentas
         '
         'btnFiltrar
         '
-        Me.btnFiltrar.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnFiltrar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
         Me.btnFiltrar.Location = New System.Drawing.Point(459, 52)
         Me.btnFiltrar.Name = "btnFiltrar"
         Me.btnFiltrar.Size = New System.Drawing.Size(75, 23)
@@ -145,7 +145,7 @@ Partial Class frmListadoVentas
         '
         'btnVerTodas
         '
-        Me.btnVerTodas.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnVerTodas.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
         Me.btnVerTodas.Location = New System.Drawing.Point(559, 52)
         Me.btnVerTodas.Name = "btnVerTodas"
         Me.btnVerTodas.Size = New System.Drawing.Size(91, 23)
@@ -184,12 +184,13 @@ Partial Class frmListadoVentas
         Me.dgvVentas.ReadOnly = True
         Me.dgvVentas.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
         Me.dgvVentas.Size = New System.Drawing.Size(671, 150)
-        Me.dgvVentas.ScrollBars = System.Windows.Forms.ScrollBars.Both
+        Me.dgvVentas.ScrollBars = System.Windows.Forms.ScrollBars.Both
+
         Me.dgvVentas.TabIndex = 11
         '
         'lblTotalPedidos
         '
-        Me.lblTotalPedidos.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblTotalPedidos.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
         Me.lblTotalPedidos.Location = New System.Drawing.Point(59, 353)
         Me.lblTotalPedidos.Name = "lblTotalPedidos"
         Me.lblTotalPedidos.Size = New System.Drawing.Size(187, 18)
@@ -200,7 +201,7 @@ Partial Class frmListadoVentas
         '
         'lblTotalCobrado
         '
-        Me.lblTotalCobrado.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblTotalCobrado.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
         Me.lblTotalCobrado.Location = New System.Drawing.Point(59, 376)
         Me.lblTotalCobrado.Name = "lblTotalCobrado"
         Me.lblTotalCobrado.Size = New System.Drawing.Size(126, 18)
@@ -211,7 +212,7 @@ Partial Class frmListadoVentas
         '
         'lblTotalSaldo
         '
-        Me.lblTotalSaldo.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblTotalSaldo.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
         Me.lblTotalSaldo.Location = New System.Drawing.Point(59, 399)
         Me.lblTotalSaldo.Name = "lblTotalSaldo"
         Me.lblTotalSaldo.Size = New System.Drawing.Size(114, 18)
@@ -228,7 +229,7 @@ Partial Class frmListadoVentas
         '
         'btnVerDetalle
         '
-        Me.btnVerDetalle.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnVerDetalle.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
         Me.btnVerDetalle.Location = New System.Drawing.Point(194, 454)
         Me.btnVerDetalle.Anchor = System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left
         Me.btnVerDetalle.Name = "btnVerDetalle"
@@ -239,7 +240,7 @@ Partial Class frmListadoVentas
         '
         'btnActualizar
         '
-        Me.btnActualizar.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnActualizar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
         Me.btnActualizar.Location = New System.Drawing.Point(334, 454)
         Me.btnActualizar.Anchor = System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left
         Me.btnActualizar.Name = "btnActualizar"
@@ -250,7 +251,7 @@ Partial Class frmListadoVentas
         '
         'btnCerrar
         '
-        Me.btnCerrar.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnCerrar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
         Me.btnCerrar.Location = New System.Drawing.Point(472, 454)
         Me.btnCerrar.Anchor = System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left
         Me.btnCerrar.Name = "btnCerrar"
@@ -261,7 +262,7 @@ Partial Class frmListadoVentas
         '
         'frmListadoVentas
         '
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.lblResultados.Location = New System.Drawing.Point(49, 158)
         Me.lblResultados.AutoSize = True
@@ -270,6 +271,7 @@ Partial Class frmListadoVentas
         Me.ClientSize = New System.Drawing.Size(800, 520)
         Me.MinimumSize = New System.Drawing.Size(816, 559)
         Me.Controls.Add(Me.pnlVentas)
+        Me.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
         Me.Name = "frmListadoVentas"
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "Listado de ventas"

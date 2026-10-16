@@ -73,15 +73,39 @@ Module UtilFormularios
             ElseIf TypeOf c Is DataGridView Then
                 Dim dgv As DataGridView = DirectCast(c, DataGridView)
                 dgv.BackgroundColor = p.Fondo
+                dgv.BorderStyle = BorderStyle.FixedSingle
+                dgv.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal
+                dgv.GridColor = p.FondoPanel
+                dgv.Font = New Font("Microsoft Sans Serif", 9.75F)
+                dgv.DefaultCellStyle.Font = dgv.Font
                 dgv.DefaultCellStyle.BackColor = p.Fondo
                 dgv.DefaultCellStyle.ForeColor = p.Texto
+                dgv.DefaultCellStyle.SelectionBackColor = p.BotonFondo
+                dgv.DefaultCellStyle.SelectionForeColor = p.BotonTexto
+                dgv.DefaultCellStyle.Padding = New Padding(4, 2, 4, 2)
                 dgv.ColumnHeadersDefaultCellStyle.BackColor = p.BotonFondo
-                dgv.ColumnHeadersDefaultCellStyle.ForeColor = p.Texto
+                dgv.ColumnHeadersDefaultCellStyle.ForeColor = p.BotonTexto
+                dgv.ColumnHeadersDefaultCellStyle.Font = New Font(dgv.Font, FontStyle.Bold)
+                dgv.ColumnHeadersDefaultCellStyle.SelectionBackColor = p.BotonFondo
+                dgv.ColumnHeadersDefaultCellStyle.SelectionForeColor = p.BotonTexto
+                dgv.ColumnHeadersHeight = Math.Max(32, dgv.Font.Height + 14)
+                dgv.RowTemplate.Height = Math.Max(28, dgv.Font.Height + 10)
+                dgv.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCellsExceptHeaders
+                dgv.ScrollBars = ScrollBars.Both
                 dgv.EnableHeadersVisualStyles = False
-            ElseIf TypeOf c Is Label OrElse TypeOf c Is CheckBox OrElse TypeOf c Is GroupBox Then
+            ElseIf TypeOf c Is Label Then
+                c.ForeColor = If(c.Font.SizeInPoints >= 14, p.Acento, p.Texto)
+            ElseIf TypeOf c Is CheckBox OrElse TypeOf c Is RadioButton OrElse TypeOf c Is GroupBox Then
+                c.ForeColor = p.Texto
+            ElseIf TypeOf c Is ListView Then
+                c.BackColor = p.Fondo
+                c.ForeColor = p.Texto
+            ElseIf TypeOf c Is TabPage Then
+                DirectCast(c, TabPage).UseVisualStyleBackColor = False
+                c.BackColor = p.Fondo
                 c.ForeColor = p.Texto
             ElseIf TypeOf c Is Panel Then
-                c.BackColor = p.FondoPanel
+                c.BackColor = If(c.Dock = DockStyle.Fill, p.Fondo, p.FondoPanel)
             End If
             If c.HasChildren Then AplicarTemaControles(c.Controls, p)
         Next

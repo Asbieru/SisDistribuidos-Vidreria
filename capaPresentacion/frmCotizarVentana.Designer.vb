@@ -102,7 +102,7 @@ Partial Class frmCotizarVentana
         '
         Me.Label17.AutoSize = True
         Me.Label17.BackColor = System.Drawing.Color.Transparent
-        Me.Label17.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label17.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
         Me.Label17.Location = New System.Drawing.Point(10, 119)
         Me.Label17.Name = "Label17"
         Me.Label17.Size = New System.Drawing.Size(92, 16)
@@ -113,7 +113,7 @@ Partial Class frmCotizarVentana
         '
         Me.Label7.AutoSize = True
         Me.Label7.BackColor = System.Drawing.Color.Transparent
-        Me.Label7.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label7.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
         Me.Label7.Location = New System.Drawing.Point(376, 170)
         Me.Label7.Name = "Label7"
         Me.Label7.Size = New System.Drawing.Size(35, 16)
@@ -132,7 +132,7 @@ Partial Class frmCotizarVentana
         '
         Me.Label4.AutoSize = True
         Me.Label4.BackColor = System.Drawing.Color.Transparent
-        Me.Label4.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label4.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
         Me.Label4.Location = New System.Drawing.Point(7, 40)
         Me.Label4.Name = "Label4"
         Me.Label4.Size = New System.Drawing.Size(101, 16)
@@ -143,7 +143,7 @@ Partial Class frmCotizarVentana
         '
         Me.Label6.AutoSize = True
         Me.Label6.BackColor = System.Drawing.Color.Transparent
-        Me.Label6.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label6.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
         Me.Label6.Location = New System.Drawing.Point(23, 170)
         Me.Label6.Name = "Label6"
         Me.Label6.Size = New System.Drawing.Size(115, 16)
@@ -162,7 +162,7 @@ Partial Class frmCotizarVentana
         '
         Me.Label5.AutoSize = True
         Me.Label5.BackColor = System.Drawing.Color.Transparent
-        Me.Label5.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label5.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
         Me.Label5.Location = New System.Drawing.Point(10, 67)
         Me.Label5.Name = "Label5"
         Me.Label5.Size = New System.Drawing.Size(108, 16)
@@ -190,7 +190,7 @@ Partial Class frmCotizarVentana
         '
         Me.Label3.AutoSize = True
         Me.Label3.BackColor = System.Drawing.Color.Transparent
-        Me.Label3.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label3.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
         Me.Label3.Location = New System.Drawing.Point(27, 146)
         Me.Label3.Name = "Label3"
         Me.Label3.Size = New System.Drawing.Size(96, 16)
@@ -201,7 +201,7 @@ Partial Class frmCotizarVentana
         '
         Me.Label2.AutoSize = True
         Me.Label2.BackColor = System.Drawing.Color.Transparent
-        Me.Label2.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label2.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
         Me.Label2.Location = New System.Drawing.Point(26, 93)
         Me.Label2.Name = "Label2"
         Me.Label2.Size = New System.Drawing.Size(112, 16)
@@ -212,7 +212,7 @@ Partial Class frmCotizarVentana
         '
         Me.Label1.AutoSize = True
         Me.Label1.BackColor = System.Drawing.Color.Transparent
-        Me.Label1.Font = New System.Drawing.Font("Microsoft Sans Serif", 15.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label1.Font = New System.Drawing.Font("Microsoft Sans Serif", 15.75!, System.Drawing.FontStyle.Bold)
         Me.Label1.Location = New System.Drawing.Point(2, 2)
         Me.Label1.Name = "Label1"
         Me.Label1.Size = New System.Drawing.Size(170, 25)
@@ -238,7 +238,7 @@ Partial Class frmCotizarVentana
         '
         Me.Label11.AutoSize = True
         Me.Label11.BackColor = System.Drawing.Color.Transparent
-        Me.Label11.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label11.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
         Me.Label11.Location = New System.Drawing.Point(376, 65)
         Me.Label11.Name = "Label11"
         Me.Label11.Size = New System.Drawing.Size(28, 16)
@@ -249,7 +249,7 @@ Partial Class frmCotizarVentana
         '
         Me.Label12.AutoSize = True
         Me.Label12.BackColor = System.Drawing.Color.Transparent
-        Me.Label12.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label12.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
         Me.Label12.Location = New System.Drawing.Point(7, 68)
         Me.Label12.Name = "Label12"
         Me.Label12.Size = New System.Drawing.Size(96, 16)
@@ -267,7 +267,7 @@ Partial Class frmCotizarVentana
         '
         Me.Label10.AutoSize = True
         Me.Label10.BackColor = System.Drawing.Color.Transparent
-        Me.Label10.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label10.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
         Me.Label10.Location = New System.Drawing.Point(376, 38)
         Me.Label10.Name = "Label10"
         Me.Label10.Size = New System.Drawing.Size(28, 16)
@@ -278,7 +278,7 @@ Partial Class frmCotizarVentana
         '
         Me.Label9.AutoSize = True
         Me.Label9.BackColor = System.Drawing.Color.Transparent
-        Me.Label9.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label9.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
         Me.Label9.Location = New System.Drawing.Point(7, 42)
         Me.Label9.Name = "Label9"
         Me.Label9.Size = New System.Drawing.Size(111, 16)
@@ -296,7 +296,7 @@ Partial Class frmCotizarVentana
         '
         Me.Label8.AutoSize = True
         Me.Label8.BackColor = System.Drawing.Color.Transparent
-        Me.Label8.Font = New System.Drawing.Font("Microsoft Sans Serif", 15.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label8.Font = New System.Drawing.Font("Microsoft Sans Serif", 15.75!, System.Drawing.FontStyle.Bold)
         Me.Label8.Location = New System.Drawing.Point(3, 4)
         Me.Label8.Name = "Label8"
         Me.Label8.Size = New System.Drawing.Size(101, 25)
@@ -306,6 +306,7 @@ Partial Class frmCotizarVentana
         'btnLlevarPedido
         '
         Me.btnLlevarPedido.Location = New System.Drawing.Point(335, 463)
+        Me.btnLlevarPedido.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
         Me.btnLlevarPedido.Name = "btnLlevarPedido"
         Me.btnLlevarPedido.Size = New System.Drawing.Size(108, 23)
         Me.btnLlevarPedido.TabIndex = 10
@@ -316,7 +317,7 @@ Partial Class frmCotizarVentana
         '
         Me.Label13.AutoSize = True
         Me.Label13.BackColor = System.Drawing.Color.Transparent
-        Me.Label13.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label13.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
         Me.Label13.Location = New System.Drawing.Point(19, 377)
         Me.Label13.Name = "Label13"
         Me.Label13.Size = New System.Drawing.Size(182, 16)
@@ -335,7 +336,7 @@ Partial Class frmCotizarVentana
         '
         Me.Label14.AutoSize = True
         Me.Label14.BackColor = System.Drawing.Color.Transparent
-        Me.Label14.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label14.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
         Me.Label14.Location = New System.Drawing.Point(127, 352)
         Me.Label14.Name = "Label14"
         Me.Label14.Size = New System.Drawing.Size(74, 16)
@@ -360,7 +361,7 @@ Partial Class frmCotizarVentana
         '
         Me.Label15.AutoSize = True
         Me.Label15.BackColor = System.Drawing.Color.Transparent
-        Me.Label15.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label15.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
         Me.Label15.Location = New System.Drawing.Point(80, 403)
         Me.Label15.Name = "Label15"
         Me.Label15.Size = New System.Drawing.Size(121, 16)
@@ -380,7 +381,7 @@ Partial Class frmCotizarVentana
         '
         Me.Label16.AutoSize = True
         Me.Label16.BackColor = System.Drawing.Color.Transparent
-        Me.Label16.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label16.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
         Me.Label16.Location = New System.Drawing.Point(133, 427)
         Me.Label16.Name = "Label16"
         Me.Label16.Size = New System.Drawing.Size(68, 16)
@@ -390,6 +391,7 @@ Partial Class frmCotizarVentana
         'btnDuplicar
         '
         Me.btnDuplicar.Location = New System.Drawing.Point(12, 463)
+        Me.btnDuplicar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
         Me.btnDuplicar.Name = "btnDuplicar"
         Me.btnDuplicar.Size = New System.Drawing.Size(108, 23)
         Me.btnDuplicar.TabIndex = 12
@@ -413,6 +415,8 @@ Partial Class frmCotizarVentana
         Me.Controls.Add(Me.Panel2)
         Me.Controls.Add(Me.Panel1)
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
+        Me.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
         Me.Name = "frmCotizarVentana"
         Me.Text = "Cotizar ventana"
         Me.Panel1.ResumeLayout(False)

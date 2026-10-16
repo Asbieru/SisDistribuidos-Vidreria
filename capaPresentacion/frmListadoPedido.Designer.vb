@@ -56,7 +56,8 @@ Partial Class frmListadoPedido
         Me.tblPedidos.RowHeadersWidth = 51
         Me.tblPedidos.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
         Me.tblPedidos.Size = New System.Drawing.Size(644, 257)
-        Me.tblPedidos.ScrollBars = System.Windows.Forms.ScrollBars.Both
+        Me.tblPedidos.ScrollBars = System.Windows.Forms.ScrollBars.Both
+
         Me.tblPedidos.TabIndex = 0
         '
         'txtBuscar
@@ -73,7 +74,7 @@ Partial Class frmListadoPedido
         'lblBuscar
         '
         Me.lblBuscar.AutoSize = True
-        Me.lblBuscar.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblBuscar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
         Me.lblBuscar.Location = New System.Drawing.Point(25, 43)
         Me.lblBuscar.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.lblBuscar.Name = "lblBuscar"
@@ -84,7 +85,7 @@ Partial Class frmListadoPedido
         'lblTitulo
         '
         Me.lblTitulo.AutoSize = True
-        Me.lblTitulo.Font = New System.Drawing.Font("Microsoft Sans Serif", 15.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblTitulo.Font = New System.Drawing.Font("Microsoft Sans Serif", 15.75!, System.Drawing.FontStyle.Bold)
         Me.lblTitulo.Location = New System.Drawing.Point(18, 9)
         Me.lblTitulo.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.lblTitulo.Name = "lblTitulo"
@@ -95,7 +96,7 @@ Partial Class frmListadoPedido
         'Label1
         '
         Me.Label1.AutoSize = True
-        Me.Label1.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label1.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
         Me.Label1.Location = New System.Drawing.Point(359, 41)
         Me.Label1.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.Label1.Name = "Label1"
@@ -116,7 +117,7 @@ Partial Class frmListadoPedido
         'btnVerTodos
         '
         Me.btnVerTodos.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.btnVerTodos.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnVerTodos.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
         Me.btnVerTodos.Location = New System.Drawing.Point(573, 58)
         Me.btnVerTodos.Margin = New System.Windows.Forms.Padding(2)
         Me.btnVerTodos.Name = "btnVerTodos"
@@ -128,7 +129,7 @@ Partial Class frmListadoPedido
         'btnSeleccionar
         '
         Me.btnSeleccionar.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.btnSeleccionar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnSeleccionar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
         Me.btnSeleccionar.Location = New System.Drawing.Point(470, 401)
         Me.btnSeleccionar.Margin = New System.Windows.Forms.Padding(2)
         Me.btnSeleccionar.Name = "btnSeleccionar"
@@ -141,7 +142,7 @@ Partial Class frmListadoPedido
         'btnNuevo
         '
         Me.btnNuevo.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.btnNuevo.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnNuevo.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
         Me.btnNuevo.Location = New System.Drawing.Point(23, 401)
         Me.btnNuevo.Margin = New System.Windows.Forms.Padding(2)
         Me.btnNuevo.Name = "btnNuevo"
@@ -153,7 +154,7 @@ Partial Class frmListadoPedido
         'btnVerPedido
         '
         Me.btnVerPedido.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.btnVerPedido.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnVerPedido.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
         Me.btnVerPedido.Location = New System.Drawing.Point(132, 401)
         Me.btnVerPedido.Margin = New System.Windows.Forms.Padding(2)
         Me.btnVerPedido.Name = "btnVerPedido"
@@ -165,7 +166,7 @@ Partial Class frmListadoPedido
         'btnCancelar
         '
         Me.btnCancelar.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.btnCancelar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnCancelar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
         Me.btnCancelar.Location = New System.Drawing.Point(241, 401)
         Me.btnCancelar.Margin = New System.Windows.Forms.Padding(2)
         Me.btnCancelar.Name = "btnCancelar"
@@ -178,7 +179,7 @@ Partial Class frmListadoPedido
         '
         Me.btnCerrar.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnCerrar.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.btnCerrar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnCerrar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
         Me.btnCerrar.Location = New System.Drawing.Point(585, 401)
         Me.btnCerrar.Margin = New System.Windows.Forms.Padding(2)
         Me.btnCerrar.Name = "btnCerrar"
@@ -190,7 +191,7 @@ Partial Class frmListadoPedido
         'msj
         '
         Me.msj.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.msj.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.msj.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
         Me.msj.ForeColor = System.Drawing.Color.Red
         Me.msj.Location = New System.Drawing.Point(25, 371)
         Me.msj.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
@@ -200,7 +201,7 @@ Partial Class frmListadoPedido
         '
         'frmListadoPedido
         '
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(690, 450)
         Me.Controls.Add(Me.msj)
@@ -216,6 +217,7 @@ Partial Class frmListadoPedido
         Me.Controls.Add(Me.lblBuscar)
         Me.Controls.Add(Me.txtBuscar)
         Me.Controls.Add(Me.tblPedidos)
+        Me.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
         Me.Name = "frmListadoPedido"
         Me.Text = "Listado de pedidos"
         CType(Me.tblPedidos, System.ComponentModel.ISupportInitialize).EndInit()

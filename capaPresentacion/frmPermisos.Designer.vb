@@ -82,7 +82,7 @@ Partial Class frmPermisos
         '
         'btnQuitar
         '
-        Me.btnQuitar.Font = New System.Drawing.Font("Microsoft Sans Serif", 7.8!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnQuitar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
         Me.btnQuitar.Location = New System.Drawing.Point(424, 360)
         Me.btnQuitar.Name = "btnQuitar"
         Me.btnQuitar.Size = New System.Drawing.Size(136, 30)
@@ -92,7 +92,7 @@ Partial Class frmPermisos
         '
         'btnAgregar
         '
-        Me.btnAgregar.Font = New System.Drawing.Font("Microsoft Sans Serif", 7.8!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnAgregar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
         Me.btnAgregar.Location = New System.Drawing.Point(424, 291)
         Me.btnAgregar.Name = "btnAgregar"
         Me.btnAgregar.Size = New System.Drawing.Size(136, 30)
@@ -112,7 +112,7 @@ Partial Class frmPermisos
         'Label2
         '
         Me.Label2.AutoSize = True
-        Me.Label2.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label2.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
         Me.Label2.Location = New System.Drawing.Point(597, 219)
         Me.Label2.Name = "Label2"
         Me.Label2.Size = New System.Drawing.Size(166, 20)
@@ -131,7 +131,7 @@ Partial Class frmPermisos
         'Label1
         '
         Me.Label1.AutoSize = True
-        Me.Label1.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label1.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
         Me.Label1.Location = New System.Drawing.Point(37, 219)
         Me.Label1.Name = "Label1"
         Me.Label1.Size = New System.Drawing.Size(174, 20)
@@ -141,7 +141,7 @@ Partial Class frmPermisos
         'lblRol
         '
         Me.lblRol.AutoSize = True
-        Me.lblRol.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblRol.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
         Me.lblRol.Location = New System.Drawing.Point(37, 161)
         Me.lblRol.Name = "lblRol"
         Me.lblRol.Size = New System.Drawing.Size(0, 20)
@@ -158,7 +158,7 @@ Partial Class frmPermisos
         'lbl1
         '
         Me.lbl1.AutoSize = True
-        Me.lbl1.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lbl1.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
         Me.lbl1.Location = New System.Drawing.Point(37, 119)
         Me.lbl1.Name = "lbl1"
         Me.lbl1.Size = New System.Drawing.Size(72, 20)
@@ -177,7 +177,7 @@ Partial Class frmPermisos
         '
         'btnPermisosRol
         '
-        Me.btnPermisosRol.Font = New System.Drawing.Font("Microsoft Sans Serif", 7.8!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnPermisosRol.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
         Me.btnPermisosRol.Location = New System.Drawing.Point(41, 537)
         Me.btnPermisosRol.Name = "btnPermisosRol"
         Me.btnPermisosRol.Size = New System.Drawing.Size(223, 30)
@@ -187,7 +187,7 @@ Partial Class frmPermisos
         '
         'btnGuardar
         '
-        Me.btnGuardar.Font = New System.Drawing.Font("Microsoft Sans Serif", 7.8!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnGuardar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
         Me.btnGuardar.Location = New System.Drawing.Point(601, 537)
         Me.btnGuardar.Name = "btnGuardar"
         Me.btnGuardar.Size = New System.Drawing.Size(136, 30)
@@ -197,7 +197,7 @@ Partial Class frmPermisos
         '
         'btnCerrar
         '
-        Me.btnCerrar.Font = New System.Drawing.Font("Microsoft Sans Serif", 7.8!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnCerrar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
         Me.btnCerrar.Location = New System.Drawing.Point(809, 537)
         Me.btnCerrar.Name = "btnCerrar"
         Me.btnCerrar.Size = New System.Drawing.Size(136, 30)
@@ -211,6 +211,7 @@ Partial Class frmPermisos
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(987, 594)
         Me.Controls.Add(Me.Panel2)
+        Me.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
         Me.Name = "frmPermisos"
         Me.Text = "Gestión de permisos"
         Me.Panel2.ResumeLayout(False)

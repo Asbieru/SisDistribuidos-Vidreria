@@ -78,7 +78,7 @@ Partial Class frmRegistrarPieza
         'lblVariante
         '
         Me.lblVariante.AutoSize = True
-        Me.lblVariante.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblVariante.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
         Me.lblVariante.Location = New System.Drawing.Point(31, 85)
         Me.lblVariante.Name = "lblVariante"
         Me.lblVariante.Size = New System.Drawing.Size(75, 17)
@@ -97,7 +97,7 @@ Partial Class frmRegistrarPieza
         'lblAncho
         '
         Me.lblAncho.AutoSize = True
-        Me.lblAncho.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblAncho.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
         Me.lblAncho.Location = New System.Drawing.Point(31, 125)
         Me.lblAncho.Name = "lblAncho"
         Me.lblAncho.Size = New System.Drawing.Size(88, 17)
@@ -116,7 +116,7 @@ Partial Class frmRegistrarPieza
         'lblAlto
         '
         Me.lblAlto.AutoSize = True
-        Me.lblAlto.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblAlto.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
         Me.lblAlto.Location = New System.Drawing.Point(31, 165)
         Me.lblAlto.Name = "lblAlto"
         Me.lblAlto.Size = New System.Drawing.Size(74, 17)
@@ -135,7 +135,7 @@ Partial Class frmRegistrarPieza
         'lblLargo
         '
         Me.lblLargo.AutoSize = True
-        Me.lblLargo.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblLargo.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
         Me.lblLargo.Location = New System.Drawing.Point(31, 205)
         Me.lblLargo.Name = "lblLargo"
         Me.lblLargo.Size = New System.Drawing.Size(86, 17)
@@ -154,7 +154,7 @@ Partial Class frmRegistrarPieza
         'lblObs
         '
         Me.lblObs.AutoSize = True
-        Me.lblObs.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblObs.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
         Me.lblObs.Location = New System.Drawing.Point(31, 245)
         Me.lblObs.Name = "lblObs"
         Me.lblObs.Size = New System.Drawing.Size(86, 17)
@@ -182,7 +182,7 @@ Partial Class frmRegistrarPieza
         'btnGuardar
         '
         Me.btnGuardar.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.btnGuardar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Bold)
+        Me.btnGuardar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
         Me.btnGuardar.Location = New System.Drawing.Point(351, 365)
         Me.btnGuardar.Name = "btnGuardar"
         Me.btnGuardar.Size = New System.Drawing.Size(120, 34)
@@ -194,7 +194,7 @@ Partial Class frmRegistrarPieza
         '
         Me.btnCancelar.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnCancelar.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.btnCancelar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Bold)
+        Me.btnCancelar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
         Me.btnCancelar.Location = New System.Drawing.Point(481, 365)
         Me.btnCancelar.Name = "btnCancelar"
         Me.btnCancelar.Size = New System.Drawing.Size(120, 34)
@@ -210,7 +210,7 @@ Partial Class frmRegistrarPieza
         Me.CancelButton = Me.btnCancelar
         Me.ClientSize = New System.Drawing.Size(640, 420)
         Me.Controls.Add(Me.Panel2)
-        Me.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!)
+        Me.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
         Me.MaximizeBox = False
         Me.MinimizeBox = False
         Me.Name = "frmRegistrarPieza"

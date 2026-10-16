@@ -59,7 +59,7 @@ Partial Class frmRegistrarPago
         '
         'lblEstado
         '
-        Me.lblEstado.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblEstado.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
         Me.lblEstado.Location = New System.Drawing.Point(582, 45)
         Me.lblEstado.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.lblEstado.Name = "lblEstado"
@@ -71,6 +71,7 @@ Partial Class frmRegistrarPago
         'btnSelectPedido
         '
         Me.btnSelectPedido.Location = New System.Drawing.Point(532, 17)
+        Me.btnSelectPedido.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
         Me.btnSelectPedido.Name = "btnSelectPedido"
         Me.btnSelectPedido.Size = New System.Drawing.Size(160, 25)
         Me.btnSelectPedido.TabIndex = 4
@@ -80,7 +81,7 @@ Partial Class frmRegistrarPago
         'lblSubTitulo
         '
         Me.lblSubTitulo.AutoSize = True
-        Me.lblSubTitulo.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblSubTitulo.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
         Me.lblSubTitulo.Location = New System.Drawing.Point(20, 39)
         Me.lblSubTitulo.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.lblSubTitulo.Name = "lblSubTitulo"
@@ -119,7 +120,7 @@ Partial Class frmRegistrarPago
         '
         'msj
         '
-        Me.msj.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.msj.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
         Me.msj.ForeColor = System.Drawing.Color.Red
         Me.msj.Location = New System.Drawing.Point(21, 309)
         Me.msj.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
@@ -137,7 +138,7 @@ Partial Class frmRegistrarPago
         'Label2
         '
         Me.Label2.AutoSize = True
-        Me.Label2.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label2.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
         Me.Label2.Location = New System.Drawing.Point(389, 20)
         Me.Label2.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.Label2.Name = "Label2"
@@ -156,6 +157,7 @@ Partial Class frmRegistrarPago
         'btnGuardar
         '
         Me.btnGuardar.Location = New System.Drawing.Point(365, 304)
+        Me.btnGuardar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
         Me.btnGuardar.Name = "btnGuardar"
         Me.btnGuardar.Size = New System.Drawing.Size(75, 23)
         Me.btnGuardar.TabIndex = 6
@@ -165,6 +167,7 @@ Partial Class frmRegistrarPago
         'btnCancelar
         '
         Me.btnCancelar.Location = New System.Drawing.Point(446, 304)
+        Me.btnCancelar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
         Me.btnCancelar.Name = "btnCancelar"
         Me.btnCancelar.Size = New System.Drawing.Size(75, 23)
         Me.btnCancelar.TabIndex = 6
@@ -174,6 +177,7 @@ Partial Class frmRegistrarPago
         'btnModificar
         '
         Me.btnModificar.Location = New System.Drawing.Point(527, 304)
+        Me.btnModificar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
         Me.btnModificar.Name = "btnModificar"
         Me.btnModificar.Size = New System.Drawing.Size(75, 23)
         Me.btnModificar.TabIndex = 6
@@ -183,6 +187,7 @@ Partial Class frmRegistrarPago
         'btnEliminar
         '
         Me.btnEliminar.Location = New System.Drawing.Point(608, 304)
+        Me.btnEliminar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
         Me.btnEliminar.Name = "btnEliminar"
         Me.btnEliminar.Size = New System.Drawing.Size(75, 23)
         Me.btnEliminar.TabIndex = 6
@@ -207,13 +212,14 @@ Partial Class frmRegistrarPago
         Me.tblPagos.RowHeadersWidth = 51
         Me.tblPagos.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
         Me.tblPagos.Size = New System.Drawing.Size(662, 253)
-        Me.tblPagos.ScrollBars = System.Windows.Forms.ScrollBars.Both
+        Me.tblPagos.ScrollBars = System.Windows.Forms.ScrollBars.Both
+
         Me.tblPagos.TabIndex = 5
         '
         'Label1
         '
         Me.Label1.AutoSize = True
-        Me.Label1.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label1.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
         Me.Label1.Location = New System.Drawing.Point(16, 20)
         Me.Label1.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.Label1.Name = "Label1"
@@ -233,7 +239,7 @@ Partial Class frmRegistrarPago
         '
         'lblPagado
         '
-        Me.lblPagado.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblPagado.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
         Me.lblPagado.Location = New System.Drawing.Point(421, 45)
         Me.lblPagado.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.lblPagado.Name = "lblPagado"
@@ -244,11 +250,12 @@ Partial Class frmRegistrarPago
         '
         'frmRegistrarPago
         '
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(734, 456)
         Me.Controls.Add(Me.pnlProceso)
         Me.Controls.Add(Me.Panel1)
+        Me.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
         Me.Name = "frmRegistrarPago"
         Me.Text = "Registrar pago"
         Me.Panel1.ResumeLayout(False)

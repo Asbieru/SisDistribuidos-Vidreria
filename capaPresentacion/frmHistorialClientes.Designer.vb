@@ -87,14 +87,14 @@ Partial Class frmHistorialClientes
         Me.cmbEstado.TabIndex = 1
         Me.btnCambiarCliente.Location = New System.Drawing.Point(24, 94)
         Me.btnCambiarCliente.Name = "btnCambiarCliente"
-        Me.btnCambiarCliente.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Bold)
+        Me.btnCambiarCliente.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
         Me.btnCambiarCliente.Size = New System.Drawing.Size(150, 32)
         Me.btnCambiarCliente.TabIndex = 0
         Me.btnCambiarCliente.Text = "ELEGIR CLIENTE"
         Me.btnCambiarCliente.UseVisualStyleBackColor = True
         Me.btnActualizar.Location = New System.Drawing.Point(454, 94)
         Me.btnActualizar.Name = "btnActualizar"
-        Me.btnActualizar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Bold)
+        Me.btnActualizar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
         Me.btnActualizar.Size = New System.Drawing.Size(130, 32)
         Me.btnActualizar.TabIndex = 2
         Me.btnActualizar.Text = "ACTUALIZAR"
@@ -126,7 +126,7 @@ Partial Class frmHistorialClientes
         Me.dtpHasta.TabIndex = 5
         Me.btnVerTodos.Location = New System.Drawing.Point(660, 136)
         Me.btnVerTodos.Name = "btnVerTodos"
-        Me.btnVerTodos.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Bold)
+        Me.btnVerTodos.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
         Me.btnVerTodos.Size = New System.Drawing.Size(140, 32)
         Me.btnVerTodos.Text = "VER TODO"
         Me.btnVerTodos.TabIndex = 6
@@ -177,7 +177,8 @@ Partial Class frmHistorialClientes
         Me.dgvPagos.MultiSelect = False
         Me.dgvPagos.RowHeadersVisible = False
         Me.dgvPagos.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
-        Me.dgvPagos.ScrollBars = System.Windows.Forms.ScrollBars.Both
+        Me.dgvPagos.ScrollBars = System.Windows.Forms.ScrollBars.Both
+
         Me.dgvPagos.TabIndex = 8
         Me.lblCantidad.Anchor = System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right
         Me.lblCantidad.AutoEllipsis = True
@@ -188,7 +189,7 @@ Partial Class frmHistorialClientes
         Me.btnCerrar.Anchor = System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right
         Me.btnCerrar.Location = New System.Drawing.Point(906, 670)
         Me.btnCerrar.Name = "btnCerrar"
-        Me.btnCerrar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Bold)
+        Me.btnCerrar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
         Me.btnCerrar.Size = New System.Drawing.Size(120, 32)
         Me.btnCerrar.Text = "CERRAR"
         Me.btnCerrar.TabIndex = 9
@@ -196,7 +197,7 @@ Partial Class frmHistorialClientes
 
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!)
+        Me.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
         Me.MinimumSize = New System.Drawing.Size(1066, 689)
         Me.Controls.Add(Me.Panel2)
         Me.CancelButton = Me.btnCerrar

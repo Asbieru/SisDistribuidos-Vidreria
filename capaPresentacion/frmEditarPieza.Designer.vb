@@ -77,7 +77,7 @@ Partial Class frmEditarPieza
         '
         'lblInfo
         '
-        Me.lblInfo.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblInfo.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
         Me.lblInfo.Location = New System.Drawing.Point(31, 68)
         Me.lblInfo.Name = "lblInfo"
         Me.lblInfo.Size = New System.Drawing.Size(578, 42)
@@ -96,7 +96,7 @@ Partial Class frmEditarPieza
         Me.grpCortar.Controls.Add(Me.nudMinUtil)
         Me.grpCortar.Controls.Add(Me.lblNotaCorte)
         Me.grpCortar.Controls.Add(Me.btnCortar)
-        Me.grpCortar.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.grpCortar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
         Me.grpCortar.Location = New System.Drawing.Point(31, 118)
         Me.grpCortar.Name = "grpCortar"
         Me.grpCortar.Size = New System.Drawing.Size(578, 172)
@@ -179,7 +179,7 @@ Partial Class frmEditarPieza
         '
         'lblNotaCorte
         '
-        Me.lblNotaCorte.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!)
+        Me.lblNotaCorte.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
         Me.lblNotaCorte.Location = New System.Drawing.Point(305, 30)
         Me.lblNotaCorte.Name = "lblNotaCorte"
         Me.lblNotaCorte.Size = New System.Drawing.Size(258, 82)
@@ -189,7 +189,7 @@ Partial Class frmEditarPieza
         '
         'btnCortar
         '
-        Me.btnCortar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Bold)
+        Me.btnCortar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
         Me.btnCortar.Location = New System.Drawing.Point(443, 124)
         Me.btnCortar.Name = "btnCortar"
         Me.btnCortar.Size = New System.Drawing.Size(120, 34)
@@ -204,7 +204,7 @@ Partial Class frmEditarPieza
         Me.grpEstado.Controls.Add(Me.btnVendida)
         Me.grpEstado.Controls.Add(Me.btnDefectuosa)
         Me.grpEstado.Controls.Add(Me.lblNotaEstado)
-        Me.grpEstado.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.grpEstado.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
         Me.grpEstado.Location = New System.Drawing.Point(31, 300)
         Me.grpEstado.Name = "grpEstado"
         Me.grpEstado.Size = New System.Drawing.Size(578, 125)
@@ -214,7 +214,7 @@ Partial Class frmEditarPieza
         '
         'btnReservar
         '
-        Me.btnReservar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Bold)
+        Me.btnReservar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
         Me.btnReservar.Location = New System.Drawing.Point(15, 32)
         Me.btnReservar.Name = "btnReservar"
         Me.btnReservar.Size = New System.Drawing.Size(140, 34)
@@ -224,7 +224,7 @@ Partial Class frmEditarPieza
         '
         'btnLiberar
         '
-        Me.btnLiberar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Bold)
+        Me.btnLiberar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
         Me.btnLiberar.Location = New System.Drawing.Point(165, 32)
         Me.btnLiberar.Name = "btnLiberar"
         Me.btnLiberar.Size = New System.Drawing.Size(140, 34)
@@ -234,7 +234,7 @@ Partial Class frmEditarPieza
         '
         'btnVendida
         '
-        Me.btnVendida.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Bold)
+        Me.btnVendida.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
         Me.btnVendida.Location = New System.Drawing.Point(15, 76)
         Me.btnVendida.Name = "btnVendida"
         Me.btnVendida.Size = New System.Drawing.Size(140, 34)
@@ -244,7 +244,7 @@ Partial Class frmEditarPieza
         '
         'btnDefectuosa
         '
-        Me.btnDefectuosa.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Bold)
+        Me.btnDefectuosa.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
         Me.btnDefectuosa.Location = New System.Drawing.Point(165, 76)
         Me.btnDefectuosa.Name = "btnDefectuosa"
         Me.btnDefectuosa.Size = New System.Drawing.Size(140, 34)
@@ -254,7 +254,7 @@ Partial Class frmEditarPieza
         '
         'lblNotaEstado
         '
-        Me.lblNotaEstado.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!)
+        Me.lblNotaEstado.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
         Me.lblNotaEstado.Location = New System.Drawing.Point(320, 32)
         Me.lblNotaEstado.Name = "lblNotaEstado"
         Me.lblNotaEstado.Size = New System.Drawing.Size(243, 78)
@@ -265,7 +265,7 @@ Partial Class frmEditarPieza
         '
         Me.btnCerrar.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnCerrar.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.btnCerrar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Bold)
+        Me.btnCerrar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
         Me.btnCerrar.Location = New System.Drawing.Point(489, 442)
         Me.btnCerrar.Name = "btnCerrar"
         Me.btnCerrar.Size = New System.Drawing.Size(120, 34)
@@ -280,7 +280,7 @@ Partial Class frmEditarPieza
         Me.CancelButton = Me.btnCerrar
         Me.ClientSize = New System.Drawing.Size(640, 495)
         Me.Controls.Add(Me.Panel2)
-        Me.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!)
+        Me.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
         Me.MaximizeBox = False
         Me.MinimizeBox = False
         Me.Name = "frmEditarPieza"

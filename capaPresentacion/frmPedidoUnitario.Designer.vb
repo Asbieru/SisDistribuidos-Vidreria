@@ -59,7 +59,7 @@ Partial Class frmPedidoUnitario
         'lblSubTitulo
         '
         Me.lblSubTitulo.AutoSize = True
-        Me.lblSubTitulo.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblSubTitulo.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
         Me.lblSubTitulo.Location = New System.Drawing.Point(20, 39)
         Me.lblSubTitulo.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.lblSubTitulo.Name = "lblSubTitulo"
@@ -79,7 +79,7 @@ Partial Class frmPedidoUnitario
         '
         'lblEstado
         '
-        Me.lblEstado.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblEstado.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
         Me.lblEstado.Location = New System.Drawing.Point(511, 14)
         Me.lblEstado.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.lblEstado.Name = "lblEstado"
@@ -109,6 +109,7 @@ Partial Class frmPedidoUnitario
         'btnCancelarItems
         '
         Me.btnCancelarItems.Location = New System.Drawing.Point(578, 274)
+        Me.btnCancelarItems.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
         Me.btnCancelarItems.Name = "btnCancelarItems"
         Me.btnCancelarItems.Size = New System.Drawing.Size(100, 23)
         Me.btnCancelarItems.TabIndex = 7
@@ -118,6 +119,7 @@ Partial Class frmPedidoUnitario
         'btnItemRoto
         '
         Me.btnItemRoto.Location = New System.Drawing.Point(472, 274)
+        Me.btnItemRoto.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
         Me.btnItemRoto.Name = "btnItemRoto"
         Me.btnItemRoto.Size = New System.Drawing.Size(93, 23)
         Me.btnItemRoto.TabIndex = 7
@@ -142,7 +144,8 @@ Partial Class frmPedidoUnitario
         Me.tblItems.RowHeadersWidth = 51
         Me.tblItems.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
         Me.tblItems.Size = New System.Drawing.Size(662, 206)
-        Me.tblItems.ScrollBars = System.Windows.Forms.ScrollBars.Both
+        Me.tblItems.ScrollBars = System.Windows.Forms.ScrollBars.Both
+
         Me.tblItems.TabIndex = 4
         '
         'txtPrecio
@@ -156,7 +159,7 @@ Partial Class frmPedidoUnitario
         'Label2
         '
         Me.Label2.AutoSize = True
-        Me.Label2.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label2.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
         Me.Label2.Location = New System.Drawing.Point(489, 19)
         Me.Label2.Name = "Label2"
         Me.Label2.Size = New System.Drawing.Size(76, 16)
@@ -174,7 +177,7 @@ Partial Class frmPedidoUnitario
         'Label1
         '
         Me.Label1.AutoSize = True
-        Me.Label1.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label1.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
         Me.Label1.Location = New System.Drawing.Point(13, 18)
         Me.Label1.Name = "Label1"
         Me.Label1.Size = New System.Drawing.Size(100, 16)
@@ -193,6 +196,7 @@ Partial Class frmPedidoUnitario
         'btnCerrar
         '
         Me.btnCerrar.Location = New System.Drawing.Point(619, 437)
+        Me.btnCerrar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
         Me.btnCerrar.Name = "btnCerrar"
         Me.btnCerrar.Size = New System.Drawing.Size(75, 23)
         Me.btnCerrar.TabIndex = 6
@@ -202,6 +206,7 @@ Partial Class frmPedidoUnitario
         'btnPagar
         '
         Me.btnPagar.Location = New System.Drawing.Point(139, 437)
+        Me.btnPagar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
         Me.btnPagar.Name = "btnPagar"
         Me.btnPagar.Size = New System.Drawing.Size(113, 23)
         Me.btnPagar.TabIndex = 6
@@ -211,6 +216,7 @@ Partial Class frmPedidoUnitario
         'btnTerminar
         '
         Me.btnTerminar.Location = New System.Drawing.Point(12, 437)
+        Me.btnTerminar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
         Me.btnTerminar.Name = "btnTerminar"
         Me.btnTerminar.Size = New System.Drawing.Size(117, 23)
         Me.btnTerminar.TabIndex = 6
@@ -220,6 +226,7 @@ Partial Class frmPedidoUnitario
         'btnTerminarUnitario
         '
         Me.btnTerminarUnitario.Location = New System.Drawing.Point(16, 274)
+        Me.btnTerminarUnitario.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
         Me.btnTerminarUnitario.Name = "btnTerminarUnitario"
         Me.btnTerminarUnitario.Size = New System.Drawing.Size(117, 23)
         Me.btnTerminarUnitario.TabIndex = 7
@@ -228,7 +235,7 @@ Partial Class frmPedidoUnitario
         '
         'frmPedidoUnitario
         '
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(729, 479)
         Me.Controls.Add(Me.btnTerminar)
@@ -236,6 +243,7 @@ Partial Class frmPedidoUnitario
         Me.Controls.Add(Me.btnCerrar)
         Me.Controls.Add(Me.tabItems)
         Me.Controls.Add(Me.Panel1)
+        Me.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
         Me.Name = "frmPedidoUnitario"
         Me.Text = "Pedido"
         Me.Panel1.ResumeLayout(False)

@@ -88,7 +88,7 @@ Partial Class frmListadoClientes
         Me.btnBuscar.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnBuscar.Location = New System.Drawing.Point(622, 87)
         Me.btnBuscar.Name = "btnBuscar"
-        Me.btnBuscar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Bold)
+        Me.btnBuscar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
         Me.btnBuscar.Size = New System.Drawing.Size(110, 32)
         Me.btnBuscar.TabIndex = 3
         Me.btnBuscar.Text = "BUSCAR"
@@ -99,7 +99,7 @@ Partial Class frmListadoClientes
         Me.btnVerTodos.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnVerTodos.Location = New System.Drawing.Point(747, 87)
         Me.btnVerTodos.Name = "btnVerTodos"
-        Me.btnVerTodos.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Bold)
+        Me.btnVerTodos.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
         Me.btnVerTodos.Size = New System.Drawing.Size(126, 32)
         Me.btnVerTodos.TabIndex = 4
         Me.btnVerTodos.Text = "VER TODOS"
@@ -121,7 +121,8 @@ Partial Class frmListadoClientes
         Me.dgvClientes.RowHeadersVisible = False
         Me.dgvClientes.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
         Me.dgvClientes.Size = New System.Drawing.Size(846, 295)
-        Me.dgvClientes.ScrollBars = System.Windows.Forms.ScrollBars.Both
+        Me.dgvClientes.ScrollBars = System.Windows.Forms.ScrollBars.Both
+
         Me.dgvClientes.TabIndex = 5
         '
         'lblCantidad
@@ -139,7 +140,7 @@ Partial Class frmListadoClientes
         Me.btnNuevo.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.btnNuevo.Location = New System.Drawing.Point(27, 477)
         Me.btnNuevo.Name = "btnNuevo"
-        Me.btnNuevo.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Bold)
+        Me.btnNuevo.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
         Me.btnNuevo.Size = New System.Drawing.Size(110, 32)
         Me.btnNuevo.TabIndex = 7
         Me.btnNuevo.Text = "NUEVO"
@@ -150,7 +151,7 @@ Partial Class frmListadoClientes
         Me.btnModificar.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.btnModificar.Location = New System.Drawing.Point(152, 477)
         Me.btnModificar.Name = "btnModificar"
-        Me.btnModificar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Bold)
+        Me.btnModificar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
         Me.btnModificar.Size = New System.Drawing.Size(110, 32)
         Me.btnModificar.TabIndex = 8
         Me.btnModificar.Text = "MODIFICAR"
@@ -161,7 +162,7 @@ Partial Class frmListadoClientes
         Me.btnEliminar.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.btnEliminar.Location = New System.Drawing.Point(277, 477)
         Me.btnEliminar.Name = "btnEliminar"
-        Me.btnEliminar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Bold)
+        Me.btnEliminar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
         Me.btnEliminar.Size = New System.Drawing.Size(110, 32)
         Me.btnEliminar.TabIndex = 9
         Me.btnEliminar.Text = "ELIMINAR"
@@ -172,7 +173,7 @@ Partial Class frmListadoClientes
         Me.btnSeleccionar.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnSeleccionar.Location = New System.Drawing.Point(597, 477)
         Me.btnSeleccionar.Name = "btnSeleccionar"
-        Me.btnSeleccionar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Bold)
+        Me.btnSeleccionar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
         Me.btnSeleccionar.Size = New System.Drawing.Size(145, 32)
         Me.btnSeleccionar.TabIndex = 10
         Me.btnSeleccionar.Text = "SELECCIONAR"
@@ -185,7 +186,7 @@ Partial Class frmListadoClientes
         Me.btnCerrar.DialogResult = System.Windows.Forms.DialogResult.Cancel
         Me.btnCerrar.Location = New System.Drawing.Point(763, 477)
         Me.btnCerrar.Name = "btnCerrar"
-        Me.btnCerrar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Bold)
+        Me.btnCerrar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
         Me.btnCerrar.Size = New System.Drawing.Size(110, 32)
         Me.btnCerrar.TabIndex = 11
         Me.btnCerrar.Text = "CERRAR"
@@ -196,7 +197,7 @@ Partial Class frmListadoClientes
         Me.btnHistorial.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.btnHistorial.Location = New System.Drawing.Point(402, 477)
         Me.btnHistorial.Name = "btnHistorial"
-        Me.btnHistorial.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Bold)
+        Me.btnHistorial.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
         Me.btnHistorial.Size = New System.Drawing.Size(150, 32)
         Me.btnHistorial.TabIndex = 12
         Me.btnHistorial.Text = "VER HISTORIAL"
@@ -209,7 +210,7 @@ Partial Class frmListadoClientes
         Me.CancelButton = Me.btnCerrar
         Me.ClientSize = New System.Drawing.Size(900, 535)
         Me.Controls.Add(Me.Panel2)
-        Me.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!)
+        Me.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
         Me.MinimumSize = New System.Drawing.Size(916, 574)
         Me.Name = "frmListadoClientes"
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent

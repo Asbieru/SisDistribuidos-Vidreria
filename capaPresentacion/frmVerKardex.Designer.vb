@@ -60,7 +60,7 @@ Partial Class frmVerKardex
         'lblTitulo
         '
         Me.lblTitulo.AutoSize = True
-        Me.lblTitulo.Font = New System.Drawing.Font("Microsoft Sans Serif", 15.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblTitulo.Font = New System.Drawing.Font("Microsoft Sans Serif", 15.75!, System.Drawing.FontStyle.Bold)
         Me.lblTitulo.Location = New System.Drawing.Point(21, 22)
         Me.lblTitulo.Name = "lblTitulo"
         Me.lblTitulo.Size = New System.Drawing.Size(494, 25)
@@ -70,7 +70,7 @@ Partial Class frmVerKardex
         'lblDesde
         '
         Me.lblDesde.AutoSize = True
-        Me.lblDesde.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblDesde.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
         Me.lblDesde.Location = New System.Drawing.Point(23, 68)
         Me.lblDesde.Name = "lblDesde"
         Me.lblDesde.Size = New System.Drawing.Size(48, 17)
@@ -88,7 +88,7 @@ Partial Class frmVerKardex
         'lblHasta
         '
         Me.lblHasta.AutoSize = True
-        Me.lblHasta.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblHasta.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
         Me.lblHasta.Location = New System.Drawing.Point(170, 68)
         Me.lblHasta.Name = "lblHasta"
         Me.lblHasta.Size = New System.Drawing.Size(45, 17)
@@ -106,7 +106,7 @@ Partial Class frmVerKardex
         'lblVariante
         '
         Me.lblVariante.AutoSize = True
-        Me.lblVariante.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblVariante.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
         Me.lblVariante.Location = New System.Drawing.Point(317, 68)
         Me.lblVariante.Name = "lblVariante"
         Me.lblVariante.Size = New System.Drawing.Size(65, 17)
@@ -124,7 +124,7 @@ Partial Class frmVerKardex
         '
         'btnFiltrar
         '
-        Me.btnFiltrar.Font = New System.Drawing.Font("Microsoft Sans Serif", 7.8!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnFiltrar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
         Me.btnFiltrar.Location = New System.Drawing.Point(715, 85)
         Me.btnFiltrar.Name = "btnFiltrar"
         Me.btnFiltrar.Size = New System.Drawing.Size(97, 28)
@@ -149,14 +149,15 @@ Partial Class frmVerKardex
         Me.dgvMovimientos.RowHeadersWidth = 51
         Me.dgvMovimientos.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
         Me.dgvMovimientos.Size = New System.Drawing.Size(854, 330)
-        Me.dgvMovimientos.ScrollBars = System.Windows.Forms.ScrollBars.Both
+        Me.dgvMovimientos.ScrollBars = System.Windows.Forms.ScrollBars.Both
+
         Me.dgvMovimientos.TabIndex = 8
         '
         'lblCantidad
         '
         Me.lblCantidad.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.lblCantidad.AutoSize = True
-        Me.lblCantidad.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblCantidad.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
         Me.lblCantidad.Location = New System.Drawing.Point(23, 464)
         Me.lblCantidad.Name = "lblCantidad"
         Me.lblCantidad.Size = New System.Drawing.Size(200, 17)
@@ -167,7 +168,7 @@ Partial Class frmVerKardex
         '
         Me.btnCerrar.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnCerrar.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.btnCerrar.Font = New System.Drawing.Font("Microsoft Sans Serif", 7.8!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnCerrar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
         Me.btnCerrar.Location = New System.Drawing.Point(795, 495)
         Me.btnCerrar.Name = "btnCerrar"
         Me.btnCerrar.Size = New System.Drawing.Size(82, 28)
@@ -183,7 +184,7 @@ Partial Class frmVerKardex
         Me.CancelButton = Me.btnCerrar
         Me.ClientSize = New System.Drawing.Size(900, 535)
         Me.Controls.Add(Me.Panel2)
-        Me.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!)
+        Me.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
         Me.MinimumSize = New System.Drawing.Size(916, 574)
         Me.Name = "frmVerKardex"
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent

@@ -64,7 +64,7 @@ Partial Class frmVerInventario
         'lblTitulo
         '
         Me.lblTitulo.AutoSize = True
-        Me.lblTitulo.Font = New System.Drawing.Font("Microsoft Sans Serif", 15.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblTitulo.Font = New System.Drawing.Font("Microsoft Sans Serif", 15.75!, System.Drawing.FontStyle.Bold)
         Me.lblTitulo.Location = New System.Drawing.Point(21, 22)
         Me.lblTitulo.Name = "lblTitulo"
         Me.lblTitulo.Size = New System.Drawing.Size(461, 25)
@@ -74,7 +74,7 @@ Partial Class frmVerInventario
         'lblCategoria
         '
         Me.lblCategoria.AutoSize = True
-        Me.lblCategoria.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblCategoria.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
         Me.lblCategoria.Location = New System.Drawing.Point(23, 68)
         Me.lblCategoria.Name = "lblCategoria"
         Me.lblCategoria.Size = New System.Drawing.Size(69, 17)
@@ -93,7 +93,7 @@ Partial Class frmVerInventario
         'chkBajoMinimo
         '
         Me.chkBajoMinimo.AutoSize = True
-        Me.chkBajoMinimo.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.chkBajoMinimo.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
         Me.chkBajoMinimo.Location = New System.Drawing.Point(222, 89)
         Me.chkBajoMinimo.Name = "chkBajoMinimo"
         Me.chkBajoMinimo.Size = New System.Drawing.Size(196, 21)
@@ -103,7 +103,7 @@ Partial Class frmVerInventario
         '
         'btnActualizar
         '
-        Me.btnActualizar.Font = New System.Drawing.Font("Microsoft Sans Serif", 7.8!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnActualizar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
         Me.btnActualizar.Location = New System.Drawing.Point(432, 85)
         Me.btnActualizar.Name = "btnActualizar"
         Me.btnActualizar.Size = New System.Drawing.Size(97, 28)
@@ -114,7 +114,7 @@ Partial Class frmVerInventario
         'lblAlerta
         '
         Me.lblAlerta.AutoSize = True
-        Me.lblAlerta.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblAlerta.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
         Me.lblAlerta.ForeColor = System.Drawing.Color.DarkRed
         Me.lblAlerta.Location = New System.Drawing.Point(545, 92)
         Me.lblAlerta.Name = "lblAlerta"
@@ -138,14 +138,15 @@ Partial Class frmVerInventario
         Me.dgvResumen.RowHeadersWidth = 51
         Me.dgvResumen.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
         Me.dgvResumen.Size = New System.Drawing.Size(854, 330)
-        Me.dgvResumen.ScrollBars = System.Windows.Forms.ScrollBars.Both
+        Me.dgvResumen.ScrollBars = System.Windows.Forms.ScrollBars.Both
+
         Me.dgvResumen.TabIndex = 6
         '
         'lblCantidad
         '
         Me.lblCantidad.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.lblCantidad.AutoSize = True
-        Me.lblCantidad.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblCantidad.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
         Me.lblCantidad.Location = New System.Drawing.Point(23, 464)
         Me.lblCantidad.Name = "lblCantidad"
         Me.lblCantidad.Size = New System.Drawing.Size(178, 17)
@@ -155,7 +156,7 @@ Partial Class frmVerInventario
         'btnEditarMinimo
         '
         Me.btnEditarMinimo.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.btnEditarMinimo.Font = New System.Drawing.Font("Microsoft Sans Serif", 7.8!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnEditarMinimo.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
         Me.btnEditarMinimo.Location = New System.Drawing.Point(22, 495)
         Me.btnEditarMinimo.Name = "btnEditarMinimo"
         Me.btnEditarMinimo.Size = New System.Drawing.Size(130, 28)
@@ -166,7 +167,7 @@ Partial Class frmVerInventario
         'btnVerPiezas
         '
         Me.btnVerPiezas.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.btnVerPiezas.Font = New System.Drawing.Font("Microsoft Sans Serif", 7.8!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnVerPiezas.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
         Me.btnVerPiezas.Location = New System.Drawing.Point(164, 495)
         Me.btnVerPiezas.Name = "btnVerPiezas"
         Me.btnVerPiezas.Size = New System.Drawing.Size(130, 28)
@@ -177,7 +178,7 @@ Partial Class frmVerInventario
         'btnVerCajas
         '
         Me.btnVerCajas.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.btnVerCajas.Font = New System.Drawing.Font("Microsoft Sans Serif", 7.8!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnVerCajas.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
         Me.btnVerCajas.Location = New System.Drawing.Point(306, 495)
         Me.btnVerCajas.Name = "btnVerCajas"
         Me.btnVerCajas.Size = New System.Drawing.Size(200, 28)
@@ -188,7 +189,7 @@ Partial Class frmVerInventario
         'btnVerKardex
         '
         Me.btnVerKardex.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.btnVerKardex.Font = New System.Drawing.Font("Microsoft Sans Serif", 7.8!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnVerKardex.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
         Me.btnVerKardex.Location = New System.Drawing.Point(518, 495)
         Me.btnVerKardex.Name = "btnVerKardex"
         Me.btnVerKardex.Size = New System.Drawing.Size(130, 28)
@@ -200,7 +201,7 @@ Partial Class frmVerInventario
         '
         Me.btnCerrar.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnCerrar.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.btnCerrar.Font = New System.Drawing.Font("Microsoft Sans Serif", 7.8!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnCerrar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
         Me.btnCerrar.Location = New System.Drawing.Point(795, 495)
         Me.btnCerrar.Name = "btnCerrar"
         Me.btnCerrar.Size = New System.Drawing.Size(82, 28)
@@ -215,7 +216,7 @@ Partial Class frmVerInventario
         Me.CancelButton = Me.btnCerrar
         Me.ClientSize = New System.Drawing.Size(900, 535)
         Me.Controls.Add(Me.Panel2)
-        Me.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!)
+        Me.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
         Me.MinimumSize = New System.Drawing.Size(916, 574)
         Me.Name = "frmVerInventario"
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent

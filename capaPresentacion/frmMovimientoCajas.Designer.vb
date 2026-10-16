@@ -76,7 +76,7 @@ Partial Class frmMovimientoCajas
         'lblProducto
         '
         Me.lblProducto.AutoSize = True
-        Me.lblProducto.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblProducto.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
         Me.lblProducto.Location = New System.Drawing.Point(31, 85)
         Me.lblProducto.Name = "lblProducto"
         Me.lblProducto.Size = New System.Drawing.Size(65, 17)
@@ -95,7 +95,7 @@ Partial Class frmMovimientoCajas
         'lblStock
         '
         Me.lblStock.AutoSize = True
-        Me.lblStock.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblStock.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
         Me.lblStock.Location = New System.Drawing.Point(31, 125)
         Me.lblStock.Name = "lblStock"
         Me.lblStock.Size = New System.Drawing.Size(86, 17)
@@ -114,7 +114,7 @@ Partial Class frmMovimientoCajas
         'lblTipo
         '
         Me.lblTipo.AutoSize = True
-        Me.lblTipo.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblTipo.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
         Me.lblTipo.Location = New System.Drawing.Point(31, 165)
         Me.lblTipo.Name = "lblTipo"
         Me.lblTipo.Size = New System.Drawing.Size(91, 17)
@@ -133,7 +133,7 @@ Partial Class frmMovimientoCajas
         'lblCantidad
         '
         Me.lblCantidad.AutoSize = True
-        Me.lblCantidad.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblCantidad.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
         Me.lblCantidad.Location = New System.Drawing.Point(31, 205)
         Me.lblCantidad.Name = "lblCantidad"
         Me.lblCantidad.Size = New System.Drawing.Size(73, 17)
@@ -151,7 +151,7 @@ Partial Class frmMovimientoCajas
         'lblObs
         '
         Me.lblObs.AutoSize = True
-        Me.lblObs.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblObs.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
         Me.lblObs.Location = New System.Drawing.Point(31, 245)
         Me.lblObs.Name = "lblObs"
         Me.lblObs.Size = New System.Drawing.Size(86, 17)
@@ -178,7 +178,7 @@ Partial Class frmMovimientoCajas
         'btnGuardar
         '
         Me.btnGuardar.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.btnGuardar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Bold)
+        Me.btnGuardar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
         Me.btnGuardar.Location = New System.Drawing.Point(321, 325)
         Me.btnGuardar.Name = "btnGuardar"
         Me.btnGuardar.Size = New System.Drawing.Size(120, 34)
@@ -190,7 +190,7 @@ Partial Class frmMovimientoCajas
         '
         Me.btnCancelar.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnCancelar.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.btnCancelar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Bold)
+        Me.btnCancelar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
         Me.btnCancelar.Location = New System.Drawing.Point(451, 325)
         Me.btnCancelar.Name = "btnCancelar"
         Me.btnCancelar.Size = New System.Drawing.Size(120, 34)
@@ -206,7 +206,7 @@ Partial Class frmMovimientoCajas
         Me.CancelButton = Me.btnCancelar
         Me.ClientSize = New System.Drawing.Size(600, 380)
         Me.Controls.Add(Me.Panel2)
-        Me.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!)
+        Me.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
         Me.MaximizeBox = False
         Me.MinimizeBox = False
         Me.Name = "frmMovimientoCajas"

@@ -89,7 +89,7 @@ Partial Class frmRegistrarCompras
         'lblTotal
         '
         Me.lblTotal.AutoSize = True
-        Me.lblTotal.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblTotal.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
         Me.lblTotal.Location = New System.Drawing.Point(481, 506)
         Me.lblTotal.Name = "lblTotal"
         Me.lblTotal.Size = New System.Drawing.Size(131, 20)
@@ -99,7 +99,7 @@ Partial Class frmRegistrarCompras
         'btnVerLista
         '
         Me.btnVerLista.AutoSize = True
-        Me.btnVerLista.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnVerLista.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
         Me.btnVerLista.Location = New System.Drawing.Point(322, 543)
         Me.btnVerLista.Name = "btnVerLista"
         Me.btnVerLista.Size = New System.Drawing.Size(136, 31)
@@ -110,7 +110,7 @@ Partial Class frmRegistrarCompras
         'btnGuardar
         '
         Me.btnGuardar.AutoSize = True
-        Me.btnGuardar.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnGuardar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
         Me.btnGuardar.Location = New System.Drawing.Point(38, 543)
         Me.btnGuardar.Name = "btnGuardar"
         Me.btnGuardar.Size = New System.Drawing.Size(137, 31)
@@ -121,7 +121,7 @@ Partial Class frmRegistrarCompras
         'btnCancelar
         '
         Me.btnCancelar.AutoSize = True
-        Me.btnCancelar.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnCancelar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
         Me.btnCancelar.Location = New System.Drawing.Point(180, 543)
         Me.btnCancelar.Name = "btnCancelar"
         Me.btnCancelar.Size = New System.Drawing.Size(136, 31)
@@ -132,7 +132,7 @@ Partial Class frmRegistrarCompras
         'btnQuitarDetalle
         '
         Me.btnQuitarDetalle.AutoSize = True
-        Me.btnQuitarDetalle.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnQuitarDetalle.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
         Me.btnQuitarDetalle.Location = New System.Drawing.Point(38, 506)
         Me.btnQuitarDetalle.Name = "btnQuitarDetalle"
         Me.btnQuitarDetalle.Size = New System.Drawing.Size(137, 31)
@@ -158,7 +158,7 @@ Partial Class frmRegistrarCompras
         'btnAgregarDetalle
         '
         Me.btnAgregarDetalle.AutoSize = True
-        Me.btnAgregarDetalle.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnAgregarDetalle.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
         Me.btnAgregarDetalle.Location = New System.Drawing.Point(38, 290)
         Me.btnAgregarDetalle.Name = "btnAgregarDetalle"
         Me.btnAgregarDetalle.Size = New System.Drawing.Size(111, 31)
@@ -197,12 +197,14 @@ Partial Class frmRegistrarCompras
         Me.txtProductoSeleccionado.TabIndex = 12
         Me.btnBuscarProducto.Location = New System.Drawing.Point(427, 125)
         Me.btnBuscarProducto.Size = New System.Drawing.Size(185, 27)
+        Me.btnBuscarProducto.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
         Me.btnBuscarProducto.Name = "btnBuscarProducto"
         Me.btnBuscarProducto.Text = "BUSCAR PRODUCTO"
         Me.btnBuscarProducto.TabIndex = 22
         Me.btnBuscarProducto.UseVisualStyleBackColor = True
         Me.btnCancelarEdicion.Location = New System.Drawing.Point(300, 290)
         Me.btnCancelarEdicion.Size = New System.Drawing.Size(170, 31)
+        Me.btnCancelarEdicion.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
         Me.btnCancelarEdicion.Name = "btnCancelarEdicion"
         Me.btnCancelarEdicion.Text = "CANCELAR EDICIÓN"
         Me.btnCancelarEdicion.TabIndex = 23
@@ -311,7 +313,7 @@ Partial Class frmRegistrarCompras
         '
         Me.lblModo.AutoSize = True
         Me.lblModo.Enabled = False
-        Me.lblModo.Font = New System.Drawing.Font("Microsoft Sans Serif", 15.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblModo.Font = New System.Drawing.Font("Microsoft Sans Serif", 15.75!, System.Drawing.FontStyle.Bold)
         Me.lblModo.Location = New System.Drawing.Point(33, 24)
         Me.lblModo.Name = "lblModo"
         Me.lblModo.Size = New System.Drawing.Size(194, 25)
@@ -320,10 +322,11 @@ Partial Class frmRegistrarCompras
         '
         'frmRegistrarCompras
         '
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(670, 631)
         Me.Controls.Add(Me.pnlRegistroCompra)
+        Me.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
         Me.Name = "frmRegistrarCompras"
         Me.Text = "Registro de compras"
         Me.pnlRegistroCompra.ResumeLayout(False)

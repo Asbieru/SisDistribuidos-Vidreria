@@ -20,10 +20,10 @@ Module Temas
         Select Case tema
             Case "OSCURO"
                 p.Fondo = Color.FromArgb(32, 32, 32)
-                p.FondoPanel = Color.DimGray
+                p.FondoPanel = Color.FromArgb(45, 45, 48)
                 p.Texto = Color.White
                 p.BotonTexto = Color.White
-                p.BotonFondo = Color.Gray
+                p.BotonFondo = Color.FromArgb(70, 70, 76)
                 p.Acento = Color.LightBlue
             Case "AZULCLARO"
                 p.Fondo = Color.FromArgb(235, 244, 255)
@@ -39,9 +39,9 @@ Module Temas
                 p.BotonTexto = Color.White
                 p.BotonFondo = Color.FromArgb(40, 70, 120)
                 p.Acento = Color.FromArgb(120, 190, 255)
-            Case "CLARO"
+            Case Else
                 p.Fondo = Color.White
-                p.FondoPanel = Color.DarkGray
+                p.FondoPanel = Color.FromArgb(242, 244, 247)
                 p.Texto = Color.Black
                 p.BotonTexto = Color.Black
                 p.BotonFondo = Color.Gainsboro

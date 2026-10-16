@@ -68,7 +68,7 @@ Partial Class frmListadoCompras
         'btnCerrar
         '
         Me.btnCerrar.AutoSize = True
-        Me.btnCerrar.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnCerrar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
         Me.btnCerrar.Location = New System.Drawing.Point(598, 364)
         Me.btnCerrar.Name = "btnCerrar"
         Me.btnCerrar.Size = New System.Drawing.Size(88, 23)
@@ -79,7 +79,7 @@ Partial Class frmListadoCompras
         'btnModificar
         '
         Me.btnModificar.AutoSize = True
-        Me.btnModificar.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnModificar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
         Me.btnModificar.Location = New System.Drawing.Point(268, 364)
         Me.btnModificar.Name = "btnModificar"
         Me.btnModificar.Size = New System.Drawing.Size(88, 23)
@@ -90,7 +90,7 @@ Partial Class frmListadoCompras
         'btnNuevaCompra
         '
         Me.btnNuevaCompra.AutoSize = True
-        Me.btnNuevaCompra.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnNuevaCompra.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
         Me.btnNuevaCompra.Location = New System.Drawing.Point(62, 364)
         Me.btnNuevaCompra.Name = "btnNuevaCompra"
         Me.btnNuevaCompra.Size = New System.Drawing.Size(115, 23)
@@ -101,7 +101,7 @@ Partial Class frmListadoCompras
         'btnVerTodas
         '
         Me.btnVerTodas.AutoSize = True
-        Me.btnVerTodas.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnVerTodas.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
         Me.btnVerTodas.Location = New System.Drawing.Point(477, 60)
         Me.btnVerTodas.Name = "btnVerTodas"
         Me.btnVerTodas.Size = New System.Drawing.Size(88, 23)
@@ -112,7 +112,7 @@ Partial Class frmListadoCompras
         'btnFiltrar
         '
         Me.btnFiltrar.AutoSize = True
-        Me.btnFiltrar.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnFiltrar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
         Me.btnFiltrar.Location = New System.Drawing.Point(361, 60)
         Me.btnFiltrar.Name = "btnFiltrar"
         Me.btnFiltrar.Size = New System.Drawing.Size(75, 23)
@@ -166,13 +166,14 @@ Partial Class frmListadoCompras
         Me.dgvCompras.ReadOnly = True
         Me.dgvCompras.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
         Me.dgvCompras.Size = New System.Drawing.Size(624, 213)
-        Me.dgvCompras.ScrollBars = System.Windows.Forms.ScrollBars.Both
+        Me.dgvCompras.ScrollBars = System.Windows.Forms.ScrollBars.Both
+
         Me.dgvCompras.TabIndex = 0
         '
         'btnEliminar
         '
         Me.btnEliminar.AutoSize = True
-        Me.btnEliminar.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnEliminar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
         Me.btnEliminar.Location = New System.Drawing.Point(486, 364)
         Me.btnEliminar.Name = "btnEliminar"
         Me.btnEliminar.Size = New System.Drawing.Size(88, 23)
@@ -196,6 +197,7 @@ Partial Class frmListadoCompras
         Me.lblResumen.Text = "Compras: 0    Total: S/ 0.00"
         Me.btnVerDetalle.Location = New System.Drawing.Point(368, 364)
         Me.btnVerDetalle.Size = New System.Drawing.Size(106, 23)
+        Me.btnVerDetalle.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
         Me.btnVerDetalle.Name = "btnVerDetalle"
         Me.btnVerDetalle.Text = "VER DETALLE"
         Me.btnVerDetalle.TabIndex = 9
@@ -206,10 +208,11 @@ Partial Class frmListadoCompras
         '
         'frmListadoCompras
         '
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(800, 450)
         Me.Controls.Add(Me.pnlCompras)
+        Me.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
         Me.Name = "frmListadoCompras"
         Me.Text = "Listado de compras"
         Me.pnlCompras.ResumeLayout(False)

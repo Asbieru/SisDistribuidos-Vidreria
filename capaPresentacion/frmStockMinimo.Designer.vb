@@ -68,7 +68,7 @@ Partial Class frmStockMinimo
         'lblProducto
         '
         Me.lblProducto.AutoSize = True
-        Me.lblProducto.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblProducto.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
         Me.lblProducto.Location = New System.Drawing.Point(31, 85)
         Me.lblProducto.Name = "lblProducto"
         Me.lblProducto.Size = New System.Drawing.Size(65, 17)
@@ -87,7 +87,7 @@ Partial Class frmStockMinimo
         'lblExistencias
         '
         Me.lblExistencias.AutoSize = True
-        Me.lblExistencias.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblExistencias.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
         Me.lblExistencias.Location = New System.Drawing.Point(31, 125)
         Me.lblExistencias.Name = "lblExistencias"
         Me.lblExistencias.Size = New System.Drawing.Size(80, 17)
@@ -106,7 +106,7 @@ Partial Class frmStockMinimo
         'lblMinimo
         '
         Me.lblMinimo.AutoSize = True
-        Me.lblMinimo.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblMinimo.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
         Me.lblMinimo.Location = New System.Drawing.Point(31, 165)
         Me.lblMinimo.Name = "lblMinimo"
         Me.lblMinimo.Size = New System.Drawing.Size(105, 17)
@@ -133,7 +133,7 @@ Partial Class frmStockMinimo
         'btnGuardar
         '
         Me.btnGuardar.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.btnGuardar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Bold)
+        Me.btnGuardar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
         Me.btnGuardar.Location = New System.Drawing.Point(301, 250)
         Me.btnGuardar.Name = "btnGuardar"
         Me.btnGuardar.Size = New System.Drawing.Size(120, 34)
@@ -145,7 +145,7 @@ Partial Class frmStockMinimo
         '
         Me.btnCancelar.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnCancelar.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.btnCancelar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Bold)
+        Me.btnCancelar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
         Me.btnCancelar.Location = New System.Drawing.Point(431, 250)
         Me.btnCancelar.Name = "btnCancelar"
         Me.btnCancelar.Size = New System.Drawing.Size(120, 34)
@@ -161,7 +161,7 @@ Partial Class frmStockMinimo
         Me.CancelButton = Me.btnCancelar
         Me.ClientSize = New System.Drawing.Size(580, 300)
         Me.Controls.Add(Me.Panel2)
-        Me.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!)
+        Me.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
         Me.MaximizeBox = False
         Me.MinimizeBox = False
         Me.Name = "frmStockMinimo"
