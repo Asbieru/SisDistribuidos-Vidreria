@@ -38,12 +38,16 @@ Module UtilFormularios
         Dim ancho As Integer = Math.Min(frm.Width, area.Width)
         Dim alto As Integer = Math.Min(frm.Height, area.Height)
         If ancho < frm.Width OrElse alto < frm.Height Then
-            If frm.FormBorderStyle <> FormBorderStyle.Sizable Then
+            If frm.FormBorderStyle <> FormBorderStyle.Sizable OrElse
+                frm.MinimumSize.Width > ancho OrElse frm.MinimumSize.Height > alto Then
                 ' Los diálogos conservan el tamaño de sus campos y permiten desplazarse.
                 frm.AutoScroll = True
-                frm.AutoScrollMinSize = frm.ClientSize
-                For Each panel As Panel In frm.Controls.OfType(Of Panel)()
-                    If panel.Dock = DockStyle.Fill Then panel.MinimumSize = panel.Size
+                Dim minimo As Size = If(frm.FormBorderStyle = FormBorderStyle.Sizable,
+                    New Size(Math.Max(0, frm.MinimumSize.Width - (frm.Width - frm.ClientSize.Width)),
+                             Math.Max(0, frm.MinimumSize.Height - (frm.Height - frm.ClientSize.Height))), frm.ClientSize)
+                frm.AutoScrollMinSize = minimo
+                For Each contenido As Control In frm.Controls
+                    If contenido.Dock = DockStyle.Fill Then contenido.MinimumSize = minimo
                 Next
             End If
             frm.MinimumSize = New Size(Math.Min(frm.MinimumSize.Width, ancho), Math.Min(frm.MinimumSize.Height, alto))

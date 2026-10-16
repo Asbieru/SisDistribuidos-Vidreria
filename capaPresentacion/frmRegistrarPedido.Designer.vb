@@ -22,6 +22,10 @@ Partial Class frmRegistrarPedido
     'No lo modifique con el editor de código.
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
+        Me.tlpCabecera = New System.Windows.Forms.TableLayoutPanel()
+
+        Me.flpAcciones = New System.Windows.Forms.FlowLayoutPanel()
+
         Me.Panel1 = New System.Windows.Forms.Panel()
         Me.Label3 = New System.Windows.Forms.Label()
         Me.btnBuscarCliente = New System.Windows.Forms.Button()
@@ -153,6 +157,7 @@ Partial Class frmRegistrarPedido
         Me.Panel1.Controls.Add(Me.txtNombreCliente)
         Me.Panel1.Controls.Add(Me.Label1)
         Me.Panel1.Location = New System.Drawing.Point(12, 12)
+        Me.Panel1.Dock = System.Windows.Forms.DockStyle.Fill
         Me.Panel1.Name = "Panel1"
         Me.Panel1.Size = New System.Drawing.Size(363, 99)
         Me.Panel1.TabIndex = 0
@@ -170,10 +175,10 @@ Partial Class frmRegistrarPedido
         '
         'btnBuscarCliente
         '
-        Me.btnBuscarCliente.Location = New System.Drawing.Point(82, 66)
+        Me.btnBuscarCliente.Location = New System.Drawing.Point(95, 68)
         Me.btnBuscarCliente.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
         Me.btnBuscarCliente.Name = "btnBuscarCliente"
-        Me.btnBuscarCliente.Size = New System.Drawing.Size(195, 23)
+        Me.btnBuscarCliente.Size = New System.Drawing.Size(200, 34)
         Me.btnBuscarCliente.TabIndex = 1
         Me.btnBuscarCliente.Text = "Buscar Cliente"
         Me.btnBuscarCliente.UseVisualStyleBackColor = True
@@ -182,6 +187,8 @@ Partial Class frmRegistrarPedido
         '
         Me.txtNombreCliente.Enabled = False
         Me.txtNombreCliente.Location = New System.Drawing.Point(95, 33)
+        Me.txtNombreCliente.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left
+        Me.txtNombreCliente.Width = 250
         Me.txtNombreCliente.Name = "txtNombreCliente"
         Me.txtNombreCliente.Size = New System.Drawing.Size(256, 20)
         Me.txtNombreCliente.TabIndex = 0
@@ -202,6 +209,8 @@ Partial Class frmRegistrarPedido
         Me.cmbPedido.FormattingEnabled = True
         Me.cmbPedido.Items.AddRange(New Object() {"Vidrio", "Ventana"})
         Me.cmbPedido.Location = New System.Drawing.Point(116, 35)
+        Me.cmbPedido.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left
+        Me.cmbPedido.Width = 225
         Me.cmbPedido.Name = "cmbPedido"
         Me.cmbPedido.Size = New System.Drawing.Size(280, 21)
         Me.cmbPedido.TabIndex = 3
@@ -224,16 +233,17 @@ Partial Class frmRegistrarPedido
         Me.Panel2.Controls.Add(Me.cmbPedido)
         Me.Panel2.Controls.Add(Me.Label4)
         Me.Panel2.Location = New System.Drawing.Point(381, 12)
+        Me.Panel2.Dock = System.Windows.Forms.DockStyle.Fill
         Me.Panel2.Name = "Panel2"
         Me.Panel2.Size = New System.Drawing.Size(412, 99)
         Me.Panel2.TabIndex = 0
         '
         'btnAgregarPedido
         '
-        Me.btnAgregarPedido.Location = New System.Drawing.Point(284, 66)
+        Me.btnAgregarPedido.Location = New System.Drawing.Point(284, 68)
         Me.btnAgregarPedido.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
         Me.btnAgregarPedido.Name = "btnAgregarPedido"
-        Me.btnAgregarPedido.Size = New System.Drawing.Size(112, 23)
+        Me.btnAgregarPedido.Size = New System.Drawing.Size(112, 34)
         Me.btnAgregarPedido.TabIndex = 4
         Me.btnAgregarPedido.Text = "Agregar"
         Me.btnAgregarPedido.UseVisualStyleBackColor = True
@@ -255,6 +265,9 @@ Partial Class frmRegistrarPedido
         Me.tabsPedidos.Controls.Add(Me.tabModeloVentana)
         Me.tabsPedidos.Controls.Add(Me.tabModeloAluminio)
         Me.tabsPedidos.Location = New System.Drawing.Point(12, 117)
+        Me.tabsPedidos.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.tabsPedidos.Padding = New System.Drawing.Point(12, 6)
+        Me.tabsPedidos.ShowToolTips = True
         Me.tabsPedidos.Name = "tabsPedidos"
         Me.tabsPedidos.SelectedIndex = 0
         Me.tabsPedidos.Size = New System.Drawing.Size(781, 375)
@@ -273,6 +286,8 @@ Partial Class frmRegistrarPedido
         Me.tabModeloVidrio.Controls.Add(Me.Panel5)
         Me.tabModeloVidrio.Controls.Add(Me.Panel4)
         Me.tabModeloVidrio.Location = New System.Drawing.Point(4, 22)
+        Me.tabModeloVidrio.AutoScroll = True
+        Me.tabModeloVidrio.AutoScrollMinSize = New System.Drawing.Size(780, 370)
         Me.tabModeloVidrio.Name = "tabModeloVidrio"
         Me.tabModeloVidrio.Padding = New System.Windows.Forms.Padding(3)
         Me.tabModeloVidrio.Size = New System.Drawing.Size(773, 349)
@@ -376,6 +391,7 @@ Partial Class frmRegistrarPedido
         Me.Panel5.Controls.Add(Me.txtAncho)
         Me.Panel5.Controls.Add(Me.Label14)
         Me.Panel5.Location = New System.Drawing.Point(6, 112)
+        Me.Panel5.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right
         Me.Panel5.Name = "Panel5"
         Me.Panel5.Size = New System.Drawing.Size(756, 138)
         Me.Panel5.TabIndex = 0
@@ -560,6 +576,7 @@ Partial Class frmRegistrarPedido
         Me.Panel4.Controls.Add(Me.Label7)
         Me.Panel4.Controls.Add(Me.Label8)
         Me.Panel4.Location = New System.Drawing.Point(6, 6)
+        Me.Panel4.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right
         Me.Panel4.Name = "Panel4"
         Me.Panel4.Size = New System.Drawing.Size(756, 100)
         Me.Panel4.TabIndex = 0
@@ -588,7 +605,7 @@ Partial Class frmRegistrarPedido
         Me.btnSelectVidrio.Location = New System.Drawing.Point(458, 36)
         Me.btnSelectVidrio.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
         Me.btnSelectVidrio.Name = "btnSelectVidrio"
-        Me.btnSelectVidrio.Size = New System.Drawing.Size(160, 25)
+        Me.btnSelectVidrio.Size = New System.Drawing.Size(160, 34)
         Me.btnSelectVidrio.TabIndex = 2
         Me.btnSelectVidrio.Text = "Buscar Vidrio"
         Me.btnSelectVidrio.UseVisualStyleBackColor = True
@@ -649,6 +666,8 @@ Partial Class frmRegistrarPedido
         Me.tabModeloVentana.Controls.Add(Me.txtPreciomaterialVentana)
         Me.tabModeloVentana.Controls.Add(Me.Label33)
         Me.tabModeloVentana.Location = New System.Drawing.Point(4, 22)
+        Me.tabModeloVentana.AutoScroll = True
+        Me.tabModeloVentana.AutoScrollMinSize = New System.Drawing.Size(780, 370)
         Me.tabModeloVentana.Name = "tabModeloVentana"
         Me.tabModeloVentana.Padding = New System.Windows.Forms.Padding(3)
         Me.tabModeloVentana.Size = New System.Drawing.Size(773, 349)
@@ -699,6 +718,7 @@ Partial Class frmRegistrarPedido
         Me.Panel6.Controls.Add(Me.txtArrVentana)
         Me.Panel6.Controls.Add(Me.Label31)
         Me.Panel6.Location = New System.Drawing.Point(6, 112)
+        Me.Panel6.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right
         Me.Panel6.Name = "Panel6"
         Me.Panel6.Size = New System.Drawing.Size(756, 165)
         Me.Panel6.TabIndex = 12
@@ -904,6 +924,7 @@ Partial Class frmRegistrarPedido
         Me.Panel3.Controls.Add(Me.Label5)
         Me.Panel3.Controls.Add(Me.btnBuscarVidrioVentana)
         Me.Panel3.Location = New System.Drawing.Point(6, 6)
+        Me.Panel3.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right
         Me.Panel3.Name = "Panel3"
         Me.Panel3.Size = New System.Drawing.Size(756, 100)
         Me.Panel3.TabIndex = 0
@@ -975,7 +996,7 @@ Partial Class frmRegistrarPedido
         Me.btnBuscarVidrioVentana.Location = New System.Drawing.Point(355, 59)
         Me.btnBuscarVidrioVentana.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
         Me.btnBuscarVidrioVentana.Name = "btnBuscarVidrioVentana"
-        Me.btnBuscarVidrioVentana.Size = New System.Drawing.Size(110, 25)
+        Me.btnBuscarVidrioVentana.Size = New System.Drawing.Size(140, 34)
         Me.btnBuscarVidrioVentana.TabIndex = 11
         Me.btnBuscarVidrioVentana.Text = "Buscar Vidrio"
         Me.btnBuscarVidrioVentana.UseVisualStyleBackColor = True
@@ -1059,6 +1080,8 @@ Partial Class frmRegistrarPedido
         Me.tabModeloAluminio.Controls.Add(Me.Label42)
         Me.tabModeloAluminio.Controls.Add(Me.txtExtraAluminio)
         Me.tabModeloAluminio.Location = New System.Drawing.Point(4, 22)
+        Me.tabModeloAluminio.AutoScroll = True
+        Me.tabModeloAluminio.AutoScrollMinSize = New System.Drawing.Size(780, 370)
         Me.tabModeloAluminio.Name = "tabModeloAluminio"
         Me.tabModeloAluminio.Padding = New System.Windows.Forms.Padding(3)
         Me.tabModeloAluminio.Size = New System.Drawing.Size(773, 349)
@@ -1074,6 +1097,7 @@ Partial Class frmRegistrarPedido
         Me.Panel8.Controls.Add(Me.txtLargoAluminio)
         Me.Panel8.Controls.Add(Me.Label50)
         Me.Panel8.Location = New System.Drawing.Point(16, 120)
+        Me.Panel8.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right
         Me.Panel8.Name = "Panel8"
         Me.Panel8.Size = New System.Drawing.Size(730, 84)
         Me.Panel8.TabIndex = 12
@@ -1125,6 +1149,7 @@ Partial Class frmRegistrarPedido
         Me.Panel7.Controls.Add(Me.Label41)
         Me.Panel7.Controls.Add(Me.btnBuscarAluminio)
         Me.Panel7.Location = New System.Drawing.Point(16, 22)
+        Me.Panel7.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right
         Me.Panel7.Name = "Panel7"
         Me.Panel7.Size = New System.Drawing.Size(730, 74)
         Me.Panel7.TabIndex = 13
@@ -1164,7 +1189,7 @@ Partial Class frmRegistrarPedido
         Me.btnBuscarAluminio.Location = New System.Drawing.Point(407, 29)
         Me.btnBuscarAluminio.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
         Me.btnBuscarAluminio.Name = "btnBuscarAluminio"
-        Me.btnBuscarAluminio.Size = New System.Drawing.Size(110, 25)
+        Me.btnBuscarAluminio.Size = New System.Drawing.Size(140, 34)
         Me.btnBuscarAluminio.TabIndex = 11
         Me.btnBuscarAluminio.Text = "Buscar Aluminio"
         Me.btnBuscarAluminio.UseVisualStyleBackColor = True
@@ -1173,8 +1198,10 @@ Partial Class frmRegistrarPedido
         '
         Me.btnDuplicar.Location = New System.Drawing.Point(16, 498)
         Me.btnDuplicar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
+        Me.btnDuplicar.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left
+        Me.btnDuplicar.Margin = New System.Windows.Forms.Padding(0, 0, 8, 8)
         Me.btnDuplicar.Name = "btnDuplicar"
-        Me.btnDuplicar.Size = New System.Drawing.Size(75, 23)
+        Me.btnDuplicar.Size = New System.Drawing.Size(120, 34)
         Me.btnDuplicar.TabIndex = 20
         Me.btnDuplicar.Text = "Duplicar"
         Me.btnDuplicar.UseVisualStyleBackColor = True
@@ -1183,8 +1210,10 @@ Partial Class frmRegistrarPedido
         '
         Me.btnLimpiar.Location = New System.Drawing.Point(129, 498)
         Me.btnLimpiar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
+        Me.btnLimpiar.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left
+        Me.btnLimpiar.Margin = New System.Windows.Forms.Padding(0, 0, 8, 8)
         Me.btnLimpiar.Name = "btnLimpiar"
-        Me.btnLimpiar.Size = New System.Drawing.Size(75, 23)
+        Me.btnLimpiar.Size = New System.Drawing.Size(120, 34)
         Me.btnLimpiar.TabIndex = 19
         Me.btnLimpiar.Text = "Limpiar"
         Me.btnLimpiar.UseVisualStyleBackColor = True
@@ -1193,8 +1222,10 @@ Partial Class frmRegistrarPedido
         '
         Me.btnEliminar.Location = New System.Drawing.Point(210, 498)
         Me.btnEliminar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
+        Me.btnEliminar.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left
+        Me.btnEliminar.Margin = New System.Windows.Forms.Padding(0, 0, 8, 8)
         Me.btnEliminar.Name = "btnEliminar"
-        Me.btnEliminar.Size = New System.Drawing.Size(75, 23)
+        Me.btnEliminar.Size = New System.Drawing.Size(120, 34)
         Me.btnEliminar.TabIndex = 18
         Me.btnEliminar.Text = "Eliminar"
         Me.btnEliminar.UseVisualStyleBackColor = True
@@ -1203,8 +1234,10 @@ Partial Class frmRegistrarPedido
         '
         Me.btnGuardarPedido.Location = New System.Drawing.Point(629, 499)
         Me.btnGuardarPedido.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
+        Me.btnGuardarPedido.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left
+        Me.btnGuardarPedido.Margin = New System.Windows.Forms.Padding(0, 0, 8, 8)
         Me.btnGuardarPedido.Name = "btnGuardarPedido"
-        Me.btnGuardarPedido.Size = New System.Drawing.Size(158, 23)
+        Me.btnGuardarPedido.Size = New System.Drawing.Size(190, 34)
         Me.btnGuardarPedido.TabIndex = 0
         Me.btnGuardarPedido.Text = "Guarda todo el Pedido"
         Me.btnGuardarPedido.UseVisualStyleBackColor = True
@@ -1215,6 +1248,8 @@ Partial Class frmRegistrarPedido
         Me.Label20.BackColor = System.Drawing.Color.Transparent
         Me.Label20.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
         Me.Label20.Location = New System.Drawing.Point(343, 501)
+        Me.Label20.Margin = New System.Windows.Forms.Padding(0, 0, 8, 8)
+        Me.Label20.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left
         Me.Label20.Name = "Label20"
         Me.Label20.Size = New System.Drawing.Size(68, 16)
         Me.Label20.TabIndex = 18
@@ -1224,6 +1259,9 @@ Partial Class frmRegistrarPedido
         '
         Me.txtTotalTodo.Enabled = False
         Me.txtTotalTodo.Location = New System.Drawing.Point(417, 500)
+        Me.txtTotalTodo.Width = 140
+        Me.txtTotalTodo.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left
+        Me.txtTotalTodo.Margin = New System.Windows.Forms.Padding(0, 0, 8, 8)
         Me.txtTotalTodo.Name = "txtTotalTodo"
         Me.txtTotalTodo.Size = New System.Drawing.Size(200, 20)
         Me.txtTotalTodo.TabIndex = 18
@@ -1308,17 +1346,13 @@ Partial Class frmRegistrarPedido
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(805, 534)
-        Me.Controls.Add(Me.txtTotalTodo)
-        Me.Controls.Add(Me.Label20)
-        Me.Controls.Add(Me.btnEliminar)
-        Me.Controls.Add(Me.btnLimpiar)
-        Me.Controls.Add(Me.btnDuplicar)
-        Me.Controls.Add(Me.btnGuardarPedido)
+        Me.ClientSize = New System.Drawing.Size(960, 640)
         Me.Controls.Add(Me.tabsPedidos)
-        Me.Controls.Add(Me.Panel2)
-        Me.Controls.Add(Me.Panel1)
         Me.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
+        Me.MinimumSize = New System.Drawing.Size(816, 530)
+        Me.Padding = New System.Windows.Forms.Padding(24, 20, 24, 16)
+        Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable
+        Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent
         Me.Name = "frmRegistrarPedido"
         Me.Text = "Registrar pedido"
         Me.Panel1.ResumeLayout(False)
@@ -1344,6 +1378,30 @@ Partial Class frmRegistrarPedido
         Me.Panel8.PerformLayout()
         Me.Panel7.ResumeLayout(False)
         Me.Panel7.PerformLayout()
+
+        Me.flpAcciones.Name = "flpAcciones"
+        Me.flpAcciones.Dock = System.Windows.Forms.DockStyle.Bottom
+        Me.flpAcciones.AutoSize = True
+        Me.flpAcciones.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+        Me.flpAcciones.Padding = New System.Windows.Forms.Padding(0, 8, 0, 0)
+        Me.flpAcciones.Controls.Add(Me.btnDuplicar)
+        Me.flpAcciones.Controls.Add(Me.btnLimpiar)
+        Me.flpAcciones.Controls.Add(Me.btnEliminar)
+        Me.flpAcciones.Controls.Add(Me.Label20)
+        Me.flpAcciones.Controls.Add(Me.txtTotalTodo)
+        Me.flpAcciones.Controls.Add(Me.btnGuardarPedido)
+        Me.Controls.Add(Me.flpAcciones)
+
+        Me.tlpCabecera.Name = "tlpCabecera"
+        Me.tlpCabecera.Dock = System.Windows.Forms.DockStyle.Top
+        Me.tlpCabecera.Height = 120
+        Me.tlpCabecera.ColumnCount = 2
+        Me.tlpCabecera.RowCount = 1
+        Me.tlpCabecera.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
+        Me.tlpCabecera.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
+        Me.tlpCabecera.Controls.Add(Me.Panel1, 0, 0)
+        Me.tlpCabecera.Controls.Add(Me.Panel2, 1, 0)
+        Me.Controls.Add(Me.tlpCabecera)
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -1459,4 +1517,6 @@ Partial Class frmRegistrarPedido
     Friend WithEvents Label43 As Label
     Friend WithEvents Label42 As Label
     Friend WithEvents txtExtraAluminio As TextBox
+    Friend WithEvents flpAcciones As System.Windows.Forms.FlowLayoutPanel
+    Friend WithEvents tlpCabecera As System.Windows.Forms.TableLayoutPanel
 End Class

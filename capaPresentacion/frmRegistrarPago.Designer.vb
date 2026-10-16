@@ -52,51 +52,56 @@ Partial Class frmRegistrarPago
         Me.Panel1.Controls.Add(Me.btnSelectPedido)
         Me.Panel1.Controls.Add(Me.lblSubTitulo)
         Me.Panel1.Controls.Add(Me.lblTitulo)
-        Me.Panel1.Location = New System.Drawing.Point(12, 12)
+        Me.Panel1.Location = New System.Drawing.Point(24, 20)
+        Me.Panel1.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right
         Me.Panel1.Name = "Panel1"
-        Me.Panel1.Size = New System.Drawing.Size(705, 77)
+        Me.Panel1.Size = New System.Drawing.Size(802, 100)
         Me.Panel1.TabIndex = 5
         '
         'lblEstado
         '
         Me.lblEstado.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
-        Me.lblEstado.Location = New System.Drawing.Point(582, 45)
+        Me.lblEstado.Location = New System.Drawing.Point(620, 46)
         Me.lblEstado.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
+        Me.lblEstado.AutoSize = False
         Me.lblEstado.Name = "lblEstado"
-        Me.lblEstado.Size = New System.Drawing.Size(110, 20)
+        Me.lblEstado.Size = New System.Drawing.Size(170, 24)
         Me.lblEstado.TabIndex = 5
         Me.lblEstado.Text = "estado"
         Me.lblEstado.TextAlign = System.Drawing.ContentAlignment.TopRight
         '
         'btnSelectPedido
         '
-        Me.btnSelectPedido.Location = New System.Drawing.Point(532, 17)
+        Me.btnSelectPedido.Location = New System.Drawing.Point(620, 4)
         Me.btnSelectPedido.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
+        Me.btnSelectPedido.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right
         Me.btnSelectPedido.Name = "btnSelectPedido"
-        Me.btnSelectPedido.Size = New System.Drawing.Size(160, 25)
+        Me.btnSelectPedido.Size = New System.Drawing.Size(170, 34)
         Me.btnSelectPedido.TabIndex = 4
         Me.btnSelectPedido.Text = "Buscar Pedido"
         Me.btnSelectPedido.UseVisualStyleBackColor = True
         '
         'lblSubTitulo
         '
-        Me.lblSubTitulo.AutoSize = True
+        Me.lblSubTitulo.AutoSize = False
         Me.lblSubTitulo.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
-        Me.lblSubTitulo.Location = New System.Drawing.Point(20, 39)
+        Me.lblSubTitulo.Location = New System.Drawing.Point(12, 46)
         Me.lblSubTitulo.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
+        Me.lblSubTitulo.AutoEllipsis = True
         Me.lblSubTitulo.Name = "lblSubTitulo"
-        Me.lblSubTitulo.Size = New System.Drawing.Size(69, 20)
+        Me.lblSubTitulo.Size = New System.Drawing.Size(420, 24)
         Me.lblSubTitulo.TabIndex = 0
         Me.lblSubTitulo.Text = "subtitulo"
         '
         'lblTitulo
         '
-        Me.lblTitulo.AutoSize = True
+        Me.lblTitulo.AutoSize = False
         Me.lblTitulo.Font = New System.Drawing.Font("Microsoft Sans Serif", 15.75!, System.Drawing.FontStyle.Bold)
-        Me.lblTitulo.Location = New System.Drawing.Point(15, 14)
+        Me.lblTitulo.Location = New System.Drawing.Point(12, 8)
         Me.lblTitulo.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
+        Me.lblTitulo.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right
         Me.lblTitulo.Name = "lblTitulo"
-        Me.lblTitulo.Size = New System.Drawing.Size(85, 25)
+        Me.lblTitulo.Size = New System.Drawing.Size(590, 32)
         Me.lblTitulo.TabIndex = 3
         Me.lblTitulo.Text = "Pedido"
         '
@@ -113,19 +118,22 @@ Partial Class frmRegistrarPago
         Me.pnlProceso.Controls.Add(Me.btnEliminar)
         Me.pnlProceso.Controls.Add(Me.tblPagos)
         Me.pnlProceso.Controls.Add(Me.Label1)
-        Me.pnlProceso.Location = New System.Drawing.Point(12, 108)
+        Me.pnlProceso.Location = New System.Drawing.Point(24, 136)
+        Me.pnlProceso.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right
         Me.pnlProceso.Name = "pnlProceso"
-        Me.pnlProceso.Size = New System.Drawing.Size(705, 340)
+        Me.pnlProceso.Size = New System.Drawing.Size(802, 374)
         Me.pnlProceso.TabIndex = 6
         '
         'msj
         '
         Me.msj.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
         Me.msj.ForeColor = System.Drawing.Color.Red
-        Me.msj.Location = New System.Drawing.Point(21, 309)
+        Me.msj.Location = New System.Drawing.Point(16, 310)
         Me.msj.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
+        Me.msj.Anchor = System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left
+        Me.msj.AutoSize = False
         Me.msj.Name = "msj"
-        Me.msj.Size = New System.Drawing.Size(336, 18)
+        Me.msj.Size = New System.Drawing.Size(250, 54)
         Me.msj.TabIndex = 0
         '
         'txtCantidad
@@ -156,40 +164,44 @@ Partial Class frmRegistrarPago
         '
         'btnGuardar
         '
-        Me.btnGuardar.Location = New System.Drawing.Point(365, 304)
+        Me.btnGuardar.Location = New System.Drawing.Point(274, 322)
         Me.btnGuardar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
+        Me.btnGuardar.Anchor = System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right
         Me.btnGuardar.Name = "btnGuardar"
-        Me.btnGuardar.Size = New System.Drawing.Size(75, 23)
+        Me.btnGuardar.Size = New System.Drawing.Size(120, 34)
         Me.btnGuardar.TabIndex = 6
         Me.btnGuardar.Text = "Guardar"
         Me.btnGuardar.UseVisualStyleBackColor = True
         '
         'btnCancelar
         '
-        Me.btnCancelar.Location = New System.Drawing.Point(446, 304)
+        Me.btnCancelar.Location = New System.Drawing.Point(402, 322)
         Me.btnCancelar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
+        Me.btnCancelar.Anchor = System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right
         Me.btnCancelar.Name = "btnCancelar"
-        Me.btnCancelar.Size = New System.Drawing.Size(75, 23)
+        Me.btnCancelar.Size = New System.Drawing.Size(120, 34)
         Me.btnCancelar.TabIndex = 6
         Me.btnCancelar.Text = "Cancelar"
         Me.btnCancelar.UseVisualStyleBackColor = True
         '
         'btnModificar
         '
-        Me.btnModificar.Location = New System.Drawing.Point(527, 304)
+        Me.btnModificar.Location = New System.Drawing.Point(530, 322)
         Me.btnModificar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
+        Me.btnModificar.Anchor = System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right
         Me.btnModificar.Name = "btnModificar"
-        Me.btnModificar.Size = New System.Drawing.Size(75, 23)
+        Me.btnModificar.Size = New System.Drawing.Size(120, 34)
         Me.btnModificar.TabIndex = 6
         Me.btnModificar.Text = "Modificar"
         Me.btnModificar.UseVisualStyleBackColor = True
         '
         'btnEliminar
         '
-        Me.btnEliminar.Location = New System.Drawing.Point(608, 304)
+        Me.btnEliminar.Location = New System.Drawing.Point(658, 322)
         Me.btnEliminar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
+        Me.btnEliminar.Anchor = System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right
         Me.btnEliminar.Name = "btnEliminar"
-        Me.btnEliminar.Size = New System.Drawing.Size(75, 23)
+        Me.btnEliminar.Size = New System.Drawing.Size(120, 34)
         Me.btnEliminar.TabIndex = 6
         Me.btnEliminar.Text = "Eliminar"
         Me.btnEliminar.UseVisualStyleBackColor = True
@@ -198,12 +210,10 @@ Partial Class frmRegistrarPago
         '
         Me.tblPagos.AllowUserToAddRows = False
         Me.tblPagos.AllowUserToDeleteRows = False
-        Me.tblPagos.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-            Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.tblPagos.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right
         Me.tblPagos.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill
         Me.tblPagos.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.tblPagos.Location = New System.Drawing.Point(21, 46)
+        Me.tblPagos.Location = New System.Drawing.Point(16, 64)
         Me.tblPagos.Margin = New System.Windows.Forms.Padding(2)
         Me.tblPagos.MultiSelect = False
         Me.tblPagos.Name = "tblPagos"
@@ -211,7 +221,7 @@ Partial Class frmRegistrarPago
         Me.tblPagos.RowHeadersVisible = False
         Me.tblPagos.RowHeadersWidth = 51
         Me.tblPagos.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
-        Me.tblPagos.Size = New System.Drawing.Size(662, 253)
+        Me.tblPagos.Size = New System.Drawing.Size(770, 236)
         Me.tblPagos.ScrollBars = System.Windows.Forms.ScrollBars.Both
 
         Me.tblPagos.TabIndex = 5
@@ -230,9 +240,9 @@ Partial Class frmRegistrarPago
         'chbVuelto
         '
         Me.chbVuelto.AutoSize = True
-        Me.chbVuelto.Location = New System.Drawing.Point(646, 22)
+        Me.chbVuelto.Location = New System.Drawing.Point(710, 20)
         Me.chbVuelto.Name = "chbVuelto"
-        Me.chbVuelto.Size = New System.Drawing.Size(56, 17)
+        Me.chbVuelto.Size = New System.Drawing.Size(80, 24)
         Me.chbVuelto.TabIndex = 10
         Me.chbVuelto.Text = "Vuelto"
         Me.chbVuelto.UseVisualStyleBackColor = True
@@ -240,10 +250,10 @@ Partial Class frmRegistrarPago
         'lblPagado
         '
         Me.lblPagado.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
-        Me.lblPagado.Location = New System.Drawing.Point(421, 45)
+        Me.lblPagado.Location = New System.Drawing.Point(450, 46)
         Me.lblPagado.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.lblPagado.Name = "lblPagado"
-        Me.lblPagado.Size = New System.Drawing.Size(125, 20)
+        Me.lblPagado.Size = New System.Drawing.Size(150, 24)
         Me.lblPagado.TabIndex = 6
         Me.lblPagado.Text = "estado"
         Me.lblPagado.TextAlign = System.Drawing.ContentAlignment.TopRight
@@ -252,10 +262,12 @@ Partial Class frmRegistrarPago
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(734, 456)
+        Me.ClientSize = New System.Drawing.Size(850, 530)
         Me.Controls.Add(Me.pnlProceso)
         Me.Controls.Add(Me.Panel1)
         Me.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
+        Me.MinimumSize = New System.Drawing.Size(750, 0)
+        Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent
         Me.Name = "frmRegistrarPago"
         Me.Text = "Registrar pago"
         Me.Panel1.ResumeLayout(False)

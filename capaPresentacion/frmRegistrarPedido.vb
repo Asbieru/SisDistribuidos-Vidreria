@@ -110,6 +110,8 @@ Public Class frmRegistrarPedido
         nueva.Text = seleccion & numero.ToString()
         tabsPedidos.TabPages.Add(nueva)
         tabsPedidos.SelectedTab = nueva
+        nueva.ToolTipText = nueva.Text
+        AplicarTema(Me, tema)
         RecalcularTab(nueva)
     End Sub
 
@@ -121,6 +123,9 @@ Public Class frmRegistrarPedido
 
     Private Function ClonarTabPage(origen As TabPage) As TabPage
         Dim copia As New TabPage()
+        copia.Size = origen.Size
+        copia.AutoScroll = origen.AutoScroll
+        copia.AutoScrollMinSize = origen.AutoScrollMinSize
         copia.Padding = origen.Padding
         copia.BackColor = origen.BackColor
         copia.UseVisualStyleBackColor = origen.UseVisualStyleBackColor
@@ -146,6 +151,8 @@ Public Class frmRegistrarPedido
         copia.BackColor = origen.BackColor
         copia.ForeColor = origen.ForeColor
         copia.Font = origen.Font
+        copia.Margin = origen.Margin
+        copia.Padding = origen.Padding
 
         Dim comboOrigen As ComboBox = TryCast(origen, ComboBox)
         If comboOrigen IsNot Nothing Then

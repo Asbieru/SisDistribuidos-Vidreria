@@ -42,8 +42,8 @@ Public Class frmRegistrarPago
 
         lblPagado.Text = "S/. 0.00"
         chbVuelto.Visible = False
-        txtCantidad.Width = 191
-        Me.Height = 139
+        txtCantidad.Width = CInt(191 * DeviceDpi / 96.0)
+        AjustarTamanoPago()
 
         If idPedido > 0 Then SeleccionarPedido(idPedido)
         ActualizarBotones()
@@ -51,10 +51,16 @@ Public Class frmRegistrarPago
 
     ' Cuando el formulario ya se mostró (handle creado) se asegura la selección inicial
     Private Sub frmRegistrarPago_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
-        Me.Height = If(pnlProceso.Visible, 495, 139)
+        AjustarTamanoPago()
         ActualizarVueltoVisible()
         SeleccionarPrimeraFila()
         ActualizarBotones()
+    End Sub
+
+    Private Sub AjustarTamanoPago()
+        ClientSize = New Size(ClientSize.Width, If(pnlProceso.Visible,
+            CInt(530 * DeviceDpi / 96.0), Panel1.Bottom + CInt(20 * DeviceDpi / 96.0)))
+        AjustarVentana(Me, True)
     End Sub
 
     ' Si no le pasaron el usuario, lo toma del formulario padre (MenuInicio.txtID)
@@ -100,7 +106,7 @@ Public Class frmRegistrarPago
 
         pnlProceso.Visible = True
         lblEstado.Visible = True
-        Me.Height = 495
+        AjustarTamanoPago()
         CargarMetodos()
         cargarDetalles()
     End Sub
@@ -190,7 +196,7 @@ Public Class frmRegistrarPago
     Private Sub ActualizarVueltoVisible()
         Dim efectivo As Boolean = EsEfectivo()
         chbVuelto.Visible = efectivo
-        txtCantidad.Width = If(efectivo, 148, 191)
+        txtCantidad.Width = CInt(If(efectivo, 148, 191) * DeviceDpi / 96.0)
         If Not efectivo Then chbVuelto.Checked = False
     End Sub
 

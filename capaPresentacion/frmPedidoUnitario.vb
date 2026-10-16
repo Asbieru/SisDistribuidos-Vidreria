@@ -20,6 +20,7 @@ Public Class frmPedidoUnitario
     Private tmplUseVisual As Boolean
     Private tmplGridLoc As Point
     Private tmplGridSize As Size
+    Private tmplTabSize As Size
     Private tmplItemRoto As Button
     Private tmplCancelarItems As Button
     Private tmplTerminarUnitario As Button
@@ -118,10 +119,12 @@ Public Class frmPedidoUnitario
         If descripcion.Trim() = "" Then descripcion = item("tipo").ToString()
 
         Dim tab As New TabPage()
+        tab.Size = tmplTabSize
         tab.Padding = tmplPadding
         tab.BackColor = tmplBackColor
         tab.UseVisualStyleBackColor = tmplUseVisual
         tab.Text = descripcion
+        tab.ToolTipText = descripcion
 
         Dim lbl1 As Label = CopiarLabel(tmplLabel1)
         Dim txtTipo As TextBox = CopiarTexto(tmplTipo)
@@ -170,7 +173,7 @@ Public Class frmPedidoUnitario
         grid.Name = "gridItems"
         grid.Location = tmplGridLoc
         grid.Size = tmplGridSize
-        grid.Anchor = AnchorStyles.Top Or AnchorStyles.Left
+        grid.Anchor = AnchorStyles.Top Or AnchorStyles.Bottom Or AnchorStyles.Left Or AnchorStyles.Right
         grid.ScrollBars = ScrollBars.Both
         grid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None
         grid.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
@@ -359,6 +362,7 @@ Public Class frmPedidoUnitario
 
     ' ---------------- Utilidades ----------------
     Private Sub CapturarPlantilla()
+        tmplTabSize = tabModelo.Size
         tmplLabel1 = CopiarLabel(TryCast(tabModelo.Controls("Label1"), Label))
         tmplTipo = CopiarTexto(TryCast(tabModelo.Controls("txtTipoPedido"), TextBox))
         tmplLabel2 = CopiarLabel(TryCast(tabModelo.Controls("Label2"), Label))
@@ -383,6 +387,7 @@ Public Class frmPedidoUnitario
         copia.Location = origen.Location
         copia.Size = origen.Size
         copia.Font = origen.Font
+        copia.Anchor = origen.Anchor
         copia.UseVisualStyleBackColor = origen.UseVisualStyleBackColor
         Return copia
     End Function
@@ -395,6 +400,7 @@ Public Class frmPedidoUnitario
         copia.Size = origen.Size
         copia.AutoSize = origen.AutoSize
         copia.Font = origen.Font
+        copia.Anchor = origen.Anchor
         Return copia
     End Function
 
@@ -405,6 +411,7 @@ Public Class frmPedidoUnitario
         copia.Size = origen.Size
         copia.TextAlign = origen.TextAlign
         copia.Font = origen.Font
+        copia.Anchor = origen.Anchor
         Return copia
     End Function
 
