@@ -371,3 +371,6 @@ Thumbs.db*
 # y coloca tus propias credenciales.
 # ------------------------------------------------------------
 capaDatos/clsConectaBD.vb
+
+# Pruebas locales
+/pruebas/
