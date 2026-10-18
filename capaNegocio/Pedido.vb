@@ -9,6 +9,7 @@ Public Class ItemPedidoDTO
     Public Property CostoExtra As Decimal
     Public Property ManoObra As Decimal
     Public Property Total As Decimal
+    Public Property IdModelo As Integer?
     Public Property Detalles As New List(Of DetallePedidoDTO)
 End Class
 
@@ -189,6 +190,7 @@ Public Class Pedido
         tblItems.Columns.Add("costo_extra", GetType(Decimal))
         tblItems.Columns.Add("mano_obra", GetType(Decimal))
         tblItems.Columns.Add("total", GetType(Decimal))
+        tblItems.Columns.Add("id_modelo", GetType(Integer))
 
         Dim tblDetalles As New DataTable
         tblDetalles.Columns.Add("id_temp", GetType(Integer))
@@ -214,7 +216,8 @@ Public Class Pedido
             idItemTemp += 1
             tblItems.Rows.Add(idItemTemp, it.Tipo, DBNullIfEmpty(it.Etiqueta),
                                DBNull.Value, DBNull.Value,
-                               NumOrDbNull(it.PrecioMateriales), it.CostoExtra, it.ManoObra, it.Total)
+                               NumOrDbNull(it.PrecioMateriales), it.CostoExtra, it.ManoObra, it.Total,
+                               If(it.IdModelo.HasValue, CType(it.IdModelo.Value, Object), DBNull.Value))
 
             For Each det In it.Detalles
                 idDetalleTemp += 1

@@ -73,6 +73,7 @@
     <Compile Include="InventarioCaja.vb" />
     <Compile Include="InventarioPieza.vb" />
     <Compile Include="MetodoPago.vb" />
+    <Compile Include="ModeloVentana.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
       <AutoGen>True</AutoGen>

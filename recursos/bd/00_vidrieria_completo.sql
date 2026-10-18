@@ -342,6 +342,9 @@ IF COL_LENGTH('dbo.pedido_item','mano_obra') IS NULL
     ALTER TABLE dbo.pedido_item ADD mano_obra DECIMAL(10,2) NOT NULL DEFAULT 0;
 IF COL_LENGTH('dbo.pedido_item','total') IS NULL
     ALTER TABLE dbo.pedido_item ADD total DECIMAL(10,2) NULL;
+-- Modelo de ventana que genero el item (NULL si no aplica: vidrio suelto, aluminio, etc.)
+IF COL_LENGTH('dbo.pedido_item','id_modelo') IS NULL
+    ALTER TABLE dbo.pedido_item ADD id_modelo INT NULL;
 GO
 
 IF OBJECT_ID(N'dbo.pedido_detalle', N'U') IS NULL
@@ -446,6 +449,66 @@ VALUES (0, 300, 15, 5),
        (300.01, 480, 30, 10),
        (480.01, 700, 45, 15),
        (700.01, 99999, 60, 20);
+GO
+
+-- ------------------------------------------------------------
+-- Modelos de ventana (data-driven). Describen, por modelo, las
+-- variables calculadas, los materiales/vidrios que lleva y sus
+-- validaciones. frmRegistrarPedido los evalua en tiempo de ejecucion;
+-- el mantenimiento (CRUD) se hara desde un formulario aparte.
+-- ------------------------------------------------------------
+IF OBJECT_ID(N'dbo.modelos_ventana', N'U') IS NULL
+CREATE TABLE dbo.modelos_ventana (
+    id_modelo   INT IDENTITY(1,1) PRIMARY KEY,
+    nombre      NVARCHAR(100) NOT NULL,
+    descripcion NVARCHAR(255) NULL,
+    orden       INT NOT NULL DEFAULT 0,
+    activo      BIT NOT NULL DEFAULT 1,
+    CONSTRAINT uq_mv_nombre UNIQUE (nombre)
+);
+GO
+
+IF OBJECT_ID(N'dbo.modelo_ventana_variable', N'U') IS NULL
+CREATE TABLE dbo.modelo_ventana_variable (
+    id_variable INT IDENTITY(1,1) PRIMARY KEY,
+    id_modelo   INT NOT NULL,
+    orden       INT NOT NULL DEFAULT 0,
+    nombre      NVARCHAR(40) NOT NULL,
+    formula     NVARCHAR(300) NOT NULL,
+    CONSTRAINT fk_mv_var_modelo FOREIGN KEY (id_modelo)
+        REFERENCES dbo.modelos_ventana(id_modelo) ON DELETE CASCADE,
+    CONSTRAINT uq_mv_var UNIQUE (id_modelo, nombre)
+);
+GO
+
+IF OBJECT_ID(N'dbo.modelo_ventana_componente', N'U') IS NULL
+CREATE TABLE dbo.modelo_ventana_componente (
+    id_componente INT IDENTITY(1,1) PRIMARY KEY,
+    id_modelo     INT NOT NULL,
+    orden         INT NOT NULL DEFAULT 0,
+    categoria     NVARCHAR(20) NOT NULL,
+    tipo          NVARCHAR(50) NULL,
+    rol_color     NVARCHAR(20) NOT NULL DEFAULT 'MATERIAL',
+    tipo_medida   NVARCHAR(10) NOT NULL,   -- LARGO / CANTIDAD / VIDRIO
+    expr_largo    NVARCHAR(300) NULL,
+    expr_cantidad NVARCHAR(300) NULL,
+    expr_ancho    NVARCHAR(300) NULL,
+    expr_alto     NVARCHAR(300) NULL,
+    condicion     NVARCHAR(300) NULL,
+    CONSTRAINT fk_mv_comp_modelo FOREIGN KEY (id_modelo)
+        REFERENCES dbo.modelos_ventana(id_modelo) ON DELETE CASCADE
+);
+GO
+
+IF OBJECT_ID(N'dbo.modelo_ventana_validacion', N'U') IS NULL
+CREATE TABLE dbo.modelo_ventana_validacion (
+    id_validacion INT IDENTITY(1,1) PRIMARY KEY,
+    id_modelo     INT NOT NULL,
+    condicion     NVARCHAR(300) NOT NULL,
+    mensaje       NVARCHAR(255) NOT NULL,
+    CONSTRAINT fk_mv_val_modelo FOREIGN KEY (id_modelo)
+        REFERENCES dbo.modelos_ventana(id_modelo) ON DELETE CASCADE
+);
 GO
 
 -- ------------------------------------------------------------
@@ -696,6 +759,18 @@ GO
 -- DROP TYPE dbo.TVP_... (y recrear sp_ped_registrar, porque lo usa).
 -- ============================================================
 
+-- Migracion: el TVP de items gano la columna id_modelo. Si el tipo existe
+-- pero le falta, se dropea el SP y el tipo para poder recrearlos abajo.
+IF EXISTS (SELECT 1 FROM sys.types WHERE name = 'TVP_PedidoItem' AND is_table_type = 1)
+   AND NOT EXISTS (SELECT 1 FROM sys.columns c
+                   INNER JOIN sys.types t ON t.user_type_id = c.user_type_id
+                   WHERE t.name = 'TVP_PedidoItem' AND c.name = 'id_modelo')
+BEGIN
+    IF OBJECT_ID(N'dbo.sp_ped_registrar', N'P') IS NOT NULL DROP PROCEDURE dbo.sp_ped_registrar;
+    DROP TYPE dbo.TVP_PedidoItem;
+END
+GO
+
 IF NOT EXISTS (SELECT 1 FROM sys.types WHERE name = 'TVP_PedidoItem' AND is_table_type = 1)
 CREATE TYPE dbo.TVP_PedidoItem AS TABLE (
     id_temp            INT NOT NULL PRIMARY KEY,
@@ -706,7 +781,8 @@ CREATE TYPE dbo.TVP_PedidoItem AS TABLE (
     precio_materiales   DECIMAL(10,2) NULL,
     costo_extra         DECIMAL(10,2) NOT NULL,
     mano_obra           DECIMAL(10,2) NOT NULL,
-    total               DECIMAL(10,2) NULL
+    total               DECIMAL(10,2) NULL,
+    id_modelo           INT NULL                 -- modelo de ventana (NULL si no aplica)
 );
 GO
 
@@ -1108,23 +1184,24 @@ BEGIN
 
         DECLARE @id_temp INT, @tipo NVARCHAR(20), @etiqueta NVARCHAR(50),
                 @anchoI DECIMAL(10,2), @altoI DECIMAL(10,2),
-                @precio_mat DECIMAL(10,2), @extra DECIMAL(10,2), @mano DECIMAL(10,2), @totalI DECIMAL(10,2);
+                @precio_mat DECIMAL(10,2), @extra DECIMAL(10,2), @mano DECIMAL(10,2), @totalI DECIMAL(10,2),
+                @id_modeloI INT;
 
         DECLARE cur_items CURSOR LOCAL FAST_FORWARD FOR
-            SELECT id_temp, tipo, etiqueta, ancho_cm, alto_cm, precio_materiales, costo_extra, mano_obra, total
+            SELECT id_temp, tipo, etiqueta, ancho_cm, alto_cm, precio_materiales, costo_extra, mano_obra, total, id_modelo
             FROM @Items;
         OPEN cur_items;
-        FETCH NEXT FROM cur_items INTO @id_temp, @tipo, @etiqueta, @anchoI, @altoI, @precio_mat, @extra, @mano, @totalI;
+        FETCH NEXT FROM cur_items INTO @id_temp, @tipo, @etiqueta, @anchoI, @altoI, @precio_mat, @extra, @mano, @totalI, @id_modeloI;
         WHILE @@FETCH_STATUS = 0
         BEGIN
             INSERT INTO dbo.pedido_item (id_pedido, tipo, descripcion, estado,
-                                          precio_materiales, costo_extra, mano_obra, total)
+                                          precio_materiales, costo_extra, mano_obra, total, id_modelo)
             VALUES (@id_pedido, @tipo, @etiqueta, 'PENDIENTE',
-                    @precio_mat, @extra, @mano, @totalI);
+                    @precio_mat, @extra, @mano, @totalI, @id_modeloI);
 
             INSERT INTO @MapItems VALUES (@id_temp, CONVERT(INT, SCOPE_IDENTITY()));
 
-            FETCH NEXT FROM cur_items INTO @id_temp, @tipo, @etiqueta, @anchoI, @altoI, @precio_mat, @extra, @mano, @totalI;
+            FETCH NEXT FROM cur_items INTO @id_temp, @tipo, @etiqueta, @anchoI, @altoI, @precio_mat, @extra, @mano, @totalI, @id_modeloI;
         END
         CLOSE cur_items; DEALLOCATE cur_items;
 
@@ -2312,6 +2389,12 @@ INSERT INTO @catalogo (categoria, tipo, color, nombre, unidad, precio) VALUES
     ('ALUMINIO',  'PORTA FELPA',     'ESTANDAR',     'Aluminio Porta Felpa',     'CM_LINEAL', 0.014),
     ('ALUMINIO',  'PORTA FELPA',     'NEGRO',        'Aluminio Porta Felpa',     'CM_LINEAL', 0.021),
     ('ALUMINIO',  'PORTA FELPA',     'MADERA',       'Aluminio Porta Felpa',     'CM_LINEAL', 0.04),
+    ('ALUMINIO',  'J PORTAFELPA',    'ESTANDAR',     'Aluminio J Portafelpa',    'CM_LINEAL', 0.03),
+    ('ALUMINIO',  'J PORTAFELPA',    'NEGRO',        'Aluminio J Portafelpa',    'CM_LINEAL', 0.05),
+    ('ALUMINIO',  'J PORTAFELPA',    'MADERA',       'Aluminio J Portafelpa',    'CM_LINEAL', 0.08),
+    ('ALUMINIO',  'TUBO MULTIPLE SIMPLE', 'ESTANDAR','Aluminio Tubo Multiple Simple','CM_LINEAL', 0.04),
+    ('ALUMINIO',  'TUBO MULTIPLE SIMPLE', 'NEGRO',   'Aluminio Tubo Multiple Simple','CM_LINEAL', 0.07),
+    ('ALUMINIO',  'TUBO MULTIPLE SIMPLE', 'MADERA',  'Aluminio Tubo Multiple Simple','CM_LINEAL', 0.12),
     ('ACCESORIO', 'RUEDA 8220',      NULL,           'Accesorio Rueda 8220',     'UNIDAD',    2.00),
     ('ACCESORIO', 'FELPA 10',        'ESTANDAR',     'Accesorio Felpa 10',       'CM_LINEAL', 0.002),
     ('ACCESORIO', 'FELPA 10',        'NEGRO',        'Accesorio Felpa 10',       'CM_LINEAL', 0.005),
@@ -2369,4 +2452,290 @@ CLOSE cur_cat;
 DEALLOCATE cur_cat;
 
 PRINT 'Catalogo de aluminio y accesorios insertado.';
+GO
+
+-- ============================================================
+-- Modelos de ventana: catalogo base
+-- Variables estandar disponibles (las pone el formulario):
+--   ancho_abajo, ancho_arriba, ancho_centro,
+--   alto_izq, alto_centro, alto_der,
+--   tres_ancho (0/1), tres_alto (0/1),
+--   max_ancho, max_alto, min_alto
+-- ============================================================
+
+INSERT INTO dbo.modelos_ventana (nombre, descripcion, orden)
+SELECT v.nombre, v.descripcion, v.orden
+FROM (VALUES
+    (N'Ventana 2 fijas + 1 corrediza con alero',  N'2 hojas fijas y 1 corrediza, con alero', 1),
+    (N'Ventana 2 fijas + 1 corrediza sin alero',  N'2 hojas fijas y 1 corrediza, sin alero', 2),
+    (N'Ventana 1 fija + 1 corrediza con alero',   N'1 hoja fija y 1 corrediza, con alero', 3),
+    (N'Ventana 1 fija + 1 corrediza sin alero',   N'1 hoja fija y 1 corrediza, sin alero', 4),
+    (N'Ventana 2 fijas + 2 corredizas con alero', N'2 hojas fijas y 2 corredizas, con alero', 5)
+) AS v(nombre, descripcion, orden)
+WHERE NOT EXISTS (SELECT 1 FROM dbo.modelos_ventana m WHERE m.nombre = v.nombre);
+GO
+
+DECLARE @m1 INT = (SELECT id_modelo FROM dbo.modelos_ventana WHERE nombre = N'Ventana 2 fijas + 1 corrediza con alero');
+DECLARE @m2 INT = (SELECT id_modelo FROM dbo.modelos_ventana WHERE nombre = N'Ventana 2 fijas + 1 corrediza sin alero');
+DECLARE @m3 INT = (SELECT id_modelo FROM dbo.modelos_ventana WHERE nombre = N'Ventana 1 fija + 1 corrediza con alero');
+DECLARE @m4 INT = (SELECT id_modelo FROM dbo.modelos_ventana WHERE nombre = N'Ventana 1 fija + 1 corrediza sin alero');
+DECLARE @m5 INT = (SELECT id_modelo FROM dbo.modelos_ventana WHERE nombre = N'Ventana 2 fijas + 2 corredizas con alero');
+
+-- ------------------------------------------------------------
+-- Modelo 1: 2 fijas + 1 corrediza CON alero
+-- ------------------------------------------------------------
+IF @m1 IS NOT NULL AND NOT EXISTS (SELECT 1 FROM dbo.modelo_ventana_variable WHERE id_modelo = @m1)
+BEGIN
+    INSERT INTO dbo.modelo_ventana_variable (id_modelo, orden, nombre, formula) VALUES
+    (@m1, 10, 'anclaje',        'max_alto - 3 - 35'),
+    (@m1, 20, 'alto_fijo',      'max_alto - 3 - 1.5 - 35'),
+    (@m1, 30, 'ancho_fijo_arr', 'IIF(tres_ancho=1, ancho_centro, ancho_abajo)/3'),
+    (@m1, 40, 'ancho_fijo_aba', 'ancho_abajo/3'),
+    (@m1, 50, 'max_fijo',       'IIF(ancho_fijo_arr>ancho_fijo_aba, ancho_fijo_arr, ancho_fijo_aba)'),
+    (@m1, 60, 'corredizo_ancho','ancho_abajo - 2*max_fijo'),
+    (@m1, 70, 'corredizo_alto', 'anclaje - 2.5'),
+    (@m1, 80, 'largo_tubo',     'IIF(tres_ancho=1, IIF(ancho_arriba>ancho_centro, ancho_arriba, ancho_centro), ancho_abajo)'),
+    (@m1, 90, 'u13_alero',      'IIF(tres_ancho=1, ancho_arriba, ancho_abajo)'),
+    (@m1, 100,'dos_vidrios',    'IIF(ancho_abajo>120 OR ancho_arriba>120, 1, 0)'),
+    (@m1, 110,'ancho_vid_aler', 'IIF(dos_vidrios=1, ancho_arriba/2, ancho_arriba)'),
+    (@m1, 120,'alto_aler_1',    'IIF(tres_alto=1, IIF(alto_izq>alto_centro, alto_izq, alto_centro), alto_izq) - 1 - anclaje'),
+    (@m1, 130,'alto_aler_2',    'IIF(tres_alto=1, IIF(alto_centro>alto_der, alto_centro, alto_der), alto_izq) - 1 - anclaje'),
+    (@m1, 140,'alto_aler',      'IIF(tres_alto=1, max_alto, alto_izq) - 1 - anclaje');
+
+    INSERT INTO dbo.modelo_ventana_componente (id_modelo, orden, categoria, tipo, rol_color, tipo_medida, expr_largo, expr_cantidad, expr_ancho, expr_alto, condicion) VALUES
+    (@m1, 10, 'ALUMINIO','ANGULO GUIA','MATERIAL','LARGO','ancho_abajo',NULL,NULL,NULL,NULL),
+    (@m1, 20, 'ALUMINIO','TUBO MULTIPLE','MATERIAL','LARGO','largo_tubo',NULL,NULL,NULL,NULL),
+    (@m1, 30, 'ACCESORIO','FELPA 10','MATERIAL','LARGO','largo_tubo',NULL,NULL,NULL,NULL),
+    (@m1, 40, 'ACCESORIO','FELPA 20','MATERIAL','LARGO','largo_tubo',NULL,NULL,NULL,NULL),
+    (@m1, 50, 'ALUMINIO','U13','MATERIAL','LARGO','u13_alero',NULL,NULL,NULL,NULL),
+    (@m1, 60, 'VIDRIO',NULL,'MATERIAL','VIDRIO',NULL,NULL,'ancho_fijo_arr','alto_fijo',NULL),
+    (@m1, 70, 'VIDRIO',NULL,'MATERIAL','VIDRIO',NULL,NULL,'ancho_fijo_aba','alto_fijo',NULL),
+    (@m1, 80, 'ALUMINIO','U13','MATERIAL','LARGO','ancho_fijo_arr',NULL,NULL,NULL,NULL),
+    (@m1, 90, 'ALUMINIO','U13','MATERIAL','LARGO','anclaje',NULL,NULL,NULL,NULL),
+    (@m1, 100,'ALUMINIO','U13','MATERIAL','LARGO','ancho_fijo_aba',NULL,NULL,NULL,NULL),
+    (@m1, 110,'ALUMINIO','U13','MATERIAL','LARGO','anclaje',NULL,NULL,NULL,NULL),
+    (@m1, 120,'VIDRIO',NULL,'MATERIAL','VIDRIO',NULL,NULL,'corredizo_ancho','corredizo_alto',NULL),
+    (@m1, 130,'ALUMINIO','H8220','MATERIAL','LARGO','corredizo_ancho+1',NULL,NULL,NULL,NULL),
+    (@m1, 140,'ACCESORIO','RUEDA 8220','NINGUNO','CANTIDAD',NULL,'2',NULL,NULL,NULL),
+    (@m1, 150,'ACCESORIO','SEGURO PISTILLO','VENTANA','CANTIDAD',NULL,'1',NULL,NULL,NULL),
+    (@m1, 160,'ALUMINIO','PORTA FELPA','MATERIAL','LARGO','anclaje',NULL,NULL,NULL,NULL),
+    (@m1, 170,'ALUMINIO','PORTA FELPA','MATERIAL','LARGO','anclaje',NULL,NULL,NULL,NULL),
+    (@m1, 180,'ACCESORIO','FELPA 15','MATERIAL','LARGO','anclaje',NULL,NULL,NULL,NULL),
+    (@m1, 190,'ALUMINIO','PORTA FELPA','MATERIAL','LARGO','anclaje-1',NULL,NULL,NULL,NULL),
+    (@m1, 200,'ALUMINIO','PORTA FELPA','MATERIAL','LARGO','anclaje-1',NULL,NULL,NULL,NULL),
+    (@m1, 210,'ACCESORIO','FELPA 20','MATERIAL','LARGO','anclaje-1',NULL,NULL,NULL,NULL),
+    (@m1, 220,'VIDRIO',NULL,'MATERIAL','VIDRIO',NULL,NULL,'ancho_vid_aler','alto_aler_1','dos_vidrios=1'),
+    (@m1, 230,'VIDRIO',NULL,'MATERIAL','VIDRIO',NULL,NULL,'ancho_vid_aler','alto_aler_2','dos_vidrios=1'),
+    (@m1, 240,'ALUMINIO','U13','MATERIAL','LARGO','max_alto-2-anclaje',NULL,NULL,NULL,'dos_vidrios=1'),
+    (@m1, 250,'ALUMINIO','U13','MATERIAL','LARGO','max_alto-2-anclaje',NULL,NULL,NULL,'dos_vidrios=1'),
+    (@m1, 260,'ALUMINIO','U13','MATERIAL','LARGO','max_alto-2-anclaje',NULL,NULL,NULL,'dos_vidrios=1'),
+    (@m1, 270,'VIDRIO',NULL,'MATERIAL','VIDRIO',NULL,NULL,'ancho_vid_aler','alto_aler','dos_vidrios=0'),
+    (@m1, 280,'ALUMINIO','U13','MATERIAL','LARGO','max_alto-2-anclaje',NULL,NULL,NULL,'dos_vidrios=0'),
+    (@m1, 290,'ALUMINIO','U13','MATERIAL','LARGO','max_alto-2-anclaje',NULL,NULL,NULL,'dos_vidrios=0'),
+    (@m1, 300,'ACCESORIO','SILICONA','SILICONA','CANTIDAD',NULL,'2',NULL,NULL,NULL);
+
+    INSERT INTO dbo.modelo_ventana_validacion (id_modelo, condicion, mensaje) VALUES
+    (@m1, 'max_alto < 90', 'Este modelo lleva alero: para alturas menores a 90 cm use un modelo sin alero.'),
+    (@m1, 'tres_alto=1 AND (max_alto-min_alto)>5', 'Con 3 alturas distintas, la diferencia maxima permitida es 5 cm.');
+END
+
+-- ------------------------------------------------------------
+-- Modelo 2: 2 fijas + 1 corrediza SIN alero
+-- ------------------------------------------------------------
+IF @m2 IS NOT NULL AND NOT EXISTS (SELECT 1 FROM dbo.modelo_ventana_variable WHERE id_modelo = @m2)
+BEGIN
+    INSERT INTO dbo.modelo_ventana_variable (id_modelo, orden, nombre, formula) VALUES
+    (@m2, 10, 'anclaje',        'max_alto'),
+    (@m2, 20, 'alto_fijo',      'max_alto - 0.5'),
+    (@m2, 30, 'ancho_fijo_arr', 'IIF(tres_ancho=1, ancho_centro, ancho_abajo)/3'),
+    (@m2, 40, 'ancho_fijo_aba', 'ancho_abajo/3'),
+    (@m2, 50, 'max_fijo',       'IIF(ancho_fijo_arr>ancho_fijo_aba, ancho_fijo_arr, ancho_fijo_aba)'),
+    (@m2, 60, 'corredizo_ancho','ancho_abajo - 2*max_fijo'),
+    (@m2, 70, 'corredizo_alto', 'anclaje - 1.5'),
+    (@m2, 80, 'largo_tubo',     'IIF(tres_ancho=1, IIF(ancho_arriba>ancho_centro, ancho_arriba, ancho_centro), ancho_abajo)');
+
+    INSERT INTO dbo.modelo_ventana_componente (id_modelo, orden, categoria, tipo, rol_color, tipo_medida, expr_largo, expr_cantidad, expr_ancho, expr_alto, condicion) VALUES
+    (@m2, 10, 'ALUMINIO','ANGULO GUIA','MATERIAL','LARGO','ancho_abajo',NULL,NULL,NULL,NULL),
+    (@m2, 20, 'ALUMINIO','TUBO MULTIPLE SIMPLE','MATERIAL','LARGO','largo_tubo',NULL,NULL,NULL,NULL),
+    (@m2, 30, 'ACCESORIO','FELPA 10','MATERIAL','LARGO','largo_tubo',NULL,NULL,NULL,NULL),
+    (@m2, 40, 'ACCESORIO','FELPA 20','MATERIAL','LARGO','largo_tubo',NULL,NULL,NULL,NULL),
+    (@m2, 50, 'VIDRIO',NULL,'MATERIAL','VIDRIO',NULL,NULL,'ancho_fijo_arr','alto_fijo',NULL),
+    (@m2, 60, 'VIDRIO',NULL,'MATERIAL','VIDRIO',NULL,NULL,'ancho_fijo_aba','alto_fijo',NULL),
+    (@m2, 70, 'ALUMINIO','U13','MATERIAL','LARGO','ancho_fijo_arr',NULL,NULL,NULL,NULL),
+    (@m2, 80, 'ALUMINIO','U13','MATERIAL','LARGO','anclaje',NULL,NULL,NULL,NULL),
+    (@m2, 90, 'ALUMINIO','U13','MATERIAL','LARGO','ancho_fijo_aba',NULL,NULL,NULL,NULL),
+    (@m2, 100,'ALUMINIO','U13','MATERIAL','LARGO','anclaje',NULL,NULL,NULL,NULL),
+    (@m2, 110,'VIDRIO',NULL,'MATERIAL','VIDRIO',NULL,NULL,'corredizo_ancho','corredizo_alto',NULL),
+    (@m2, 120,'ALUMINIO','H8220','MATERIAL','LARGO','corredizo_ancho+1',NULL,NULL,NULL,NULL),
+    (@m2, 130,'ACCESORIO','RUEDA 8220','NINGUNO','CANTIDAD',NULL,'2',NULL,NULL,NULL),
+    (@m2, 140,'ACCESORIO','SEGURO PISTILLO','VENTANA','CANTIDAD',NULL,'1',NULL,NULL,NULL),
+    (@m2, 150,'ALUMINIO','PORTA FELPA','MATERIAL','LARGO','anclaje',NULL,NULL,NULL,NULL),
+    (@m2, 160,'ALUMINIO','PORTA FELPA','MATERIAL','LARGO','anclaje',NULL,NULL,NULL,NULL),
+    (@m2, 170,'ACCESORIO','FELPA 15','MATERIAL','LARGO','anclaje',NULL,NULL,NULL,NULL),
+    (@m2, 180,'ALUMINIO','PORTA FELPA','MATERIAL','LARGO','anclaje-1',NULL,NULL,NULL,NULL),
+    (@m2, 190,'ALUMINIO','PORTA FELPA','MATERIAL','LARGO','anclaje-1',NULL,NULL,NULL,NULL),
+    (@m2, 200,'ACCESORIO','FELPA 20','MATERIAL','LARGO','anclaje-1',NULL,NULL,NULL,NULL);
+
+    INSERT INTO dbo.modelo_ventana_validacion (id_modelo, condicion, mensaje) VALUES
+    (@m2, 'max_alto >= 90', 'Para 90 cm o mas de alto se debe usar un modelo con alero.'),
+    (@m2, 'tres_alto=1 AND (max_alto-min_alto)>5', 'Con 3 alturas distintas, la diferencia maxima permitida es 5 cm.');
+END
+
+-- ------------------------------------------------------------
+-- Modelo 3: 1 fija + 1 corrediza CON alero
+-- ------------------------------------------------------------
+IF @m3 IS NOT NULL AND NOT EXISTS (SELECT 1 FROM dbo.modelo_ventana_variable WHERE id_modelo = @m3)
+BEGIN
+    INSERT INTO dbo.modelo_ventana_variable (id_modelo, orden, nombre, formula) VALUES
+    (@m3, 10, 'anclaje',        'max_alto - 3 - 35'),
+    (@m3, 20, 'alto_fijo',      'max_alto - 3 - 1.5 - 35'),
+    (@m3, 30, 'ancho_fijo',     'ancho_abajo/2'),
+    (@m3, 40, 'corredizo_ancho','ancho_abajo/2'),
+    (@m3, 50, 'corredizo_alto', 'anclaje - 2.5'),
+    (@m3, 60, 'largo_tubo',     'IIF(tres_ancho=1, IIF(ancho_arriba>ancho_centro, ancho_arriba, ancho_centro), ancho_abajo)'),
+    (@m3, 70, 'u13_alero',      'IIF(tres_ancho=1, ancho_arriba, ancho_abajo)'),
+    (@m3, 80, 'dos_vidrios',    'IIF(ancho_abajo>120 OR ancho_arriba>120, 1, 0)'),
+    (@m3, 90, 'ancho_vid_aler', 'IIF(dos_vidrios=1, ancho_arriba/2, ancho_arriba)'),
+    (@m3, 100,'alto_aler_1',    'IIF(tres_alto=1, IIF(alto_izq>alto_centro, alto_izq, alto_centro), alto_izq) - 1 - anclaje'),
+    (@m3, 110,'alto_aler_2',    'IIF(tres_alto=1, IIF(alto_centro>alto_der, alto_centro, alto_der), alto_izq) - 1 - anclaje'),
+    (@m3, 120,'alto_aler',      'IIF(tres_alto=1, max_alto, alto_izq) - 1 - anclaje');
+
+    INSERT INTO dbo.modelo_ventana_componente (id_modelo, orden, categoria, tipo, rol_color, tipo_medida, expr_largo, expr_cantidad, expr_ancho, expr_alto, condicion) VALUES
+    (@m3, 10, 'ALUMINIO','ANGULO GUIA','MATERIAL','LARGO','ancho_abajo',NULL,NULL,NULL,NULL),
+    (@m3, 20, 'ALUMINIO','TUBO MULTIPLE','MATERIAL','LARGO','largo_tubo',NULL,NULL,NULL,NULL),
+    (@m3, 30, 'ACCESORIO','FELPA 10','MATERIAL','LARGO','largo_tubo',NULL,NULL,NULL,NULL),
+    (@m3, 40, 'ACCESORIO','FELPA 20','MATERIAL','LARGO','largo_tubo',NULL,NULL,NULL,NULL),
+    (@m3, 50, 'ALUMINIO','U13','MATERIAL','LARGO','u13_alero',NULL,NULL,NULL,NULL),
+    (@m3, 60, 'VIDRIO',NULL,'MATERIAL','VIDRIO',NULL,NULL,'ancho_fijo','alto_fijo',NULL),
+    (@m3, 70, 'ALUMINIO','J PORTAFELPA','MATERIAL','LARGO','anclaje',NULL,NULL,NULL,NULL),
+    (@m3, 80, 'ALUMINIO','U13','MATERIAL','LARGO','ancho_fijo',NULL,NULL,NULL,NULL),
+    (@m3, 90, 'ALUMINIO','U13','MATERIAL','LARGO','anclaje',NULL,NULL,NULL,NULL),
+    (@m3, 100,'VIDRIO',NULL,'MATERIAL','VIDRIO',NULL,NULL,'corredizo_ancho','corredizo_alto',NULL),
+    (@m3, 110,'ALUMINIO','H8220','MATERIAL','LARGO','corredizo_ancho+1',NULL,NULL,NULL,NULL),
+    (@m3, 120,'ACCESORIO','RUEDA 8220','NINGUNO','CANTIDAD',NULL,'2',NULL,NULL,NULL),
+    (@m3, 130,'ACCESORIO','SEGURO PISTILLO','VENTANA','CANTIDAD',NULL,'1',NULL,NULL,NULL),
+    (@m3, 140,'ALUMINIO','PORTA FELPA','MATERIAL','LARGO','anclaje',NULL,NULL,NULL,NULL),
+    (@m3, 150,'ALUMINIO','PORTA FELPA','MATERIAL','LARGO','anclaje',NULL,NULL,NULL,NULL),
+    (@m3, 160,'ACCESORIO','FELPA 15','MATERIAL','LARGO','anclaje',NULL,NULL,NULL,NULL),
+    (@m3, 170,'ALUMINIO','PORTA FELPA','MATERIAL','LARGO','anclaje-1',NULL,NULL,NULL,NULL),
+    (@m3, 180,'ALUMINIO','PORTA FELPA','MATERIAL','LARGO','anclaje-1',NULL,NULL,NULL,NULL),
+    (@m3, 190,'ACCESORIO','FELPA 20','MATERIAL','LARGO','anclaje-1',NULL,NULL,NULL,NULL),
+    (@m3, 200,'VIDRIO',NULL,'MATERIAL','VIDRIO',NULL,NULL,'ancho_vid_aler','alto_aler_1','dos_vidrios=1'),
+    (@m3, 210,'VIDRIO',NULL,'MATERIAL','VIDRIO',NULL,NULL,'ancho_vid_aler','alto_aler_2','dos_vidrios=1'),
+    (@m3, 220,'ALUMINIO','U13','MATERIAL','LARGO','max_alto-2-anclaje',NULL,NULL,NULL,'dos_vidrios=1'),
+    (@m3, 230,'ALUMINIO','U13','MATERIAL','LARGO','max_alto-2-anclaje',NULL,NULL,NULL,'dos_vidrios=1'),
+    (@m3, 240,'ALUMINIO','U13','MATERIAL','LARGO','max_alto-2-anclaje',NULL,NULL,NULL,'dos_vidrios=1'),
+    (@m3, 250,'VIDRIO',NULL,'MATERIAL','VIDRIO',NULL,NULL,'ancho_vid_aler','alto_aler','dos_vidrios=0'),
+    (@m3, 260,'ALUMINIO','U13','MATERIAL','LARGO','max_alto-2-anclaje',NULL,NULL,NULL,'dos_vidrios=0'),
+    (@m3, 270,'ALUMINIO','U13','MATERIAL','LARGO','max_alto-2-anclaje',NULL,NULL,NULL,'dos_vidrios=0'),
+    (@m3, 280,'ACCESORIO','SILICONA','SILICONA','CANTIDAD',NULL,'2',NULL,NULL,NULL);
+
+    INSERT INTO dbo.modelo_ventana_validacion (id_modelo, condicion, mensaje) VALUES
+    (@m3, 'max_alto < 90', 'Este modelo lleva alero: para alturas menores a 90 cm use un modelo sin alero.'),
+    (@m3, 'tres_alto=1 AND (max_alto-min_alto)>5', 'Con 3 alturas distintas, la diferencia maxima permitida es 5 cm.');
+END
+
+-- ------------------------------------------------------------
+-- Modelo 4: 1 fija + 1 corrediza SIN alero
+-- ------------------------------------------------------------
+IF @m4 IS NOT NULL AND NOT EXISTS (SELECT 1 FROM dbo.modelo_ventana_variable WHERE id_modelo = @m4)
+BEGIN
+    INSERT INTO dbo.modelo_ventana_variable (id_modelo, orden, nombre, formula) VALUES
+    (@m4, 10, 'anclaje',        'max_alto'),
+    (@m4, 20, 'alto_fijo',      'max_alto - 0.5'),
+    (@m4, 30, 'ancho_fijo',     'ancho_abajo/2'),
+    (@m4, 40, 'corredizo_ancho','ancho_abajo/2'),
+    (@m4, 50, 'corredizo_alto', 'anclaje - 1.5'),
+    (@m4, 60, 'largo_tubo',     'IIF(tres_ancho=1, IIF(ancho_arriba>ancho_centro, ancho_arriba, ancho_centro), ancho_abajo)');
+
+    INSERT INTO dbo.modelo_ventana_componente (id_modelo, orden, categoria, tipo, rol_color, tipo_medida, expr_largo, expr_cantidad, expr_ancho, expr_alto, condicion) VALUES
+    (@m4, 10, 'ALUMINIO','ANGULO GUIA','MATERIAL','LARGO','ancho_abajo',NULL,NULL,NULL,NULL),
+    (@m4, 20, 'ALUMINIO','TUBO MULTIPLE SIMPLE','MATERIAL','LARGO','largo_tubo',NULL,NULL,NULL,NULL),
+    (@m4, 30, 'ACCESORIO','FELPA 10','MATERIAL','LARGO','largo_tubo',NULL,NULL,NULL,NULL),
+    (@m4, 40, 'ACCESORIO','FELPA 20','MATERIAL','LARGO','largo_tubo',NULL,NULL,NULL,NULL),
+    (@m4, 50, 'VIDRIO',NULL,'MATERIAL','VIDRIO',NULL,NULL,'ancho_fijo','alto_fijo',NULL),
+    (@m4, 60, 'ALUMINIO','J PORTAFELPA','MATERIAL','LARGO','anclaje',NULL,NULL,NULL,NULL),
+    (@m4, 70, 'ALUMINIO','U13','MATERIAL','LARGO','ancho_fijo',NULL,NULL,NULL,NULL),
+    (@m4, 80, 'ALUMINIO','U13','MATERIAL','LARGO','anclaje',NULL,NULL,NULL,NULL),
+    (@m4, 90, 'VIDRIO',NULL,'MATERIAL','VIDRIO',NULL,NULL,'corredizo_ancho','corredizo_alto',NULL),
+    (@m4, 100,'ALUMINIO','H8220','MATERIAL','LARGO','corredizo_ancho+1',NULL,NULL,NULL,NULL),
+    (@m4, 110,'ACCESORIO','RUEDA 8220','NINGUNO','CANTIDAD',NULL,'2',NULL,NULL,NULL),
+    (@m4, 120,'ACCESORIO','SEGURO PISTILLO','VENTANA','CANTIDAD',NULL,'1',NULL,NULL,NULL),
+    (@m4, 130,'ALUMINIO','PORTA FELPA','MATERIAL','LARGO','anclaje',NULL,NULL,NULL,NULL),
+    (@m4, 140,'ALUMINIO','PORTA FELPA','MATERIAL','LARGO','anclaje',NULL,NULL,NULL,NULL),
+    (@m4, 150,'ACCESORIO','FELPA 15','MATERIAL','LARGO','anclaje',NULL,NULL,NULL,NULL),
+    (@m4, 160,'ALUMINIO','PORTA FELPA','MATERIAL','LARGO','anclaje-1',NULL,NULL,NULL,NULL),
+    (@m4, 170,'ALUMINIO','PORTA FELPA','MATERIAL','LARGO','anclaje-1',NULL,NULL,NULL,NULL),
+    (@m4, 180,'ACCESORIO','FELPA 20','MATERIAL','LARGO','anclaje-1',NULL,NULL,NULL,NULL);
+
+    INSERT INTO dbo.modelo_ventana_validacion (id_modelo, condicion, mensaje) VALUES
+    (@m4, 'max_alto >= 90', 'Para 90 cm o mas de alto se debe usar un modelo con alero.'),
+    (@m4, 'tres_alto=1 AND (max_alto-min_alto)>5', 'Con 3 alturas distintas, la diferencia maxima permitida es 5 cm.');
+END
+
+-- ------------------------------------------------------------
+-- Modelo 5: 2 fijas + 2 corredizas CON alero
+-- ------------------------------------------------------------
+IF @m5 IS NOT NULL AND NOT EXISTS (SELECT 1 FROM dbo.modelo_ventana_variable WHERE id_modelo = @m5)
+BEGIN
+    INSERT INTO dbo.modelo_ventana_variable (id_modelo, orden, nombre, formula) VALUES
+    (@m5, 10, 'anclaje',        'max_alto - 3 - 35'),
+    (@m5, 20, 'alto_fijo',      'max_alto - 3 - 1.5 - 35'),
+    (@m5, 30, 'ancho_fijo',     'ancho_abajo/4'),
+    (@m5, 40, 'corredizo_ancho','(ancho_abajo - 2*ancho_fijo)/2'),
+    (@m5, 50, 'corredizo_alto', 'anclaje - 2.5'),
+    (@m5, 60, 'largo_tubo',     'IIF(tres_ancho=1, IIF(ancho_arriba>ancho_centro, ancho_arriba, ancho_centro), ancho_abajo)'),
+    (@m5, 70, 'u13_alero',      'IIF(tres_ancho=1, ancho_arriba, ancho_abajo)'),
+    (@m5, 80, 'dos_vidrios',    'IIF(ancho_abajo>120 OR ancho_arriba>120, 1, 0)'),
+    (@m5, 90, 'ancho_vid_aler', 'IIF(dos_vidrios=1, ancho_arriba/2, ancho_arriba)'),
+    (@m5, 100,'alto_aler_1',    'IIF(tres_alto=1, IIF(alto_izq>alto_centro, alto_izq, alto_centro), alto_izq) - 1 - anclaje'),
+    (@m5, 110,'alto_aler_2',    'IIF(tres_alto=1, IIF(alto_centro>alto_der, alto_centro, alto_der), alto_izq) - 1 - anclaje'),
+    (@m5, 120,'alto_aler',      'IIF(tres_alto=1, max_alto, alto_izq) - 1 - anclaje');
+
+    INSERT INTO dbo.modelo_ventana_componente (id_modelo, orden, categoria, tipo, rol_color, tipo_medida, expr_largo, expr_cantidad, expr_ancho, expr_alto, condicion) VALUES
+    (@m5, 10, 'ALUMINIO','ANGULO GUIA','MATERIAL','LARGO','ancho_abajo',NULL,NULL,NULL,NULL),
+    (@m5, 20, 'ALUMINIO','TUBO MULTIPLE','MATERIAL','LARGO','largo_tubo',NULL,NULL,NULL,NULL),
+    (@m5, 30, 'ACCESORIO','FELPA 10','MATERIAL','LARGO','largo_tubo',NULL,NULL,NULL,NULL),
+    (@m5, 40, 'ACCESORIO','FELPA 20','MATERIAL','LARGO','largo_tubo',NULL,NULL,NULL,NULL),
+    (@m5, 50, 'ALUMINIO','U13','MATERIAL','LARGO','u13_alero',NULL,NULL,NULL,NULL),
+    (@m5, 60, 'VIDRIO',NULL,'MATERIAL','VIDRIO',NULL,NULL,'ancho_fijo','alto_fijo',NULL),
+    (@m5, 70, 'VIDRIO',NULL,'MATERIAL','VIDRIO',NULL,NULL,'ancho_fijo','alto_fijo',NULL),
+    (@m5, 80, 'ALUMINIO','U13','MATERIAL','LARGO','ancho_fijo',NULL,NULL,NULL,NULL),
+    (@m5, 90, 'ALUMINIO','U13','MATERIAL','LARGO','anclaje',NULL,NULL,NULL,NULL),
+    (@m5, 100,'ALUMINIO','U13','MATERIAL','LARGO','ancho_fijo',NULL,NULL,NULL,NULL),
+    (@m5, 110,'ALUMINIO','U13','MATERIAL','LARGO','anclaje',NULL,NULL,NULL,NULL),
+    (@m5, 120,'VIDRIO',NULL,'MATERIAL','VIDRIO',NULL,NULL,'corredizo_ancho','corredizo_alto',NULL),
+    (@m5, 130,'ALUMINIO','H8220','MATERIAL','LARGO','corredizo_ancho+1',NULL,NULL,NULL,NULL),
+    (@m5, 140,'ACCESORIO','RUEDA 8220','NINGUNO','CANTIDAD',NULL,'2',NULL,NULL,NULL),
+    (@m5, 150,'ACCESORIO','SEGURO PISTILLO','VENTANA','CANTIDAD',NULL,'1',NULL,NULL,NULL),
+    (@m5, 160,'ALUMINIO','PORTA FELPA','MATERIAL','LARGO','anclaje',NULL,NULL,NULL,NULL),
+    (@m5, 170,'ALUMINIO','PORTA FELPA','MATERIAL','LARGO','anclaje',NULL,NULL,NULL,NULL),
+    (@m5, 180,'ACCESORIO','FELPA 15','MATERIAL','LARGO','anclaje',NULL,NULL,NULL,NULL),
+    (@m5, 190,'ALUMINIO','PORTA FELPA','MATERIAL','LARGO','anclaje-1',NULL,NULL,NULL,NULL),
+    (@m5, 200,'ALUMINIO','PORTA FELPA','MATERIAL','LARGO','anclaje-1',NULL,NULL,NULL,NULL),
+    (@m5, 210,'ACCESORIO','FELPA 20','MATERIAL','LARGO','anclaje-1',NULL,NULL,NULL,NULL),
+    (@m5, 220,'VIDRIO',NULL,'MATERIAL','VIDRIO',NULL,NULL,'corredizo_ancho','corredizo_alto',NULL),
+    (@m5, 230,'ALUMINIO','H8220','MATERIAL','LARGO','corredizo_ancho+1',NULL,NULL,NULL,NULL),
+    (@m5, 240,'ACCESORIO','RUEDA 8220','NINGUNO','CANTIDAD',NULL,'2',NULL,NULL,NULL),
+    (@m5, 250,'ACCESORIO','SEGURO PISTILLO','VENTANA','CANTIDAD',NULL,'1',NULL,NULL,NULL),
+    (@m5, 260,'ALUMINIO','PORTA FELPA','MATERIAL','LARGO','anclaje',NULL,NULL,NULL,NULL),
+    (@m5, 270,'ALUMINIO','PORTA FELPA','MATERIAL','LARGO','anclaje',NULL,NULL,NULL,NULL),
+    (@m5, 280,'ACCESORIO','FELPA 15','MATERIAL','LARGO','anclaje',NULL,NULL,NULL,NULL),
+    (@m5, 290,'ALUMINIO','PORTA FELPA','MATERIAL','LARGO','anclaje-1',NULL,NULL,NULL,NULL),
+    (@m5, 300,'ALUMINIO','PORTA FELPA','MATERIAL','LARGO','anclaje-1',NULL,NULL,NULL,NULL),
+    (@m5, 310,'ACCESORIO','FELPA 20','MATERIAL','LARGO','anclaje-1',NULL,NULL,NULL,NULL),
+    (@m5, 320,'VIDRIO',NULL,'MATERIAL','VIDRIO',NULL,NULL,'ancho_vid_aler','alto_aler_1','dos_vidrios=1'),
+    (@m5, 330,'VIDRIO',NULL,'MATERIAL','VIDRIO',NULL,NULL,'ancho_vid_aler','alto_aler_2','dos_vidrios=1'),
+    (@m5, 340,'ALUMINIO','U13','MATERIAL','LARGO','max_alto-2-anclaje',NULL,NULL,NULL,'dos_vidrios=1'),
+    (@m5, 350,'ALUMINIO','U13','MATERIAL','LARGO','max_alto-2-anclaje',NULL,NULL,NULL,'dos_vidrios=1'),
+    (@m5, 360,'ALUMINIO','U13','MATERIAL','LARGO','max_alto-2-anclaje',NULL,NULL,NULL,'dos_vidrios=1'),
+    (@m5, 370,'VIDRIO',NULL,'MATERIAL','VIDRIO',NULL,NULL,'ancho_vid_aler','alto_aler','dos_vidrios=0'),
+    (@m5, 380,'ALUMINIO','U13','MATERIAL','LARGO','max_alto-2-anclaje',NULL,NULL,NULL,'dos_vidrios=0'),
+    (@m5, 390,'ALUMINIO','U13','MATERIAL','LARGO','max_alto-2-anclaje',NULL,NULL,NULL,'dos_vidrios=0'),
+    (@m5, 400,'ACCESORIO','SILICONA','SILICONA','CANTIDAD',NULL,'2',NULL,NULL,NULL);
+
+    INSERT INTO dbo.modelo_ventana_validacion (id_modelo, condicion, mensaje) VALUES
+    (@m5, 'max_alto < 90', 'Este modelo lleva alero: para alturas menores a 90 cm use un modelo sin alero.'),
+    (@m5, 'tres_alto=1 AND (max_alto-min_alto)>5', 'Con 3 alturas distintas, la diferencia maxima permitida es 5 cm.');
+END
 GO

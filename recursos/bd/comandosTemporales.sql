@@ -109,6 +109,124 @@ BEGIN
     EXEC sp_executesql @sql;
 END
 
-ALTER TABLE dbo.usuario_preferencias ADD CONSTRAINT ck_pref_tema
+ALTER TABLE dbo.usuario_preferencias ADD CONSTRAINT ck_tema_v2
     CHECK (tema IN ('CLARO', 'OSCURO', 'AZULCLARO', 'AZULOSCURO'));
+GO
+
+-- ------------------------------------------------------------
+-- 6) Modelos de ventana (data-driven) + id_modelo en pedido_item.
+--    Crea las tablas nuevas, agrega pedido_item.id_modelo, agrega los
+--    productos NUEVOS al catalogo (J PORTAFELPA y TUBO MULTIPLE SIMPLE).
+--
+--    IMPORTANTE: el TVP_PedidoItem gano la columna id_modelo. Como SQL
+--    Server no permite ALTER TYPE, hay que DROP TYPE + recrear el SP.
+--    Este script dropea el tipo (y el SP que lo usa); para recrearlos
+--    con la columna nueva ejecutar despues 00_vidrieria_completo.sql,
+--    que es idempotente y ademas inserta los 5 modelos base si faltan.
+-- ------------------------------------------------------------
+
+IF OBJECT_ID(N'dbo.modelos_ventana', N'U') IS NULL
+CREATE TABLE dbo.modelos_ventana (
+    id_modelo   INT IDENTITY(1,1) PRIMARY KEY,
+    nombre      NVARCHAR(100) NOT NULL,
+    descripcion NVARCHAR(255) NULL,
+    orden       INT NOT NULL DEFAULT 0,
+    activo      BIT NOT NULL DEFAULT 1,
+    CONSTRAINT uq_mv_nombre UNIQUE (nombre)
+);
+
+IF OBJECT_ID(N'dbo.modelo_ventana_variable', N'U') IS NULL
+CREATE TABLE dbo.modelo_ventana_variable (
+    id_variable INT IDENTITY(1,1) PRIMARY KEY,
+    id_modelo   INT NOT NULL,
+    orden       INT NOT NULL DEFAULT 0,
+    nombre      NVARCHAR(40) NOT NULL,
+    formula     NVARCHAR(300) NOT NULL,
+    CONSTRAINT fk_mv_var_modelo FOREIGN KEY (id_modelo)
+        REFERENCES dbo.modelos_ventana(id_modelo) ON DELETE CASCADE,
+    CONSTRAINT uq_mv_var UNIQUE (id_modelo, nombre)
+);
+
+IF OBJECT_ID(N'dbo.modelo_ventana_componente', N'U') IS NULL
+CREATE TABLE dbo.modelo_ventana_componente (
+    id_componente INT IDENTITY(1,1) PRIMARY KEY,
+    id_modelo     INT NOT NULL,
+    orden         INT NOT NULL DEFAULT 0,
+    categoria     NVARCHAR(20) NOT NULL,
+    tipo          NVARCHAR(50) NULL,
+    rol_color     NVARCHAR(20) NOT NULL DEFAULT 'MATERIAL',
+    tipo_medida   NVARCHAR(10) NOT NULL,
+    expr_largo    NVARCHAR(300) NULL,
+    expr_cantidad NVARCHAR(300) NULL,
+    expr_ancho    NVARCHAR(300) NULL,
+    expr_alto     NVARCHAR(300) NULL,
+    condicion     NVARCHAR(300) NULL,
+    CONSTRAINT fk_mv_comp_modelo FOREIGN KEY (id_modelo)
+        REFERENCES dbo.modelos_ventana(id_modelo) ON DELETE CASCADE
+);
+
+IF OBJECT_ID(N'dbo.modelo_ventana_validacion', N'U') IS NULL
+CREATE TABLE dbo.modelo_ventana_validacion (
+    id_validacion INT IDENTITY(1,1) PRIMARY KEY,
+    id_modelo     INT NOT NULL,
+    condicion     NVARCHAR(300) NOT NULL,
+    mensaje       NVARCHAR(255) NOT NULL,
+    CONSTRAINT fk_mv_val_modelo FOREIGN KEY (id_modelo)
+        REFERENCES dbo.modelos_ventana(id_modelo) ON DELETE CASCADE
+);
+
+IF COL_LENGTH('dbo.pedido_item','id_modelo') IS NULL
+    ALTER TABLE dbo.pedido_item ADD id_modelo INT NULL;
+GO
+
+-- Productos nuevos (solo si faltan; precio = cm lineal)
+DECLARE @nuevos TABLE (categoria NVARCHAR(20), tipo NVARCHAR(50), color NVARCHAR(30), nombre NVARCHAR(150), precio DECIMAL(10,2));
+INSERT INTO @nuevos VALUES
+    ('ALUMINIO','J PORTAFELPA','ESTANDAR','Aluminio J Portafelpa',0.03),
+    ('ALUMINIO','J PORTAFELPA','NEGRO','Aluminio J Portafelpa',0.05),
+    ('ALUMINIO','J PORTAFELPA','MADERA','Aluminio J Portafelpa',0.08),
+    ('ALUMINIO','TUBO MULTIPLE SIMPLE','ESTANDAR','Aluminio Tubo Multiple Simple',0.04),
+    ('ALUMINIO','TUBO MULTIPLE SIMPLE','NEGRO','Aluminio Tubo Multiple Simple',0.07),
+    ('ALUMINIO','TUBO MULTIPLE SIMPLE','MADERA','Aluminio Tubo Multiple Simple',0.12);
+
+DECLARE @categoria NVARCHAR(20), @tipo NVARCHAR(50), @color NVARCHAR(30),
+        @nombre NVARCHAR(150), @precio DECIMAL(10,2), @idProd INT, @c_sinmedida INT;
+
+SELECT TOP 1 @c_sinmedida = id_caracteristica FROM dbo.caracteristicas WHERE espesor_cm IS NULL AND medida_cm IS NULL ORDER BY id_caracteristica;
+IF @c_sinmedida IS NULL
+BEGIN
+    INSERT INTO dbo.caracteristicas (espesor_cm, medida_cm) VALUES (NULL, NULL);
+    SET @c_sinmedida = SCOPE_IDENTITY();
+END
+DECLARE cur_nuevos CURSOR LOCAL FAST_FORWARD FOR SELECT categoria, tipo, color, nombre, precio FROM @nuevos;
+OPEN cur_nuevos;
+FETCH NEXT FROM cur_nuevos INTO @categoria, @tipo, @color, @nombre, @precio;
+WHILE @@FETCH_STATUS = 0
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM dbo.productos WHERE categoria=@categoria AND tipo=@tipo AND ISNULL(color,'')=ISNULL(@color,''))
+    BEGIN
+        INSERT INTO dbo.productos (categoria, tipo, color, nombre) VALUES (@categoria, @tipo, @color, @nombre);
+        SET @idProd = SCOPE_IDENTITY();
+        INSERT INTO dbo.producto_variante (id_producto, id_caracteristica, unidad_costo, precio_unitario, stock_minimo)
+        VALUES (@idProd, @c_sinmedida, 'CM_LINEAL', @precio, 0);
+    END
+    FETCH NEXT FROM cur_nuevos INTO @categoria, @tipo, @color, @nombre, @precio;
+END
+CLOSE cur_nuevos;
+DEALLOCATE cur_nuevos;
+GO
+
+-- El TVP cambio de forma: hay que dropear el SP y el tipo. Recrearlos con
+-- 00_vidrieria_completo.sql (idempotente).
+IF EXISTS (SELECT 1 FROM sys.types WHERE name = 'TVP_PedidoItem' AND is_table_type = 1)
+   AND NOT EXISTS (SELECT 1 FROM sys.columns c
+                   INNER JOIN sys.types t ON t.user_type_id = c.user_type_id
+                   WHERE t.name = 'TVP_PedidoItem' AND c.name = 'id_modelo')
+BEGIN
+    IF OBJECT_ID(N'dbo.sp_ped_registrar', N'P') IS NOT NULL DROP PROCEDURE dbo.sp_ped_registrar;
+    DROP TYPE dbo.TVP_PedidoItem;
+END
+GO
+
+PRINT 'Modelos de ventana: tablas/productos/id_modelo listos. Ahora ejecute 00_vidrieria_completo.sql para recrear TVP_PedidoItem, sp_ped_registrar y cargar los modelos.';
 GO
