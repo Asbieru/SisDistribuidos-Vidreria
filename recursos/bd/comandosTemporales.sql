@@ -322,9 +322,16 @@ IF EXISTS (SELECT 1 FROM sys.columns c
            WHERE t.name = 'inventario_piezas' AND c.name IN ('ancho_cm','alto_cm','largo_cm')
              AND c.scale < 3)
 BEGIN
+    -- idx_piezas_medidas depende de ancho_cm: se quita y se vuelve a crear
+    IF EXISTS (SELECT 1 FROM sys.indexes
+               WHERE name = 'idx_piezas_medidas' AND object_id = OBJECT_ID(N'dbo.inventario_piezas'))
+        DROP INDEX idx_piezas_medidas ON dbo.inventario_piezas;
+
     ALTER TABLE dbo.inventario_piezas ALTER COLUMN ancho_cm DECIMAL(9,3) NULL;
     ALTER TABLE dbo.inventario_piezas ALTER COLUMN alto_cm DECIMAL(9,3) NULL;
     ALTER TABLE dbo.inventario_piezas ALTER COLUMN largo_cm DECIMAL(9,3) NULL;
+
+    CREATE INDEX idx_piezas_medidas ON dbo.inventario_piezas(ancho_cm, alto_cm);
 END
 GO
 
@@ -488,4 +495,269 @@ END
 GO
 
 PRINT '3 decimales: costo de compra, medidas de pieza y SPs de inventario listos.';
+GO
+
+-- ------------------------------------------------------------
+-- 10) Enlace compra <-> pedido: las lineas COMPRA_NUEVA de un pedido
+--     quedaban con "No hay stock registrado" aunque la compra ya existia,
+--     porque el enlace no estaba implementado. Ahora GuardarCompra lo hace
+--     solo; este bloque arregla los datos ya registrados (idempotente):
+--     empareja cada linea COMPRA_NUEVA pendiente con la pieza DISPONIBLE
+--     de origen COMPRA del mismo variante y medida, y recalcula el estado
+--     de los pedidos afectados.
+--     Nota: vuelva a ejecutar 00_vidrieria_completo.sql para que los SPs
+--     de pedidos acepten la fecha enviada por la aplicacion (@fecha).
+-- ------------------------------------------------------------
+DECLARE @Enlazadas TABLE (id_pieza INT PRIMARY KEY, id_item INT);
+
+;WITH pendientes AS (
+    SELECT pd.id_detalle, pd.id_item, pd.id_variante, pd.ancho_cm, pd.alto_cm, pd.largo_cm,
+           ROW_NUMBER() OVER (PARTITION BY pd.id_variante, pd.ancho_cm, pd.alto_cm, pd.largo_cm
+                              ORDER BY pd.id_detalle) AS rn
+    FROM dbo.pedido_detalle pd
+    WHERE pd.estado = 'ACTIVO' AND pd.accion = 'COMPRA_NUEVA' AND pd.id_pieza IS NULL
+      AND EXISTS (SELECT 1 FROM dbo.pedido_item pi
+                  WHERE pi.id_item = pd.id_item AND pi.estado <> 'CANCELADO')
+), nuevas AS (
+    SELECT ip.id_pieza, ip.id_variante, ip.ancho_cm, ip.alto_cm, ip.largo_cm, ip.id_compra_detalle,
+           ROW_NUMBER() OVER (PARTITION BY ip.id_variante, ip.ancho_cm, ip.alto_cm, ip.largo_cm
+                              ORDER BY ip.id_pieza) AS rn
+    FROM dbo.inventario_piezas ip
+    WHERE ip.origen = 'COMPRA' AND ip.estado = 'DISPONIBLE'
+)
+UPDATE pd
+SET pd.id_pieza = n.id_pieza, pd.accion = 'USA_EXISTENTE', pd.id_compra_detalle = n.id_compra_detalle
+OUTPUT inserted.id_pieza, inserted.id_item INTO @Enlazadas
+FROM dbo.pedido_detalle pd
+INNER JOIN pendientes p ON p.id_detalle = pd.id_detalle
+INNER JOIN nuevas n ON n.id_variante = p.id_variante AND n.rn = p.rn
+ AND ((n.ancho_cm = p.ancho_cm AND n.alto_cm = p.alto_cm AND n.largo_cm IS NULL AND p.largo_cm IS NULL)
+  OR  (n.largo_cm = p.largo_cm AND n.ancho_cm IS NULL AND p.ancho_cm IS NULL));
+
+-- Las piezas enlazadas pasan a VENDIDA (quedan comprometidas con el pedido)
+UPDATE ip SET ip.estado = 'VENDIDA'
+FROM dbo.inventario_piezas ip
+INNER JOIN @Enlazadas e ON e.id_pieza = ip.id_pieza;
+
+INSERT INTO dbo.movimientos_inventario (id_variante, id_pieza, tipo, motivo, cantidad, id_usuario, id_pedido, observacion)
+SELECT ip.id_variante, e.id_pieza, 'SALIDA', 'VENTA', 1, NULL, pi.id_pedido,
+       'Enlace automatico compra-pedido'
+FROM @Enlazadas e
+INNER JOIN dbo.inventario_piezas ip ON ip.id_pieza = e.id_pieza
+INNER JOIN dbo.pedido_item pi ON pi.id_item = e.id_item;
+
+-- Recalcular el estado de los pedidos que recibieron material
+DECLARE @pEd INT;
+DECLARE curPed CURSOR LOCAL FAST_FORWARD FOR
+    SELECT DISTINCT pi.id_pedido
+    FROM @Enlazadas e
+    INNER JOIN dbo.pedido_item pi ON pi.id_item = e.id_item;
+OPEN curPed;
+FETCH NEXT FROM curPed INTO @pEd;
+WHILE @@FETCH_STATUS = 0
+BEGIN
+    EXEC dbo.sp_ped_recalcular_estados @id_pedido = @pEd;
+    FETCH NEXT FROM curPed INTO @pEd;
+END
+CLOSE curPed;
+DEALLOCATE curPed;
+
+PRINT 'Enlace compra-pedido listo: lineas COMPRA_NUEVA resueltas = ' +
+      (SELECT CONVERT(NVARCHAR(10), COUNT(*)) FROM @Enlazadas) + '.';
+GO
+
+-- ------------------------------------------------------------
+-- 11) Los SPs de pedidos ahora reciben la fecha desde la aplicacion
+--     (@fecha; si viene NULL usan el servidor). Sin esta migracion,
+--     guardar un pedido falla con "too many arguments specified" y
+--     terminar un pedido tambien. Idempotente (CREATE OR ALTER).
+--     Equivale a re-ejecutar 00_vidrieria_completo.sql.
+-- ------------------------------------------------------------
+CREATE OR ALTER PROCEDURE dbo.sp_ped_registrar
+    @id_cliente INT,
+    @id_usuario INT,
+    @fecha      DATETIME2 = NULL,   -- la fecha la envia la aplicacion (si viene NULL usa el servidor)
+    @Items      dbo.TVP_PedidoItem    READONLY,
+    @Detalles   dbo.TVP_PedidoDetalle READONLY,
+    @Medidas    dbo.TVP_PedidoMedida  READONLY,
+    @id_pedido  INT OUTPUT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    DECLARE @tran_externa BIT = CASE WHEN @@TRANCOUNT > 0 THEN 1 ELSE 0 END;
+
+    IF NOT EXISTS (SELECT 1 FROM @Items)
+        THROW 50040, 'El pedido debe tener al menos un item (ventana, mampara, vidrio suelto o caja).', 1;
+
+    BEGIN TRY
+    IF @tran_externa = 0 BEGIN TRANSACTION; ELSE SAVE TRANSACTION sp_ped;
+
+        INSERT INTO dbo.pedidos (id_cliente, id_usuario, fecha, estado, total)
+        VALUES (@id_cliente, @id_usuario, ISNULL(@fecha, dbo.fn_hora_peru()), 'PENDIENTE', 0);
+        SET @id_pedido = CONVERT(INT, SCOPE_IDENTITY());
+
+        -- mapeo id_temp (item) -> id real generado
+        DECLARE @MapItems TABLE (id_temp INT PRIMARY KEY, id_item INT);
+
+        DECLARE @id_temp INT, @tipo NVARCHAR(20), @etiqueta NVARCHAR(50),
+                @anchoI DECIMAL(10,2), @altoI DECIMAL(10,2),
+                @precio_mat DECIMAL(10,2), @extra DECIMAL(10,2), @mano DECIMAL(10,2), @totalI DECIMAL(10,2),
+                @id_modeloI INT;
+
+        DECLARE cur_items CURSOR LOCAL FAST_FORWARD FOR
+            SELECT id_temp, tipo, etiqueta, ancho_cm, alto_cm, precio_materiales, costo_extra, mano_obra, total, id_modelo
+            FROM @Items;
+        OPEN cur_items;
+        FETCH NEXT FROM cur_items INTO @id_temp, @tipo, @etiqueta, @anchoI, @altoI, @precio_mat, @extra, @mano, @totalI, @id_modeloI;
+        WHILE @@FETCH_STATUS = 0
+        BEGIN
+            INSERT INTO dbo.pedido_item (id_pedido, tipo, descripcion, estado,
+                                          precio_materiales, costo_extra, mano_obra, total, id_modelo)
+            VALUES (@id_pedido, @tipo, @etiqueta, 'PENDIENTE',
+                    @precio_mat, @extra, @mano, @totalI, @id_modeloI);
+
+            INSERT INTO @MapItems VALUES (@id_temp, CONVERT(INT, SCOPE_IDENTITY()));
+
+            FETCH NEXT FROM cur_items INTO @id_temp, @tipo, @etiqueta, @anchoI, @altoI, @precio_mat, @extra, @mano, @totalI, @id_modeloI;
+        END
+        CLOSE cur_items; DEALLOCATE cur_items;
+
+        -- detalles: resuelve inventario (usa existente / corta / compra nueva) e inserta
+        DECLARE @MapDetalles TABLE (id_temp INT PRIMARY KEY, id_detalle INT);
+
+        DECLARE @id_det_temp INT, @id_item_temp INT, @id_variante INT, @accion NVARCHAR(20),
+                @id_pieza INT, @anchoD DECIMAL(10,2), @altoD DECIMAL(10,2), @largoD DECIMAL(10,2),
+                @cajas INT, @subtotal DECIMAL(10,2),
+                @id_item_real INT, @id_pieza_final INT, @precio_unit DECIMAL(10,2);
+
+        DECLARE cur_det CURSOR LOCAL FAST_FORWARD FOR
+            SELECT id_temp, id_item_temp, id_variante, accion, id_pieza, ancho_cm, alto_cm, largo_cm, cantidad_cajas, subtotal
+            FROM @Detalles;
+        OPEN cur_det;
+        FETCH NEXT FROM cur_det INTO @id_det_temp, @id_item_temp, @id_variante, @accion, @id_pieza, @anchoD, @altoD, @largoD, @cajas, @subtotal;
+        WHILE @@FETCH_STATUS = 0
+        BEGIN
+            SET @id_item_real = (SELECT id_item FROM @MapItems WHERE id_temp = @id_item_temp);
+            SET @id_pieza_final = @id_pieza;
+            SET @precio_unit = (SELECT precio_unitario FROM dbo.producto_variante WHERE id_variante = @id_variante);
+
+            IF @accion = 'CORTA_PIEZA'
+            BEGIN
+                EXEC dbo.sp_inv_cortar_pieza
+                     @id_pieza    = @id_pieza,
+                     @ancho_corte = @anchoD,
+                     @alto_corte  = @altoD,
+                     @largo_corte = @largoD,
+                     @id_usuario  = @id_usuario,
+                     @id_pedido   = @id_pedido;
+                SET @id_pieza_final = @id_pieza; -- la pieza original queda CONSUMIDA; esta linea registra lo que se uso de ella
+            END
+            ELSE IF @accion = 'USA_EXISTENTE'
+            BEGIN
+                EXEC dbo.sp_inv_cambiar_estado_pieza
+                     @id_pieza   = @id_pieza,
+                     @estado     = 'VENDIDA',
+                     @id_usuario = @id_usuario,
+                     @id_pedido  = @id_pedido;
+            END
+            -- COMPRA_NUEVA: @id_pieza_final queda NULL; se liga despues al registrar la compra
+
+            INSERT INTO dbo.pedido_detalle (id_item, id_variante, accion, id_pieza, estado,
+                                             cantidad_cajas, ancho_cm, alto_cm, largo_cm,
+                                             precio_unitario_aplicado, subtotal)
+            VALUES (@id_item_real, @id_variante, @accion, @id_pieza_final, 'ACTIVO',
+                    @cajas, @anchoD, @altoD, @largoD,
+                    @precio_unit, @subtotal);
+
+            INSERT INTO @MapDetalles VALUES (@id_det_temp, CONVERT(INT, SCOPE_IDENTITY()));
+
+            IF @accion = 'COMPRA_NUEVA'
+                UPDATE dbo.pedido_item SET estado = 'PENDIENTE' WHERE id_item = @id_item_real;
+
+            FETCH NEXT FROM cur_det INTO @id_det_temp, @id_item_temp, @id_variante, @accion, @id_pieza, @anchoD, @altoD, @largoD, @cajas, @subtotal;
+        END
+        CLOSE cur_det; DEALLOCATE cur_det;
+
+        -- medidas crudas (para el proveedor)
+        INSERT INTO dbo.pedido_detalle_medida (id_detalle, etiqueta, valor_cm)
+        SELECT md.id_detalle, m.etiqueta, m.valor_cm
+        FROM @Medidas m
+        INNER JOIN @MapDetalles md ON md.id_temp = m.id_detalle_temp;
+
+        UPDATE dbo.pedidos
+        SET total = (SELECT ISNULL(SUM(total), 0) FROM dbo.pedido_item WHERE id_pedido = @id_pedido)
+        WHERE id_pedido = @id_pedido;
+
+    IF @tran_externa = 0 COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        IF XACT_STATE() = -1 OR (XACT_STATE() = 1 AND @tran_externa = 0)
+            ROLLBACK TRANSACTION;
+        ELSE IF XACT_STATE() = 1
+            ROLLBACK TRANSACTION sp_ped;
+        THROW;
+    END CATCH
+END
+GO
+
+CREATE OR ALTER PROCEDURE dbo.sp_ped_terminar_item
+    @id_item    INT,
+    @id_usuario INT = NULL,
+    @fecha      DATETIME2 = NULL   -- la fecha la envia la aplicacion
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    DECLARE @id_pedido INT, @estado NVARCHAR(15);
+    SELECT @id_pedido = id_pedido, @estado = estado FROM dbo.pedido_item WHERE id_item = @id_item;
+
+    IF @id_pedido IS NULL
+        THROW 50080, 'El item indicado no existe.', 1;
+    IF @estado = 'CANCELADO'
+        THROW 50081, 'El item esta cancelado.', 1;
+    IF @estado = 'COMPLETADO'
+        THROW 50082, 'El item ya esta completado.', 1;
+
+    EXEC dbo.sp_ped_recalcular_estados @id_pedido = @id_pedido;
+
+    SELECT @estado = estado FROM dbo.pedido_item WHERE id_item = @id_item;
+    IF @estado <> 'EN_PROCESO'
+        THROW 50083, 'No se puede completar el item: aun faltan materiales en inventario.', 1;
+
+    UPDATE dbo.pedido_item SET estado = 'COMPLETADO' WHERE id_item = @id_item;
+
+    -- Si ya no queda ningun item pendiente o en proceso, el pedido queda terminado
+    IF NOT EXISTS (SELECT 1 FROM dbo.pedido_item
+                   WHERE id_pedido = @id_pedido AND estado IN ('PENDIENTE','EN_PROCESO'))
+        UPDATE dbo.pedidos SET fecha_termino = ISNULL(@fecha, dbo.fn_hora_peru()) WHERE id_pedido = @id_pedido;
+END
+GO
+
+-- Marca todo el pedido como terminado (entregado/instalado). Es independiente del pago.
+CREATE OR ALTER PROCEDURE dbo.sp_ped_terminar
+    @id_pedido  INT,
+    @id_usuario INT = NULL,
+    @fecha      DATETIME2 = NULL   -- la fecha la envia la aplicacion
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF NOT EXISTS (SELECT 1 FROM dbo.pedidos WHERE id_pedido = @id_pedido)
+        THROW 50070, 'El pedido indicado no existe.', 1;
+
+    EXEC dbo.sp_ped_recalcular_estados @id_pedido = @id_pedido;
+
+    IF EXISTS (SELECT 1 FROM dbo.pedido_item
+               WHERE id_pedido = @id_pedido AND estado = 'PENDIENTE')
+        THROW 50071, 'No se puede terminar el pedido: hay items cuyos materiales aun no estan en inventario.', 1;
+
+    UPDATE dbo.pedido_item SET estado = 'COMPLETADO'
+    WHERE id_pedido = @id_pedido AND estado = 'EN_PROCESO';
+
+    UPDATE dbo.pedidos SET fecha_termino = ISNULL(@fecha, dbo.fn_hora_peru())
+    WHERE id_pedido = @id_pedido;
+END
+GO
+
+PRINT 'SPs de pedidos con @fecha (fecha enviada por la aplicacion) listos.';
 GO

@@ -271,6 +271,20 @@ Public Class frmRegistrarPedido
             Return
         End If
 
+        ' Aviso visible mientras la BD guarda el pedido (puede tardar unos segundos)
+        btnGuardarPedido.Enabled = False
+        UseWaitCursor = True
+        Dim aviso As New Label() With {
+            .Name = "lblGuardandoPedido",
+            .Text = "GUARDANDO PEDIDO... POR FAVOR ESPERE",
+            .Dock = DockStyle.Top, .Height = 34, .AutoSize = False,
+            .BackColor = Color.SteelBlue, .ForeColor = Color.White,
+            .TextAlign = ContentAlignment.MiddleCenter,
+            .Font = New Font("Microsoft Sans Serif", 10.0F, FontStyle.Bold)}
+        Controls.Add(aviso)
+        aviso.BringToFront()
+        Application.DoEvents()
+
         Try
             itemsPedido = ConstruirItemsDesdeTabs()
             Dim idPedido As Integer = New Pedido().Registrar(idClienteSeleccionado, idUsuario, itemsPedido)
@@ -284,6 +298,11 @@ Public Class frmRegistrarPedido
             actualizarCliente()
         Catch ex As Exception
             UtilFormularios.MostrarError(ex)
+        Finally
+            Controls.Remove(aviso)
+            aviso.Dispose()
+            UseWaitCursor = False
+            btnGuardarPedido.Enabled = True
         End Try
     End Sub
 

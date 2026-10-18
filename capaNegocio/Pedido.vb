@@ -152,7 +152,8 @@ Public Class Pedido
     Public Sub Terminar(idPedido As Integer, Optional idUsuario As Integer? = Nothing)
         Dim parametros As New Dictionary(Of String, Object) From {
             {"id_pedido", idPedido},
-            {"id_usuario", If(idUsuario.HasValue, CObj(idUsuario.Value), Nothing)}}
+            {"id_usuario", If(idUsuario.HasValue, CObj(idUsuario.Value), Nothing)},
+            {"fecha", DateTime.Now}}
         objMan.ejecutarProcedimiento("sp_ped_terminar", parametros)
     End Sub
 
@@ -160,7 +161,8 @@ Public Class Pedido
     Public Sub TerminarItem(idItem As Integer, Optional idUsuario As Integer? = Nothing)
         Dim parametros As New Dictionary(Of String, Object) From {
             {"id_item", idItem},
-            {"id_usuario", If(idUsuario.HasValue, CObj(idUsuario.Value), Nothing)}}
+            {"id_usuario", If(idUsuario.HasValue, CObj(idUsuario.Value), Nothing)},
+            {"fecha", DateTime.Now}}
         objMan.ejecutarProcedimiento("sp_ped_terminar_item", parametros)
     End Sub
 
@@ -234,10 +236,12 @@ Public Class Pedido
         Dim pMedidas As New SqlParameter("@Medidas", SqlDbType.Structured) With {.TypeName = "dbo.TVP_PedidoMedida", .Value = tblMedidas}
         Dim pCliente As New SqlParameter("@id_cliente", idCliente)
         Dim pUsuario As New SqlParameter("@id_usuario", idUsuario)
+        ' La fecha del pedido la pone la aplicacion (no el servidor)
+        Dim pFecha As New SqlParameter("@fecha", SqlDbType.DateTime2) With {.Value = DateTime.Now}
         Dim pIdPedido As New SqlParameter("@id_pedido", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
 
         objMan.EjecutarProcedimientoConParametros("sp_ped_registrar",
-            New List(Of SqlParameter) From {pCliente, pUsuario, pItems, pDetalles, pMedidas, pIdPedido})
+            New List(Of SqlParameter) From {pCliente, pUsuario, pFecha, pItems, pDetalles, pMedidas, pIdPedido})
 
         Return CInt(pIdPedido.Value)
     End Function

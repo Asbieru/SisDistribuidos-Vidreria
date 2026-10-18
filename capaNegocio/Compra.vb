@@ -308,6 +308,69 @@ Public Class Compra
                 "El total supera el límite de la base de datos.")
         End If
 
+        ' Si hay lineas de pedido que esperaban este material (COMPRA_NUEVA),
+        ' enlazarlas con las piezas recien compradas del mismo variante y medida.
+        sql.AppendLine("DECLARE @Enlazadas TABLE (id_pieza INT PRIMARY KEY, id_item INT);")
+        sql.AppendLine(";WITH pendientes AS (")
+        sql.AppendLine(
+            "    SELECT pd.id_detalle, pd.id_item, pd.id_variante, " &
+            "pd.ancho_cm, pd.alto_cm, pd.largo_cm, " &
+            "    ROW_NUMBER() OVER (PARTITION BY pd.id_variante, pd.ancho_cm, " &
+            "pd.alto_cm, pd.largo_cm ORDER BY pd.id_detalle) AS rn " &
+            "    FROM dbo.pedido_detalle pd " &
+            "    WHERE pd.estado='ACTIVO' AND pd.accion='COMPRA_NUEVA' AND pd.id_pieza IS NULL " &
+            "AND EXISTS (SELECT 1 FROM dbo.pedido_item pi " &
+            "            WHERE pi.id_item=pd.id_item AND pi.estado<>'CANCELADO')")
+        sql.AppendLine("), nuevas AS (")
+        sql.AppendLine(
+            "    SELECT ip.id_pieza, ip.id_variante, ip.ancho_cm, ip.alto_cm, " &
+            "ip.largo_cm, ip.id_compra_detalle, " &
+            "    ROW_NUMBER() OVER (PARTITION BY ip.id_variante, ip.ancho_cm, " &
+            "ip.alto_cm, ip.largo_cm ORDER BY ip.id_pieza) AS rn " &
+            "    FROM dbo.inventario_piezas ip " &
+            "    INNER JOIN dbo.compra_detalle cd " &
+            "    ON cd.id_compra_detalle = ip.id_compra_detalle " &
+            "    WHERE cd.id_compra=@idCompra AND ip.origen='COMPRA' " &
+            "AND ip.estado='DISPONIBLE'")
+        sql.AppendLine(")")
+        sql.AppendLine(
+            "UPDATE pd SET pd.id_pieza=n.id_pieza, pd.accion='USA_EXISTENTE', " &
+            "pd.id_compra_detalle=n.id_compra_detalle " &
+            "OUTPUT inserted.id_pieza, inserted.id_item INTO @Enlazadas " &
+            "FROM dbo.pedido_detalle pd " &
+            "INNER JOIN pendientes p ON p.id_detalle=pd.id_detalle " &
+            "INNER JOIN nuevas n ON n.id_variante=p.id_variante AND n.rn=p.rn " &
+            "AND ((n.ancho_cm=p.ancho_cm AND n.alto_cm=p.alto_cm " &
+            "      AND n.largo_cm IS NULL AND p.largo_cm IS NULL) " &
+            "  OR (n.largo_cm=p.largo_cm AND n.ancho_cm IS NULL AND p.ancho_cm IS NULL));")
+        sql.AppendLine(
+            "UPDATE ip SET ip.estado='VENDIDA' FROM dbo.inventario_piezas ip " &
+            "INNER JOIN @Enlazadas e ON e.id_pieza=ip.id_pieza;")
+        sql.AppendLine(
+            "INSERT INTO dbo.movimientos_inventario " &
+            "(id_variante, id_pieza, tipo, motivo, cantidad, id_usuario, id_pedido, observacion) " &
+            "SELECT ip.id_variante, e.id_pieza, 'SALIDA', 'VENTA', 1, @idUsuario, pi.id_pedido, " &
+            "'Enlace automatico compra-pedido' " &
+            "FROM @Enlazadas e " &
+            "INNER JOIN dbo.inventario_piezas ip ON ip.id_pieza=e.id_pieza " &
+            "INNER JOIN dbo.pedido_item pi ON pi.id_item=e.id_item;")
+        ' Recalcular el estado de los pedidos que recibieron material
+        sql.AppendLine(
+            "IF OBJECT_ID(N'dbo.sp_ped_recalcular_estados', N'P') IS NULL " &
+            "THROW 50090, " &
+            "'Falta migrar la BD: ejecute 00_vidrieria_completo.sql " &
+            "(falta sp_ped_recalcular_estados).', 1;")
+        sql.AppendLine(
+            "DECLARE @pEd INT; " &
+            "DECLARE curPed CURSOR LOCAL FAST_FORWARD FOR " &
+            "SELECT DISTINCT pi.id_pedido FROM @Enlazadas e " &
+            "INNER JOIN dbo.pedido_item pi ON pi.id_item=e.id_item; " &
+            "OPEN curPed; FETCH NEXT FROM curPed INTO @pEd; " &
+            "WHILE @@FETCH_STATUS = 0 BEGIN " &
+            "EXEC dbo.sp_ped_recalcular_estados @id_pedido=@pEd; " &
+            "FETCH NEXT FROM curPed INTO @pEd; END " &
+            "CLOSE curPed; DEALLOCATE curPed;")
+
         parametros.Add("total", total)
 
         sql.AppendLine("COMMIT TRANSACTION;")

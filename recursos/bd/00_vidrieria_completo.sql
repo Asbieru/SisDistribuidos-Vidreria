@@ -1195,6 +1195,7 @@ GO
 CREATE OR ALTER PROCEDURE dbo.sp_ped_registrar
     @id_cliente INT,
     @id_usuario INT,
+    @fecha      DATETIME2 = NULL,   -- la fecha la envia la aplicacion (si viene NULL usa el servidor)
     @Items      dbo.TVP_PedidoItem    READONLY,
     @Detalles   dbo.TVP_PedidoDetalle READONLY,
     @Medidas    dbo.TVP_PedidoMedida  READONLY,
@@ -1211,7 +1212,7 @@ BEGIN
     IF @tran_externa = 0 BEGIN TRANSACTION; ELSE SAVE TRANSACTION sp_ped;
 
         INSERT INTO dbo.pedidos (id_cliente, id_usuario, fecha, estado, total)
-        VALUES (@id_cliente, @id_usuario, dbo.fn_hora_peru(), 'PENDIENTE', 0);
+        VALUES (@id_cliente, @id_usuario, ISNULL(@fecha, dbo.fn_hora_peru()), 'PENDIENTE', 0);
         SET @id_pedido = CONVERT(INT, SCOPE_IDENTITY());
 
         -- mapeo id_temp (item) -> id real generado
@@ -1581,7 +1582,8 @@ GO
 -- Termina UN item del pedido (solo si esta EN_PROCESO, es decir con todo a mano).
 CREATE OR ALTER PROCEDURE dbo.sp_ped_terminar_item
     @id_item    INT,
-    @id_usuario INT = NULL
+    @id_usuario INT = NULL,
+    @fecha      DATETIME2 = NULL   -- la fecha la envia la aplicacion
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -1607,14 +1609,15 @@ BEGIN
     -- Si ya no queda ningun item pendiente o en proceso, el pedido queda terminado
     IF NOT EXISTS (SELECT 1 FROM dbo.pedido_item
                    WHERE id_pedido = @id_pedido AND estado IN ('PENDIENTE','EN_PROCESO'))
-        UPDATE dbo.pedidos SET fecha_termino = dbo.fn_hora_peru() WHERE id_pedido = @id_pedido;
+        UPDATE dbo.pedidos SET fecha_termino = ISNULL(@fecha, dbo.fn_hora_peru()) WHERE id_pedido = @id_pedido;
 END
 GO
 
 -- Marca todo el pedido como terminado (entregado/instalado). Es independiente del pago.
 CREATE OR ALTER PROCEDURE dbo.sp_ped_terminar
     @id_pedido  INT,
-    @id_usuario INT = NULL
+    @id_usuario INT = NULL,
+    @fecha      DATETIME2 = NULL   -- la fecha la envia la aplicacion
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -1631,7 +1634,7 @@ BEGIN
     UPDATE dbo.pedido_item SET estado = 'COMPLETADO'
     WHERE id_pedido = @id_pedido AND estado = 'EN_PROCESO';
 
-    UPDATE dbo.pedidos SET fecha_termino = dbo.fn_hora_peru()
+    UPDATE dbo.pedidos SET fecha_termino = ISNULL(@fecha, dbo.fn_hora_peru())
     WHERE id_pedido = @id_pedido;
 END
 GO
@@ -2831,9 +2834,16 @@ IF EXISTS (SELECT 1 FROM sys.columns c
            WHERE t.name = 'inventario_piezas' AND c.name IN ('ancho_cm','alto_cm','largo_cm')
              AND c.scale < 3)
 BEGIN
+    -- idx_piezas_medidas depende de ancho_cm: se quita y se vuelve a crear
+    IF EXISTS (SELECT 1 FROM sys.indexes
+               WHERE name = 'idx_piezas_medidas' AND object_id = OBJECT_ID(N'dbo.inventario_piezas'))
+        DROP INDEX idx_piezas_medidas ON dbo.inventario_piezas;
+
     ALTER TABLE dbo.inventario_piezas ALTER COLUMN ancho_cm DECIMAL(9,3) NULL;
     ALTER TABLE dbo.inventario_piezas ALTER COLUMN alto_cm DECIMAL(9,3) NULL;
     ALTER TABLE dbo.inventario_piezas ALTER COLUMN largo_cm DECIMAL(9,3) NULL;
+
+    CREATE INDEX idx_piezas_medidas ON dbo.inventario_piezas(ancho_cm, alto_cm);
 END
 GO
 
