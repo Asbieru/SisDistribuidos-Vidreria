@@ -21,7 +21,7 @@ Public Class MensajePersonalizado
             btn.ForeColor = p.BotonTexto
             btn.BackColor = p.BotonFondo
         Next
-        chbNMostrar.ForeColor = p.Acento
+        chbNMostrar.ForeColor = p.Texto
     End Sub
 
     Public Sub modoError()

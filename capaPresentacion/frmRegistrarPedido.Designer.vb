@@ -23,19 +23,23 @@ Partial Class frmRegistrarPedido
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Me.tlpCabecera = New System.Windows.Forms.TableLayoutPanel()
-
-        Me.flpAcciones = New System.Windows.Forms.FlowLayoutPanel()
-
         Me.Panel1 = New System.Windows.Forms.Panel()
         Me.Label3 = New System.Windows.Forms.Label()
         Me.btnBuscarCliente = New System.Windows.Forms.Button()
         Me.txtNombreCliente = New System.Windows.Forms.TextBox()
         Me.Label1 = New System.Windows.Forms.Label()
-        Me.cmbPedido = New System.Windows.Forms.ComboBox()
-        Me.Label4 = New System.Windows.Forms.Label()
         Me.Panel2 = New System.Windows.Forms.Panel()
         Me.btnAgregarPedido = New System.Windows.Forms.Button()
         Me.Label2 = New System.Windows.Forms.Label()
+        Me.cmbPedido = New System.Windows.Forms.ComboBox()
+        Me.Label4 = New System.Windows.Forms.Label()
+        Me.flpAcciones = New System.Windows.Forms.FlowLayoutPanel()
+        Me.btnDuplicar = New System.Windows.Forms.Button()
+        Me.btnLimpiar = New System.Windows.Forms.Button()
+        Me.btnEliminar = New System.Windows.Forms.Button()
+        Me.Label20 = New System.Windows.Forms.Label()
+        Me.txtTotalTodo = New System.Windows.Forms.TextBox()
+        Me.btnGuardarPedido = New System.Windows.Forms.Button()
         Me.tabsPedidos = New System.Windows.Forms.TabControl()
         Me.tabModeloVidrio = New System.Windows.Forms.TabPage()
         Me.txtTotal = New System.Windows.Forms.TextBox()
@@ -76,6 +80,10 @@ Partial Class frmRegistrarPedido
         Me.Label16 = New System.Windows.Forms.Label()
         Me.txtTotalVentana = New System.Windows.Forms.TextBox()
         Me.Panel6 = New System.Windows.Forms.Panel()
+        Me.Label46 = New System.Windows.Forms.Label()
+        Me.Label47 = New System.Windows.Forms.Label()
+        Me.Label44 = New System.Windows.Forms.Label()
+        Me.Label45 = New System.Windows.Forms.Label()
         Me.Label27 = New System.Windows.Forms.Label()
         Me.txtCenVentana1 = New System.Windows.Forms.TextBox()
         Me.CheckBox4 = New System.Windows.Forms.CheckBox()
@@ -112,6 +120,7 @@ Partial Class frmRegistrarPedido
         Me.txtPreciomaterialVentana = New System.Windows.Forms.TextBox()
         Me.Label33 = New System.Windows.Forms.Label()
         Me.tabModeloAluminio = New System.Windows.Forms.TabPage()
+        Me.txtTotalAluminio = New System.Windows.Forms.TextBox()
         Me.Panel8 = New System.Windows.Forms.Panel()
         Me.Label48 = New System.Windows.Forms.Label()
         Me.Label49 = New System.Windows.Forms.Label()
@@ -122,22 +131,20 @@ Partial Class frmRegistrarPedido
         Me.Label39 = New System.Windows.Forms.Label()
         Me.Label41 = New System.Windows.Forms.Label()
         Me.btnBuscarAluminio = New System.Windows.Forms.Button()
-        Me.btnDuplicar = New System.Windows.Forms.Button()
-        Me.btnLimpiar = New System.Windows.Forms.Button()
-        Me.btnEliminar = New System.Windows.Forms.Button()
-        Me.btnGuardarPedido = New System.Windows.Forms.Button()
-        Me.Label20 = New System.Windows.Forms.Label()
-        Me.txtTotalTodo = New System.Windows.Forms.TextBox()
-        Me.txtTotalAluminio = New System.Windows.Forms.TextBox()
         Me.Label38 = New System.Windows.Forms.Label()
         Me.txtManoObraAluminio = New System.Windows.Forms.TextBox()
         Me.Label40 = New System.Windows.Forms.Label()
-        Me.txtExtraAluminio = New System.Windows.Forms.TextBox()
-        Me.Label42 = New System.Windows.Forms.Label()
         Me.txtPrecioMaterialesAluminio = New System.Windows.Forms.TextBox()
         Me.Label43 = New System.Windows.Forms.Label()
+        Me.Label42 = New System.Windows.Forms.Label()
+        Me.txtExtraAluminio = New System.Windows.Forms.TextBox()
+        Me.txtAlero = New System.Windows.Forms.TextBox()
+        Me.Label51 = New System.Windows.Forms.Label()
+        Me.Label52 = New System.Windows.Forms.Label()
+        Me.tlpCabecera.SuspendLayout()
         Me.Panel1.SuspendLayout()
         Me.Panel2.SuspendLayout()
+        Me.flpAcciones.SuspendLayout()
         Me.tabsPedidos.SuspendLayout()
         Me.tabModeloVidrio.SuspendLayout()
         Me.Panel5.SuspendLayout()
@@ -150,24 +157,39 @@ Partial Class frmRegistrarPedido
         Me.Panel7.SuspendLayout()
         Me.SuspendLayout()
         '
+        'tlpCabecera
+        '
+        Me.tlpCabecera.ColumnCount = 2
+        Me.tlpCabecera.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
+        Me.tlpCabecera.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
+        Me.tlpCabecera.Controls.Add(Me.Panel1, 0, 0)
+        Me.tlpCabecera.Controls.Add(Me.Panel2, 1, 0)
+        Me.tlpCabecera.Dock = System.Windows.Forms.DockStyle.Top
+        Me.tlpCabecera.Location = New System.Drawing.Point(24, 20)
+        Me.tlpCabecera.Name = "tlpCabecera"
+        Me.tlpCabecera.RowCount = 1
+        Me.tlpCabecera.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20.0!))
+        Me.tlpCabecera.Size = New System.Drawing.Size(912, 120)
+        Me.tlpCabecera.TabIndex = 2
+        '
         'Panel1
         '
         Me.Panel1.Controls.Add(Me.Label3)
         Me.Panel1.Controls.Add(Me.btnBuscarCliente)
         Me.Panel1.Controls.Add(Me.txtNombreCliente)
         Me.Panel1.Controls.Add(Me.Label1)
-        Me.Panel1.Location = New System.Drawing.Point(12, 12)
         Me.Panel1.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.Panel1.Location = New System.Drawing.Point(3, 3)
         Me.Panel1.Name = "Panel1"
-        Me.Panel1.Size = New System.Drawing.Size(363, 99)
+        Me.Panel1.Size = New System.Drawing.Size(450, 114)
         Me.Panel1.TabIndex = 0
         '
         'Label3
         '
         Me.Label3.AutoSize = True
         Me.Label3.BackColor = System.Drawing.Color.Transparent
-        Me.Label3.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
-        Me.Label3.Location = New System.Drawing.Point(6, 33)
+        Me.Label3.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!)
+        Me.Label3.Location = New System.Drawing.Point(8, 37)
         Me.Label3.Name = "Label3"
         Me.Label3.Size = New System.Drawing.Size(56, 16)
         Me.Label3.TabIndex = 0
@@ -175,8 +197,8 @@ Partial Class frmRegistrarPedido
         '
         'btnBuscarCliente
         '
-        Me.btnBuscarCliente.Location = New System.Drawing.Point(95, 68)
-        Me.btnBuscarCliente.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
+        Me.btnBuscarCliente.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Bold)
+        Me.btnBuscarCliente.Location = New System.Drawing.Point(235, 68)
         Me.btnBuscarCliente.Name = "btnBuscarCliente"
         Me.btnBuscarCliente.Size = New System.Drawing.Size(200, 34)
         Me.btnBuscarCliente.TabIndex = 1
@@ -187,9 +209,8 @@ Partial Class frmRegistrarPedido
         '
         Me.txtNombreCliente.Enabled = False
         Me.txtNombreCliente.Location = New System.Drawing.Point(95, 33)
-        Me.txtNombreCliente.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left
         Me.txtNombreCliente.Name = "txtNombreCliente"
-        Me.txtNombreCliente.Size = New System.Drawing.Size(250, 20)
+        Me.txtNombreCliente.Size = New System.Drawing.Size(340, 22)
         Me.txtNombreCliente.TabIndex = 0
         '
         'Label1
@@ -203,44 +224,23 @@ Partial Class frmRegistrarPedido
         Me.Label1.TabIndex = 0
         Me.Label1.Text = "Cliente"
         '
-        'cmbPedido
-        '
-        Me.cmbPedido.FormattingEnabled = True
-        Me.cmbPedido.Items.AddRange(New Object() {"Vidrio", "Ventana"})
-        Me.cmbPedido.Location = New System.Drawing.Point(116, 35)
-        Me.cmbPedido.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left
-        Me.cmbPedido.Name = "cmbPedido"
-        Me.cmbPedido.Size = New System.Drawing.Size(225, 21)
-        Me.cmbPedido.TabIndex = 3
-        '
-        'Label4
-        '
-        Me.Label4.AutoSize = True
-        Me.Label4.BackColor = System.Drawing.Color.Transparent
-        Me.Label4.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
-        Me.Label4.Location = New System.Drawing.Point(9, 37)
-        Me.Label4.Name = "Label4"
-        Me.Label4.Size = New System.Drawing.Size(101, 16)
-        Me.Label4.TabIndex = 2
-        Me.Label4.Text = "Tipo de Pedido"
-        '
         'Panel2
         '
         Me.Panel2.Controls.Add(Me.btnAgregarPedido)
         Me.Panel2.Controls.Add(Me.Label2)
         Me.Panel2.Controls.Add(Me.cmbPedido)
         Me.Panel2.Controls.Add(Me.Label4)
-        Me.Panel2.Location = New System.Drawing.Point(381, 12)
         Me.Panel2.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.Panel2.Location = New System.Drawing.Point(459, 3)
         Me.Panel2.Name = "Panel2"
-        Me.Panel2.Size = New System.Drawing.Size(412, 99)
+        Me.Panel2.Size = New System.Drawing.Size(450, 114)
         Me.Panel2.TabIndex = 0
         '
         'btnAgregarPedido
         '
-        Me.btnAgregarPedido.Location = New System.Drawing.Point(284, 68)
-        Me.btnAgregarPedido.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
-        Me.btnAgregarPedido.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right
+        Me.btnAgregarPedido.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.btnAgregarPedido.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Bold)
+        Me.btnAgregarPedido.Location = New System.Drawing.Point(322, 68)
         Me.btnAgregarPedido.Name = "btnAgregarPedido"
         Me.btnAgregarPedido.Size = New System.Drawing.Size(112, 34)
         Me.btnAgregarPedido.TabIndex = 4
@@ -258,22 +258,127 @@ Partial Class frmRegistrarPedido
         Me.Label2.TabIndex = 0
         Me.Label2.Text = "Pedido"
         '
+        'cmbPedido
+        '
+        Me.cmbPedido.FormattingEnabled = True
+        Me.cmbPedido.Items.AddRange(New Object() {"Vidrio", "Ventana"})
+        Me.cmbPedido.Location = New System.Drawing.Point(116, 35)
+        Me.cmbPedido.Name = "cmbPedido"
+        Me.cmbPedido.Size = New System.Drawing.Size(318, 24)
+        Me.cmbPedido.TabIndex = 3
+        '
+        'Label4
+        '
+        Me.Label4.AutoSize = True
+        Me.Label4.BackColor = System.Drawing.Color.Transparent
+        Me.Label4.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!)
+        Me.Label4.Location = New System.Drawing.Point(9, 37)
+        Me.Label4.Name = "Label4"
+        Me.Label4.Size = New System.Drawing.Size(101, 16)
+        Me.Label4.TabIndex = 2
+        Me.Label4.Text = "Tipo de Pedido"
+        '
+        'flpAcciones
+        '
+        Me.flpAcciones.AutoSize = True
+        Me.flpAcciones.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+        Me.flpAcciones.Controls.Add(Me.btnDuplicar)
+        Me.flpAcciones.Controls.Add(Me.btnLimpiar)
+        Me.flpAcciones.Controls.Add(Me.btnEliminar)
+        Me.flpAcciones.Controls.Add(Me.Label20)
+        Me.flpAcciones.Controls.Add(Me.txtTotalTodo)
+        Me.flpAcciones.Controls.Add(Me.btnGuardarPedido)
+        Me.flpAcciones.Dock = System.Windows.Forms.DockStyle.Bottom
+        Me.flpAcciones.Location = New System.Drawing.Point(24, 574)
+        Me.flpAcciones.Name = "flpAcciones"
+        Me.flpAcciones.Padding = New System.Windows.Forms.Padding(0, 8, 0, 0)
+        Me.flpAcciones.Size = New System.Drawing.Size(912, 50)
+        Me.flpAcciones.TabIndex = 0
+        '
+        'btnDuplicar
+        '
+        Me.btnDuplicar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Bold)
+        Me.btnDuplicar.Location = New System.Drawing.Point(0, 8)
+        Me.btnDuplicar.Margin = New System.Windows.Forms.Padding(0, 0, 8, 8)
+        Me.btnDuplicar.Name = "btnDuplicar"
+        Me.btnDuplicar.Size = New System.Drawing.Size(120, 34)
+        Me.btnDuplicar.TabIndex = 20
+        Me.btnDuplicar.Text = "Duplicar"
+        Me.btnDuplicar.UseVisualStyleBackColor = True
+        '
+        'btnLimpiar
+        '
+        Me.btnLimpiar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Bold)
+        Me.btnLimpiar.Location = New System.Drawing.Point(128, 8)
+        Me.btnLimpiar.Margin = New System.Windows.Forms.Padding(0, 0, 8, 8)
+        Me.btnLimpiar.Name = "btnLimpiar"
+        Me.btnLimpiar.Size = New System.Drawing.Size(120, 34)
+        Me.btnLimpiar.TabIndex = 19
+        Me.btnLimpiar.Text = "Limpiar"
+        Me.btnLimpiar.UseVisualStyleBackColor = True
+        '
+        'btnEliminar
+        '
+        Me.btnEliminar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Bold)
+        Me.btnEliminar.Location = New System.Drawing.Point(256, 8)
+        Me.btnEliminar.Margin = New System.Windows.Forms.Padding(0, 0, 8, 8)
+        Me.btnEliminar.Name = "btnEliminar"
+        Me.btnEliminar.Size = New System.Drawing.Size(120, 34)
+        Me.btnEliminar.TabIndex = 18
+        Me.btnEliminar.Text = "Eliminar"
+        Me.btnEliminar.UseVisualStyleBackColor = True
+        '
+        'Label20
+        '
+        Me.Label20.AutoSize = True
+        Me.Label20.BackColor = System.Drawing.Color.Transparent
+        Me.Label20.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!)
+        Me.Label20.Location = New System.Drawing.Point(384, 8)
+        Me.Label20.Margin = New System.Windows.Forms.Padding(0, 0, 8, 8)
+        Me.Label20.Name = "Label20"
+        Me.Label20.Size = New System.Drawing.Size(68, 16)
+        Me.Label20.TabIndex = 18
+        Me.Label20.Text = "Total (S/.):"
+        '
+        'txtTotalTodo
+        '
+        Me.txtTotalTodo.Enabled = False
+        Me.txtTotalTodo.Location = New System.Drawing.Point(460, 8)
+        Me.txtTotalTodo.Margin = New System.Windows.Forms.Padding(0, 0, 8, 8)
+        Me.txtTotalTodo.Name = "txtTotalTodo"
+        Me.txtTotalTodo.Size = New System.Drawing.Size(140, 22)
+        Me.txtTotalTodo.TabIndex = 18
+        Me.txtTotalTodo.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
+        '
+        'btnGuardarPedido
+        '
+        Me.btnGuardarPedido.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Bold)
+        Me.btnGuardarPedido.Location = New System.Drawing.Point(608, 8)
+        Me.btnGuardarPedido.Margin = New System.Windows.Forms.Padding(0, 0, 8, 8)
+        Me.btnGuardarPedido.Name = "btnGuardarPedido"
+        Me.btnGuardarPedido.Size = New System.Drawing.Size(190, 34)
+        Me.btnGuardarPedido.TabIndex = 0
+        Me.btnGuardarPedido.Text = "Guarda todo el Pedido"
+        Me.btnGuardarPedido.UseVisualStyleBackColor = True
+        '
         'tabsPedidos
         '
         Me.tabsPedidos.Controls.Add(Me.tabModeloVidrio)
         Me.tabsPedidos.Controls.Add(Me.tabModeloVentana)
         Me.tabsPedidos.Controls.Add(Me.tabModeloAluminio)
-        Me.tabsPedidos.Location = New System.Drawing.Point(12, 117)
         Me.tabsPedidos.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.tabsPedidos.Padding = New System.Drawing.Point(12, 6)
-        Me.tabsPedidos.ShowToolTips = True
+        Me.tabsPedidos.Location = New System.Drawing.Point(24, 140)
         Me.tabsPedidos.Name = "tabsPedidos"
+        Me.tabsPedidos.Padding = New System.Drawing.Point(12, 6)
         Me.tabsPedidos.SelectedIndex = 0
-        Me.tabsPedidos.Size = New System.Drawing.Size(781, 375)
+        Me.tabsPedidos.ShowToolTips = True
+        Me.tabsPedidos.Size = New System.Drawing.Size(912, 434)
         Me.tabsPedidos.TabIndex = 0
         '
         'tabModeloVidrio
         '
+        Me.tabModeloVidrio.AutoScroll = True
+        Me.tabModeloVidrio.AutoScrollMinSize = New System.Drawing.Size(780, 370)
         Me.tabModeloVidrio.Controls.Add(Me.txtTotal)
         Me.tabModeloVidrio.Controls.Add(Me.Label10)
         Me.tabModeloVidrio.Controls.Add(Me.txtManoObra)
@@ -284,12 +389,10 @@ Partial Class frmRegistrarPedido
         Me.tabModeloVidrio.Controls.Add(Me.Label19)
         Me.tabModeloVidrio.Controls.Add(Me.Panel5)
         Me.tabModeloVidrio.Controls.Add(Me.Panel4)
-        Me.tabModeloVidrio.Location = New System.Drawing.Point(4, 22)
-        Me.tabModeloVidrio.AutoScroll = True
-        Me.tabModeloVidrio.AutoScrollMinSize = New System.Drawing.Size(780, 370)
+        Me.tabModeloVidrio.Location = New System.Drawing.Point(4, 31)
         Me.tabModeloVidrio.Name = "tabModeloVidrio"
         Me.tabModeloVidrio.Padding = New System.Windows.Forms.Padding(3)
-        Me.tabModeloVidrio.Size = New System.Drawing.Size(773, 349)
+        Me.tabModeloVidrio.Size = New System.Drawing.Size(904, 399)
         Me.tabModeloVidrio.TabIndex = 0
         Me.tabModeloVidrio.Text = "Modelo Vidrio"
         Me.tabModeloVidrio.UseVisualStyleBackColor = True
@@ -297,9 +400,9 @@ Partial Class frmRegistrarPedido
         'txtTotal
         '
         Me.txtTotal.Enabled = False
-        Me.txtTotal.Location = New System.Drawing.Point(562, 302)
+        Me.txtTotal.Location = New System.Drawing.Point(636, 321)
         Me.txtTotal.Name = "txtTotal"
-        Me.txtTotal.Size = New System.Drawing.Size(200, 20)
+        Me.txtTotal.Size = New System.Drawing.Size(230, 22)
         Me.txtTotal.TabIndex = 10
         Me.txtTotal.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
@@ -307,8 +410,8 @@ Partial Class frmRegistrarPedido
         '
         Me.Label10.AutoSize = True
         Me.Label10.BackColor = System.Drawing.Color.Transparent
-        Me.Label10.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
-        Me.Label10.Location = New System.Drawing.Point(488, 303)
+        Me.Label10.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!)
+        Me.Label10.Location = New System.Drawing.Point(562, 322)
         Me.Label10.Name = "Label10"
         Me.Label10.Size = New System.Drawing.Size(68, 16)
         Me.Label10.TabIndex = 0
@@ -316,17 +419,17 @@ Partial Class frmRegistrarPedido
         '
         'txtManoObra
         '
-        Me.txtManoObra.Location = New System.Drawing.Point(562, 276)
+        Me.txtManoObra.Location = New System.Drawing.Point(636, 295)
         Me.txtManoObra.Name = "txtManoObra"
-        Me.txtManoObra.Size = New System.Drawing.Size(200, 20)
+        Me.txtManoObra.Size = New System.Drawing.Size(230, 22)
         Me.txtManoObra.TabIndex = 17
         '
         'Label17
         '
         Me.Label17.AutoSize = True
         Me.Label17.BackColor = System.Drawing.Color.Transparent
-        Me.Label17.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
-        Me.Label17.Location = New System.Drawing.Point(435, 279)
+        Me.Label17.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!)
+        Me.Label17.Location = New System.Drawing.Point(509, 298)
         Me.Label17.Name = "Label17"
         Me.Label17.Size = New System.Drawing.Size(121, 16)
         Me.Label17.TabIndex = 0
@@ -334,17 +437,17 @@ Partial Class frmRegistrarPedido
         '
         'txtExtra
         '
-        Me.txtExtra.Location = New System.Drawing.Point(201, 274)
+        Me.txtExtra.Location = New System.Drawing.Point(209, 298)
         Me.txtExtra.Name = "txtExtra"
-        Me.txtExtra.Size = New System.Drawing.Size(200, 20)
+        Me.txtExtra.Size = New System.Drawing.Size(264, 22)
         Me.txtExtra.TabIndex = 16
         '
         'Label18
         '
         Me.Label18.AutoSize = True
         Me.Label18.BackColor = System.Drawing.Color.Transparent
-        Me.Label18.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
-        Me.Label18.Location = New System.Drawing.Point(121, 276)
+        Me.Label18.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!)
+        Me.Label18.Location = New System.Drawing.Point(129, 300)
         Me.Label18.Name = "Label18"
         Me.Label18.Size = New System.Drawing.Size(74, 16)
         Me.Label18.TabIndex = 0
@@ -353,17 +456,17 @@ Partial Class frmRegistrarPedido
         'txtPreciomaterial
         '
         Me.txtPreciomaterial.Enabled = False
-        Me.txtPreciomaterial.Location = New System.Drawing.Point(201, 302)
+        Me.txtPreciomaterial.Location = New System.Drawing.Point(209, 326)
         Me.txtPreciomaterial.Name = "txtPreciomaterial"
-        Me.txtPreciomaterial.Size = New System.Drawing.Size(200, 20)
+        Me.txtPreciomaterial.Size = New System.Drawing.Size(264, 22)
         Me.txtPreciomaterial.TabIndex = 14
         '
         'Label19
         '
         Me.Label19.AutoSize = True
         Me.Label19.BackColor = System.Drawing.Color.Transparent
-        Me.Label19.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
-        Me.Label19.Location = New System.Drawing.Point(13, 303)
+        Me.Label19.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!)
+        Me.Label19.Location = New System.Drawing.Point(21, 327)
         Me.Label19.Name = "Label19"
         Me.Label19.Size = New System.Drawing.Size(182, 16)
         Me.Label19.TabIndex = 0
@@ -371,6 +474,8 @@ Partial Class frmRegistrarPedido
         '
         'Panel5
         '
+        Me.Panel5.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Panel5.BackColor = System.Drawing.Color.White
         Me.Panel5.Controls.Add(Me.lbl6)
         Me.Panel5.Controls.Add(Me.lbl3)
@@ -389,17 +494,16 @@ Partial Class frmRegistrarPedido
         Me.Panel5.Controls.Add(Me.Label13)
         Me.Panel5.Controls.Add(Me.txtAncho)
         Me.Panel5.Controls.Add(Me.Label14)
-        Me.Panel5.Location = New System.Drawing.Point(6, 112)
-        Me.Panel5.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right
+        Me.Panel5.Location = New System.Drawing.Point(14, 125)
         Me.Panel5.Name = "Panel5"
-        Me.Panel5.Size = New System.Drawing.Size(756, 138)
+        Me.Panel5.Size = New System.Drawing.Size(874, 138)
         Me.Panel5.TabIndex = 0
         '
         'lbl6
         '
         Me.lbl6.AutoSize = True
         Me.lbl6.BackColor = System.Drawing.Color.Transparent
-        Me.lbl6.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
+        Me.lbl6.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!)
         Me.lbl6.Location = New System.Drawing.Point(439, 91)
         Me.lbl6.Name = "lbl6"
         Me.lbl6.Size = New System.Drawing.Size(62, 16)
@@ -410,7 +514,7 @@ Partial Class frmRegistrarPedido
         '
         Me.lbl3.AutoSize = True
         Me.lbl3.BackColor = System.Drawing.Color.Transparent
-        Me.lbl3.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
+        Me.lbl3.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!)
         Me.lbl3.Location = New System.Drawing.Point(455, 44)
         Me.lbl3.Name = "lbl3"
         Me.lbl3.Size = New System.Drawing.Size(43, 16)
@@ -421,7 +525,7 @@ Partial Class frmRegistrarPedido
         '
         Me.lbl5.AutoSize = True
         Me.lbl5.BackColor = System.Drawing.Color.Transparent
-        Me.lbl5.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
+        Me.lbl5.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!)
         Me.lbl5.Location = New System.Drawing.Point(131, 91)
         Me.lbl5.Name = "lbl5"
         Me.lbl5.Size = New System.Drawing.Size(59, 16)
@@ -432,7 +536,7 @@ Partial Class frmRegistrarPedido
         '
         Me.lbl1.AutoSize = True
         Me.lbl1.BackColor = System.Drawing.Color.Transparent
-        Me.lbl1.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
+        Me.lbl1.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!)
         Me.lbl1.Location = New System.Drawing.Point(147, 45)
         Me.lbl1.Name = "lbl1"
         Me.lbl1.Size = New System.Drawing.Size(43, 16)
@@ -444,7 +548,7 @@ Partial Class frmRegistrarPedido
         Me.chbAlto.AutoSize = True
         Me.chbAlto.Location = New System.Drawing.Point(10, 107)
         Me.chbAlto.Name = "chbAlto"
-        Me.chbAlto.Size = New System.Drawing.Size(74, 17)
+        Me.chbAlto.Size = New System.Drawing.Size(89, 20)
         Me.chbAlto.TabIndex = 0
         Me.chbAlto.Text = "2 medidas"
         Me.chbAlto.UseVisualStyleBackColor = True
@@ -454,7 +558,7 @@ Partial Class frmRegistrarPedido
         Me.chbAncho.AutoSize = True
         Me.chbAncho.Location = New System.Drawing.Point(10, 61)
         Me.chbAncho.Name = "chbAncho"
-        Me.chbAncho.Size = New System.Drawing.Size(74, 17)
+        Me.chbAncho.Size = New System.Drawing.Size(89, 20)
         Me.chbAncho.TabIndex = 0
         Me.chbAncho.Text = "2 medidas"
         Me.chbAncho.UseVisualStyleBackColor = True
@@ -463,7 +567,7 @@ Partial Class frmRegistrarPedido
         '
         Me.lbl7.AutoSize = True
         Me.lbl7.BackColor = System.Drawing.Color.Transparent
-        Me.lbl7.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
+        Me.lbl7.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!)
         Me.lbl7.Location = New System.Drawing.Point(710, 90)
         Me.lbl7.Name = "lbl7"
         Me.lbl7.Size = New System.Drawing.Size(28, 16)
@@ -474,14 +578,14 @@ Partial Class frmRegistrarPedido
         '
         Me.txtAlto2.Location = New System.Drawing.Point(504, 89)
         Me.txtAlto2.Name = "txtAlto2"
-        Me.txtAlto2.Size = New System.Drawing.Size(200, 20)
+        Me.txtAlto2.Size = New System.Drawing.Size(200, 22)
         Me.txtAlto2.TabIndex = 11
         '
         'lbl4
         '
         Me.lbl4.AutoSize = True
         Me.lbl4.BackColor = System.Drawing.Color.Transparent
-        Me.lbl4.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
+        Me.lbl4.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!)
         Me.lbl4.Location = New System.Drawing.Point(710, 43)
         Me.lbl4.Name = "lbl4"
         Me.lbl4.Size = New System.Drawing.Size(28, 16)
@@ -492,14 +596,14 @@ Partial Class frmRegistrarPedido
         '
         Me.txtAncho2.Location = New System.Drawing.Point(504, 43)
         Me.txtAncho2.Name = "txtAncho2"
-        Me.txtAncho2.Size = New System.Drawing.Size(200, 20)
+        Me.txtAncho2.Size = New System.Drawing.Size(200, 22)
         Me.txtAncho2.TabIndex = 10
         '
         'Label11
         '
         Me.Label11.AutoSize = True
         Me.Label11.BackColor = System.Drawing.Color.Transparent
-        Me.Label11.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
+        Me.Label11.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!)
         Me.Label11.Location = New System.Drawing.Point(401, 91)
         Me.Label11.Name = "Label11"
         Me.Label11.Size = New System.Drawing.Size(28, 16)
@@ -510,7 +614,7 @@ Partial Class frmRegistrarPedido
         '
         Me.Label12.AutoSize = True
         Me.Label12.BackColor = System.Drawing.Color.Transparent
-        Me.Label12.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
+        Me.Label12.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!)
         Me.Label12.Location = New System.Drawing.Point(7, 88)
         Me.Label12.Name = "Label12"
         Me.Label12.Size = New System.Drawing.Size(96, 16)
@@ -521,14 +625,14 @@ Partial Class frmRegistrarPedido
         '
         Me.txtAlto.Location = New System.Drawing.Point(195, 90)
         Me.txtAlto.Name = "txtAlto"
-        Me.txtAlto.Size = New System.Drawing.Size(200, 20)
+        Me.txtAlto.Size = New System.Drawing.Size(200, 22)
         Me.txtAlto.TabIndex = 7
         '
         'lbl2
         '
         Me.lbl2.AutoSize = True
         Me.lbl2.BackColor = System.Drawing.Color.Transparent
-        Me.lbl2.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
+        Me.lbl2.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!)
         Me.lbl2.Location = New System.Drawing.Point(401, 44)
         Me.lbl2.Name = "lbl2"
         Me.lbl2.Size = New System.Drawing.Size(28, 16)
@@ -539,7 +643,7 @@ Partial Class frmRegistrarPedido
         '
         Me.Label13.AutoSize = True
         Me.Label13.BackColor = System.Drawing.Color.Transparent
-        Me.Label13.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
+        Me.Label13.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!)
         Me.Label13.Location = New System.Drawing.Point(7, 42)
         Me.Label13.Name = "Label13"
         Me.Label13.Size = New System.Drawing.Size(111, 16)
@@ -550,7 +654,7 @@ Partial Class frmRegistrarPedido
         '
         Me.txtAncho.Location = New System.Drawing.Point(195, 44)
         Me.txtAncho.Name = "txtAncho"
-        Me.txtAncho.Size = New System.Drawing.Size(200, 20)
+        Me.txtAncho.Size = New System.Drawing.Size(200, 22)
         Me.txtAncho.TabIndex = 6
         '
         'Label14
@@ -566,6 +670,8 @@ Partial Class frmRegistrarPedido
         '
         'Panel4
         '
+        Me.Panel4.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Panel4.BackColor = System.Drawing.Color.Transparent
         Me.Panel4.Controls.Add(Me.Label15)
         Me.Panel4.Controls.Add(Me.txtNombreVidrio)
@@ -574,17 +680,16 @@ Partial Class frmRegistrarPedido
         Me.Panel4.Controls.Add(Me.Label9)
         Me.Panel4.Controls.Add(Me.Label7)
         Me.Panel4.Controls.Add(Me.Label8)
-        Me.Panel4.Location = New System.Drawing.Point(6, 6)
-        Me.Panel4.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right
+        Me.Panel4.Location = New System.Drawing.Point(14, 11)
         Me.Panel4.Name = "Panel4"
-        Me.Panel4.Size = New System.Drawing.Size(756, 100)
+        Me.Panel4.Size = New System.Drawing.Size(874, 100)
         Me.Panel4.TabIndex = 0
         '
         'Label15
         '
         Me.Label15.AutoSize = True
         Me.Label15.BackColor = System.Drawing.Color.Transparent
-        Me.Label15.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
+        Me.Label15.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!)
         Me.Label15.Location = New System.Drawing.Point(13, 40)
         Me.Label15.Name = "Label15"
         Me.Label15.Size = New System.Drawing.Size(113, 16)
@@ -596,13 +701,13 @@ Partial Class frmRegistrarPedido
         Me.txtNombreVidrio.Enabled = False
         Me.txtNombreVidrio.Location = New System.Drawing.Point(134, 39)
         Me.txtNombreVidrio.Name = "txtNombreVidrio"
-        Me.txtNombreVidrio.Size = New System.Drawing.Size(308, 20)
+        Me.txtNombreVidrio.Size = New System.Drawing.Size(325, 22)
         Me.txtNombreVidrio.TabIndex = 2
         '
         'btnSelectVidrio
         '
-        Me.btnSelectVidrio.Location = New System.Drawing.Point(458, 36)
-        Me.btnSelectVidrio.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
+        Me.btnSelectVidrio.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Bold)
+        Me.btnSelectVidrio.Location = New System.Drawing.Point(479, 32)
         Me.btnSelectVidrio.Name = "btnSelectVidrio"
         Me.btnSelectVidrio.Size = New System.Drawing.Size(160, 34)
         Me.btnSelectVidrio.TabIndex = 2
@@ -614,15 +719,15 @@ Partial Class frmRegistrarPedido
         Me.txtEspesor.FormattingEnabled = True
         Me.txtEspesor.Location = New System.Drawing.Point(134, 65)
         Me.txtEspesor.Name = "txtEspesor"
-        Me.txtEspesor.Size = New System.Drawing.Size(100, 21)
+        Me.txtEspesor.Size = New System.Drawing.Size(174, 24)
         Me.txtEspesor.TabIndex = 8
         '
         'Label9
         '
         Me.Label9.AutoSize = True
         Me.Label9.BackColor = System.Drawing.Color.Transparent
-        Me.Label9.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
-        Me.Label9.Location = New System.Drawing.Point(240, 68)
+        Me.Label9.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!)
+        Me.Label9.Location = New System.Drawing.Point(314, 69)
         Me.Label9.Name = "Label9"
         Me.Label9.Size = New System.Drawing.Size(35, 16)
         Me.Label9.TabIndex = 0
@@ -632,7 +737,7 @@ Partial Class frmRegistrarPedido
         '
         Me.Label7.AutoSize = True
         Me.Label7.BackColor = System.Drawing.Color.Transparent
-        Me.Label7.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
+        Me.Label7.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!)
         Me.Label7.Location = New System.Drawing.Point(13, 69)
         Me.Label7.Name = "Label7"
         Me.Label7.Size = New System.Drawing.Size(115, 16)
@@ -652,7 +757,8 @@ Partial Class frmRegistrarPedido
         '
         'tabModeloVentana
         '
-        Me.tabModeloVentana.Controls.Add(Me.Label16)
+        Me.tabModeloVentana.AutoScroll = True
+        Me.tabModeloVentana.AutoScrollMinSize = New System.Drawing.Size(780, 370)
         Me.tabModeloVentana.Controls.Add(Me.txtTotalVentana)
         Me.tabModeloVentana.Controls.Add(Me.Panel6)
         Me.tabModeloVentana.Controls.Add(Me.txtNombreVidrioVentana)
@@ -664,12 +770,10 @@ Partial Class frmRegistrarPedido
         Me.tabModeloVentana.Controls.Add(Me.txtExtraVentana)
         Me.tabModeloVentana.Controls.Add(Me.txtPreciomaterialVentana)
         Me.tabModeloVentana.Controls.Add(Me.Label33)
-        Me.tabModeloVentana.Location = New System.Drawing.Point(4, 22)
-        Me.tabModeloVentana.AutoScroll = True
-        Me.tabModeloVentana.AutoScrollMinSize = New System.Drawing.Size(780, 370)
+        Me.tabModeloVentana.Location = New System.Drawing.Point(4, 31)
         Me.tabModeloVentana.Name = "tabModeloVentana"
         Me.tabModeloVentana.Padding = New System.Windows.Forms.Padding(3)
-        Me.tabModeloVentana.Size = New System.Drawing.Size(773, 349)
+        Me.tabModeloVentana.Size = New System.Drawing.Size(904, 399)
         Me.tabModeloVentana.TabIndex = 1
         Me.tabModeloVentana.Text = "Modelo Ventana"
         Me.tabModeloVentana.UseVisualStyleBackColor = True
@@ -678,8 +782,8 @@ Partial Class frmRegistrarPedido
         '
         Me.Label16.AutoSize = True
         Me.Label16.BackColor = System.Drawing.Color.Transparent
-        Me.Label16.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
-        Me.Label16.Location = New System.Drawing.Point(13, 69)
+        Me.Label16.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!)
+        Me.Label16.Location = New System.Drawing.Point(5, 68)
         Me.Label16.Name = "Label16"
         Me.Label16.Size = New System.Drawing.Size(113, 16)
         Me.Label16.TabIndex = 12
@@ -688,15 +792,21 @@ Partial Class frmRegistrarPedido
         'txtTotalVentana
         '
         Me.txtTotalVentana.Enabled = False
-        Me.txtTotalVentana.Location = New System.Drawing.Point(562, 319)
+        Me.txtTotalVentana.Location = New System.Drawing.Point(588, 343)
         Me.txtTotalVentana.Name = "txtTotalVentana"
-        Me.txtTotalVentana.Size = New System.Drawing.Size(200, 20)
+        Me.txtTotalVentana.Size = New System.Drawing.Size(275, 22)
         Me.txtTotalVentana.TabIndex = 22
         Me.txtTotalVentana.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
         'Panel6
         '
+        Me.Panel6.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Panel6.BackColor = System.Drawing.Color.White
+        Me.Panel6.Controls.Add(Me.Label46)
+        Me.Panel6.Controls.Add(Me.Label47)
+        Me.Panel6.Controls.Add(Me.Label44)
+        Me.Panel6.Controls.Add(Me.Label45)
         Me.Panel6.Controls.Add(Me.Label27)
         Me.Panel6.Controls.Add(Me.txtCenVentana1)
         Me.Panel6.Controls.Add(Me.CheckBox4)
@@ -716,18 +826,61 @@ Partial Class frmRegistrarPedido
         Me.Panel6.Controls.Add(Me.Label30)
         Me.Panel6.Controls.Add(Me.txtArrVentana)
         Me.Panel6.Controls.Add(Me.Label31)
-        Me.Panel6.Location = New System.Drawing.Point(6, 112)
-        Me.Panel6.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right
+        Me.Panel6.Location = New System.Drawing.Point(13, 130)
         Me.Panel6.Name = "Panel6"
-        Me.Panel6.Size = New System.Drawing.Size(756, 165)
+        Me.Panel6.Size = New System.Drawing.Size(874, 165)
         Me.Panel6.TabIndex = 12
+        '
+        'Label46
+        '
+        Me.Label46.AutoSize = True
+        Me.Label46.BackColor = System.Drawing.Color.Transparent
+        Me.Label46.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!)
+        Me.Label46.Location = New System.Drawing.Point(585, 107)
+        Me.Label46.Name = "Label46"
+        Me.Label46.Size = New System.Drawing.Size(28, 16)
+        Me.Label46.TabIndex = 20
+        Me.Label46.Text = "cm."
+        '
+        'Label47
+        '
+        Me.Label47.AutoSize = True
+        Me.Label47.BackColor = System.Drawing.Color.Transparent
+        Me.Label47.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!)
+        Me.Label47.Location = New System.Drawing.Point(585, 51)
+        Me.Label47.Name = "Label47"
+        Me.Label47.Size = New System.Drawing.Size(28, 16)
+        Me.Label47.TabIndex = 21
+        Me.Label47.Text = "cm."
+        '
+        'Label44
+        '
+        Me.Label44.AutoSize = True
+        Me.Label44.BackColor = System.Drawing.Color.Transparent
+        Me.Label44.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!)
+        Me.Label44.Location = New System.Drawing.Point(327, 107)
+        Me.Label44.Name = "Label44"
+        Me.Label44.Size = New System.Drawing.Size(28, 16)
+        Me.Label44.TabIndex = 18
+        Me.Label44.Text = "cm."
+        '
+        'Label45
+        '
+        Me.Label45.AutoSize = True
+        Me.Label45.BackColor = System.Drawing.Color.Transparent
+        Me.Label45.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!)
+        Me.Label45.Location = New System.Drawing.Point(327, 48)
+        Me.Label45.Name = "Label45"
+        Me.Label45.Size = New System.Drawing.Size(28, 16)
+        Me.Label45.TabIndex = 19
+        Me.Label45.Text = "cm."
         '
         'Label27
         '
         Me.Label27.AutoSize = True
         Me.Label27.BackColor = System.Drawing.Color.Transparent
-        Me.Label27.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
-        Me.Label27.Location = New System.Drawing.Point(328, 46)
+        Me.Label27.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!)
+        Me.Label27.Location = New System.Drawing.Point(382, 49)
         Me.Label27.Name = "Label27"
         Me.Label27.Size = New System.Drawing.Size(46, 16)
         Me.Label27.TabIndex = 17
@@ -735,9 +888,9 @@ Partial Class frmRegistrarPedido
         '
         'txtCenVentana1
         '
-        Me.txtCenVentana1.Location = New System.Drawing.Point(380, 45)
+        Me.txtCenVentana1.Location = New System.Drawing.Point(434, 47)
         Me.txtCenVentana1.Name = "txtCenVentana1"
-        Me.txtCenVentana1.Size = New System.Drawing.Size(126, 20)
+        Me.txtCenVentana1.Size = New System.Drawing.Size(145, 22)
         Me.txtCenVentana1.TabIndex = 16
         '
         'CheckBox4
@@ -745,7 +898,7 @@ Partial Class frmRegistrarPedido
         Me.CheckBox4.AutoSize = True
         Me.CheckBox4.Location = New System.Drawing.Point(14, 134)
         Me.CheckBox4.Name = "CheckBox4"
-        Me.CheckBox4.Size = New System.Drawing.Size(74, 17)
+        Me.CheckBox4.Size = New System.Drawing.Size(89, 20)
         Me.CheckBox4.TabIndex = 15
         Me.CheckBox4.Text = "3 medidas"
         Me.CheckBox4.UseVisualStyleBackColor = True
@@ -755,7 +908,7 @@ Partial Class frmRegistrarPedido
         Me.CheckBox3.AutoSize = True
         Me.CheckBox3.Location = New System.Drawing.Point(13, 70)
         Me.CheckBox3.Name = "CheckBox3"
-        Me.CheckBox3.Size = New System.Drawing.Size(74, 17)
+        Me.CheckBox3.Size = New System.Drawing.Size(89, 20)
         Me.CheckBox3.TabIndex = 14
         Me.CheckBox3.Text = "3 medidas"
         Me.CheckBox3.UseVisualStyleBackColor = True
@@ -764,8 +917,8 @@ Partial Class frmRegistrarPedido
         '
         Me.Label36.AutoSize = True
         Me.Label36.BackColor = System.Drawing.Color.Transparent
-        Me.Label36.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
-        Me.Label36.Location = New System.Drawing.Point(327, 106)
+        Me.Label36.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!)
+        Me.Label36.Location = New System.Drawing.Point(381, 109)
         Me.Label36.Name = "Label36"
         Me.Label36.Size = New System.Drawing.Size(46, 16)
         Me.Label36.TabIndex = 0
@@ -773,17 +926,17 @@ Partial Class frmRegistrarPedido
         '
         'txtCenVentana2
         '
-        Me.txtCenVentana2.Location = New System.Drawing.Point(376, 104)
+        Me.txtCenVentana2.Location = New System.Drawing.Point(434, 106)
         Me.txtCenVentana2.Name = "txtCenVentana2"
-        Me.txtCenVentana2.Size = New System.Drawing.Size(126, 20)
+        Me.txtCenVentana2.Size = New System.Drawing.Size(145, 22)
         Me.txtCenVentana2.TabIndex = 13
         '
         'Label21
         '
         Me.Label21.AutoSize = True
         Me.Label21.BackColor = System.Drawing.Color.Transparent
-        Me.Label21.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
-        Me.Label21.Location = New System.Drawing.Point(511, 105)
+        Me.Label21.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!)
+        Me.Label21.Location = New System.Drawing.Point(631, 106)
         Me.Label21.Name = "Label21"
         Me.Label21.Size = New System.Drawing.Size(62, 16)
         Me.Label21.TabIndex = 0
@@ -793,8 +946,8 @@ Partial Class frmRegistrarPedido
         '
         Me.Label22.AutoSize = True
         Me.Label22.BackColor = System.Drawing.Color.Transparent
-        Me.Label22.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
-        Me.Label22.Location = New System.Drawing.Point(529, 45)
+        Me.Label22.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!)
+        Me.Label22.Location = New System.Drawing.Point(649, 46)
         Me.Label22.Name = "Label22"
         Me.Label22.Size = New System.Drawing.Size(43, 16)
         Me.Label22.TabIndex = 0
@@ -804,7 +957,7 @@ Partial Class frmRegistrarPedido
         '
         Me.Label23.AutoSize = True
         Me.Label23.BackColor = System.Drawing.Color.Transparent
-        Me.Label23.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
+        Me.Label23.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!)
         Me.Label23.Location = New System.Drawing.Point(122, 107)
         Me.Label23.Name = "Label23"
         Me.Label23.Size = New System.Drawing.Size(59, 16)
@@ -815,7 +968,7 @@ Partial Class frmRegistrarPedido
         '
         Me.Label24.AutoSize = True
         Me.Label24.BackColor = System.Drawing.Color.Transparent
-        Me.Label24.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
+        Me.Label24.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!)
         Me.Label24.Location = New System.Drawing.Point(136, 46)
         Me.Label24.Name = "Label24"
         Me.Label24.Size = New System.Drawing.Size(43, 16)
@@ -826,8 +979,8 @@ Partial Class frmRegistrarPedido
         '
         Me.Label25.AutoSize = True
         Me.Label25.BackColor = System.Drawing.Color.Transparent
-        Me.Label25.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
-        Me.Label25.Location = New System.Drawing.Point(710, 104)
+        Me.Label25.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!)
+        Me.Label25.Location = New System.Drawing.Point(830, 105)
         Me.Label25.Name = "Label25"
         Me.Label25.Size = New System.Drawing.Size(28, 16)
         Me.Label25.TabIndex = 0
@@ -835,17 +988,17 @@ Partial Class frmRegistrarPedido
         '
         'txtIzqVentana
         '
-        Me.txtIzqVentana.Location = New System.Drawing.Point(578, 104)
+        Me.txtIzqVentana.Location = New System.Drawing.Point(698, 105)
         Me.txtIzqVentana.Name = "txtIzqVentana"
-        Me.txtIzqVentana.Size = New System.Drawing.Size(126, 20)
+        Me.txtIzqVentana.Size = New System.Drawing.Size(126, 22)
         Me.txtIzqVentana.TabIndex = 11
         '
         'Label26
         '
         Me.Label26.AutoSize = True
         Me.Label26.BackColor = System.Drawing.Color.Transparent
-        Me.Label26.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
-        Me.Label26.Location = New System.Drawing.Point(710, 48)
+        Me.Label26.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!)
+        Me.Label26.Location = New System.Drawing.Point(830, 49)
         Me.Label26.Name = "Label26"
         Me.Label26.Size = New System.Drawing.Size(28, 16)
         Me.Label26.TabIndex = 0
@@ -853,16 +1006,16 @@ Partial Class frmRegistrarPedido
         '
         'txtAbaVentana
         '
-        Me.txtAbaVentana.Location = New System.Drawing.Point(578, 45)
+        Me.txtAbaVentana.Location = New System.Drawing.Point(698, 46)
         Me.txtAbaVentana.Name = "txtAbaVentana"
-        Me.txtAbaVentana.Size = New System.Drawing.Size(126, 20)
+        Me.txtAbaVentana.Size = New System.Drawing.Size(126, 22)
         Me.txtAbaVentana.TabIndex = 10
         '
         'Label28
         '
         Me.Label28.AutoSize = True
         Me.Label28.BackColor = System.Drawing.Color.Transparent
-        Me.Label28.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
+        Me.Label28.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!)
         Me.Label28.Location = New System.Drawing.Point(8, 107)
         Me.Label28.Name = "Label28"
         Me.Label28.Size = New System.Drawing.Size(96, 16)
@@ -873,14 +1026,14 @@ Partial Class frmRegistrarPedido
         '
         Me.txtDerVentana.Location = New System.Drawing.Point(188, 105)
         Me.txtDerVentana.Name = "txtDerVentana"
-        Me.txtDerVentana.Size = New System.Drawing.Size(127, 20)
+        Me.txtDerVentana.Size = New System.Drawing.Size(133, 22)
         Me.txtDerVentana.TabIndex = 7
         '
         'Label30
         '
         Me.Label30.AutoSize = True
         Me.Label30.BackColor = System.Drawing.Color.Transparent
-        Me.Label30.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
+        Me.Label30.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!)
         Me.Label30.Location = New System.Drawing.Point(7, 46)
         Me.Label30.Name = "Label30"
         Me.Label30.Size = New System.Drawing.Size(111, 16)
@@ -891,7 +1044,7 @@ Partial Class frmRegistrarPedido
         '
         Me.txtArrVentana.Location = New System.Drawing.Point(188, 44)
         Me.txtArrVentana.Name = "txtArrVentana"
-        Me.txtArrVentana.Size = New System.Drawing.Size(127, 20)
+        Me.txtArrVentana.Size = New System.Drawing.Size(133, 22)
         Me.txtArrVentana.TabIndex = 6
         '
         'Label31
@@ -908,13 +1061,19 @@ Partial Class frmRegistrarPedido
         'txtNombreVidrioVentana
         '
         Me.txtNombreVidrioVentana.Enabled = False
-        Me.txtNombreVidrioVentana.Location = New System.Drawing.Point(134, 68)
+        Me.txtNombreVidrioVentana.Location = New System.Drawing.Point(141, 75)
         Me.txtNombreVidrioVentana.Name = "txtNombreVidrioVentana"
-        Me.txtNombreVidrioVentana.Size = New System.Drawing.Size(213, 20)
+        Me.txtNombreVidrioVentana.Size = New System.Drawing.Size(213, 22)
         Me.txtNombreVidrioVentana.TabIndex = 10
         '
         'Panel3
         '
+        Me.Panel3.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.Panel3.Controls.Add(Me.Label52)
+        Me.Panel3.Controls.Add(Me.txtAlero)
+        Me.Panel3.Controls.Add(Me.Label51)
+        Me.Panel3.Controls.Add(Me.Label16)
         Me.Panel3.Controls.Add(Me.cmbEspesorVentana)
         Me.Panel3.Controls.Add(Me.Label29)
         Me.Panel3.Controls.Add(Me.cmbColorAlumnioVentana)
@@ -922,26 +1081,25 @@ Partial Class frmRegistrarPedido
         Me.Panel3.Controls.Add(Me.Label37)
         Me.Panel3.Controls.Add(Me.Label5)
         Me.Panel3.Controls.Add(Me.btnBuscarVidrioVentana)
-        Me.Panel3.Location = New System.Drawing.Point(6, 6)
-        Me.Panel3.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right
+        Me.Panel3.Location = New System.Drawing.Point(13, 10)
         Me.Panel3.Name = "Panel3"
-        Me.Panel3.Size = New System.Drawing.Size(756, 100)
+        Me.Panel3.Size = New System.Drawing.Size(874, 102)
         Me.Panel3.TabIndex = 0
         '
         'cmbEspesorVentana
         '
         Me.cmbEspesorVentana.FormattingEnabled = True
-        Me.cmbEspesorVentana.Location = New System.Drawing.Point(604, 59)
+        Me.cmbEspesorVentana.Location = New System.Drawing.Point(711, 60)
         Me.cmbEspesorVentana.Name = "cmbEspesorVentana"
-        Me.cmbEspesorVentana.Size = New System.Drawing.Size(100, 21)
+        Me.cmbEspesorVentana.Size = New System.Drawing.Size(113, 24)
         Me.cmbEspesorVentana.TabIndex = 12
         '
         'Label29
         '
         Me.Label29.AutoSize = True
         Me.Label29.BackColor = System.Drawing.Color.Transparent
-        Me.Label29.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
-        Me.Label29.Location = New System.Drawing.Point(710, 62)
+        Me.Label29.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!)
+        Me.Label29.Location = New System.Drawing.Point(830, 63)
         Me.Label29.Name = "Label29"
         Me.Label29.Size = New System.Drawing.Size(35, 16)
         Me.Label29.TabIndex = 10
@@ -954,14 +1112,14 @@ Partial Class frmRegistrarPedido
         Me.cmbColorAlumnioVentana.Items.AddRange(New Object() {"Estandar", "Negro", "Madera"})
         Me.cmbColorAlumnioVentana.Location = New System.Drawing.Point(128, 35)
         Me.cmbColorAlumnioVentana.Name = "cmbColorAlumnioVentana"
-        Me.cmbColorAlumnioVentana.Size = New System.Drawing.Size(213, 21)
+        Me.cmbColorAlumnioVentana.Size = New System.Drawing.Size(213, 24)
         Me.cmbColorAlumnioVentana.TabIndex = 5
         '
         'Label6
         '
         Me.Label6.AutoSize = True
         Me.Label6.BackColor = System.Drawing.Color.Transparent
-        Me.Label6.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
+        Me.Label6.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!)
         Me.Label6.Location = New System.Drawing.Point(10, 36)
         Me.Label6.Name = "Label6"
         Me.Label6.Size = New System.Drawing.Size(112, 16)
@@ -972,8 +1130,8 @@ Partial Class frmRegistrarPedido
         '
         Me.Label37.AutoSize = True
         Me.Label37.BackColor = System.Drawing.Color.Transparent
-        Me.Label37.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
-        Me.Label37.Location = New System.Drawing.Point(483, 63)
+        Me.Label37.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!)
+        Me.Label37.Location = New System.Drawing.Point(577, 63)
         Me.Label37.Name = "Label37"
         Me.Label37.Size = New System.Drawing.Size(115, 16)
         Me.Label37.TabIndex = 11
@@ -992,8 +1150,8 @@ Partial Class frmRegistrarPedido
         '
         'btnBuscarVidrioVentana
         '
-        Me.btnBuscarVidrioVentana.Location = New System.Drawing.Point(355, 59)
-        Me.btnBuscarVidrioVentana.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
+        Me.btnBuscarVidrioVentana.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Bold)
+        Me.btnBuscarVidrioVentana.Location = New System.Drawing.Point(357, 59)
         Me.btnBuscarVidrioVentana.Name = "btnBuscarVidrioVentana"
         Me.btnBuscarVidrioVentana.Size = New System.Drawing.Size(140, 34)
         Me.btnBuscarVidrioVentana.TabIndex = 11
@@ -1004,8 +1162,8 @@ Partial Class frmRegistrarPedido
         '
         Me.Label32.AutoSize = True
         Me.Label32.BackColor = System.Drawing.Color.Transparent
-        Me.Label32.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
-        Me.Label32.Location = New System.Drawing.Point(488, 324)
+        Me.Label32.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!)
+        Me.Label32.Location = New System.Drawing.Point(514, 347)
         Me.Label32.Name = "Label32"
         Me.Label32.Size = New System.Drawing.Size(68, 16)
         Me.Label32.TabIndex = 18
@@ -1013,17 +1171,17 @@ Partial Class frmRegistrarPedido
         '
         'txtManoObraVentana
         '
-        Me.txtManoObraVentana.Location = New System.Drawing.Point(562, 293)
+        Me.txtManoObraVentana.Location = New System.Drawing.Point(588, 317)
         Me.txtManoObraVentana.Name = "txtManoObraVentana"
-        Me.txtManoObraVentana.Size = New System.Drawing.Size(200, 20)
+        Me.txtManoObraVentana.Size = New System.Drawing.Size(275, 22)
         Me.txtManoObraVentana.TabIndex = 25
         '
         'Label34
         '
         Me.Label34.AutoSize = True
         Me.Label34.BackColor = System.Drawing.Color.Transparent
-        Me.Label34.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
-        Me.Label34.Location = New System.Drawing.Point(114, 297)
+        Me.Label34.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!)
+        Me.Label34.Location = New System.Drawing.Point(113, 321)
         Me.Label34.Name = "Label34"
         Me.Label34.Size = New System.Drawing.Size(74, 16)
         Me.Label34.TabIndex = 20
@@ -1033,8 +1191,8 @@ Partial Class frmRegistrarPedido
         '
         Me.Label35.AutoSize = True
         Me.Label35.BackColor = System.Drawing.Color.Transparent
-        Me.Label35.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
-        Me.Label35.Location = New System.Drawing.Point(11, 324)
+        Me.Label35.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!)
+        Me.Label35.Location = New System.Drawing.Point(10, 348)
         Me.Label35.Name = "Label35"
         Me.Label35.Size = New System.Drawing.Size(182, 16)
         Me.Label35.TabIndex = 21
@@ -1042,25 +1200,25 @@ Partial Class frmRegistrarPedido
         '
         'txtExtraVentana
         '
-        Me.txtExtraVentana.Location = New System.Drawing.Point(201, 292)
+        Me.txtExtraVentana.Location = New System.Drawing.Point(200, 316)
         Me.txtExtraVentana.Name = "txtExtraVentana"
-        Me.txtExtraVentana.Size = New System.Drawing.Size(200, 20)
+        Me.txtExtraVentana.Size = New System.Drawing.Size(248, 22)
         Me.txtExtraVentana.TabIndex = 24
         '
         'txtPreciomaterialVentana
         '
         Me.txtPreciomaterialVentana.Enabled = False
-        Me.txtPreciomaterialVentana.Location = New System.Drawing.Point(201, 319)
+        Me.txtPreciomaterialVentana.Location = New System.Drawing.Point(200, 343)
         Me.txtPreciomaterialVentana.Name = "txtPreciomaterialVentana"
-        Me.txtPreciomaterialVentana.Size = New System.Drawing.Size(200, 20)
+        Me.txtPreciomaterialVentana.Size = New System.Drawing.Size(248, 22)
         Me.txtPreciomaterialVentana.TabIndex = 23
         '
         'Label33
         '
         Me.Label33.AutoSize = True
         Me.Label33.BackColor = System.Drawing.Color.Transparent
-        Me.Label33.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
-        Me.Label33.Location = New System.Drawing.Point(435, 296)
+        Me.Label33.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!)
+        Me.Label33.Location = New System.Drawing.Point(461, 319)
         Me.Label33.Name = "Label33"
         Me.Label33.Size = New System.Drawing.Size(121, 16)
         Me.Label33.TabIndex = 19
@@ -1068,6 +1226,8 @@ Partial Class frmRegistrarPedido
         '
         'tabModeloAluminio
         '
+        Me.tabModeloAluminio.AutoScroll = True
+        Me.tabModeloAluminio.AutoScrollMinSize = New System.Drawing.Size(780, 370)
         Me.tabModeloAluminio.Controls.Add(Me.txtTotalAluminio)
         Me.tabModeloAluminio.Controls.Add(Me.Panel8)
         Me.tabModeloAluminio.Controls.Add(Me.Panel7)
@@ -1078,35 +1238,43 @@ Partial Class frmRegistrarPedido
         Me.tabModeloAluminio.Controls.Add(Me.Label43)
         Me.tabModeloAluminio.Controls.Add(Me.Label42)
         Me.tabModeloAluminio.Controls.Add(Me.txtExtraAluminio)
-        Me.tabModeloAluminio.Location = New System.Drawing.Point(4, 22)
-        Me.tabModeloAluminio.AutoScroll = True
-        Me.tabModeloAluminio.AutoScrollMinSize = New System.Drawing.Size(780, 370)
+        Me.tabModeloAluminio.Location = New System.Drawing.Point(4, 31)
         Me.tabModeloAluminio.Name = "tabModeloAluminio"
         Me.tabModeloAluminio.Padding = New System.Windows.Forms.Padding(3)
-        Me.tabModeloAluminio.Size = New System.Drawing.Size(773, 349)
+        Me.tabModeloAluminio.Size = New System.Drawing.Size(904, 399)
         Me.tabModeloAluminio.TabIndex = 2
         Me.tabModeloAluminio.Text = "Modelo Aluminio"
         Me.tabModeloAluminio.UseVisualStyleBackColor = True
         '
+        'txtTotalAluminio
+        '
+        Me.txtTotalAluminio.Enabled = False
+        Me.txtTotalAluminio.Location = New System.Drawing.Point(628, 267)
+        Me.txtTotalAluminio.Name = "txtTotalAluminio"
+        Me.txtTotalAluminio.Size = New System.Drawing.Size(225, 22)
+        Me.txtTotalAluminio.TabIndex = 22
+        Me.txtTotalAluminio.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
+        '
         'Panel8
         '
+        Me.Panel8.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Panel8.BackColor = System.Drawing.Color.White
         Me.Panel8.Controls.Add(Me.Label48)
         Me.Panel8.Controls.Add(Me.Label49)
         Me.Panel8.Controls.Add(Me.txtLargoAluminio)
         Me.Panel8.Controls.Add(Me.Label50)
-        Me.Panel8.Location = New System.Drawing.Point(16, 120)
-        Me.Panel8.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right
+        Me.Panel8.Location = New System.Drawing.Point(21, 127)
         Me.Panel8.Name = "Panel8"
-        Me.Panel8.Size = New System.Drawing.Size(730, 84)
+        Me.Panel8.Size = New System.Drawing.Size(848, 84)
         Me.Panel8.TabIndex = 12
         '
         'Label48
         '
         Me.Label48.AutoSize = True
         Me.Label48.BackColor = System.Drawing.Color.Transparent
-        Me.Label48.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
-        Me.Label48.Location = New System.Drawing.Point(393, 38)
+        Me.Label48.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!)
+        Me.Label48.Location = New System.Drawing.Point(463, 41)
         Me.Label48.Name = "Label48"
         Me.Label48.Size = New System.Drawing.Size(28, 16)
         Me.Label48.TabIndex = 0
@@ -1116,7 +1284,7 @@ Partial Class frmRegistrarPedido
         '
         Me.Label49.AutoSize = True
         Me.Label49.BackColor = System.Drawing.Color.Transparent
-        Me.Label49.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
+        Me.Label49.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!)
         Me.Label49.Location = New System.Drawing.Point(7, 42)
         Me.Label49.Name = "Label49"
         Me.Label49.Size = New System.Drawing.Size(115, 16)
@@ -1127,7 +1295,7 @@ Partial Class frmRegistrarPedido
         '
         Me.txtLargoAluminio.Location = New System.Drawing.Point(129, 38)
         Me.txtLargoAluminio.Name = "txtLargoAluminio"
-        Me.txtLargoAluminio.Size = New System.Drawing.Size(251, 20)
+        Me.txtLargoAluminio.Size = New System.Drawing.Size(328, 22)
         Me.txtLargoAluminio.TabIndex = 6
         '
         'Label50
@@ -1143,30 +1311,31 @@ Partial Class frmRegistrarPedido
         '
         'Panel7
         '
+        Me.Panel7.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Panel7.Controls.Add(Me.txtNombreAluminio)
         Me.Panel7.Controls.Add(Me.Label39)
         Me.Panel7.Controls.Add(Me.Label41)
         Me.Panel7.Controls.Add(Me.btnBuscarAluminio)
-        Me.Panel7.Location = New System.Drawing.Point(16, 22)
-        Me.Panel7.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right
+        Me.Panel7.Location = New System.Drawing.Point(21, 22)
         Me.Panel7.Name = "Panel7"
-        Me.Panel7.Size = New System.Drawing.Size(730, 74)
+        Me.Panel7.Size = New System.Drawing.Size(848, 87)
         Me.Panel7.TabIndex = 13
         '
         'txtNombreAluminio
         '
         Me.txtNombreAluminio.Enabled = False
-        Me.txtNombreAluminio.Location = New System.Drawing.Point(128, 32)
+        Me.txtNombreAluminio.Location = New System.Drawing.Point(129, 44)
         Me.txtNombreAluminio.Name = "txtNombreAluminio"
-        Me.txtNombreAluminio.Size = New System.Drawing.Size(273, 20)
+        Me.txtNombreAluminio.Size = New System.Drawing.Size(362, 22)
         Me.txtNombreAluminio.TabIndex = 2
         '
         'Label39
         '
         Me.Label39.AutoSize = True
         Me.Label39.BackColor = System.Drawing.Color.Transparent
-        Me.Label39.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
-        Me.Label39.Location = New System.Drawing.Point(10, 36)
+        Me.Label39.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!)
+        Me.Label39.Location = New System.Drawing.Point(10, 46)
         Me.Label39.Name = "Label39"
         Me.Label39.Size = New System.Drawing.Size(108, 16)
         Me.Label39.TabIndex = 5
@@ -1185,101 +1354,20 @@ Partial Class frmRegistrarPedido
         '
         'btnBuscarAluminio
         '
-        Me.btnBuscarAluminio.Location = New System.Drawing.Point(407, 29)
-        Me.btnBuscarAluminio.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
+        Me.btnBuscarAluminio.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Bold)
+        Me.btnBuscarAluminio.Location = New System.Drawing.Point(497, 37)
         Me.btnBuscarAluminio.Name = "btnBuscarAluminio"
         Me.btnBuscarAluminio.Size = New System.Drawing.Size(140, 34)
         Me.btnBuscarAluminio.TabIndex = 11
         Me.btnBuscarAluminio.Text = "Buscar Aluminio"
         Me.btnBuscarAluminio.UseVisualStyleBackColor = True
         '
-        'btnDuplicar
-        '
-        Me.btnDuplicar.Location = New System.Drawing.Point(16, 498)
-        Me.btnDuplicar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
-        Me.btnDuplicar.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left
-        Me.btnDuplicar.Margin = New System.Windows.Forms.Padding(0, 0, 8, 8)
-        Me.btnDuplicar.Name = "btnDuplicar"
-        Me.btnDuplicar.Size = New System.Drawing.Size(120, 34)
-        Me.btnDuplicar.TabIndex = 20
-        Me.btnDuplicar.Text = "Duplicar"
-        Me.btnDuplicar.UseVisualStyleBackColor = True
-        '
-        'btnLimpiar
-        '
-        Me.btnLimpiar.Location = New System.Drawing.Point(129, 498)
-        Me.btnLimpiar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
-        Me.btnLimpiar.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left
-        Me.btnLimpiar.Margin = New System.Windows.Forms.Padding(0, 0, 8, 8)
-        Me.btnLimpiar.Name = "btnLimpiar"
-        Me.btnLimpiar.Size = New System.Drawing.Size(120, 34)
-        Me.btnLimpiar.TabIndex = 19
-        Me.btnLimpiar.Text = "Limpiar"
-        Me.btnLimpiar.UseVisualStyleBackColor = True
-        '
-        'btnEliminar
-        '
-        Me.btnEliminar.Location = New System.Drawing.Point(210, 498)
-        Me.btnEliminar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
-        Me.btnEliminar.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left
-        Me.btnEliminar.Margin = New System.Windows.Forms.Padding(0, 0, 8, 8)
-        Me.btnEliminar.Name = "btnEliminar"
-        Me.btnEliminar.Size = New System.Drawing.Size(120, 34)
-        Me.btnEliminar.TabIndex = 18
-        Me.btnEliminar.Text = "Eliminar"
-        Me.btnEliminar.UseVisualStyleBackColor = True
-        '
-        'btnGuardarPedido
-        '
-        Me.btnGuardarPedido.Location = New System.Drawing.Point(629, 499)
-        Me.btnGuardarPedido.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
-        Me.btnGuardarPedido.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left
-        Me.btnGuardarPedido.Margin = New System.Windows.Forms.Padding(0, 0, 8, 8)
-        Me.btnGuardarPedido.Name = "btnGuardarPedido"
-        Me.btnGuardarPedido.Size = New System.Drawing.Size(190, 34)
-        Me.btnGuardarPedido.TabIndex = 0
-        Me.btnGuardarPedido.Text = "Guarda todo el Pedido"
-        Me.btnGuardarPedido.UseVisualStyleBackColor = True
-        '
-        'Label20
-        '
-        Me.Label20.AutoSize = True
-        Me.Label20.BackColor = System.Drawing.Color.Transparent
-        Me.Label20.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
-        Me.Label20.Location = New System.Drawing.Point(343, 501)
-        Me.Label20.Margin = New System.Windows.Forms.Padding(0, 0, 8, 8)
-        Me.Label20.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left
-        Me.Label20.Name = "Label20"
-        Me.Label20.Size = New System.Drawing.Size(68, 16)
-        Me.Label20.TabIndex = 18
-        Me.Label20.Text = "Total (S/.):"
-        '
-        'txtTotalTodo
-        '
-        Me.txtTotalTodo.Enabled = False
-        Me.txtTotalTodo.Location = New System.Drawing.Point(417, 500)
-        Me.txtTotalTodo.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left
-        Me.txtTotalTodo.Margin = New System.Windows.Forms.Padding(0, 0, 8, 8)
-        Me.txtTotalTodo.Name = "txtTotalTodo"
-        Me.txtTotalTodo.Size = New System.Drawing.Size(140, 20)
-        Me.txtTotalTodo.TabIndex = 18
-        Me.txtTotalTodo.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
-        '
-        'txtTotalAluminio
-        '
-        Me.txtTotalAluminio.Enabled = False
-        Me.txtTotalAluminio.Location = New System.Drawing.Point(556, 259)
-        Me.txtTotalAluminio.Name = "txtTotalAluminio"
-        Me.txtTotalAluminio.Size = New System.Drawing.Size(200, 20)
-        Me.txtTotalAluminio.TabIndex = 22
-        Me.txtTotalAluminio.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
-        '
         'Label38
         '
         Me.Label38.AutoSize = True
         Me.Label38.BackColor = System.Drawing.Color.Transparent
-        Me.Label38.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
-        Me.Label38.Location = New System.Drawing.Point(482, 258)
+        Me.Label38.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!)
+        Me.Label38.Location = New System.Drawing.Point(554, 266)
         Me.Label38.Name = "Label38"
         Me.Label38.Size = New System.Drawing.Size(68, 16)
         Me.Label38.TabIndex = 18
@@ -1287,58 +1375,88 @@ Partial Class frmRegistrarPedido
         '
         'txtManoObraAluminio
         '
-        Me.txtManoObraAluminio.Location = New System.Drawing.Point(556, 233)
+        Me.txtManoObraAluminio.Location = New System.Drawing.Point(628, 241)
         Me.txtManoObraAluminio.Name = "txtManoObraAluminio"
-        Me.txtManoObraAluminio.Size = New System.Drawing.Size(200, 20)
+        Me.txtManoObraAluminio.Size = New System.Drawing.Size(225, 22)
         Me.txtManoObraAluminio.TabIndex = 25
         '
         'Label40
         '
         Me.Label40.AutoSize = True
         Me.Label40.BackColor = System.Drawing.Color.Transparent
-        Me.Label40.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
-        Me.Label40.Location = New System.Drawing.Point(429, 234)
+        Me.Label40.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!)
+        Me.Label40.Location = New System.Drawing.Point(501, 242)
         Me.Label40.Name = "Label40"
         Me.Label40.Size = New System.Drawing.Size(121, 16)
         Me.Label40.TabIndex = 19
         Me.Label40.Text = "Mano de obra (S/.):"
         '
-        'txtExtraAluminio
-        '
-        Me.txtExtraAluminio.Location = New System.Drawing.Point(195, 229)
-        Me.txtExtraAluminio.Name = "txtExtraAluminio"
-        Me.txtExtraAluminio.Size = New System.Drawing.Size(200, 20)
-        Me.txtExtraAluminio.TabIndex = 24
-        '
-        'Label42
-        '
-        Me.Label42.AutoSize = True
-        Me.Label42.BackColor = System.Drawing.Color.Transparent
-        Me.Label42.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
-        Me.Label42.Location = New System.Drawing.Point(115, 231)
-        Me.Label42.Name = "Label42"
-        Me.Label42.Size = New System.Drawing.Size(74, 16)
-        Me.Label42.TabIndex = 20
-        Me.Label42.Text = "Extras (S/.):"
-        '
         'txtPrecioMaterialesAluminio
         '
         Me.txtPrecioMaterialesAluminio.Enabled = False
-        Me.txtPrecioMaterialesAluminio.Location = New System.Drawing.Point(195, 257)
+        Me.txtPrecioMaterialesAluminio.Location = New System.Drawing.Point(200, 267)
         Me.txtPrecioMaterialesAluminio.Name = "txtPrecioMaterialesAluminio"
-        Me.txtPrecioMaterialesAluminio.Size = New System.Drawing.Size(200, 20)
+        Me.txtPrecioMaterialesAluminio.Size = New System.Drawing.Size(247, 22)
         Me.txtPrecioMaterialesAluminio.TabIndex = 23
         '
         'Label43
         '
         Me.Label43.AutoSize = True
         Me.Label43.BackColor = System.Drawing.Color.Transparent
-        Me.Label43.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
-        Me.Label43.Location = New System.Drawing.Point(7, 258)
+        Me.Label43.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!)
+        Me.Label43.Location = New System.Drawing.Point(12, 268)
         Me.Label43.Name = "Label43"
         Me.Label43.Size = New System.Drawing.Size(182, 16)
         Me.Label43.TabIndex = 21
         Me.Label43.Text = "Precio de los materiales (S/.):"
+        '
+        'Label42
+        '
+        Me.Label42.AutoSize = True
+        Me.Label42.BackColor = System.Drawing.Color.Transparent
+        Me.Label42.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!)
+        Me.Label42.Location = New System.Drawing.Point(120, 241)
+        Me.Label42.Name = "Label42"
+        Me.Label42.Size = New System.Drawing.Size(74, 16)
+        Me.Label42.TabIndex = 20
+        Me.Label42.Text = "Extras (S/.):"
+        '
+        'txtExtraAluminio
+        '
+        Me.txtExtraAluminio.Location = New System.Drawing.Point(200, 239)
+        Me.txtExtraAluminio.Name = "txtExtraAluminio"
+        Me.txtExtraAluminio.Size = New System.Drawing.Size(247, 22)
+        Me.txtExtraAluminio.TabIndex = 24
+        '
+        'txtAlero
+        '
+        Me.txtAlero.Enabled = True
+        Me.txtAlero.Location = New System.Drawing.Point(611, 30)
+        Me.txtAlero.Name = "txtAlero"
+        Me.txtAlero.Size = New System.Drawing.Size(213, 22)
+        Me.txtAlero.TabIndex = 13
+        '
+        'Label51
+        '
+        Me.Label51.AutoSize = True
+        Me.Label51.BackColor = System.Drawing.Color.Transparent
+        Me.Label51.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!)
+        Me.Label51.Location = New System.Drawing.Point(492, 33)
+        Me.Label51.Name = "Label51"
+        Me.Label51.Size = New System.Drawing.Size(112, 16)
+        Me.Label51.TabIndex = 14
+        Me.Label51.Text = "Tamaño de Alero"
+        '
+        'Label52
+        '
+        Me.Label52.AutoSize = True
+        Me.Label52.BackColor = System.Drawing.Color.Transparent
+        Me.Label52.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!)
+        Me.Label52.Location = New System.Drawing.Point(830, 33)
+        Me.Label52.Name = "Label52"
+        Me.Label52.Size = New System.Drawing.Size(28, 16)
+        Me.Label52.TabIndex = 22
+        Me.Label52.Text = "cm."
         '
         'frmRegistrarPedido
         '
@@ -1346,17 +1464,21 @@ Partial Class frmRegistrarPedido
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(960, 640)
         Me.Controls.Add(Me.tabsPedidos)
-        Me.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
+        Me.Controls.Add(Me.flpAcciones)
+        Me.Controls.Add(Me.tlpCabecera)
+        Me.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!)
         Me.MinimumSize = New System.Drawing.Size(816, 530)
-        Me.Padding = New System.Windows.Forms.Padding(24, 20, 24, 16)
-        Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable
-        Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent
         Me.Name = "frmRegistrarPedido"
+        Me.Padding = New System.Windows.Forms.Padding(24, 20, 24, 16)
+        Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent
         Me.Text = "Registrar pedido"
+        Me.tlpCabecera.ResumeLayout(False)
         Me.Panel1.ResumeLayout(False)
         Me.Panel1.PerformLayout()
         Me.Panel2.ResumeLayout(False)
         Me.Panel2.PerformLayout()
+        Me.flpAcciones.ResumeLayout(False)
+        Me.flpAcciones.PerformLayout()
         Me.tabsPedidos.ResumeLayout(False)
         Me.tabModeloVidrio.ResumeLayout(False)
         Me.tabModeloVidrio.PerformLayout()
@@ -1376,30 +1498,6 @@ Partial Class frmRegistrarPedido
         Me.Panel8.PerformLayout()
         Me.Panel7.ResumeLayout(False)
         Me.Panel7.PerformLayout()
-
-        Me.flpAcciones.Name = "flpAcciones"
-        Me.flpAcciones.Dock = System.Windows.Forms.DockStyle.Bottom
-        Me.flpAcciones.AutoSize = True
-        Me.flpAcciones.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-        Me.flpAcciones.Padding = New System.Windows.Forms.Padding(0, 8, 0, 0)
-        Me.flpAcciones.Controls.Add(Me.btnDuplicar)
-        Me.flpAcciones.Controls.Add(Me.btnLimpiar)
-        Me.flpAcciones.Controls.Add(Me.btnEliminar)
-        Me.flpAcciones.Controls.Add(Me.Label20)
-        Me.flpAcciones.Controls.Add(Me.txtTotalTodo)
-        Me.flpAcciones.Controls.Add(Me.btnGuardarPedido)
-        Me.Controls.Add(Me.flpAcciones)
-
-        Me.tlpCabecera.Name = "tlpCabecera"
-        Me.tlpCabecera.Dock = System.Windows.Forms.DockStyle.Top
-        Me.tlpCabecera.Height = 120
-        Me.tlpCabecera.ColumnCount = 2
-        Me.tlpCabecera.RowCount = 1
-        Me.tlpCabecera.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
-        Me.tlpCabecera.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
-        Me.tlpCabecera.Controls.Add(Me.Panel1, 0, 0)
-        Me.tlpCabecera.Controls.Add(Me.Panel2, 1, 0)
-        Me.Controls.Add(Me.tlpCabecera)
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -1517,4 +1615,11 @@ Partial Class frmRegistrarPedido
     Friend WithEvents txtExtraAluminio As TextBox
     Friend WithEvents flpAcciones As System.Windows.Forms.FlowLayoutPanel
     Friend WithEvents tlpCabecera As System.Windows.Forms.TableLayoutPanel
+    Friend WithEvents Label46 As Label
+    Friend WithEvents Label47 As Label
+    Friend WithEvents Label44 As Label
+    Friend WithEvents Label45 As Label
+    Friend WithEvents txtAlero As TextBox
+    Friend WithEvents Label51 As Label
+    Friend WithEvents Label52 As Label
 End Class

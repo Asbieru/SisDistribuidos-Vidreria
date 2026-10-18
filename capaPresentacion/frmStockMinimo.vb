@@ -16,7 +16,7 @@ Public Class frmStockMinimo
         AplicarTema(Me, tema)
         Dim p As Paleta = Temas.Obtener(tema)
         Panel2.BackColor = p.Fondo
-        lblTitulo.ForeColor = p.Acento
+        lblTitulo.ForeColor = p.Titulo
 
         txtProducto.Text = producto
         txtExistencias.Text = existencias.ToString()

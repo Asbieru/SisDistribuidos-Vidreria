@@ -25,7 +25,7 @@ Public Class frmMovimientoCajas
         AplicarTema(Me, tema)
         Dim p As Paleta = Temas.Obtener(tema)
         Panel2.BackColor = p.Fondo
-        lblTitulo.ForeColor = p.Acento
+        lblTitulo.ForeColor = p.Titulo
 
         nombreUnidad = InventarioCaja.NombreUnidad(unidadCosto)
         txtProducto.Text = producto

@@ -27,7 +27,7 @@ Public Class frmRegistrarPago
 
         Dim p As Paleta = Temas.Obtener(tema)
         Panel1.BackColor = p.Fondo
-        lblTitulo.ForeColor = p.Acento
+        lblTitulo.ForeColor = p.Titulo
         lblSubTitulo.ForeColor = p.Texto
         msj.ForeColor = ColorAlerta(tema)
 

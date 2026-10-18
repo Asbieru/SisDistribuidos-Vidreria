@@ -17,7 +17,7 @@ Public Class frmRegistrarUsuarios
         AplicarTema(Me, tema)
         Dim p As Paleta = Temas.Obtener(tema)
         Panel2.BackColor = p.Fondo
-        lblModo.ForeColor = p.Acento
+        lblModo.ForeColor = p.Titulo
 
         cboRol.DropDownStyle = ComboBoxStyle.DropDownList
         cboRol.Items.Clear()

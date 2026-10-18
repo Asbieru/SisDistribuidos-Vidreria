@@ -37,7 +37,7 @@ Public Class frmPedidoUnitario
 
         Dim p As Paleta = Temas.Obtener(tema)
         Panel1.BackColor = p.Fondo
-        lblTitulo.ForeColor = p.Acento
+        lblTitulo.ForeColor = p.Titulo
         lblSubTitulo.ForeColor = p.Texto
         lblEstado.ForeColor = p.Texto
 
@@ -47,7 +47,7 @@ Public Class frmPedidoUnitario
         ' Los controles de cada pestaña se crean en tiempo de ejecución: se vuelven a tematizar
         AplicarTema(Me, tema)
         Panel1.BackColor = p.Fondo
-        lblTitulo.ForeColor = p.Acento
+        lblTitulo.ForeColor = p.Titulo
 
         If estadoActual = "CANCELADO" Then
             MostrarInfo("Este pedido está cancelado y no puede abrirse.")

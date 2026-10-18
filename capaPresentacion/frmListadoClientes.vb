@@ -15,7 +15,7 @@ Public Class frmListadoClientes
         AplicarTema(Me, tema)
         Dim p As Paleta = Temas.Obtener(tema)
         Panel2.BackColor = p.Fondo
-        lblTitulo.ForeColor = p.Acento
+        lblTitulo.ForeColor = p.Titulo
         btnSeleccionar.Visible = modoSeleccion
         btnEliminar.Visible = Not modoSeleccion
         lblTitulo.Text = If(modoSeleccion, "SELECCIONAR CLIENTE", "LISTADO DE CLIENTES")

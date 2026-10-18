@@ -11,7 +11,7 @@ Public Class frmHistorialClientes
         AplicarTema(Me, tema)
         Dim p As Paleta = Temas.Obtener(tema)
         Panel2.BackColor = p.Fondo
-        lblTitulo.ForeColor = p.Acento
+        lblTitulo.ForeColor = p.Titulo
         cmbEstado.Items.AddRange(New Object() {TODOS, "PENDIENTE", "PARCIAL", "PAGADO", "CANCELADO"})
         cmbEstado.SelectedIndex = 0
         dtpDesde.Value = New Date(Today.Year, Today.Month, 1)

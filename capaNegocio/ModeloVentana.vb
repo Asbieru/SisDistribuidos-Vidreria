@@ -57,7 +57,7 @@ Public Class ModeloVentana
     Public Shared ReadOnly NombresEstandar As String() = {
         "ancho_abajo", "ancho_arriba", "ancho_centro",
         "alto_izq", "alto_centro", "alto_der",
-        "tres_ancho", "tres_alto", "max_ancho", "max_alto", "min_alto"}
+        "tres_ancho", "tres_alto", "max_ancho", "max_alto", "min_alto", "alero"}
 
     ' ================== CARGA ==================
 

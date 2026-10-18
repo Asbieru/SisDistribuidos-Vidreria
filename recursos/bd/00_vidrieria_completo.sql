@@ -653,6 +653,37 @@ CLOSE cur_fechas;
 DEALLOCATE cur_fechas;
 GO
 
+-- ------------------------------------------------------------
+-- Bases ya creadas: usuario_preferencias.tema tenia un CHECK que solo
+-- permitia CLARO y OSCURO. Se reemplaza para aceptar los temas nuevos
+-- (AZULCLARO / AZULOSCURO). En una base nueva el CHECK ya nace correcto.
+-- ------------------------------------------------------------
+DECLARE @ckTema SYSNAME, @sqlTema NVARCHAR(MAX);
+SELECT @ckTema = name
+FROM sys.check_constraints
+WHERE parent_object_id = OBJECT_ID(N'dbo.usuario_preferencias')
+  AND definition LIKE N'%tema%'
+  AND definition NOT LIKE N'%AZULCLARO%';
+
+IF @ckTema IS NOT NULL
+BEGIN
+    SET @sqlTema = N'ALTER TABLE dbo.usuario_preferencias DROP CONSTRAINT ' + QUOTENAME(@ckTema) + N';';
+    EXEC sp_executesql @sqlTema;
+    ALTER TABLE dbo.usuario_preferencias ADD CONSTRAINT ck_tema_v2
+        CHECK (tema IN ('CLARO', 'OSCURO', 'AZULCLARO', 'AZULOSCURO'));
+END
+GO
+
+-- ------------------------------------------------------------
+-- Bases ya creadas: reclasificacion de los productos 2 y 3 como accesorios
+--    id 2 -> ACCESORIO / TARUGO   / PLASTICO
+--    id 3 -> ACCESORIO / TORNILLO / AUTORROSCANTE
+-- Solo ajusta categoria, tipo y color; no toca nombre ni variantes.
+-- ------------------------------------------------------------
+UPDATE dbo.productos SET categoria = 'ACCESORIO', tipo = 'TARUGO',   color = 'PLASTICO'      WHERE id_producto = 2;
+UPDATE dbo.productos SET categoria = 'ACCESORIO', tipo = 'TORNILLO', color = 'AUTORROSCANTE' WHERE id_producto = 3;
+GO
+
 -- ============================================================
 -- 2) VISTAS
 -- ============================================================
@@ -2487,8 +2518,8 @@ DECLARE @m5 INT = (SELECT id_modelo FROM dbo.modelos_ventana WHERE nombre = N'Ve
 IF @m1 IS NOT NULL AND NOT EXISTS (SELECT 1 FROM dbo.modelo_ventana_variable WHERE id_modelo = @m1)
 BEGIN
     INSERT INTO dbo.modelo_ventana_variable (id_modelo, orden, nombre, formula) VALUES
-    (@m1, 10, 'anclaje',        'max_alto - 3 - 35'),
-    (@m1, 20, 'alto_fijo',      'max_alto - 3 - 1.5 - 35'),
+    (@m1, 10, 'anclaje',        'max_alto - 3 - alero'),
+    (@m1, 20, 'alto_fijo',      'max_alto - 3 - 1.5 - alero'),
     (@m1, 30, 'ancho_fijo_arr', 'IIF(tres_ancho=1, ancho_centro, ancho_abajo)/3'),
     (@m1, 40, 'ancho_fijo_aba', 'ancho_abajo/3'),
     (@m1, 50, 'max_fijo',       'IIF(ancho_fijo_arr>ancho_fijo_aba, ancho_fijo_arr, ancho_fijo_aba)'),
@@ -2587,8 +2618,8 @@ END
 IF @m3 IS NOT NULL AND NOT EXISTS (SELECT 1 FROM dbo.modelo_ventana_variable WHERE id_modelo = @m3)
 BEGIN
     INSERT INTO dbo.modelo_ventana_variable (id_modelo, orden, nombre, formula) VALUES
-    (@m3, 10, 'anclaje',        'max_alto - 3 - 35'),
-    (@m3, 20, 'alto_fijo',      'max_alto - 3 - 1.5 - 35'),
+    (@m3, 10, 'anclaje',        'max_alto - 3 - alero'),
+    (@m3, 20, 'alto_fijo',      'max_alto - 3 - 1.5 - alero'),
     (@m3, 30, 'ancho_fijo',     'ancho_abajo/2'),
     (@m3, 40, 'corredizo_ancho','ancho_abajo/2'),
     (@m3, 50, 'corredizo_alto', 'anclaje - 2.5'),
@@ -2679,8 +2710,8 @@ END
 IF @m5 IS NOT NULL AND NOT EXISTS (SELECT 1 FROM dbo.modelo_ventana_variable WHERE id_modelo = @m5)
 BEGIN
     INSERT INTO dbo.modelo_ventana_variable (id_modelo, orden, nombre, formula) VALUES
-    (@m5, 10, 'anclaje',        'max_alto - 3 - 35'),
-    (@m5, 20, 'alto_fijo',      'max_alto - 3 - 1.5 - 35'),
+    (@m5, 10, 'anclaje',        'max_alto - 3 - alero'),
+    (@m5, 20, 'alto_fijo',      'max_alto - 3 - 1.5 - alero'),
     (@m5, 30, 'ancho_fijo',     'ancho_abajo/4'),
     (@m5, 40, 'corredizo_ancho','(ancho_abajo - 2*ancho_fijo)/2'),
     (@m5, 50, 'corredizo_alto', 'anclaje - 2.5'),
@@ -2738,4 +2769,18 @@ BEGIN
     (@m5, 'max_alto < 90', 'Este modelo lleva alero: para alturas menores a 90 cm use un modelo sin alero.'),
     (@m5, 'tres_alto=1 AND (max_alto-min_alto)>5', 'Con 3 alturas distintas, la diferencia maxima permitida es 5 cm.');
 END
+GO
+
+-- ------------------------------------------------------------
+-- Bases ya creadas: el alero estaba fijo en 35 dentro de las formulas de los
+-- modelos con alero. Ahora es un dato que envia el formulario, asi que se
+-- reemplaza 35 por la variable "alero". En una base nueva los modelos ya se
+-- insertan con la variable "alero" (este UPDATE no hace nada).
+-- ------------------------------------------------------------
+UPDATE dbo.modelo_ventana_variable
+SET formula = REPLACE(formula, '35', 'alero')
+WHERE nombre IN ('anclaje', 'alto_fijo') AND formula LIKE '%35%';
+GO
+
+PRINT 'Base de datos vidrieria lista (esquema + datos + migraciones).';
 GO

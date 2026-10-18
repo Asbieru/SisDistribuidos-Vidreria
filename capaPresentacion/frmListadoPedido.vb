@@ -14,7 +14,7 @@ Public Class frmListadoPedido
 
     Private Sub frmListadoPedido_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         AplicarTema(Me, tema)
-        lblTitulo.ForeColor = Temas.Obtener(tema).Acento
+        lblTitulo.ForeColor = Temas.Obtener(tema).Titulo
         ResolverUsuario()
 
         btnSeleccionar.Visible = modoSeleccion

@@ -24,6 +24,7 @@ Public Class frmRegistrarPedido
     ' pestaña de ventana guarda el nombre del modelo elegido.
     Private modelosPorNombre As New Dictionary(Of String, ModeloVentana)(StringComparer.OrdinalIgnoreCase)
     Private modeloPorDefecto As String = ""
+    Private errorModelos As String = ""
 
     Private Sub actualizarCliente()
         txtNombreCliente.Text = nombreClienteSeleccionado
@@ -45,6 +46,9 @@ Public Class frmRegistrarPedido
         tabsPedidos.TabPages.Remove(tabModeloVentana)
         tabsPedidos.TabPages.Remove(tabModeloAluminio)
         CargarCombos()
+        If errorModelos <> "" Then
+            UtilFormularios.MostrarError("No se pudieron cargar los modelos de ventana desde la base de datos." & vbCrLf & vbCrLf & errorModelos)
+        End If
         AplicarVisibilidadMedidas(chbAncho)
         AplicarVisibilidadMedidas(chbAlto)
         AplicarVisibilidadMedidasVentana(CheckBox3)
@@ -78,7 +82,8 @@ Public Class frmRegistrarPedido
                 modelosPorNombre(m.Nombre) = m
                 opciones.Add(m.Nombre)
             Next
-        Catch
+        Catch ex As Exception
+            errorModelos = ex.Message
         End Try
         If modeloPorDefecto = "" AndAlso modelosPorNombre.Count > 0 Then
             modeloPorDefecto = modelosPorNombre.Keys.First()
@@ -133,6 +138,7 @@ Public Class frmRegistrarPedido
         tabsPedidos.TabPages.Add(nueva)
         tabsPedidos.SelectedTab = nueva
         nueva.ToolTipText = nueva.Text
+        AplicarAleroVentana(nueva)
         AplicarTema(Me, tema)
         RecalcularTab(nueva)
     End Sub
@@ -458,12 +464,14 @@ Public Class frmRegistrarPedido
         Dim tresAncho As Boolean = CheckMarcado(tab, "CheckBox3")
         Dim tresAlto As Boolean = CheckMarcado(tab, "CheckBox4")
 
-        Dim anchoAbajo As Decimal = LeerDecimal(tab, "txtAbaVentana")
-        Dim anchoArriba As Decimal = If(tresAncho, LeerDecimal(tab, "txtArrVentana"), anchoAbajo)
-        Dim anchoCentro As Decimal = If(tresAncho, LeerDecimal(tab, "txtCenVentana1"), anchoAbajo)
-        Dim altoIzq As Decimal = LeerDecimal(tab, "txtIzqVentana")
-        Dim altoCentro As Decimal = If(tresAlto, LeerDecimal(tab, "txtCenVentana2"), altoIzq)
-        Dim altoDer As Decimal = If(tresAlto, LeerDecimal(tab, "txtDerVentana"), altoIzq)
+        ' Con una sola medida la base es el ancho de arriba y el alto de la derecha
+        ' (los que quedan visibles cuando CheckBox3/CheckBox4 estan desmarcados).
+        Dim anchoArriba As Decimal = LeerDecimal(tab, "txtArrVentana")
+        Dim anchoCentro As Decimal = If(tresAncho, LeerDecimal(tab, "txtCenVentana1"), anchoArriba)
+        Dim anchoAbajo As Decimal = If(tresAncho, LeerDecimal(tab, "txtAbaVentana"), anchoArriba)
+        Dim altoDer As Decimal = LeerDecimal(tab, "txtDerVentana")
+        Dim altoCentro As Decimal = If(tresAlto, LeerDecimal(tab, "txtCenVentana2"), altoDer)
+        Dim altoIzq As Decimal = If(tresAlto, LeerDecimal(tab, "txtIzqVentana"), altoDer)
 
         Dim maxAncho As Decimal = Math.Max(anchoAbajo, Math.Max(anchoArriba, anchoCentro))
         Dim maxAlto As Decimal = Math.Max(altoIzq, Math.Max(altoCentro, altoDer))
@@ -480,7 +488,8 @@ Public Class frmRegistrarPedido
             {"ancho_abajo", anchoAbajo}, {"ancho_arriba", anchoArriba}, {"ancho_centro", anchoCentro},
             {"alto_izq", altoIzq}, {"alto_centro", altoCentro}, {"alto_der", altoDer},
             {"tres_ancho", If(tresAncho, 1D, 0D)}, {"tres_alto", If(tresAlto, 1D, 0D)},
-            {"max_ancho", maxAncho}, {"max_alto", maxAlto}, {"min_alto", minAlto}}
+            {"max_ancho", maxAncho}, {"max_alto", maxAlto}, {"min_alto", minAlto},
+            {"alero", LeerDecimal(tab, "txtAlero")}}
 
         Dim resultado As ModeloVentana.ResultadoModelo
         Try
@@ -673,9 +682,9 @@ Public Class frmRegistrarPedido
 
         Dim nombres() As String
         If chb.Name = "CheckBox3" Then
-            nombres = New String() {"Label24", "txtArrVentana", "Label27", "txtCenVentana1", "Label22"}
+            nombres = New String() {"Label24", "txtAbaVentana", "Label47", "Label27", "txtCenVentana1", "Label22", "Label26"}
         ElseIf chb.Name = "CheckBox4" Then
-            nombres = New String() {"Label23", "txtDerVentana", "Label36", "txtCenVentana2", "Label21"}
+            nombres = New String() {"Label23", "txtIzqVentana", "Label46", "Label36", "txtCenVentana2", "Label21", "Label25"}
         Else
             Return
         End If
@@ -734,6 +743,7 @@ Public Class frmRegistrarPedido
         nueva.Text = seleccion & numero.ToString()
         tabsPedidos.TabPages.Add(nueva)
         tabsPedidos.SelectedTab = nueva
+        AplicarAleroVentana(nueva)
         RecalcularTab(nueva)
     End Sub
 
@@ -741,6 +751,7 @@ Public Class frmRegistrarPedido
         Dim actual As TabPage = tabsPedidos.SelectedTab
         If actual Is Nothing Then Return
         LimpiarControles(actual)
+        AplicarAleroVentana(actual)
         RecalcularTab(actual)
     End Sub
 
@@ -840,7 +851,7 @@ Public Class frmRegistrarPedido
         "txtArrVentana", "txtCenVentana1", "txtAbaVentana", "txtDerVentana",
         "txtCenVentana2", "txtIzqVentana",
         "txtExtra", "txtManoObra", "txtExtraVentana", "txtManoObraVentana",
-        "txtLargoAluminio", "txtExtraAluminio", "txtManoObraAluminio"}
+        "txtLargoAluminio", "txtExtraAluminio", "txtManoObraAluminio", "txtAlero"}
 
     Private Shared Function EsCampoNumerico(nombre As String) As Boolean
         Return Array.IndexOf(CamposNumericos, nombre) >= 0
@@ -861,6 +872,23 @@ Public Class frmRegistrarPedido
     Private Function EsTabVentana(tab As TabPage) As Boolean
         Return BuscarControl(tab, "txtTotalVentana") IsNot Nothing
     End Function
+
+    ' Los modelos "sin alero" no usan el campo de alero: se ocultan su caja y etiquetas.
+    Private Sub AplicarAleroVentana(tab As TabPage)
+        If Not EsTabVentana(tab) Then Return
+        Dim nombre As String = TryCast(tab.Tag, String)
+        If String.IsNullOrEmpty(nombre) Then Return
+        Dim mostrar As Boolean = nombre.IndexOf("sin alero", StringComparison.OrdinalIgnoreCase) < 0
+        For Each n As String In {"txtAlero", "Label51", "Label52"}
+            Dim c As Control = BuscarControl(tab, n)
+            If c IsNot Nothing Then c.Visible = mostrar
+        Next
+        Dim txt As TextBox = TryCast(BuscarControl(tab, "txtAlero"), TextBox)
+        If txt IsNot Nothing Then
+            txt.Enabled = mostrar
+            If mostrar AndAlso txt.Text.Trim() = "" Then txt.Text = VENTANA_ALERO_CM.ToString("0.00")
+        End If
+    End Sub
 
     Private Function EsTabAluminio(tab As TabPage) As Boolean
         Return BuscarControl(tab, "txtNombreAluminio") IsNot Nothing
@@ -1084,6 +1112,7 @@ Public Class frmRegistrarPedido
             MarcarCheck(tab, "CheckBox4")
             PonerVidrioDesdeCotizacion(tab, "txtNombreVidrioVentana", "cmbEspesorVentana")
             AsignarTexto(tab, "txtExtraVentana", cotExtra)
+            PonerColorAluminioVentana(tab)
         ElseIf EsTabAluminio(tab) Then
             AsignarTexto(tab, "txtLargoAluminio", cotAncho)
             AsignarTexto(tab, "txtManoObraAluminio", cotManoObra)
@@ -1114,6 +1143,19 @@ Public Class frmRegistrarPedido
             txtNombre.Text = (cotTipoAluminio & " " & cotColorAluminio).Trim()
             txtNombre.Tag = idProducto
         End If
+    End Sub
+
+    ' Coloca el color de aluminio (Estandar/Negro/Madera) traido del cotizador
+    Private Sub PonerColorAluminioVentana(tab As TabPage)
+        If String.IsNullOrEmpty(cotColorAluminio) Then Return
+        Dim cmb As ComboBox = TryCast(BuscarControl(tab, "cmbColorAlumnioVentana"), ComboBox)
+        If cmb Is Nothing Then Return
+        For i As Integer = 0 To cmb.Items.Count - 1
+            If cmb.Items(i).ToString().Equals(cotColorAluminio, StringComparison.OrdinalIgnoreCase) Then
+                cmb.SelectedIndex = i
+                Return
+            End If
+        Next
     End Sub
 
     Private Sub PonerVidrioDesdeCotizacion(tab As TabPage, nombreProducto As String, nombreEspesor As String)
@@ -1153,5 +1195,4 @@ Public Class frmRegistrarPedido
         Dim chb As CheckBox = TryCast(BuscarControl(tab, nombre), CheckBox)
         If chb IsNot Nothing AndAlso Not chb.Checked Then chb.Checked = True
     End Sub
-
 End Class

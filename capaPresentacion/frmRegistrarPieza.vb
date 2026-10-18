@@ -15,7 +15,7 @@ Public Class frmRegistrarPieza
         AplicarTema(Me, tema)
         Dim p As Paleta = Temas.Obtener(tema)
         Panel2.BackColor = p.Fondo
-        lblTitulo.ForeColor = p.Acento
+        lblTitulo.ForeColor = p.Titulo
         Try
             CargarComboVariantes(cmbVariante, objInv.ListarVariantes(True), False)
             If idVarianteInicial.HasValue Then cmbVariante.SelectedValue = idVarianteInicial.Value

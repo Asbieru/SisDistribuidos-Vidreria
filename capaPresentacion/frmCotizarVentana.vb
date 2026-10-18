@@ -5,6 +5,9 @@ Public Class frmCotizarVentana
     Public Property tema As String = "CLARO" Implements IFormularioTema.tema
     Public Property idUsuario As Integer = 0
 
+    ' Nombres de los modelos de ventana activos (se comportan como "Ventana")
+    Private modelosVentana As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
+
     Private Sub frmCotizarVentana_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         AplicarTema(Me, tema)
         ResolverUsuario()
@@ -33,9 +36,18 @@ Public Class frmCotizarVentana
     Private Sub CargarCombos()
         Try
             cmbPedido.Items.Clear()
-            cmbPedido.Items.Add("Ventana")
             cmbPedido.Items.Add("VIDRIO")
             cmbPedido.Items.Add("ALUMINIO")
+
+            ' Un modelo de ventana por cada fila activa de modelos_ventana
+            modelosVentana.Clear()
+            Try
+                For Each m As ModeloVentana In New ModeloVentana().ListarActivos()
+                    modelosVentana.Add(m.Nombre)
+                    cmbPedido.Items.Add(m.Nombre)
+                Next
+            Catch
+            End Try
 
             cmbColorAluminio.Items.Clear()
             For Each c As String In New ProductoVariante().ListarColoresAluminio()
@@ -65,7 +77,7 @@ Public Class frmCotizarVentana
     ' VIDRIO: oculta todo el aluminio. ALUMINIO: oculta el vidrio y el alto.
     Private Sub AplicarVisibilidadPorPedido()
         Dim sel As String = ModoPedido()
-        Dim esVentana As Boolean = sel = "VENTANA"
+        Dim esVentana As Boolean = sel = "VENTANA" OrElse modelosVentana.Contains(sel)
         Dim esVidrio As Boolean = sel = "VIDRIO"
         Dim esAluminio As Boolean = sel = "ALUMINIO"
 
@@ -174,7 +186,7 @@ Public Class frmCotizarVentana
     ' Ventana oculta el tipo y ALUMINIO ya trae todos los tipos)
     Private Sub cmbColorAluminio_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cmbColorAluminio.SelectedIndexChanged
         Dim sel As String = ModoPedido()
-        If sel = "ALUMINIO" OrElse sel = "VENTANA" Then
+        If sel = "ALUMINIO" OrElse sel = "VENTANA" OrElse modelosVentana.Contains(sel) Then
             Recalcular()
             Return
         End If
@@ -267,7 +279,7 @@ Public Class frmCotizarVentana
     Private Function PrecioVidrio() As Decimal
         If cmbTipoVidrio.SelectedIndex < 0 OrElse cmbColorVidrio.SelectedIndex < 0 OrElse txtEspesor.SelectedIndex < 0 Then Return 0D
         Try
-            Dim r = New ProductoVariante().ResolverVarianteVidrio( _
+            Dim r = New ProductoVariante().ResolverVarianteVidrio(
                 cmbTipoVidrio.SelectedItem.ToString(), cmbColorVidrio.SelectedItem.ToString(), Convert.ToDecimal(txtEspesor.SelectedItem))
             Return r.precioUnitario
         Catch
@@ -345,6 +357,8 @@ Public Class frmCotizarVentana
             objFrm.cotEspesor = Convert.ToDecimal(txtEspesor.SelectedItem)
             objFrm.cotTipoVidrio = cmbTipoVidrio.SelectedItem.ToString()
             objFrm.cotColorVidrio = cmbColorVidrio.SelectedItem.ToString()
+            ' En modo ventana se lleva el color de aluminio elegido (Estandar/Negro/Madera)
+            objFrm.cotColorAluminio = TextoCombo(cmbColorAluminio)
         End If
 
         objFrm.MdiParent = Me.MdiParent

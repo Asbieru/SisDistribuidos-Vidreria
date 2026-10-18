@@ -13,7 +13,7 @@ Public Class frmVerKardex
         AplicarTema(Me, tema)
         Dim p As Paleta = Temas.Obtener(tema)
         Panel2.BackColor = p.Fondo
-        lblTitulo.ForeColor = p.Acento
+        lblTitulo.ForeColor = p.Titulo
 
         dtpDesde.Value = Date.Today.AddDays(-30)
         dtpHasta.Value = Date.Today

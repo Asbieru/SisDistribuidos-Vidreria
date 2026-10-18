@@ -13,6 +13,7 @@ Module Temas
         Public BotonTexto As Color
         Public BotonFondo As Color
         Public Acento As Color
+        Public Titulo As Color
     End Structure
 
     Public Function Obtener(tema As String) As Paleta
@@ -25,6 +26,7 @@ Module Temas
                 p.BotonTexto = Color.White
                 p.BotonFondo = Color.FromArgb(70, 70, 76)
                 p.Acento = Color.LightBlue
+                p.Titulo = Color.LightBlue
             Case "AZULCLARO"
                 p.Fondo = Color.FromArgb(235, 244, 255)
                 p.FondoPanel = Color.FromArgb(205, 225, 245)
@@ -32,6 +34,7 @@ Module Temas
                 p.BotonTexto = Color.White
                 p.BotonFondo = Color.FromArgb(51, 122, 183)
                 p.Acento = Color.FromArgb(0, 90, 158)
+                p.Titulo = Color.FromArgb(0, 90, 158)
             Case "AZULOSCURO"
                 p.Fondo = Color.FromArgb(16, 28, 52)
                 p.FondoPanel = Color.FromArgb(26, 42, 74)
@@ -39,6 +42,7 @@ Module Temas
                 p.BotonTexto = Color.White
                 p.BotonFondo = Color.FromArgb(40, 70, 120)
                 p.Acento = Color.FromArgb(120, 190, 255)
+                p.Titulo = Color.FromArgb(120, 190, 255)
             Case Else
                 p.Fondo = Color.White
                 p.FondoPanel = Color.FromArgb(242, 244, 247)
@@ -46,6 +50,7 @@ Module Temas
                 p.BotonTexto = Color.Black
                 p.BotonFondo = Color.Gainsboro
                 p.Acento = Color.DarkBlue
+                p.Titulo = Color.Black
         End Select
         Return p
     End Function

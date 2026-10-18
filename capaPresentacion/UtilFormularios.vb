@@ -150,7 +150,7 @@ Module UtilFormularios
                 dgv.ScrollBars = ScrollBars.Both
                 dgv.EnableHeadersVisualStyles = False
             ElseIf TypeOf c Is Label Then
-                c.ForeColor = If(c.Font.SizeInPoints >= 14, p.Acento, p.Texto)
+                c.ForeColor = If(c.Font.SizeInPoints >= 14, p.Titulo, p.Texto)
                 If c.Name = "msj" OrElse c.Name = "msj2" OrElse c.Name = "lblAlerta" Then
                     c.ForeColor = If(p.Fondo.GetBrightness() < 0.5F, Color.LightCoral, Color.DarkRed)
                 End If

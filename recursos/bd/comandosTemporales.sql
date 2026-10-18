@@ -230,3 +230,44 @@ GO
 
 PRINT 'Modelos de ventana: tablas/productos/id_modelo listos. Ahora ejecute 00_vidrieria_completo.sql para recrear TVP_PedidoItem, sp_ped_registrar y cargar los modelos.';
 GO
+
+-- ------------------------------------------------------------
+-- 7) El alero pasa a ser un dato del formulario (editable). Antes estaba
+--    fijo en 35 dentro de las formulas del modelo. Se reemplaza 35 por la
+--    variable "alero" en las variables de los modelos con alero.
+-- ------------------------------------------------------------
+UPDATE dbo.modelo_ventana_variable
+SET formula = REPLACE(formula, '35', 'alero')
+WHERE nombre IN ('anclaje', 'alto_fijo') AND formula LIKE '%35%';
+GO
+
+-- ------------------------------------------------------------
+-- 8) Faltaba crear sp_ped_recalcular_estados en la BD remota (lo usa
+--    frmPedidoUnitario al abrir un pedido). Su definicion completa esta
+--    en 00_vidrieria_completo.sql.
+-- ------------------------------------------------------------
+IF OBJECT_ID(N'dbo.sp_ped_recalcular_estados', N'P') IS NULL
+    EXEC('CREATE PROCEDURE dbo.sp_ped_recalcular_estados AS BEGIN SET NOCOUNT ON; END');
+GO
+
+CREATE OR ALTER PROCEDURE dbo.sp_ped_recalcular_estados
+    @id_pedido INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    UPDATE pi
+    SET estado = 'EN_PROCESO'
+    FROM dbo.pedido_item pi
+    WHERE pi.id_pedido = @id_pedido
+      AND pi.estado = 'PENDIENTE'
+      AND EXISTS (SELECT 1 FROM dbo.pedido_detalle pd
+                  WHERE pd.id_item = pi.id_item AND pd.estado = 'ACTIVO')
+      AND NOT EXISTS (SELECT 1 FROM dbo.pedido_detalle pd
+                      WHERE pd.id_item = pi.id_item AND pd.estado = 'ACTIVO'
+                        AND pd.id_pieza IS NULL AND pd.id_compra_detalle IS NULL);
+END
+GO
+
+PRINT 'Alero editable + sp_ped_recalcular_estados listos.';
+GO
