@@ -843,6 +843,9 @@ CREATE TYPE dbo.TVP_PedidoMedida AS TABLE (
     valor_cm        DECIMAL(10,2) NOT NULL
 );
 GO
+IF OBJECT_ID(N'dbo.sp_inv_ingresar_pieza', N'P') IS NOT NULL DROP PROCEDURE dbo.sp_inv_ingresar_pieza;
+GO
+
 
 -- ============================================================
 -- 2) PROCEDIMIENTOS ALMACENADOS / FUNCIONES
@@ -861,7 +864,7 @@ GO
 --          o INICIAL (ya estaba en el almacen)
 -- Devuelve: id_pieza
 -- ------------------------------------------------------------
-CREATE OR ALTER PROCEDURE dbo.sp_inv_ingresar_pieza
+CREATE PROCEDURE dbo.sp_inv_ingresar_pieza
     @id_variante        INT,
     @ancho_cm           DECIMAL(9,3) = NULL,
     @alto_cm            DECIMAL(9,3) = NULL,
@@ -870,7 +873,8 @@ CREATE OR ALTER PROCEDURE dbo.sp_inv_ingresar_pieza
     @id_compra_detalle  INT = NULL,
     @id_pieza_origen    INT = NULL,
     @id_usuario         INT = NULL,
-    @observacion        NVARCHAR(255) = NULL
+    @observacion        NVARCHAR(255) = NULL,
+    @fecha              DATETIME2 = NULL   -- la fecha la envia la aplicacion (si viene NULL usa el servidor)
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -898,13 +902,13 @@ BEGIN
     BEGIN TRY
     IF @tran_externa = 0 BEGIN TRANSACTION; ELSE SAVE TRANSACTION sp_inv;  -- propia, o punto de guardado
 
-        INSERT INTO dbo.inventario_piezas (id_variante, id_pieza_origen, id_compra_detalle, ancho_cm, alto_cm, largo_cm, estado, origen)
-        VALUES (@id_variante, @id_pieza_origen, @id_compra_detalle, @ancho_cm, @alto_cm, @largo_cm, 'DISPONIBLE', @origen);
+        INSERT INTO dbo.inventario_piezas (id_variante, id_pieza_origen, id_compra_detalle, ancho_cm, alto_cm, largo_cm, estado, origen, fecha_ingreso)
+        VALUES (@id_variante, @id_pieza_origen, @id_compra_detalle, @ancho_cm, @alto_cm, @largo_cm, 'DISPONIBLE', @origen, ISNULL(@fecha, dbo.fn_hora_peru()));
 
         DECLARE @id_pieza INT = SCOPE_IDENTITY();
 
-        INSERT INTO dbo.movimientos_inventario (id_variante, id_pieza, tipo, motivo, cantidad, id_usuario, id_compra_detalle, observacion)
-        VALUES (@id_variante, @id_pieza, 'ENTRADA', @origen, 1, @id_usuario, @id_compra_detalle, @observacion);
+        INSERT INTO dbo.movimientos_inventario (id_variante, id_pieza, tipo, motivo, cantidad, id_usuario, id_compra_detalle, observacion, fecha)
+        VALUES (@id_variante, @id_pieza, 'ENTRADA', @origen, 1, @id_usuario, @id_compra_detalle, @observacion, ISNULL(@fecha, dbo.fn_hora_peru()));
 
     IF @tran_externa = 0 COMMIT TRANSACTION;  -- si es de otro, el que la abrio decide el COMMIT
     END TRY
@@ -919,6 +923,9 @@ BEGIN
     SELECT @id_pieza AS id_pieza;
 END
 GO
+IF OBJECT_ID(N'dbo.sp_inv_cambiar_estado_pieza', N'P') IS NOT NULL DROP PROCEDURE dbo.sp_inv_cambiar_estado_pieza;
+GO
+
 
 -- ------------------------------------------------------------
 -- Cambiar el estado de una pieza
@@ -927,7 +934,7 @@ GO
 --   VENDIDA, CONSUMIDA -> DEFECTUOSA (una pieza ya usada puede resultar rota)
 --   DEFECTUOSA es final (la pieza quedo inutilizable)
 -- ------------------------------------------------------------
-CREATE OR ALTER PROCEDURE dbo.sp_inv_cambiar_estado_pieza
+CREATE PROCEDURE dbo.sp_inv_cambiar_estado_pieza
     @id_pieza     INT,
     @estado       NVARCHAR(15),
     @id_usuario   INT = NULL,
@@ -984,6 +991,9 @@ BEGIN
     END CATCH
 END
 GO
+IF OBJECT_ID(N'dbo.sp_inv_cortar_pieza', N'P') IS NOT NULL DROP PROCEDURE dbo.sp_inv_cortar_pieza;
+GO
+
 
 -- ------------------------------------------------------------
 -- Cortar una pieza
@@ -998,7 +1008,7 @@ GO
 --   Un sobrante menor a @minimo_util_cm en algun lado se considera desperdicio.
 -- Devuelve: los retazos generados (puede ser 0, 1 o 2 filas)
 -- ------------------------------------------------------------
-CREATE OR ALTER PROCEDURE dbo.sp_inv_cortar_pieza
+CREATE PROCEDURE dbo.sp_inv_cortar_pieza
     @id_pieza        INT,
     @ancho_corte     DECIMAL(9,3) = NULL,
     @alto_corte      DECIMAL(9,3) = NULL,
@@ -1102,6 +1112,9 @@ BEGIN
     SELECT id_pieza, ancho_cm, alto_cm, largo_cm FROM @retazos;
 END
 GO
+IF OBJECT_ID(N'dbo.sp_inv_mover_cajas', N'P') IS NOT NULL DROP PROCEDURE dbo.sp_inv_mover_cajas;
+GO
+
 
 -- ------------------------------------------------------------
 -- Mover cajas o unidades (tornillos / tarugos por CAJA, accesorios por UNIDAD)
@@ -1111,7 +1124,7 @@ GO
 -- Si la variante todavia no tiene fila en inventario_cajas, se crea.
 -- Devuelve: stock_resultante
 -- ------------------------------------------------------------
-CREATE OR ALTER PROCEDURE dbo.sp_inv_mover_cajas
+CREATE PROCEDURE dbo.sp_inv_mover_cajas
     @id_variante        INT,
     @tipo               NVARCHAR(10),
     @cantidad           INT,
@@ -1179,6 +1192,9 @@ BEGIN
     SELECT @nuevo AS stock_resultante;
 END
 GO
+IF OBJECT_ID(N'dbo.sp_ped_registrar', N'P') IS NOT NULL DROP PROCEDURE dbo.sp_ped_registrar;
+GO
+
 
 -- ------------------------------------------------------------
 -- Registrar un pedido completo (uno o mas items: ventanas, mamparas,
@@ -1192,7 +1208,7 @@ GO
 --                     que se registre la compra y se enlace despues
 -- Devuelve: @id_pedido
 -- ------------------------------------------------------------
-CREATE OR ALTER PROCEDURE dbo.sp_ped_registrar
+CREATE PROCEDURE dbo.sp_ped_registrar
     @id_cliente INT,
     @id_usuario INT,
     @fecha      DATETIME2 = NULL,   -- la fecha la envia la aplicacion (si viene NULL usa el servidor)
@@ -1318,6 +1334,9 @@ BEGIN
     END CATCH
 END
 GO
+IF OBJECT_ID(N'dbo.sp_ped_item_roto', N'P') IS NOT NULL DROP PROCEDURE dbo.sp_ped_item_roto;
+GO
+
 
 -- ------------------------------------------------------------
 -- frmPedidoUnitario: item roto / cancelar item / terminar pedido
@@ -1326,7 +1345,7 @@ GO
 -- Marca como rota una linea (detalle) del pedido: la pieza usada pasa a DEFECTUOSA,
 -- la linea vieja queda REEMPLAZADO y se crea una nueva linea ACTIVA con el mismo
 -- material/medidas/precio, recalculando la accion segun el stock disponible.
-CREATE OR ALTER PROCEDURE dbo.sp_ped_item_roto
+CREATE PROCEDURE dbo.sp_ped_item_roto
     @id_detalle INT,
     @id_usuario INT = NULL
 AS
@@ -1443,10 +1462,13 @@ BEGIN
     SELECT @id_nuevo AS id_detalle, @accion_nueva AS accion, @pieza_final AS id_pieza;
 END
 GO
+IF OBJECT_ID(N'dbo.sp_ped_cancelar_item', N'P') IS NOT NULL DROP PROCEDURE dbo.sp_ped_cancelar_item;
+GO
+
 
 -- Cancela un item completo del pedido: sus detalles quedan CANCELADO, libera las
 -- piezas RESERVADA ligadas y recalcula el total del pedido.
-CREATE OR ALTER PROCEDURE dbo.sp_ped_cancelar_item
+CREATE PROCEDURE dbo.sp_ped_cancelar_item
     @id_item    INT,
     @id_usuario INT = NULL
 AS
@@ -1512,10 +1534,13 @@ BEGIN
     END CATCH
 END
 GO
+IF OBJECT_ID(N'dbo.sp_ped_cancelar_pedido', N'P') IS NOT NULL DROP PROCEDURE dbo.sp_ped_cancelar_pedido;
+GO
+
 
 -- Cancela TODOS los items activos del pedido reutilizando sp_ped_cancelar_item
 -- (liberando piezas RESERVADA y recalculando el total). Deja el pedido CANCELADO.
-CREATE OR ALTER PROCEDURE dbo.sp_ped_cancelar_pedido
+CREATE PROCEDURE dbo.sp_ped_cancelar_pedido
     @id_pedido  INT,
     @id_usuario INT = NULL
 AS
@@ -1556,11 +1581,14 @@ BEGIN
     END CATCH
 END
 GO
+IF OBJECT_ID(N'dbo.sp_ped_recalcular_estados', N'P') IS NOT NULL DROP PROCEDURE dbo.sp_ped_recalcular_estados;
+GO
+
 
 -- Recalcula el estado de los items de un pedido: un item PENDIENTE pasa a EN_PROCESO
 -- cuando TODOS sus detalles activos ya estan a mano (pieza en inventario o compra ya
 -- ingresada). Solo los items EN_PROCESO pueden completarse.
-CREATE OR ALTER PROCEDURE dbo.sp_ped_recalcular_estados
+CREATE PROCEDURE dbo.sp_ped_recalcular_estados
     @id_pedido INT
 AS
 BEGIN
@@ -1578,9 +1606,12 @@ BEGIN
                         AND pd.id_pieza IS NULL AND pd.id_compra_detalle IS NULL);
 END
 GO
+IF OBJECT_ID(N'dbo.sp_ped_terminar_item', N'P') IS NOT NULL DROP PROCEDURE dbo.sp_ped_terminar_item;
+GO
+
 
 -- Termina UN item del pedido (solo si esta EN_PROCESO, es decir con todo a mano).
-CREATE OR ALTER PROCEDURE dbo.sp_ped_terminar_item
+CREATE PROCEDURE dbo.sp_ped_terminar_item
     @id_item    INT,
     @id_usuario INT = NULL,
     @fecha      DATETIME2 = NULL   -- la fecha la envia la aplicacion
@@ -1612,9 +1643,12 @@ BEGIN
         UPDATE dbo.pedidos SET fecha_termino = ISNULL(@fecha, dbo.fn_hora_peru()) WHERE id_pedido = @id_pedido;
 END
 GO
+IF OBJECT_ID(N'dbo.sp_ped_terminar', N'P') IS NOT NULL DROP PROCEDURE dbo.sp_ped_terminar;
+GO
+
 
 -- Marca todo el pedido como terminado (entregado/instalado). Es independiente del pago.
-CREATE OR ALTER PROCEDURE dbo.sp_ped_terminar
+CREATE PROCEDURE dbo.sp_ped_terminar
     @id_pedido  INT,
     @id_usuario INT = NULL,
     @fecha      DATETIME2 = NULL   -- la fecha la envia la aplicacion
@@ -1638,11 +1672,14 @@ BEGIN
     WHERE id_pedido = @id_pedido;
 END
 GO
+IF OBJECT_ID(N'dbo.sp_ped_combo_colores_aluminio', N'P') IS NOT NULL DROP PROCEDURE dbo.sp_ped_combo_colores_aluminio;
+GO
+
 
 -- ------------------------------------------------------------
 -- Combos de frmRegistrarPedido: aluminio (color -> tipo, en cascada)
 -- ------------------------------------------------------------
-CREATE OR ALTER PROCEDURE dbo.sp_ped_combo_colores_aluminio
+CREATE PROCEDURE dbo.sp_ped_combo_colores_aluminio
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -1652,8 +1689,11 @@ BEGIN
     ORDER BY color;
 END
 GO
+IF OBJECT_ID(N'dbo.sp_ped_combo_tipos_aluminio', N'P') IS NOT NULL DROP PROCEDURE dbo.sp_ped_combo_tipos_aluminio;
+GO
 
-CREATE OR ALTER PROCEDURE dbo.sp_ped_combo_tipos_aluminio
+
+CREATE PROCEDURE dbo.sp_ped_combo_tipos_aluminio
     @color NVARCHAR(30)
 AS
 BEGIN
@@ -1664,6 +1704,9 @@ BEGIN
     ORDER BY tipo;
 END
 GO
+IF OBJECT_ID(N'dbo.sp_ped_combo_colores_vidrio', N'P') IS NOT NULL DROP PROCEDURE dbo.sp_ped_combo_colores_vidrio;
+GO
+
 
 -- ------------------------------------------------------------
 -- Combos de frmRegistrarPedido: vidrio.
@@ -1671,7 +1714,7 @@ GO
 -- tipo  (COLOR, ESPEJO, FIGURA...) y color (INCOLORO, AZUL...)
 -- salen de productos.tipo y productos.color.
 -- ------------------------------------------------------------
-CREATE OR ALTER PROCEDURE dbo.sp_ped_combo_colores_vidrio
+CREATE PROCEDURE dbo.sp_ped_combo_colores_vidrio
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -1681,8 +1724,11 @@ BEGIN
     ORDER BY tipo;
 END
 GO
+IF OBJECT_ID(N'dbo.sp_ped_combo_espesores_vidrio', N'P') IS NOT NULL DROP PROCEDURE dbo.sp_ped_combo_espesores_vidrio;
+GO
 
-CREATE OR ALTER PROCEDURE dbo.sp_ped_combo_espesores_vidrio
+
+CREATE PROCEDURE dbo.sp_ped_combo_espesores_vidrio
     @tipo  NVARCHAR(50),
     @color NVARCHAR(30)
 AS
@@ -1697,12 +1743,15 @@ BEGIN
     ORDER BY c.espesor_cm;
 END
 GO
+IF OBJECT_ID(N'dbo.sp_ped_espesores_por_producto', N'P') IS NOT NULL DROP PROCEDURE dbo.sp_ped_espesores_por_producto;
+GO
+
 
 -- ------------------------------------------------------------
 -- Espesores de un producto concreto (se elige el producto con
 -- frmListadoProductos y de ahi salen sus espesores disponibles).
 -- ------------------------------------------------------------
-CREATE OR ALTER PROCEDURE dbo.sp_ped_espesores_por_producto
+CREATE PROCEDURE dbo.sp_ped_espesores_por_producto
     @id_producto INT
 AS
 BEGIN
@@ -1714,12 +1763,15 @@ BEGIN
     ORDER BY c.espesor_cm;
 END
 GO
+IF OBJECT_ID(N'dbo.sp_ped_resolver_variante_producto', N'P') IS NOT NULL DROP PROCEDURE dbo.sp_ped_resolver_variante_producto;
+GO
+
 
 -- ------------------------------------------------------------
 -- Resolver la variante exacta (id_variante + precio) de un producto
 -- segun el espesor elegido. Es lo que va dentro del TVP_PedidoDetalle.
 -- ------------------------------------------------------------
-CREATE OR ALTER PROCEDURE dbo.sp_ped_resolver_variante_producto
+CREATE PROCEDURE dbo.sp_ped_resolver_variante_producto
     @id_producto INT,
     @espesor_cm  DECIMAL(6,2)
 AS
@@ -1731,12 +1783,15 @@ BEGIN
     WHERE pv.id_producto = @id_producto AND c.espesor_cm = @espesor_cm;
 END
 GO
+IF OBJECT_ID(N'dbo.sp_ped_resolver_variante_vidrio', N'P') IS NOT NULL DROP PROCEDURE dbo.sp_ped_resolver_variante_vidrio;
+GO
+
 
 -- ------------------------------------------------------------
 -- Resolver la variante exacta (id_variante + precio) una vez elegidos
 -- todos los combos. Esto es lo que va dentro del TVP_PedidoDetalle.
 -- ------------------------------------------------------------
-CREATE OR ALTER PROCEDURE dbo.sp_ped_resolver_variante_vidrio
+CREATE PROCEDURE dbo.sp_ped_resolver_variante_vidrio
     @tipo       NVARCHAR(50),
     @color      NVARCHAR(30),
     @espesor_cm DECIMAL(6,2)
@@ -1752,8 +1807,11 @@ BEGIN
       AND c.espesor_cm = @espesor_cm AND p.activo = 1;
 END
 GO
+IF OBJECT_ID(N'dbo.sp_ped_resolver_variante_aluminio', N'P') IS NOT NULL DROP PROCEDURE dbo.sp_ped_resolver_variante_aluminio;
+GO
 
-CREATE OR ALTER PROCEDURE dbo.sp_ped_resolver_variante_aluminio
+
+CREATE PROCEDURE dbo.sp_ped_resolver_variante_aluminio
     @color NVARCHAR(30),
     @tipo  NVARCHAR(50)
 AS
@@ -1765,12 +1823,15 @@ BEGIN
     WHERE p.categoria = 'ALUMINIO' AND p.color = @color AND p.tipo = @tipo AND p.activo = 1;
 END
 GO
+IF OBJECT_ID(N'dbo.sp_ped_tarifa_sugerida', N'P') IS NOT NULL DROP PROCEDURE dbo.sp_ped_tarifa_sugerida;
+GO
+
 
 -- ------------------------------------------------------------
 -- Sugerencia de "Extras" (aluminio + silicona) segun el perimetro
 -- de la ventana. Solo precarga el campo; el usuario lo puede editar.
 -- ------------------------------------------------------------
-CREATE OR ALTER PROCEDURE dbo.sp_ped_tarifa_sugerida
+CREATE PROCEDURE dbo.sp_ped_tarifa_sugerida
     @perimetro_cm DECIMAL(10,2)
 AS
 BEGIN
@@ -1816,8 +1877,11 @@ IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE object_id = OBJECT_ID('dbo.client
     CREATE UNIQUE INDEX UX_clientes_documento ON dbo.clientes(tipo_documento,documento)
     WHERE tipo_documento IS NOT NULL AND documento IS NOT NULL;
 GO
+IF OBJECT_ID(N'dbo.sp_cli_listar', N'P') IS NOT NULL DROP PROCEDURE dbo.sp_cli_listar;
+GO
 
-CREATE OR ALTER PROCEDURE dbo.sp_cli_listar
+
+CREATE PROCEDURE dbo.sp_cli_listar
     @texto NVARCHAR(150) = NULL
 AS
 BEGIN
@@ -1837,8 +1901,11 @@ BEGIN
     ORDER BY nombre, id_cliente;
 END;
 GO
+IF OBJECT_ID(N'dbo.sp_cli_obtener', N'P') IS NOT NULL DROP PROCEDURE dbo.sp_cli_obtener;
+GO
 
-CREATE OR ALTER PROCEDURE dbo.sp_cli_obtener
+
+CREATE PROCEDURE dbo.sp_cli_obtener
     @id_cliente INT
 AS
 BEGIN
@@ -1850,8 +1917,11 @@ BEGIN
     FROM dbo.clientes WHERE id_cliente = @id_cliente;
 END;
 GO
+IF OBJECT_ID(N'dbo.sp_cli_guardar', N'P') IS NOT NULL DROP PROCEDURE dbo.sp_cli_guardar;
+GO
 
-CREATE OR ALTER PROCEDURE dbo.sp_cli_guardar
+
+CREATE PROCEDURE dbo.sp_cli_guardar
     @id_cliente INT = 0,
     @nombre NVARCHAR(MAX),
     @documento NVARCHAR(MAX) = NULL,
@@ -1957,8 +2027,11 @@ BEGIN
     END CATCH;
 END;
 GO
+IF OBJECT_ID(N'dbo.sp_cli_tiene_pedidos', N'P') IS NOT NULL DROP PROCEDURE dbo.sp_cli_tiene_pedidos;
+GO
 
-CREATE OR ALTER PROCEDURE dbo.sp_cli_tiene_pedidos
+
+CREATE PROCEDURE dbo.sp_cli_tiene_pedidos
     @id_cliente INT
 AS
 BEGIN
@@ -1970,8 +2043,11 @@ BEGIN
         THEN 1 ELSE 0 END) AS tiene_pedidos;
 END;
 GO
+IF OBJECT_ID(N'dbo.sp_cli_eliminar', N'P') IS NOT NULL DROP PROCEDURE dbo.sp_cli_eliminar;
+GO
 
-CREATE OR ALTER PROCEDURE dbo.sp_cli_eliminar
+
+CREATE PROCEDURE dbo.sp_cli_eliminar
     @id_cliente INT
 AS
 BEGIN
@@ -1998,8 +2074,11 @@ BEGIN
     END CATCH;
 END;
 GO
+IF OBJECT_ID(N'dbo.sp_cli_documento_coincidente', N'P') IS NOT NULL DROP PROCEDURE dbo.sp_cli_documento_coincidente;
+GO
 
-CREATE OR ALTER PROCEDURE dbo.sp_cli_documento_coincidente
+
+CREATE PROCEDURE dbo.sp_cli_documento_coincidente
     @documento NVARCHAR(20),
     @id_excluir INT = 0,
     @tipo_documento NVARCHAR(15) = NULL
@@ -2018,8 +2097,11 @@ BEGIN
     ORDER BY nombre, id_cliente;
 END;
 GO
+IF OBJECT_ID(N'dbo.sp_cli_historial', N'P') IS NOT NULL DROP PROCEDURE dbo.sp_cli_historial;
+GO
 
-CREATE OR ALTER PROCEDURE dbo.sp_cli_historial
+
+CREATE PROCEDURE dbo.sp_cli_historial
     @id_cliente INT,
     @estado NVARCHAR(15) = NULL,
     @desde DATE = NULL,
@@ -2057,8 +2139,11 @@ BEGIN
     ORDER BY p.fecha DESC, p.id_pedido DESC;
 END;
 GO
+IF OBJECT_ID(N'dbo.sp_cli_pagos_pedido', N'P') IS NOT NULL DROP PROCEDURE dbo.sp_cli_pagos_pedido;
+GO
 
-CREATE OR ALTER PROCEDURE dbo.sp_cli_pagos_pedido
+
+CREATE PROCEDURE dbo.sp_cli_pagos_pedido
     @id_cliente INT,
     @id_pedido INT
 AS
@@ -2849,3 +2934,91 @@ GO
 
 PRINT 'Base de datos vidrieria lista (esquema + datos + migraciones).';
 GO
+
+-- ============================================================
+-- [REPARACION] 1) Enlace compra -> pedido para datos EXISTENTES.
+--    Idempotente: solo toca lineas COMPRA_NUEVA sin pieza y piezas
+--    DISPONIBLES de origen COMPRA. Empareja variante + medidas
+--    normalizando NULL como 0 (pedido guarda 0.00, inventario NULL).
+-- ============================================================
+DECLARE @Enlazadas TABLE (id_pieza INT PRIMARY KEY, id_item INT);
+;WITH pendientes AS (
+    SELECT pd.id_detalle, pd.id_item, pd.id_variante, pd.ancho_cm, pd.alto_cm, pd.largo_cm,
+           ROW_NUMBER() OVER (PARTITION BY pd.id_variante, ISNULL(pd.ancho_cm,0),
+                              ISNULL(pd.alto_cm,0), ISNULL(pd.largo_cm,0)
+                              ORDER BY pd.id_detalle) AS rn
+    FROM dbo.pedido_detalle pd
+    WHERE pd.estado='ACTIVO' AND pd.accion='COMPRA_NUEVA' AND pd.id_pieza IS NULL
+      AND EXISTS (SELECT 1 FROM dbo.pedido_item pi
+                  WHERE pi.id_item=pd.id_item AND pi.estado<>'CANCELADO')
+), nuevas AS (
+    SELECT ip.id_pieza, ip.id_variante, ip.ancho_cm, ip.alto_cm, ip.largo_cm, ip.id_compra_detalle,
+           ROW_NUMBER() OVER (PARTITION BY ip.id_variante, ISNULL(ip.ancho_cm,0),
+                              ISNULL(ip.alto_cm,0), ISNULL(ip.largo_cm,0)
+                              ORDER BY ip.id_pieza) AS rn
+    FROM dbo.inventario_piezas ip
+    WHERE ip.origen='COMPRA' AND ip.estado='DISPONIBLE'
+)
+UPDATE pd SET pd.id_pieza=n.id_pieza, pd.accion='USA_EXISTENTE', pd.id_compra_detalle=n.id_compra_detalle
+OUTPUT inserted.id_pieza, inserted.id_item INTO @Enlazadas
+FROM dbo.pedido_detalle pd
+INNER JOIN pendientes p ON p.id_detalle=pd.id_detalle
+INNER JOIN nuevas n ON n.id_variante=p.id_variante AND n.rn=p.rn
+AND ISNULL(n.ancho_cm,0)=ISNULL(p.ancho_cm,0)
+AND ISNULL(n.alto_cm,0)=ISNULL(p.alto_cm,0)
+AND ISNULL(n.largo_cm,0)=ISNULL(p.largo_cm,0);
+
+UPDATE ip SET ip.estado='VENDIDA'
+FROM dbo.inventario_piezas ip
+INNER JOIN @Enlazadas e ON e.id_pieza=ip.id_pieza;
+
+INSERT INTO dbo.movimientos_inventario (id_variante, id_pieza, tipo, motivo, cantidad, id_usuario, id_pedido, observacion)
+SELECT ip.id_variante, e.id_pieza, 'SALIDA', 'VENTA', 1, NULL, pi.id_pedido,
+       'Enlace automatico compra-pedido (reparacion)'
+FROM @Enlazadas e
+INNER JOIN dbo.inventario_piezas ip ON ip.id_pieza=e.id_pieza
+INNER JOIN dbo.pedido_item pi ON pi.id_item=e.id_item;
+
+IF EXISTS (SELECT 1 FROM @Enlazadas)
+BEGIN
+    DECLARE @pEd INT;
+    DECLARE curPed CURSOR LOCAL FAST_FORWARD FOR
+        SELECT DISTINCT pi.id_pedido FROM @Enlazadas e
+        INNER JOIN dbo.pedido_item pi ON pi.id_item=e.id_item;
+    OPEN curPed; FETCH NEXT FROM curPed INTO @pEd;
+    WHILE @@FETCH_STATUS = 0 BEGIN
+        EXEC dbo.sp_ped_recalcular_estados @id_pedido=@pEd;
+        FETCH NEXT FROM curPed INTO @pEd;
+    END
+    CLOSE curPed; DEALLOCATE curPed;
+END
+GO
+
+-- ============================================================
+-- [REPARACION] 2) Fechas de ingreso insertadas con anio fuera de rango
+--    (reloj desfasado al momento del INSERT). Usa la fecha de la compra
+--    ligada; si no tiene, la fecha actual.
+-- ============================================================
+UPDATE ip SET fecha_ingreso = ISNULL(CONVERT(DATETIME2, c.fecha), dbo.fn_hora_peru())
+FROM dbo.inventario_piezas ip
+INNER JOIN dbo.compra_detalle cd ON cd.id_compra_detalle = ip.id_compra_detalle
+INNER JOIN dbo.compras c ON c.id_compra = cd.id_compra
+WHERE ip.fecha_ingreso > DATEADD(YEAR, 2, ISNULL(c.fecha, dbo.fn_hora_peru()))
+   OR ip.fecha_ingreso < DATEADD(YEAR, -5, ISNULL(c.fecha, dbo.fn_hora_peru()));
+
+UPDATE ip SET fecha_ingreso = dbo.fn_hora_peru()
+FROM dbo.inventario_piezas ip
+LEFT JOIN dbo.compra_detalle cd ON cd.id_compra_detalle = ip.id_compra_detalle
+WHERE cd.id_compra_detalle IS NULL
+  AND (ip.fecha_ingreso > DATEADD(YEAR, 2, dbo.fn_hora_peru())
+    OR ip.fecha_ingreso < DATEADD(YEAR, -5, dbo.fn_hora_peru()));
+
+UPDATE m SET fecha = ISNULL(CONVERT(DATETIME2, c.fecha), dbo.fn_hora_peru())
+FROM dbo.movimientos_inventario m
+INNER JOIN dbo.compra_detalle cd ON cd.id_compra_detalle = m.id_compra_detalle
+INNER JOIN dbo.compras c ON c.id_compra = cd.id_compra
+WHERE m.fecha > DATEADD(YEAR, 2, ISNULL(c.fecha, dbo.fn_hora_peru()))
+   OR m.fecha < DATEADD(YEAR, -5, ISNULL(c.fecha, dbo.fn_hora_peru()));
+GO
+
+PRINT 'OK';

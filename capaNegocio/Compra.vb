@@ -294,7 +294,8 @@ Public Class Compra
                     "    EXEC dbo.sp_inv_ingresar_pieza @id_variante=@variante" & sufijo &
                     ", @ancho_cm=@ancho" & sufijo & ", @alto_cm=@alto" & sufijo &
                     ", @largo_cm=@largo" & sufijo & ", @origen=N'COMPRA', " &
-                    "@id_compra_detalle=@cd" & sufijo & ", @id_usuario=@idUsuario;")
+                    "@id_compra_detalle=@cd" & sufijo & ", @id_usuario=@idUsuario, " &
+                    "@fecha=@fecha;")
                 sql.AppendLine(
                     "    SET @i" & sufijo & " = @i" & sufijo & " + 1;")
                 sql.AppendLine("END;")
@@ -315,8 +316,9 @@ Public Class Compra
         sql.AppendLine(
             "    SELECT pd.id_detalle, pd.id_item, pd.id_variante, " &
             "pd.ancho_cm, pd.alto_cm, pd.largo_cm, " &
-            "    ROW_NUMBER() OVER (PARTITION BY pd.id_variante, pd.ancho_cm, " &
-            "pd.alto_cm, pd.largo_cm ORDER BY pd.id_detalle) AS rn " &
+            "    ROW_NUMBER() OVER (PARTITION BY pd.id_variante, " &
+            "ISNULL(pd.ancho_cm,0), ISNULL(pd.alto_cm,0), ISNULL(pd.largo_cm,0) " &
+            "ORDER BY pd.id_detalle) AS rn " &
             "    FROM dbo.pedido_detalle pd " &
             "    WHERE pd.estado='ACTIVO' AND pd.accion='COMPRA_NUEVA' AND pd.id_pieza IS NULL " &
             "AND EXISTS (SELECT 1 FROM dbo.pedido_item pi " &
@@ -325,8 +327,9 @@ Public Class Compra
         sql.AppendLine(
             "    SELECT ip.id_pieza, ip.id_variante, ip.ancho_cm, ip.alto_cm, " &
             "ip.largo_cm, ip.id_compra_detalle, " &
-            "    ROW_NUMBER() OVER (PARTITION BY ip.id_variante, ip.ancho_cm, " &
-            "ip.alto_cm, ip.largo_cm ORDER BY ip.id_pieza) AS rn " &
+            "    ROW_NUMBER() OVER (PARTITION BY ip.id_variante, " &
+            "ISNULL(ip.ancho_cm,0), ISNULL(ip.alto_cm,0), ISNULL(ip.largo_cm,0) " &
+            "ORDER BY ip.id_pieza) AS rn " &
             "    FROM dbo.inventario_piezas ip " &
             "    INNER JOIN dbo.compra_detalle cd " &
             "    ON cd.id_compra_detalle = ip.id_compra_detalle " &
@@ -340,9 +343,9 @@ Public Class Compra
             "FROM dbo.pedido_detalle pd " &
             "INNER JOIN pendientes p ON p.id_detalle=pd.id_detalle " &
             "INNER JOIN nuevas n ON n.id_variante=p.id_variante AND n.rn=p.rn " &
-            "AND ((n.ancho_cm=p.ancho_cm AND n.alto_cm=p.alto_cm " &
-            "      AND n.largo_cm IS NULL AND p.largo_cm IS NULL) " &
-            "  OR (n.largo_cm=p.largo_cm AND n.ancho_cm IS NULL AND p.ancho_cm IS NULL));")
+            "AND ISNULL(n.ancho_cm,0)=ISNULL(p.ancho_cm,0) " &
+            "AND ISNULL(n.alto_cm,0)=ISNULL(p.alto_cm,0) " &
+            "AND ISNULL(n.largo_cm,0)=ISNULL(p.largo_cm,0);")
         sql.AppendLine(
             "UPDATE ip SET ip.estado='VENDIDA' FROM dbo.inventario_piezas ip " &
             "INNER JOIN @Enlazadas e ON e.id_pieza=ip.id_pieza;")
