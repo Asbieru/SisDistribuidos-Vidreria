@@ -23,6 +23,8 @@ Partial Class frmRegistrarCompras
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Me.pnlRegistroCompra = New System.Windows.Forms.Panel()
+        Me.lblAncho = New System.Windows.Forms.Label()
+        Me.lblAlto = New System.Windows.Forms.Label()
         Me.lblTotal = New System.Windows.Forms.Label()
         Me.btnVerLista = New System.Windows.Forms.Button()
         Me.btnGuardar = New System.Windows.Forms.Button()
@@ -47,16 +49,24 @@ Partial Class frmRegistrarCompras
         Me.lblFecha = New System.Windows.Forms.Label()
         Me.lblProveedor = New System.Windows.Forms.Label()
         Me.lblModo = New System.Windows.Forms.Label()
+        Me.numAlto = New System.Windows.Forms.NumericUpDown()
+        Me.numAncho = New System.Windows.Forms.NumericUpDown()
         Me.pnlRegistroCompra.SuspendLayout()
         CType(Me.dgvDetalle, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.nudCostoUnitario, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.nudCantidad, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.nudPedidoOrigen, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.numAlto, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.numAncho, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'pnlRegistroCompra
         '
         Me.pnlRegistroCompra.BackColor = System.Drawing.Color.White
+        Me.pnlRegistroCompra.Controls.Add(Me.numAncho)
+        Me.pnlRegistroCompra.Controls.Add(Me.numAlto)
+        Me.pnlRegistroCompra.Controls.Add(Me.lblAncho)
+        Me.pnlRegistroCompra.Controls.Add(Me.lblAlto)
         Me.pnlRegistroCompra.Controls.Add(Me.lblTotal)
         Me.pnlRegistroCompra.Controls.Add(Me.btnVerLista)
         Me.pnlRegistroCompra.Controls.Add(Me.btnGuardar)
@@ -81,29 +91,47 @@ Partial Class frmRegistrarCompras
         Me.pnlRegistroCompra.Controls.Add(Me.lblFecha)
         Me.pnlRegistroCompra.Controls.Add(Me.lblProveedor)
         Me.pnlRegistroCompra.Controls.Add(Me.lblModo)
-        Me.pnlRegistroCompra.Location = New System.Drawing.Point(0, 0)
         Me.pnlRegistroCompra.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.pnlRegistroCompra.Location = New System.Drawing.Point(0, 0)
         Me.pnlRegistroCompra.Name = "pnlRegistroCompra"
-        Me.pnlRegistroCompra.Size = New System.Drawing.Size(900, 620)
+        Me.pnlRegistroCompra.Size = New System.Drawing.Size(900, 648)
         Me.pnlRegistroCompra.TabIndex = 0
+        '
+        'lblAncho
+        '
+        Me.lblAncho.AutoSize = True
+        Me.lblAncho.Location = New System.Drawing.Point(472, 240)
+        Me.lblAncho.Name = "lblAncho"
+        Me.lblAncho.Size = New System.Drawing.Size(48, 16)
+        Me.lblAncho.TabIndex = 25
+        Me.lblAncho.Text = "Ancho:"
+        '
+        'lblAlto
+        '
+        Me.lblAlto.AutoSize = True
+        Me.lblAlto.Location = New System.Drawing.Point(472, 213)
+        Me.lblAlto.Name = "lblAlto"
+        Me.lblAlto.Size = New System.Drawing.Size(33, 16)
+        Me.lblAlto.TabIndex = 24
+        Me.lblAlto.Text = "Alto:"
         '
         'lblTotal
         '
+        Me.lblTotal.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.lblTotal.AutoSize = True
-        Me.lblTotal.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
-        Me.lblTotal.Location = New System.Drawing.Point(580, 513)
-        Me.lblTotal.Anchor = System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right
+        Me.lblTotal.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!)
+        Me.lblTotal.Location = New System.Drawing.Point(580, 551)
         Me.lblTotal.Name = "lblTotal"
-        Me.lblTotal.Size = New System.Drawing.Size(292, 28)
+        Me.lblTotal.Size = New System.Drawing.Size(97, 16)
         Me.lblTotal.TabIndex = 21
         Me.lblTotal.Text = "TOTAL: S/ 0.00"
         '
         'btnVerLista
         '
+        Me.btnVerLista.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.btnVerLista.AutoSize = True
-        Me.btnVerLista.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
-        Me.btnVerLista.Location = New System.Drawing.Point(288, 566)
-        Me.btnVerLista.Anchor = System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left
+        Me.btnVerLista.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Bold)
+        Me.btnVerLista.Location = New System.Drawing.Point(288, 594)
         Me.btnVerLista.Name = "btnVerLista"
         Me.btnVerLista.Size = New System.Drawing.Size(140, 34)
         Me.btnVerLista.TabIndex = 18
@@ -112,10 +140,10 @@ Partial Class frmRegistrarCompras
         '
         'btnGuardar
         '
+        Me.btnGuardar.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.btnGuardar.AutoSize = True
-        Me.btnGuardar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
-        Me.btnGuardar.Location = New System.Drawing.Point(24, 566)
-        Me.btnGuardar.Anchor = System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left
+        Me.btnGuardar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Bold)
+        Me.btnGuardar.Location = New System.Drawing.Point(24, 594)
         Me.btnGuardar.Name = "btnGuardar"
         Me.btnGuardar.Size = New System.Drawing.Size(120, 34)
         Me.btnGuardar.TabIndex = 20
@@ -124,10 +152,10 @@ Partial Class frmRegistrarCompras
         '
         'btnCancelar
         '
+        Me.btnCancelar.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.btnCancelar.AutoSize = True
-        Me.btnCancelar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
-        Me.btnCancelar.Location = New System.Drawing.Point(156, 566)
-        Me.btnCancelar.Anchor = System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left
+        Me.btnCancelar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Bold)
+        Me.btnCancelar.Location = New System.Drawing.Point(156, 594)
         Me.btnCancelar.Name = "btnCancelar"
         Me.btnCancelar.Size = New System.Drawing.Size(120, 34)
         Me.btnCancelar.TabIndex = 19
@@ -136,10 +164,10 @@ Partial Class frmRegistrarCompras
         '
         'btnQuitarDetalle
         '
+        Me.btnQuitarDetalle.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.btnQuitarDetalle.AutoSize = True
-        Me.btnQuitarDetalle.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
-        Me.btnQuitarDetalle.Location = New System.Drawing.Point(24, 508)
-        Me.btnQuitarDetalle.Anchor = System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left
+        Me.btnQuitarDetalle.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Bold)
+        Me.btnQuitarDetalle.Location = New System.Drawing.Point(24, 546)
         Me.btnQuitarDetalle.Name = "btnQuitarDetalle"
         Me.btnQuitarDetalle.Size = New System.Drawing.Size(180, 34)
         Me.btnQuitarDetalle.TabIndex = 17
@@ -150,23 +178,24 @@ Partial Class frmRegistrarCompras
         '
         Me.dgvDetalle.AllowUserToAddRows = False
         Me.dgvDetalle.AllowUserToDeleteRows = False
+        Me.dgvDetalle.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.dgvDetalle.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill
         Me.dgvDetalle.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.dgvDetalle.Location = New System.Drawing.Point(24, 292)
+        Me.dgvDetalle.Location = New System.Drawing.Point(24, 304)
         Me.dgvDetalle.MultiSelect = False
-        Me.dgvDetalle.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right
         Me.dgvDetalle.Name = "dgvDetalle"
         Me.dgvDetalle.ReadOnly = True
         Me.dgvDetalle.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
-        Me.dgvDetalle.Size = New System.Drawing.Size(848, 202)
-        Me.dgvDetalle.ScrollBars = System.Windows.Forms.ScrollBars.Both
+        Me.dgvDetalle.Size = New System.Drawing.Size(848, 230)
         Me.dgvDetalle.TabIndex = 16
         '
         'btnAgregarDetalle
         '
         Me.btnAgregarDetalle.AutoSize = True
-        Me.btnAgregarDetalle.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
-        Me.btnAgregarDetalle.Location = New System.Drawing.Point(24, 242)
+        Me.btnAgregarDetalle.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Bold)
+        Me.btnAgregarDetalle.Location = New System.Drawing.Point(24, 252)
         Me.btnAgregarDetalle.Name = "btnAgregarDetalle"
         Me.btnAgregarDetalle.Size = New System.Drawing.Size(120, 34)
         Me.btnAgregarDetalle.TabIndex = 15
@@ -176,64 +205,70 @@ Partial Class frmRegistrarCompras
         'nudCostoUnitario
         '
         Me.nudCostoUnitario.DecimalPlaces = 2
-        Me.nudCostoUnitario.Location = New System.Drawing.Point(590, 195)
+        Me.nudCostoUnitario.Location = New System.Drawing.Point(590, 152)
         Me.nudCostoUnitario.Maximum = New Decimal(New Integer() {1000000, 0, 0, 0})
         Me.nudCostoUnitario.Name = "nudCostoUnitario"
-        Me.nudCostoUnitario.Size = New System.Drawing.Size(150, 24)
+        Me.nudCostoUnitario.Size = New System.Drawing.Size(150, 22)
         Me.nudCostoUnitario.TabIndex = 14
         Me.nudCostoUnitario.Value = New Decimal(New Integer() {1, 0, 0, 0})
         '
         'nudCantidad
         '
-        Me.nudCantidad.Location = New System.Drawing.Point(590, 155)
+        Me.nudCantidad.Location = New System.Drawing.Point(590, 180)
         Me.nudCantidad.Maximum = New Decimal(New Integer() {1000000, 0, 0, 0})
         Me.nudCantidad.Name = "nudCantidad"
-        Me.nudCantidad.Size = New System.Drawing.Size(150, 24)
+        Me.nudCantidad.Size = New System.Drawing.Size(150, 22)
         Me.nudCantidad.TabIndex = 13
         Me.nudCantidad.Value = New Decimal(New Integer() {1, 0, 0, 0})
         '
         'txtProductoSeleccionado
         '
-        Me.txtProductoSeleccionado.ReadOnly = True
+        Me.txtProductoSeleccionado.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.txtProductoSeleccionado.Enabled = False
-        Me.txtProductoSeleccionado.TabStop = False
-
         Me.txtProductoSeleccionado.Location = New System.Drawing.Point(590, 75)
-        Me.txtProductoSeleccionado.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right
         Me.txtProductoSeleccionado.Name = "txtProductoSeleccionado"
-        Me.txtProductoSeleccionado.Size = New System.Drawing.Size(282, 24)
+        Me.txtProductoSeleccionado.ReadOnly = True
+        Me.txtProductoSeleccionado.Size = New System.Drawing.Size(282, 22)
         Me.txtProductoSeleccionado.TabIndex = 12
+        Me.txtProductoSeleccionado.TabStop = False
+        '
+        'btnBuscarProducto
+        '
+        Me.btnBuscarProducto.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Bold)
         Me.btnBuscarProducto.Location = New System.Drawing.Point(590, 109)
-        Me.btnBuscarProducto.Size = New System.Drawing.Size(180, 34)
-        Me.btnBuscarProducto.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
         Me.btnBuscarProducto.Name = "btnBuscarProducto"
-        Me.btnBuscarProducto.Text = "BUSCAR PRODUCTO"
+        Me.btnBuscarProducto.Size = New System.Drawing.Size(180, 34)
         Me.btnBuscarProducto.TabIndex = 22
+        Me.btnBuscarProducto.Text = "BUSCAR PRODUCTO"
         Me.btnBuscarProducto.UseVisualStyleBackColor = True
-        Me.btnCancelarEdicion.Location = New System.Drawing.Point(156, 242)
-        Me.btnCancelarEdicion.Size = New System.Drawing.Size(180, 34)
-        Me.btnCancelarEdicion.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
+        '
+        'btnCancelarEdicion
+        '
+        Me.btnCancelarEdicion.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Bold)
+        Me.btnCancelarEdicion.Location = New System.Drawing.Point(156, 252)
         Me.btnCancelarEdicion.Name = "btnCancelarEdicion"
-        Me.btnCancelarEdicion.Text = "CANCELAR EDICIÓN"
+        Me.btnCancelarEdicion.Size = New System.Drawing.Size(180, 34)
         Me.btnCancelarEdicion.TabIndex = 23
-        Me.btnCancelarEdicion.Visible = False
+        Me.btnCancelarEdicion.Text = "CANCELAR EDICIÓN"
         Me.btnCancelarEdicion.UseVisualStyleBackColor = True
+        Me.btnCancelarEdicion.Visible = False
         '
         'lblCosto
         '
         Me.lblCosto.AutoSize = True
-        Me.lblCosto.Location = New System.Drawing.Point(452, 199)
+        Me.lblCosto.Location = New System.Drawing.Point(452, 157)
         Me.lblCosto.Name = "lblCosto"
-        Me.lblCosto.Size = New System.Drawing.Size(130, 22)
+        Me.lblCosto.Size = New System.Drawing.Size(91, 16)
         Me.lblCosto.TabIndex = 11
         Me.lblCosto.Text = "Costo unitario:"
         '
         'lblCantidad
         '
         Me.lblCantidad.AutoSize = True
-        Me.lblCantidad.Location = New System.Drawing.Point(452, 159)
+        Me.lblCantidad.Location = New System.Drawing.Point(452, 185)
         Me.lblCantidad.Name = "lblCantidad"
-        Me.lblCantidad.Size = New System.Drawing.Size(130, 22)
+        Me.lblCantidad.Size = New System.Drawing.Size(64, 16)
         Me.lblCantidad.TabIndex = 10
         Me.lblCantidad.Text = "Cantidad:"
         '
@@ -242,7 +277,7 @@ Partial Class frmRegistrarCompras
         Me.lblProducto.AutoSize = True
         Me.lblProducto.Location = New System.Drawing.Point(452, 79)
         Me.lblProducto.Name = "lblProducto"
-        Me.lblProducto.Size = New System.Drawing.Size(130, 22)
+        Me.lblProducto.Size = New System.Drawing.Size(122, 16)
         Me.lblProducto.TabIndex = 9
         Me.lblProducto.Text = "Producto / variante:"
         '
@@ -252,7 +287,7 @@ Partial Class frmRegistrarCompras
         Me.nudPedidoOrigen.Maximum = New Decimal(New Integer() {2147483647, 0, 0, 0})
         Me.nudPedidoOrigen.Minimum = New Decimal(New Integer() {1, 0, 0, 0})
         Me.nudPedidoOrigen.Name = "nudPedidoOrigen"
-        Me.nudPedidoOrigen.Size = New System.Drawing.Size(260, 24)
+        Me.nudPedidoOrigen.Size = New System.Drawing.Size(260, 22)
         Me.nudPedidoOrigen.TabIndex = 8
         Me.nudPedidoOrigen.Value = New Decimal(New Integer() {1, 0, 0, 0})
         '
@@ -270,16 +305,15 @@ Partial Class frmRegistrarCompras
         Me.dtpFecha.Format = System.Windows.Forms.DateTimePickerFormat.[Short]
         Me.dtpFecha.Location = New System.Drawing.Point(162, 115)
         Me.dtpFecha.Name = "dtpFecha"
-        Me.dtpFecha.Size = New System.Drawing.Size(260, 24)
+        Me.dtpFecha.Size = New System.Drawing.Size(260, 22)
         Me.dtpFecha.TabIndex = 6
         '
         'txtProveedor
         '
         Me.txtProveedor.Location = New System.Drawing.Point(162, 75)
         Me.txtProveedor.MaxLength = 150
-        Me.txtProveedor.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left
         Me.txtProveedor.Name = "txtProveedor"
-        Me.txtProveedor.Size = New System.Drawing.Size(260, 24)
+        Me.txtProveedor.Size = New System.Drawing.Size(260, 22)
         Me.txtProveedor.TabIndex = 5
         '
         'lblPedidoOrigen
@@ -287,7 +321,7 @@ Partial Class frmRegistrarCompras
         Me.lblPedidoOrigen.AutoSize = True
         Me.lblPedidoOrigen.Location = New System.Drawing.Point(24, 199)
         Me.lblPedidoOrigen.Name = "lblPedidoOrigen"
-        Me.lblPedidoOrigen.Size = New System.Drawing.Size(130, 22)
+        Me.lblPedidoOrigen.Size = New System.Drawing.Size(114, 16)
         Me.lblPedidoOrigen.TabIndex = 4
         Me.lblPedidoOrigen.Text = "Pedido de origen:"
         '
@@ -296,7 +330,7 @@ Partial Class frmRegistrarCompras
         Me.lblMotivo.AutoSize = True
         Me.lblMotivo.Location = New System.Drawing.Point(24, 159)
         Me.lblMotivo.Name = "lblMotivo"
-        Me.lblMotivo.Size = New System.Drawing.Size(130, 22)
+        Me.lblMotivo.Size = New System.Drawing.Size(50, 16)
         Me.lblMotivo.TabIndex = 3
         Me.lblMotivo.Text = "Motivo:"
         '
@@ -305,7 +339,7 @@ Partial Class frmRegistrarCompras
         Me.lblFecha.AutoSize = True
         Me.lblFecha.Location = New System.Drawing.Point(24, 119)
         Me.lblFecha.Name = "lblFecha"
-        Me.lblFecha.Size = New System.Drawing.Size(130, 22)
+        Me.lblFecha.Size = New System.Drawing.Size(48, 16)
         Me.lblFecha.TabIndex = 2
         Me.lblFecha.Text = "Fecha:"
         '
@@ -314,32 +348,50 @@ Partial Class frmRegistrarCompras
         Me.lblProveedor.AutoSize = True
         Me.lblProveedor.Location = New System.Drawing.Point(24, 79)
         Me.lblProveedor.Name = "lblProveedor"
-        Me.lblProveedor.Size = New System.Drawing.Size(130, 22)
+        Me.lblProveedor.Size = New System.Drawing.Size(74, 16)
         Me.lblProveedor.TabIndex = 1
         Me.lblProveedor.Text = "Proveedor:"
         '
         'lblModo
         '
         Me.lblModo.AutoSize = True
-        Me.lblModo.Enabled = True
         Me.lblModo.Font = New System.Drawing.Font("Microsoft Sans Serif", 15.75!, System.Drawing.FontStyle.Bold)
         Me.lblModo.Location = New System.Drawing.Point(24, 20)
         Me.lblModo.Name = "lblModo"
-        Me.lblModo.Size = New System.Drawing.Size(500, 32)
+        Me.lblModo.Size = New System.Drawing.Size(194, 25)
         Me.lblModo.TabIndex = 0
         Me.lblModo.Text = "NUEVA COMPRA"
+        '
+        'numAlto
+        '
+        Me.numAlto.DecimalPlaces = 2
+        Me.numAlto.Location = New System.Drawing.Point(590, 209)
+        Me.numAlto.Maximum = New Decimal(New Integer() {1000000, 0, 0, 0})
+        Me.numAlto.Name = "numAlto"
+        Me.numAlto.Size = New System.Drawing.Size(150, 22)
+        Me.numAlto.TabIndex = 26
+        Me.numAlto.Value = New Decimal(New Integer() {1, 0, 0, 0})
+        '
+        'numAncho
+        '
+        Me.numAncho.DecimalPlaces = 2
+        Me.numAncho.Location = New System.Drawing.Point(590, 237)
+        Me.numAncho.Maximum = New Decimal(New Integer() {1000000, 0, 0, 0})
+        Me.numAncho.Name = "numAncho"
+        Me.numAncho.Size = New System.Drawing.Size(150, 22)
+        Me.numAncho.TabIndex = 27
+        Me.numAncho.Value = New Decimal(New Integer() {1, 0, 0, 0})
         '
         'frmRegistrarCompras
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(900, 620)
+        Me.ClientSize = New System.Drawing.Size(900, 648)
         Me.Controls.Add(Me.pnlRegistroCompra)
-        Me.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
+        Me.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!)
         Me.MinimumSize = New System.Drawing.Size(916, 570)
-        Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable
-        Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent
         Me.Name = "frmRegistrarCompras"
+        Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent
         Me.Text = "Registro de compras"
         Me.pnlRegistroCompra.ResumeLayout(False)
         Me.pnlRegistroCompra.PerformLayout()
@@ -347,6 +399,8 @@ Partial Class frmRegistrarCompras
         CType(Me.nudCostoUnitario, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.nudCantidad, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.nudPedidoOrigen, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.numAlto, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.numAncho, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
 
     End Sub
@@ -376,4 +430,8 @@ Partial Class frmRegistrarCompras
     Friend WithEvents btnVerLista As Button
     Friend WithEvents btnQuitarDetalle As Button
     Friend WithEvents lblTotal As Label
+    Friend WithEvents lblAncho As Label
+    Friend WithEvents lblAlto As Label
+    Friend WithEvents numAncho As NumericUpDown
+    Friend WithEvents numAlto As NumericUpDown
 End Class

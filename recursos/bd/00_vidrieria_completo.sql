@@ -184,7 +184,7 @@ CREATE TABLE dbo.producto_variante (
     id_producto        INT NOT NULL,
     id_caracteristica  INT NOT NULL,
     unidad_costo       NVARCHAR(10) NOT NULL,  -- CM2, CM_LINEAL, CAJA, PIE2, UNIDAD
-    precio_unitario    DECIMAL(10,2) NOT NULL,
+    precio_unitario    DECIMAL(10,3) NOT NULL,
     stock_minimo       INT NOT NULL CONSTRAINT df_variante_stock_minimo DEFAULT 0,
     CONSTRAINT uq_variante UNIQUE (id_producto, id_caracteristica),
     CONSTRAINT ck_variante_unidad_costo CHECK (unidad_costo IN ('CM2','CM_LINEAL','CAJA','PIE2','UNIDAD')),
@@ -241,7 +241,7 @@ CREATE TABLE dbo.compras (
     id_compra        INT IDENTITY(1,1) PRIMARY KEY,
     proveedor        NVARCHAR(150) NOT NULL,
     fecha            DATE NOT NULL,
-    total            DECIMAL(10,2) NOT NULL DEFAULT 0,
+    total            DECIMAL(12,3) NOT NULL DEFAULT 0,
     motivo           NVARCHAR(20) NOT NULL DEFAULT 'REPOSICION'
         CHECK (motivo IN ('REPOSICION','REEMPLAZO_DEFECTO')),
     id_pedido_origen INT NULL,  -- si motivo = REEMPLAZO_DEFECTO: que pedido genero la necesidad de comprar
@@ -255,9 +255,13 @@ CREATE TABLE dbo.compra_detalle (
     id_compra_detalle  INT IDENTITY(1,1) PRIMARY KEY,
     id_compra          INT NOT NULL,
     id_variante        INT NOT NULL,
-    cantidad           DECIMAL(10,2) NOT NULL,
-    costo_unitario     DECIMAL(10,2) NOT NULL,  -- snapshot del costo al momento de comprar
-    subtotal           DECIMAL(10,2) NOT NULL,
+    cantidad           DECIMAL(12,3) NOT NULL,
+    costo_unitario     DECIMAL(12,3) NOT NULL,  -- snapshot del costo al momento de comprar
+    subtotal           DECIMAL(12,3) NOT NULL,
+    piezas             INT NOT NULL CONSTRAINT df_cdet_piezas DEFAULT 1,  -- cuantas piezas identicas; cajas/unidad = cantidad
+    ancho_cm           DECIMAL(9,3) NULL,  -- medida de UNA pieza (vidrio)
+    alto_cm            DECIMAL(9,3) NULL,
+    largo_cm           DECIMAL(9,3) NULL,  -- aluminio
     CONSTRAINT fk_cdet_compra FOREIGN KEY (id_compra)
         REFERENCES dbo.compras(id_compra) ON DELETE CASCADE,
     CONSTRAINT fk_cdet_variante FOREIGN KEY (id_variante)
@@ -275,9 +279,9 @@ CREATE TABLE dbo.inventario_piezas (
     id_variante        INT NOT NULL,
     id_pieza_origen    INT NULL,               -- referencia a la pieza de la que salio (retazo)
     id_compra_detalle  INT NULL,               -- de que compra provino (si origen = COMPRA)
-    ancho_cm           DECIMAL(8,2),           -- vidrio
-    alto_cm            DECIMAL(8,2),           -- vidrio
-    largo_cm           DECIMAL(8,2),           -- aluminio
+    ancho_cm           DECIMAL(9,3),           -- vidrio
+    alto_cm            DECIMAL(9,3),           -- vidrio
+    largo_cm           DECIMAL(9,3),           -- aluminio
     estado             NVARCHAR(15) NOT NULL DEFAULT 'DISPONIBLE'
         CONSTRAINT ck_pieza_estado CHECK (estado IN ('DISPONIBLE','RESERVADA','VENDIDA','CONSUMIDA','DEFECTUOSA')),
     origen             NVARCHAR(10) NOT NULL
@@ -859,9 +863,9 @@ GO
 -- ------------------------------------------------------------
 CREATE OR ALTER PROCEDURE dbo.sp_inv_ingresar_pieza
     @id_variante        INT,
-    @ancho_cm           DECIMAL(8,2) = NULL,
-    @alto_cm            DECIMAL(8,2) = NULL,
-    @largo_cm           DECIMAL(8,2) = NULL,
+    @ancho_cm           DECIMAL(9,3) = NULL,
+    @alto_cm            DECIMAL(9,3) = NULL,
+    @largo_cm           DECIMAL(9,3) = NULL,
     @origen             NVARCHAR(10),
     @id_compra_detalle  INT = NULL,
     @id_pieza_origen    INT = NULL,
@@ -996,10 +1000,10 @@ GO
 -- ------------------------------------------------------------
 CREATE OR ALTER PROCEDURE dbo.sp_inv_cortar_pieza
     @id_pieza        INT,
-    @ancho_corte     DECIMAL(8,2) = NULL,
-    @alto_corte      DECIMAL(8,2) = NULL,
-    @largo_corte     DECIMAL(8,2) = NULL,
-    @minimo_util_cm  DECIMAL(8,2) = 10,
+    @ancho_corte     DECIMAL(9,3) = NULL,
+    @alto_corte      DECIMAL(9,3) = NULL,
+    @largo_corte     DECIMAL(9,3) = NULL,
+    @minimo_util_cm  DECIMAL(9,3) = 10,
     @id_usuario      INT = NULL,
     @id_pedido       INT = NULL,
     @observacion     NVARCHAR(255) = NULL
@@ -1008,12 +1012,12 @@ BEGIN
     SET NOCOUNT ON;
     DECLARE @tran_externa BIT = CASE WHEN @@TRANCOUNT > 0 THEN 1 ELSE 0 END;  -- ¿me llamaron dentro de otra transaccion?
 
-    DECLARE @retazos TABLE (n INT IDENTITY(1,1), id_pieza INT, ancho_cm DECIMAL(8,2), alto_cm DECIMAL(8,2), largo_cm DECIMAL(8,2));
+    DECLARE @retazos TABLE (n INT IDENTITY(1,1), id_pieza INT, ancho_cm DECIMAL(9,3), alto_cm DECIMAL(9,3), largo_cm DECIMAL(9,3));
 
     BEGIN TRY
     IF @tran_externa = 0 BEGIN TRANSACTION; ELSE SAVE TRANSACTION sp_inv;  -- propia, o punto de guardado
 
-        DECLARE @estado NVARCHAR(15), @id_variante INT, @W DECIMAL(8,2), @H DECIMAL(8,2), @L DECIMAL(8,2);
+        DECLARE @estado NVARCHAR(15), @id_variante INT, @W DECIMAL(9,3), @H DECIMAL(9,3), @L DECIMAL(9,3);
         SELECT @estado = estado, @id_variante = id_variante, @W = ancho_cm, @H = alto_cm, @L = largo_cm
         FROM dbo.inventario_piezas WITH (UPDLOCK, ROWLOCK)
         WHERE id_pieza = @id_pieza;
@@ -1032,7 +1036,7 @@ BEGIN
             BEGIN
                 IF @alto_corte <= @W AND @ancho_corte <= @H
                 BEGIN  -- entra girado
-                    DECLARE @tmp DECIMAL(8,2) = @ancho_corte;
+                    DECLARE @tmp DECIMAL(9,3) = @ancho_corte;
                     SET @ancho_corte = @alto_corte;
                     SET @alto_corte = @tmp;
                 END
@@ -2780,6 +2784,57 @@ GO
 UPDATE dbo.modelo_ventana_variable
 SET formula = REPLACE(formula, '35', 'alero')
 WHERE nombre IN ('anclaje', 'alto_fijo') AND formula LIKE '%35%';
+GO
+
+-- ------------------------------------------------------------
+-- Migracion: 3 decimales para costo de compra y medidas de pieza
+-- (el usuario puede registrar felpa a 0.009 soles o medidas 100.125 cm)
+-- Idempotente: solo altera si la precision actual es menor.
+-- ------------------------------------------------------------
+IF EXISTS (SELECT 1 FROM sys.columns c
+           INNER JOIN sys.tables t ON t.object_id = c.object_id
+           WHERE t.name = 'producto_variante' AND c.name = 'precio_unitario'
+             AND c.scale < 3)
+    ALTER TABLE dbo.producto_variante ALTER COLUMN precio_unitario DECIMAL(10,3) NOT NULL;
+GO
+IF EXISTS (SELECT 1 FROM sys.columns c
+           INNER JOIN sys.tables t ON t.object_id = c.object_id
+           WHERE t.name = 'compras' AND c.name = 'total'
+             AND c.scale < 3)
+    ALTER TABLE dbo.compras ALTER COLUMN total DECIMAL(12,3) NOT NULL;
+GO
+IF EXISTS (SELECT 1 FROM sys.columns c
+           INNER JOIN sys.tables t ON t.object_id = c.object_id
+           WHERE t.name = 'compra_detalle' AND c.name IN ('cantidad','costo_unitario','subtotal')
+             AND c.scale < 3)
+BEGIN
+    ALTER TABLE dbo.compra_detalle ALTER COLUMN cantidad DECIMAL(12,3) NOT NULL;
+    ALTER TABLE dbo.compra_detalle ALTER COLUMN costo_unitario DECIMAL(12,3) NOT NULL;
+    ALTER TABLE dbo.compra_detalle ALTER COLUMN subtotal DECIMAL(12,3) NOT NULL;
+END
+GO
+IF COL_LENGTH('dbo.compra_detalle', 'piezas') IS NULL
+    ALTER TABLE dbo.compra_detalle ADD piezas INT NOT NULL
+        CONSTRAINT df_cdet_piezas DEFAULT 1;
+GO
+IF COL_LENGTH('dbo.compra_detalle', 'ancho_cm') IS NULL
+    ALTER TABLE dbo.compra_detalle ADD ancho_cm DECIMAL(9,3) NULL;
+GO
+IF COL_LENGTH('dbo.compra_detalle', 'alto_cm') IS NULL
+    ALTER TABLE dbo.compra_detalle ADD alto_cm DECIMAL(9,3) NULL;
+GO
+IF COL_LENGTH('dbo.compra_detalle', 'largo_cm') IS NULL
+    ALTER TABLE dbo.compra_detalle ADD largo_cm DECIMAL(9,3) NULL;
+GO
+IF EXISTS (SELECT 1 FROM sys.columns c
+           INNER JOIN sys.tables t ON t.object_id = c.object_id
+           WHERE t.name = 'inventario_piezas' AND c.name IN ('ancho_cm','alto_cm','largo_cm')
+             AND c.scale < 3)
+BEGIN
+    ALTER TABLE dbo.inventario_piezas ALTER COLUMN ancho_cm DECIMAL(9,3) NULL;
+    ALTER TABLE dbo.inventario_piezas ALTER COLUMN alto_cm DECIMAL(9,3) NULL;
+    ALTER TABLE dbo.inventario_piezas ALTER COLUMN largo_cm DECIMAL(9,3) NULL;
+END
 GO
 
 PRINT 'Base de datos vidrieria lista (esquema + datos + migraciones).';

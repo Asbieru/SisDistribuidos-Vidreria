@@ -5,10 +5,13 @@ Public Class frmRegistrarCompras
     Public Property tema As String = "CLARO" Implements IFormularioTema.tema
     ' Variante que llega preseleccionada desde frmPedidoUnitario (boton "Comprar Ahora")
     Public Property idVarianteInicial As Integer? = Nothing
+    ' Usuario conectado, para dejar rastro en movimientos_inventario
+    Public Property idUsuario As Integer? = Nothing
     Private objVariante As New ProductoVariante
     Private objCompra As New Compra
     Private variantes As DataTable
     Private idVarianteSeleccionada As Integer = 0
+    Private unidadSeleccionada As String = ""
     Private detalle As DataTable
     Private idCompraActual As Integer = 0
     Private detalleEnEdicion As DataRow = Nothing
@@ -52,13 +55,23 @@ Public Class frmRegistrarCompras
                 New String() {"REPOSICION", "REEMPLAZO_DEFECTO"})
 
 
+            ' Cantidad = conteo entero (piezas idénticas o cajas); la medida
+            ' derivada (m2 / pie2 / cm) se calcula sola y viaja en otra columna
             nudCantidad.DecimalPlaces = 0
             nudCantidad.Minimum = 1D
             nudCantidad.Maximum = 1000000D
 
-            nudCostoUnitario.DecimalPlaces = 2
+            nudCostoUnitario.DecimalPlaces = 3
             nudCostoUnitario.Minimum = 0
             nudCostoUnitario.Maximum = 1000000D
+
+            numAncho.DecimalPlaces = 3
+            numAncho.Minimum = 0D
+            numAncho.Maximum = 1000000D
+
+            numAlto.DecimalPlaces = 3
+            numAlto.Minimum = 0D
+            numAlto.Maximum = 1000000D
 
             nudPedidoOrigen.DecimalPlaces = 0
             nudPedidoOrigen.Minimum = 1
@@ -70,8 +83,14 @@ Public Class frmRegistrarCompras
             detalle.Columns.Add("id_variante", GetType(Integer))
             detalle.Columns.Add("producto", GetType(String))
             detalle.Columns.Add("cantidad", GetType(Decimal))
+            detalle.Columns.Add("piezas", GetType(Integer))
             detalle.Columns.Add("costo_unitario", GetType(Decimal))
             detalle.Columns.Add("subtotal", GetType(Decimal))
+            detalle.Columns.Add("unidad", GetType(String))
+            detalle.Columns.Add("ancho_cm", GetType(Decimal))
+            detalle.Columns.Add("alto_cm", GetType(Decimal))
+            detalle.Columns.Add("largo_cm", GetType(Decimal))
+            detalle.Columns.Add("medida", GetType(String))
 
             dgvDetalle.ReadOnly = True
             dgvDetalle.AllowUserToAddRows = False
@@ -85,26 +104,34 @@ Public Class frmRegistrarCompras
             dgvDetalle.DataSource = detalle
 
             dgvDetalle.Columns("id_variante").Visible = False
+            dgvDetalle.Columns("unidad").Visible = False
+            dgvDetalle.Columns("ancho_cm").Visible = False
+            dgvDetalle.Columns("alto_cm").Visible = False
+            dgvDetalle.Columns("largo_cm").Visible = False
             dgvDetalle.Columns("producto").HeaderText = "Producto / variante"
+            dgvDetalle.Columns("medida").HeaderText = "Medida"
+            dgvDetalle.Columns("piezas").HeaderText = "Piezas"
             dgvDetalle.Columns("cantidad").HeaderText = "Cantidad"
             dgvDetalle.Columns("costo_unitario").HeaderText = "Costo unitario"
             dgvDetalle.Columns("subtotal").HeaderText = "Subtotal"
-            dgvDetalle.Columns("producto").FillWeight = 200
+            dgvDetalle.Columns("producto").FillWeight = 170
+            dgvDetalle.Columns("medida").FillWeight = 100
+            dgvDetalle.Columns("piezas").FillWeight = 45
 
             For Each nombre As String In
-                New String() {"costo_unitario", "subtotal"}
+                New String() {"costo_unitario", "subtotal", "cantidad"}
 
-                dgvDetalle.Columns(nombre).DefaultCellStyle.Format = "N2"
+                dgvDetalle.Columns(nombre).DefaultCellStyle.Format = "N3"
             Next
 
-            dgvDetalle.Columns("cantidad").DefaultCellStyle.Format = "N0"
+            dgvDetalle.Columns("piezas").DefaultCellStyle.Format = "N0"
 
             cargarVariantes()
             limpiar()
             btnGuardar.Enabled = True
 
             If idVarianteInicial.HasValue AndAlso idVarianteInicial.Value > 0 Then
-                If seleccionarVariante(idVarianteInicial.Value) Then nudCantidad.Focus()
+                If seleccionarVariante(idVarianteInicial.Value) Then EnfocarMedida()
             End If
 
         Catch ex As Exception
@@ -149,7 +176,83 @@ Public Class frmRegistrarCompras
         nudCostoUnitario.Value = Math.Max(nudCostoUnitario.Minimum, costo)
         idVarianteSeleccionada = id
         txtProductoSeleccionado.Text = fila("descripcion").ToString()
+        AplicarModoMedida(If(IsDBNull(fila("unidad_costo")), "", fila("unidad_costo").ToString()))
         Return True
+    End Function
+
+    ' Muestra los controles que corresponden a la unidad de la variante elegida
+    Private Sub AplicarModoMedida(unidad As String)
+        unidadSeleccionada = If(unidad, "").Trim().ToUpper()
+        Dim esVidrio As Boolean = unidadSeleccionada = "CM2" OrElse unidadSeleccionada = "PIE2"
+        Dim esAluminio As Boolean = unidadSeleccionada = "CM_LINEAL"
+
+        numAncho.Visible = esVidrio
+        lblAncho.Visible = esVidrio
+        numAlto.Visible = esVidrio OrElse esAluminio
+        lblAlto.Visible = esVidrio OrElse esAluminio
+        lblAlto.Text = If(esAluminio, "Largo:", "Alto:")
+
+        ' La cantidad siempre se ve: para piezas cuenta cuantas identicas
+        ' se compran; para cajas/unidades es el numero de cajas
+        lblCantidad.Text = If(esVidrio OrElse esAluminio, "Piezas:", "Cantidad:")
+        nudCantidad.Visible = True
+        lblCantidad.Visible = True
+    End Sub
+
+    ' Enfoca el primer control de entrada segun el modo activo
+    Private Sub EnfocarMedida()
+        If numAncho.Visible Then
+            numAncho.Focus()
+        ElseIf numAlto.Visible Then
+            numAlto.Focus()
+        Else
+            nudCantidad.Focus()
+        End If
+    End Sub
+
+    Private Function UnidadDeVariante(id As Integer) As String
+        If variantes Is Nothing Then Return ""
+        Dim filas As DataRow() = variantes.Select("id_variante = " & id.ToString())
+        If filas.Length = 0 OrElse IsDBNull(filas(0)("unidad_costo")) Then Return ""
+        Return filas(0)("unidad_costo").ToString()
+    End Function
+
+    Private Shared Function ValorNud(valor As Object) As Decimal
+        If valor Is Nothing OrElse IsDBNull(valor) Then Return 0D
+        Return CDec(valor)
+    End Function
+
+    ' Carga una variante y su medida desde el pedido (boton "Comprar Ahora").
+    ' Reemplaza la entrada pendiente sin tocar el detalle ya agregado.
+    Public Sub CargarDesdePedido(idVariante As Integer, ancho As Decimal?,
+                                 alto As Decimal?, largo As Decimal?,
+                                 cajas As Integer?)
+        If detalle Is Nothing Then Return
+        If Not seleccionarVariante(idVariante) Then Return
+
+        detalleEnEdicion = Nothing
+        btnAgregarDetalle.Text = "AGREGAR"
+        btnCancelarEdicion.Visible = False
+
+        If unidadSeleccionada = "CM2" OrElse unidadSeleccionada = "PIE2" Then
+            numAncho.Value = LimitarNud(numAncho, ancho)
+            numAlto.Value = LimitarNud(numAlto, alto)
+            nudCantidad.Value = 1D
+        ElseIf unidadSeleccionada = "CM_LINEAL" Then
+            numAlto.Value = LimitarNud(numAlto, largo)
+            nudCantidad.Value = 1D
+        ElseIf cajas.HasValue Then
+            nudCantidad.Value = Math.Min(nudCantidad.Maximum, Math.Max(nudCantidad.Minimum, cajas.Value))
+        End If
+
+        EnfocarMedida()
+    End Sub
+
+    Private Shared Function LimitarNud(nud As NumericUpDown, valor As Decimal?) As Decimal
+        If Not valor.HasValue OrElse valor.Value <= 0D Then
+            Return Math.Max(nud.Minimum, 1D)
+        End If
+        Return Math.Min(nud.Maximum, Math.Max(nud.Minimum, valor.Value))
     End Function
 
     Private Sub btnBuscarProducto_Click(sender As Object, e As EventArgs) Handles btnBuscarProducto.Click
@@ -190,7 +293,7 @@ Public Class frmRegistrarCompras
                         tabla.Columns.Add(New DataGridViewTextBoxColumn With {
                         .Name = campos(i), .DataPropertyName = campos(i), .HeaderText = titulos(i)})
                     Next
-                    tabla.Columns("precio_unitario").DefaultCellStyle.Format = "N2"
+                    tabla.Columns("precio_unitario").DefaultCellStyle.Format = "N3"
                     tabla.Columns("nombre").FillWeight = 180
 
                     Dim acciones As New FlowLayoutPanel With {
@@ -217,7 +320,7 @@ Public Class frmRegistrarCompras
                     selector.CancelButton = cancelar
                     selector.ActiveControl = buscar
                     AplicarTema(selector, tema)
-                    If selector.ShowDialog(Me) = DialogResult.OK Then nudCantidad.Focus()
+                    If selector.ShowDialog(Me) = DialogResult.OK Then EnfocarMedida()
                 End Using
             End Using
         Catch ex As Exception
@@ -260,13 +363,54 @@ Public Class frmRegistrarCompras
             Return
         End If
 
+        If nudCostoUnitario.Value <= 0 Then
+            MessageBox.Show("El costo debe ser mayor a cero.")
+            Return
+        End If
+
+        Dim esVidrio As Boolean = unidadSeleccionada = "CM2" OrElse unidadSeleccionada = "PIE2"
+        Dim esAluminio As Boolean = unidadSeleccionada = "CM_LINEAL"
+        Dim esPieza As Boolean = esVidrio OrElse esAluminio
+
+        ' Para piezas: cantidad = cuantas identicas se compran (entero >= 1).
+        ' La medida unitaria (ancho x alto, o largo) describe a CADA pieza.
         If nudCantidad.Value < 1D OrElse nudCantidad.Value <> Decimal.Truncate(nudCantidad.Value) Then
             MessageBox.Show("La cantidad debe ser un número entero desde 1.")
             Return
         End If
+        Dim piezas As Integer = CInt(nudCantidad.Value)
 
-        If nudCostoUnitario.Value <= 0 Then
-            MessageBox.Show("La cantidad y el costo deben ser mayores a cero.")
+        ' Medidas segun el tipo: vidrio (ancho x alto), aluminio (largo), accesorios (cajas)
+        Dim cantidad As Decimal
+        Dim ancho As Decimal? = Nothing
+        Dim alto As Decimal? = Nothing
+        Dim largo As Decimal? = Nothing
+
+        If esVidrio Then
+            If numAncho.Value <= 0D OrElse numAlto.Value <= 0D Then
+                MessageBox.Show("Ingrese el ancho y el alto del vidrio (mayores a cero).")
+                Return
+            End If
+            ancho = numAncho.Value
+            alto = numAlto.Value
+            Dim medidaUnitaria As Decimal = ancho.Value * alto.Value
+            If unidadSeleccionada = "PIE2" Then
+                medidaUnitaria = medidaUnitaria / 900D
+            End If
+            cantidad = Decimal.Round(medidaUnitaria * piezas, 3, MidpointRounding.AwayFromZero)
+        ElseIf esAluminio Then
+            If numAlto.Value <= 0D Then
+                MessageBox.Show("Ingrese el largo del aluminio (mayor a cero).")
+                Return
+            End If
+            largo = numAlto.Value
+            cantidad = Decimal.Round(largo.Value * piezas, 3, MidpointRounding.AwayFromZero)
+        Else
+            cantidad = piezas
+        End If
+
+        If cantidad <= 0D Then
+            MessageBox.Show("La cantidad resultante debe ser mayor a cero.")
             Return
         End If
 
@@ -276,7 +420,8 @@ Public Class frmRegistrarCompras
         For Each fila As DataRow In detalle.Rows
             If Object.ReferenceEquals(fila, detalleEnEdicion) Then Continue For
 
-            If CInt(fila("id_variante")) = id Then
+            ' Cada pieza es una fila con su propia medida; solo se evita repetir accesorios
+            If Not esPieza AndAlso CInt(fila("id_variante")) = id Then
                 MessageBox.Show("Esta variante ya está en la tabla.")
                 Return
             End If
@@ -285,29 +430,44 @@ Public Class frmRegistrarCompras
         Next
 
         Dim subtotal As Decimal = Decimal.Round(
-        nudCantidad.Value * nudCostoUnitario.Value,
-        2, MidpointRounding.AwayFromZero)
+        cantidad * nudCostoUnitario.Value,
+        3, MidpointRounding.AwayFromZero)
 
-        If totalOtros + subtotal > 99999999.99D Then
+        If totalOtros + subtotal > 99999999.999D Then
             MessageBox.Show("El total supera el límite de la base de datos.")
             Return
         End If
 
+        Dim medida As String = ""
+        If esPieza Then medida = TextoMedida(ancho, alto, largo)
+
         If detalleEnEdicion Is Nothing Then
             detalle.Rows.Add(
-            id, txtProductoSeleccionado.Text, nudCantidad.Value,
-            nudCostoUnitario.Value, subtotal)
+            id, txtProductoSeleccionado.Text, cantidad,
+            piezas, nudCostoUnitario.Value, subtotal,
+            unidadSeleccionada, ADBNull(ancho), ADBNull(alto), ADBNull(largo), medida)
         Else
             detalleEnEdicion("id_variante") = id
             detalleEnEdicion("producto") = txtProductoSeleccionado.Text
-            detalleEnEdicion("cantidad") = nudCantidad.Value
+            detalleEnEdicion("cantidad") = cantidad
+            detalleEnEdicion("piezas") = piezas
             detalleEnEdicion("costo_unitario") = nudCostoUnitario.Value
             detalleEnEdicion("subtotal") = subtotal
+            detalleEnEdicion("unidad") = unidadSeleccionada
+            detalleEnEdicion("ancho_cm") = ADBNull(ancho)
+            detalleEnEdicion("alto_cm") = ADBNull(alto)
+            detalleEnEdicion("largo_cm") = ADBNull(largo)
+            detalleEnEdicion("medida") = medida
         End If
 
         actualizarTotal()
         restablecerEntradaProducto()
     End Sub
+
+    ' Empaqueta una medida opcional para una columna del DataTable (Nothing -> DBNull)
+    Private Shared Function ADBNull(valor As Decimal?) As Object
+        Return If(valor.HasValue, CType(valor.Value, Object), DBNull.Value)
+    End Function
 
     Private Sub btnQuitarDetalle_Click(sender As Object, e As EventArgs) Handles btnQuitarDetalle.Click
         If detalle Is Nothing OrElse dgvDetalle.CurrentRow Is Nothing Then Return
@@ -334,7 +494,7 @@ Public Class frmRegistrarCompras
             Next
         End If
 
-        lblTotal.Text = "TOTAL: S/ " & total.ToString("N2")
+        lblTotal.Text = "TOTAL: S/ " & total.ToString("N3")
     End Sub
 
     Private Sub btnGuardar_Click(sender As Object, e As EventArgs) Handles btnGuardar.Click
@@ -371,7 +531,8 @@ Public Class frmRegistrarCompras
             cboMotivo.Text,
             pedido,
             detalle,
-            idCompraActual)
+            idCompraActual,
+            idUsuario)
 
             limpiar()
 
@@ -465,12 +626,29 @@ Public Class frmRegistrarCompras
             detalle.Clear()
 
             For Each producto As DataRow In productos.Rows
+                Dim idVar As Integer = CInt(producto("id_variante"))
+                Dim unidad As String = UnidadDeVariante(idVar)
+                Dim esPieza As Boolean = unidad = "CM2" OrElse unidad = "PIE2" OrElse unidad = "CM_LINEAL"
+                Dim piezas As Integer = 1
+                If productos.Columns.Contains("piezas") AndAlso Not IsDBNull(producto("piezas")) Then
+                    piezas = Math.Max(1, CInt(producto("piezas")))
+                End If
+                Dim ancho As Object = If(productos.Columns.Contains("ancho_cm"), producto("ancho_cm"), DBNull.Value)
+                Dim alto As Object = If(productos.Columns.Contains("alto_cm"), producto("alto_cm"), DBNull.Value)
+                Dim largo As Object = If(productos.Columns.Contains("largo_cm"), producto("largo_cm"), DBNull.Value)
+                Dim medida As String = ""
+                If esPieza Then medida = TextoMedida(ancho, alto, largo)
+
                 detalle.Rows.Add(
-                    CInt(producto("id_variante")),
+                    idVar,
                     producto("producto").ToString(),
                     CDec(producto("cantidad")),
+                    piezas,
                     CDec(producto("costo_unitario")),
-                    CDec(producto("subtotal")))
+                    CDec(producto("subtotal")),
+                    unidad,
+                    ancho, alto, largo,
+                    medida)
             Next
 
             idCompraActual = id
@@ -497,6 +675,9 @@ Public Class frmRegistrarCompras
         txtProductoSeleccionado.Clear()
         nudCantidad.Value = 1
         nudCostoUnitario.Value = 0
+        numAncho.Value = 1D
+        numAlto.Value = 1D
+        AplicarModoMedida("")
         btnAgregarDetalle.Text = "AGREGAR"
         btnCancelarEdicion.Visible = False
     End Sub
@@ -516,9 +697,13 @@ Public Class frmRegistrarCompras
         Dim fila As DataRow = seleccion.Row
         Dim cantidad As Decimal = CDec(fila("cantidad"))
         Dim costo As Decimal = CDec(fila("costo_unitario"))
+        Dim piezasFila As Integer = 1
+        If fila.Table.Columns.Contains("piezas") AndAlso Not IsDBNull(fila("piezas")) Then
+            piezasFila = Math.Max(1, CInt(fila("piezas")))
+        End If
 
         ' Permitir cargar valores existentes que superen el máximo inicial.
-        nudCantidad.Maximum = Math.Max(nudCantidad.Maximum, cantidad)
+        nudCantidad.Maximum = Math.Max(nudCantidad.Maximum, piezasFila)
         nudCostoUnitario.Maximum = Math.Max(nudCostoUnitario.Maximum, costo)
 
         If Not seleccionarVariante(CInt(fila("id_variante"))) Then
@@ -526,11 +711,22 @@ Public Class frmRegistrarCompras
             Return
         End If
 
+        Dim unidad As String = If(IsDBNull(fila("unidad")), "", fila("unidad").ToString())
+        If unidad = "CM2" OrElse unidad = "PIE2" Then
+            numAncho.Value = ValorNud(fila("ancho_cm"))
+            numAlto.Value = ValorNud(fila("alto_cm"))
+            nudCantidad.Value = piezasFila
+        ElseIf unidad = "CM_LINEAL" Then
+            numAlto.Value = ValorNud(fila("largo_cm"))
+            nudCantidad.Value = piezasFila
+        Else
+            nudCantidad.Value = cantidad
+        End If
+
         detalleEnEdicion = fila
-        nudCantidad.Value = cantidad
         nudCostoUnitario.Value = costo
         btnAgregarDetalle.Text = "ACTUALIZAR PRODUCTO"
         btnCancelarEdicion.Visible = True
-        nudCantidad.Focus()
+        EnfocarMedida()
     End Sub
 End Class

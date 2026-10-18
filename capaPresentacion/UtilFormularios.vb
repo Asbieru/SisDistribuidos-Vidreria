@@ -268,9 +268,9 @@ Module UtilFormularios
     ' "180 x 120 cm" para vidrio, "600 cm" para aluminio
     Public Function TextoMedida(ancho As Object, alto As Object, largo As Object) As String
         If largo Is Nothing OrElse IsDBNull(largo) Then
-            Return Format(ancho, "0.##") & " x " & Format(alto, "0.##") & " cm"
+            Return Format(ancho, "0.###") & " x " & Format(alto, "0.###") & " cm"
         End If
-        Return Format(largo, "0.##") & " cm"
+        Return Format(largo, "0.###") & " cm"
     End Function
 
     ' ---------------- Mensajes ----------------

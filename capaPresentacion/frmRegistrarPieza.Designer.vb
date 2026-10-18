@@ -103,7 +103,7 @@ Partial Class frmRegistrarPieza
         '
         'nudAncho
         '
-        Me.nudAncho.DecimalPlaces = 2
+        Me.nudAncho.DecimalPlaces = 3
         Me.nudAncho.Location = New System.Drawing.Point(171, 123)
         Me.nudAncho.Maximum = New Decimal(New Integer() {100000, 0, 0, 0})
         Me.nudAncho.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left
@@ -127,7 +127,7 @@ Partial Class frmRegistrarPieza
         '
         'nudAlto
         '
-        Me.nudAlto.DecimalPlaces = 2
+        Me.nudAlto.DecimalPlaces = 3
         Me.nudAlto.Location = New System.Drawing.Point(171, 163)
         Me.nudAlto.Maximum = New Decimal(New Integer() {100000, 0, 0, 0})
         Me.nudAlto.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left
@@ -151,7 +151,7 @@ Partial Class frmRegistrarPieza
         '
         'nudLargo
         '
-        Me.nudLargo.DecimalPlaces = 2
+        Me.nudLargo.DecimalPlaces = 3
         Me.nudLargo.Location = New System.Drawing.Point(171, 203)
         Me.nudLargo.Maximum = New Decimal(New Integer() {100000, 0, 0, 0})
         Me.nudLargo.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left

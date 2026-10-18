@@ -271,3 +271,221 @@ GO
 
 PRINT 'Alero editable + sp_ped_recalcular_estados listos.';
 GO
+
+-- ------------------------------------------------------------
+-- 9) 3 decimales para costo de compra y medidas de pieza:
+--    - producto_variante.precio_unitario (ej. felpa 0.009 soles)
+--    - compra_detalle: cantidad/costo_unitario/subtotal + nuevas
+--      columnas piezas/ancho_cm/alto_cm/largo_cm (medida de UNA pieza)
+--    - compras.total
+--    - inventario_piezas: medidas de las piezas
+--    - sp_inv_ingresar_pieza y sp_inv_cortar_pieza con DECIMAL(9,3)
+-- Idempotente: solo altera si la precision actual es menor.
+-- ------------------------------------------------------------
+IF EXISTS (SELECT 1 FROM sys.columns c
+           INNER JOIN sys.tables t ON t.object_id = c.object_id
+           WHERE t.name = 'producto_variante' AND c.name = 'precio_unitario'
+             AND c.scale < 3)
+    ALTER TABLE dbo.producto_variante ALTER COLUMN precio_unitario DECIMAL(10,3) NOT NULL;
+GO
+IF EXISTS (SELECT 1 FROM sys.columns c
+           INNER JOIN sys.tables t ON t.object_id = c.object_id
+           WHERE t.name = 'compras' AND c.name = 'total'
+             AND c.scale < 3)
+    ALTER TABLE dbo.compras ALTER COLUMN total DECIMAL(12,3) NOT NULL;
+GO
+IF EXISTS (SELECT 1 FROM sys.columns c
+           INNER JOIN sys.tables t ON t.object_id = c.object_id
+           WHERE t.name = 'compra_detalle' AND c.name IN ('cantidad','costo_unitario','subtotal')
+             AND c.scale < 3)
+BEGIN
+    ALTER TABLE dbo.compra_detalle ALTER COLUMN cantidad DECIMAL(12,3) NOT NULL;
+    ALTER TABLE dbo.compra_detalle ALTER COLUMN costo_unitario DECIMAL(12,3) NOT NULL;
+    ALTER TABLE dbo.compra_detalle ALTER COLUMN subtotal DECIMAL(12,3) NOT NULL;
+END
+GO
+IF COL_LENGTH('dbo.compra_detalle', 'piezas') IS NULL
+    ALTER TABLE dbo.compra_detalle ADD piezas INT NOT NULL
+        CONSTRAINT df_cdet_piezas DEFAULT 1;
+GO
+IF COL_LENGTH('dbo.compra_detalle', 'ancho_cm') IS NULL
+    ALTER TABLE dbo.compra_detalle ADD ancho_cm DECIMAL(9,3) NULL;
+GO
+IF COL_LENGTH('dbo.compra_detalle', 'alto_cm') IS NULL
+    ALTER TABLE dbo.compra_detalle ADD alto_cm DECIMAL(9,3) NULL;
+GO
+IF COL_LENGTH('dbo.compra_detalle', 'largo_cm') IS NULL
+    ALTER TABLE dbo.compra_detalle ADD largo_cm DECIMAL(9,3) NULL;
+GO
+IF EXISTS (SELECT 1 FROM sys.columns c
+           INNER JOIN sys.tables t ON t.object_id = c.object_id
+           WHERE t.name = 'inventario_piezas' AND c.name IN ('ancho_cm','alto_cm','largo_cm')
+             AND c.scale < 3)
+BEGIN
+    ALTER TABLE dbo.inventario_piezas ALTER COLUMN ancho_cm DECIMAL(9,3) NULL;
+    ALTER TABLE dbo.inventario_piezas ALTER COLUMN alto_cm DECIMAL(9,3) NULL;
+    ALTER TABLE dbo.inventario_piezas ALTER COLUMN largo_cm DECIMAL(9,3) NULL;
+END
+GO
+
+CREATE OR ALTER PROCEDURE dbo.sp_inv_ingresar_pieza
+    @id_variante        INT,
+    @ancho_cm           DECIMAL(9,3) = NULL,
+    @alto_cm            DECIMAL(9,3) = NULL,
+    @largo_cm           DECIMAL(9,3) = NULL,
+    @origen             NVARCHAR(10),
+    @id_compra_detalle  INT = NULL,
+    @id_pieza_origen    INT = NULL,
+    @id_usuario         INT = NULL,
+    @observacion        NVARCHAR(255) = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+    DECLARE @tran_externa BIT = CASE WHEN @@TRANCOUNT > 0 THEN 1 ELSE 0 END;
+
+    DECLARE @unidad NVARCHAR(10) = (SELECT unidad_costo FROM dbo.producto_variante WHERE id_variante = @id_variante);
+
+    IF @unidad IS NULL
+        THROW 50001, 'La variante de producto no existe.', 1;
+    IF @unidad IN ('CAJA','UNIDAD')
+        THROW 50002, 'Tornillos, tarugos y accesorios por unidad se manejan por cantidad, no por piezas.', 1;
+    IF @unidad IN ('CM2','PIE2') AND (ISNULL(@ancho_cm, 0) <= 0 OR ISNULL(@alto_cm, 0) <= 0)
+        THROW 50003, 'Para vidrio ingrese ancho y alto mayores a cero.', 1;
+    IF @unidad = 'CM_LINEAL' AND ISNULL(@largo_cm, 0) <= 0
+        THROW 50004, 'Para aluminio ingrese el largo mayor a cero.', 1;
+    IF @origen = 'COMPRA' AND @id_compra_detalle IS NULL
+        THROW 50005, 'Una pieza de origen COMPRA debe indicar el detalle de compra.', 1;
+    IF @origen = 'RETAZO' AND @id_pieza_origen IS NULL
+        THROW 50006, 'Un retazo debe indicar la pieza de la que salio.', 1;
+
+    IF @unidad IN ('CM2','PIE2') SET @largo_cm = NULL;
+    IF @unidad = 'CM_LINEAL' SELECT @ancho_cm = NULL, @alto_cm = NULL;
+
+    BEGIN TRY
+    IF @tran_externa = 0 BEGIN TRANSACTION; ELSE SAVE TRANSACTION sp_inv;
+
+        INSERT INTO dbo.inventario_piezas (id_variante, id_pieza_origen, id_compra_detalle, ancho_cm, alto_cm, largo_cm, estado, origen)
+        VALUES (@id_variante, @id_pieza_origen, @id_compra_detalle, @ancho_cm, @alto_cm, @largo_cm, 'DISPONIBLE', @origen);
+
+        DECLARE @id_pieza INT = SCOPE_IDENTITY();
+
+        INSERT INTO dbo.movimientos_inventario (id_variante, id_pieza, tipo, motivo, cantidad, id_usuario, id_compra_detalle, observacion)
+        VALUES (@id_variante, @id_pieza, 'ENTRADA', @origen, 1, @id_usuario, @id_compra_detalle, @observacion);
+
+    IF @tran_externa = 0 COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        IF XACT_STATE() = -1 OR (XACT_STATE() = 1 AND @tran_externa = 0)
+            ROLLBACK TRANSACTION;
+        ELSE IF XACT_STATE() = 1
+            ROLLBACK TRANSACTION sp_inv;
+        THROW;
+    END CATCH
+
+    SELECT @id_pieza AS id_pieza;
+END
+GO
+
+CREATE OR ALTER PROCEDURE dbo.sp_inv_cortar_pieza
+    @id_pieza        INT,
+    @ancho_corte     DECIMAL(9,3) = NULL,
+    @alto_corte      DECIMAL(9,3) = NULL,
+    @largo_corte     DECIMAL(9,3) = NULL,
+    @minimo_util_cm  DECIMAL(9,3) = 10,
+    @id_usuario      INT = NULL,
+    @id_pedido       INT = NULL,
+    @observacion     NVARCHAR(255) = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+    DECLARE @tran_externa BIT = CASE WHEN @@TRANCOUNT > 0 THEN 1 ELSE 0 END;
+
+    DECLARE @retazos TABLE (n INT IDENTITY(1,1), id_pieza INT, ancho_cm DECIMAL(9,3), alto_cm DECIMAL(9,3), largo_cm DECIMAL(9,3));
+
+    BEGIN TRY
+    IF @tran_externa = 0 BEGIN TRANSACTION; ELSE SAVE TRANSACTION sp_inv;
+
+        DECLARE @estado NVARCHAR(15), @id_variante INT, @W DECIMAL(9,3), @H DECIMAL(9,3), @L DECIMAL(9,3);
+        SELECT @estado = estado, @id_variante = id_variante, @W = ancho_cm, @H = alto_cm, @L = largo_cm
+        FROM dbo.inventario_piezas WITH (UPDLOCK, ROWLOCK)
+        WHERE id_pieza = @id_pieza;
+
+        IF @estado IS NULL
+            THROW 50020, 'La pieza no existe.', 1;
+        IF @estado NOT IN ('DISPONIBLE','RESERVADA')
+            THROW 50021, 'Solo se pueden cortar piezas DISPONIBLES o RESERVADAS.', 1;
+
+        IF @L IS NULL  -- vidrio
+        BEGIN
+            IF ISNULL(@ancho_corte, 0) <= 0 OR ISNULL(@alto_corte, 0) <= 0
+                THROW 50022, 'Ingrese ancho y alto del corte.', 1;
+
+            IF NOT (@ancho_corte <= @W AND @alto_corte <= @H)
+            BEGIN
+                IF @alto_corte <= @W AND @ancho_corte <= @H
+                BEGIN  -- entra girado
+                    DECLARE @tmp DECIMAL(9,3) = @ancho_corte;
+                    SET @ancho_corte = @alto_corte;
+                    SET @alto_corte = @tmp;
+                END
+                ELSE
+                    THROW 50023, 'El corte es mas grande que la pieza.', 1;
+            END
+
+            IF @W - @ancho_corte >= @minimo_util_cm AND @H >= @minimo_util_cm
+                INSERT INTO @retazos (ancho_cm, alto_cm) VALUES (@W - @ancho_corte, @H);
+            IF @H - @alto_corte >= @minimo_util_cm AND @ancho_corte >= @minimo_util_cm
+                INSERT INTO @retazos (ancho_cm, alto_cm) VALUES (@ancho_corte, @H - @alto_corte);
+        END
+        ELSE           -- aluminio
+        BEGIN
+            IF ISNULL(@largo_corte, 0) <= 0
+                THROW 50024, 'Ingrese el largo del corte.', 1;
+            IF @largo_corte > @L
+                THROW 50025, 'El corte es mas largo que la pieza.', 1;
+
+            IF @L - @largo_corte >= @minimo_util_cm
+                INSERT INTO @retazos (largo_cm) VALUES (@L - @largo_corte);
+        END
+
+        UPDATE dbo.inventario_piezas SET estado = 'CONSUMIDA' WHERE id_pieza = @id_pieza;
+
+        INSERT INTO dbo.movimientos_inventario (id_variante, id_pieza, tipo, motivo, cantidad, id_usuario, id_pedido, observacion)
+        VALUES (@id_variante, @id_pieza, 'SALIDA', 'CORTE', 1, @id_usuario, @id_pedido,
+                ISNULL(@observacion, 'Corte de ' +
+                    CASE WHEN @L IS NULL
+                         THEN CONVERT(NVARCHAR(12), @ancho_corte) + ' x ' + CONVERT(NVARCHAR(12), @alto_corte) + ' cm'
+                         ELSE CONVERT(NVARCHAR(12), @largo_corte) + ' cm' END));
+
+        DECLARE @n INT = 1, @total INT = (SELECT COUNT(*) FROM @retazos), @nuevo INT;
+        WHILE @n <= @total
+        BEGIN
+            INSERT INTO dbo.inventario_piezas (id_variante, id_pieza_origen, ancho_cm, alto_cm, largo_cm, estado, origen)
+            SELECT @id_variante, @id_pieza, ancho_cm, alto_cm, largo_cm, 'DISPONIBLE', 'RETAZO'
+            FROM @retazos WHERE n = @n;
+            SET @nuevo = SCOPE_IDENTITY();
+
+            INSERT INTO dbo.movimientos_inventario (id_variante, id_pieza, tipo, motivo, cantidad, id_usuario, id_pedido, observacion)
+            VALUES (@id_variante, @nuevo, 'ENTRADA', 'RETAZO', 1, @id_usuario, @id_pedido,
+                    'Retazo de la pieza #' + CONVERT(NVARCHAR(12), @id_pieza));
+
+            UPDATE @retazos SET id_pieza = @nuevo WHERE n = @n;
+            SET @n += 1;
+        END
+
+    IF @tran_externa = 0 COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        IF XACT_STATE() = -1 OR (XACT_STATE() = 1 AND @tran_externa = 0)
+            ROLLBACK TRANSACTION;
+        ELSE IF XACT_STATE() = 1
+            ROLLBACK TRANSACTION sp_inv;
+        THROW;
+    END CATCH
+
+    SELECT id_pieza, ancho_cm, alto_cm, largo_cm FROM @retazos;
+END
+GO
+
+PRINT '3 decimales: costo de compra, medidas de pieza y SPs de inventario listos.';
+GO

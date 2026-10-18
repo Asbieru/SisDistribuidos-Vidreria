@@ -79,7 +79,8 @@ Public Class Compra
                               motivo As String,
                               idPedidoOrigen As Integer?,
                               detalle As DataTable,
-                              Optional idCompra As Integer = 0) As Integer
+                              Optional idCompra As Integer = 0,
+                              Optional idUsuario As Integer? = Nothing) As Integer
 
         If String.IsNullOrWhiteSpace(proveedor) Then
             Throw New Exception("Ingrese el proveedor.")
@@ -118,7 +119,10 @@ Public Class Compra
             {"motivo", motivo},
             {"pedido", If(idPedidoOrigen.HasValue,
                           CType(idPedidoOrigen.GetValueOrDefault(), Object),
-                          DBNull.Value)}
+                          DBNull.Value)},
+            {"idUsuario", If(idUsuario.HasValue,
+                             CType(idUsuario.Value, Object),
+                             DBNull.Value)}
         }
 
         Dim sql As New StringBuilder()
@@ -188,6 +192,10 @@ Public Class Compra
         "DELETE FROM compra_detalle WHERE id_compra=@idCompra;")
         End If
 
+        ' El id se devuelve ANTES del bucle: si no, el primer result set que ve
+        ' elDataAdapter es el del EXEC sp_inv_ingresar_pieza (id_pieza) y no este.
+        sql.AppendLine("SELECT @idCompra AS id_compra;")
+
         Dim total As Decimal = 0
         Dim indice As Integer = 0
         Dim variantes As New HashSet(Of Integer)()
@@ -197,11 +205,33 @@ Public Class Compra
             Dim cantidad As Decimal = CDec(fila("cantidad"))
             Dim costo As Decimal = CDec(fila("costo_unitario"))
 
+            ' Pieza con medida (vidrio o aluminio): su fila genera una pieza en inventario
+            Dim esPieza As Boolean = False
+            Dim piezas As Integer = 1
+            Dim ancho As Object = DBNull.Value
+            Dim alto As Object = DBNull.Value
+            Dim largo As Object = DBNull.Value
+            If detalle.Columns.Contains("unidad") Then
+                Dim unidad As String = If(IsDBNull(fila("unidad")), "", fila("unidad").ToString()).Trim().ToUpper()
+                esPieza = unidad = "CM2" OrElse unidad = "PIE2" OrElse unidad = "CM_LINEAL"
+                If detalle.Columns.Contains("ancho_cm") Then ancho = fila("ancho_cm")
+                If detalle.Columns.Contains("alto_cm") Then alto = fila("alto_cm")
+                If detalle.Columns.Contains("largo_cm") Then largo = fila("largo_cm")
+            End If
+            If detalle.Columns.Contains("piezas") AndAlso Not IsDBNull(fila("piezas")) Then
+                piezas = CInt(fila("piezas"))
+            End If
+
             If idVariante <= 0 Then
                 Throw New Exception("Seleccione una variante válida.")
             End If
 
-            If Not variantes.Add(idVariante) Then
+            If piezas < 1 Then
+                Throw New Exception("El numero de piezas debe ser al menos 1.")
+            End If
+
+            ' Solo los accesorios (caja/unidad) no admiten repetirse; las piezas si
+            If Not esPieza AndAlso Not variantes.Add(idVariante) Then
                 Throw New Exception("Hay una variante repetida en el detalle.")
             End If
 
@@ -210,21 +240,21 @@ Public Class Compra
                     "La cantidad y el costo deben ser mayores a cero.")
             End If
 
-            If cantidad > 99999999.99D OrElse costo > 99999999.99D Then
+            If cantidad > 99999999.999D OrElse costo > 99999999.999D Then
                 Throw New Exception(
                     "La cantidad o el costo supera el límite permitido.")
             End If
 
-            If cantidad <> Decimal.Round(cantidad, 2) OrElse
-               costo <> Decimal.Round(costo, 2) Then
+            If cantidad <> Decimal.Round(cantidad, 3) OrElse
+               costo <> Decimal.Round(costo, 3) Then
                 Throw New Exception(
-                    "La cantidad y el costo admiten hasta dos decimales.")
+                    "La cantidad y el costo admiten hasta tres decimales.")
             End If
 
             Dim subtotal As Decimal = Decimal.Round(
-                cantidad * costo, 2, MidpointRounding.AwayFromZero)
+                cantidad * costo, 3, MidpointRounding.AwayFromZero)
 
-            If subtotal > 99999999.99D Then
+            If subtotal > 99999999.999D Then
                 Throw New Exception(
                     "Un subtotal supera el límite de la base de datos.")
             End If
@@ -239,15 +269,41 @@ Public Class Compra
 
             sql.AppendLine(
                 "INSERT INTO compra_detalle " &
-                "(id_compra, id_variante, cantidad, costo_unitario, subtotal) " &
+                "(id_compra, id_variante, cantidad, costo_unitario, subtotal" &
+                If(esPieza, ", piezas, ancho_cm, alto_cm, largo_cm", "") & ") " &
                 "VALUES (@idCompra, @variante" & sufijo &
                 ", @cantidad" & sufijo & ", @costo" & sufijo &
-                ", @subtotal" & sufijo & ");")
+                ", @subtotal" & sufijo &
+                If(esPieza, ", @piezas" & sufijo &
+                    ", @ancho" & sufijo & ", @alto" & sufijo & ", @largo" & sufijo, "") & ");")
+
+            If esPieza Then
+                parametros.Add("piezas" & sufijo, piezas)
+                parametros.Add("ancho" & sufijo, ancho)
+                parametros.Add("alto" & sufijo, alto)
+                parametros.Add("largo" & sufijo, largo)
+
+                sql.AppendLine(
+                    "DECLARE @cd" & sufijo & " INT = CONVERT(INT, SCOPE_IDENTITY());")
+                ' Cada pieza fisica es una fila de inventario con la misma medida
+                sql.AppendLine(
+                    "DECLARE @i" & sufijo & " INT = 1;")
+                sql.AppendLine(
+                    "WHILE @i" & sufijo & " <= @piezas" & sufijo & " BEGIN")
+                sql.AppendLine(
+                    "    EXEC dbo.sp_inv_ingresar_pieza @id_variante=@variante" & sufijo &
+                    ", @ancho_cm=@ancho" & sufijo & ", @alto_cm=@alto" & sufijo &
+                    ", @largo_cm=@largo" & sufijo & ", @origen=N'COMPRA', " &
+                    "@id_compra_detalle=@cd" & sufijo & ", @id_usuario=@idUsuario;")
+                sql.AppendLine(
+                    "    SET @i" & sufijo & " = @i" & sufijo & " + 1;")
+                sql.AppendLine("END;")
+            End If
 
             indice += 1
         Next
 
-        If total > 99999999.99D Then
+        If total > 99999999.999D Then
             Throw New Exception(
                 "El total supera el límite de la base de datos.")
         End If
@@ -255,7 +311,6 @@ Public Class Compra
         parametros.Add("total", total)
 
         sql.AppendLine("COMMIT TRANSACTION;")
-        sql.AppendLine("SELECT @idCompra AS id_compra;")
         sql.AppendLine("END TRY")
         sql.AppendLine("BEGIN CATCH")
         sql.AppendLine("IF @@TRANCOUNT > 0 ROLLBACK TRANSACTION;")
@@ -279,7 +334,10 @@ Public Class Compra
             "SELECT cd.id_variante, " &
             "p.nombre + ' | Variante ' + CONVERT(nvarchar(20), pv.id_variante) " &
             "+ ' | ' + pv.unidad_costo AS producto, " &
-            "cd.cantidad, cd.costo_unitario, cd.subtotal " &
+            "cd.cantidad, cd.costo_unitario, cd.subtotal, " &
+            "pv.unidad_costo AS unidad, " &
+            "ISNULL(cd.piezas, 1) AS piezas, " &
+            "cd.ancho_cm, cd.alto_cm, cd.largo_cm " &
             "FROM compra_detalle cd " &
             "INNER JOIN producto_variante pv ON pv.id_variante=cd.id_variante " &
             "INNER JOIN productos p ON p.id_producto=pv.id_producto " &

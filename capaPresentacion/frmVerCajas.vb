@@ -64,7 +64,7 @@ Public Class frmVerCajas
         Encabezados(dgvCajas, "categoria|Categoría", "producto|Producto", "stock_cajas|Stock", "unidad_costo|Unidad",
                     "stock_minimo|Mínimo", "precio_unitario|Precio unit.")
         dgvCajas.Columns("producto").FillWeight = 250
-        dgvCajas.Columns("precio_unitario").DefaultCellStyle.Format = "N2"
+        dgvCajas.Columns("precio_unitario").DefaultCellStyle.Format = "N3"
     End Sub
 
     Private Sub dgvCajas_CellFormatting(sender As Object, e As DataGridViewCellFormattingEventArgs) Handles dgvCajas.CellFormatting

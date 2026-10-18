@@ -200,7 +200,7 @@ Public Class frmPedidoUnitario
             grid.Columns(oculto).Visible = False
         Next
 
-        grid.Columns("nombre").Width = 260
+        grid.Columns("nombre").Width = 420
         grid.Columns("pieza").Width = 150
         grid.Columns("estado").Width = 110
         grid.Columns("btnAccion").Width = 95
@@ -275,9 +275,9 @@ Public Class frmPedidoUnitario
         Dim ancho As Object = d("pieza_ancho")
         Dim alto As Object = d("pieza_alto")
         Dim largo As Object = d("pieza_largo")
-        If Not IsDBNull(largo) AndAlso CDec(largo) > 0 Then Return Format(largo, "0.##") & " cm"
+        If Not IsDBNull(largo) AndAlso CDec(largo) > 0 Then Return Format(largo, "0.###") & " cm"
         If Not IsDBNull(ancho) AndAlso Not IsDBNull(alto) Then
-            Return Format(ancho, "0.##") & " x " & Format(alto, "0.##") & " cm"
+            Return Format(ancho, "0.###") & " x " & Format(alto, "0.###") & " cm"
         End If
         Return ""
     End Function
@@ -285,11 +285,11 @@ Public Class frmPedidoUnitario
     ' " · 120 x 120 cm" (vidrio), " · 480 cm" (aluminio) o " · N unidad(es)/caja(s)"
     Private Function MedidaDetalle(d As DataRow) As String
         If Not IsDBNull(d("largo_cm")) AndAlso CDec(d("largo_cm")) > 0 Then
-            Return " · " & Format(d("largo_cm"), "0.##") & " cm"
+            Return " · " & Format(d("largo_cm"), "0.###") & " cm"
         End If
         If Not IsDBNull(d("ancho_cm")) AndAlso Not IsDBNull(d("alto_cm")) AndAlso
            CDec(d("ancho_cm")) > 0 AndAlso CDec(d("alto_cm")) > 0 Then
-            Return " · " & Format(d("ancho_cm"), "0.##") & " x " & Format(d("alto_cm"), "0.##") & " cm"
+            Return " · " & Format(d("ancho_cm"), "0.###") & " x " & Format(d("alto_cm"), "0.###") & " cm"
         End If
         If Not IsDBNull(d("cantidad_cajas")) Then
             Return " · " & d("cantidad_cajas").ToString() & " " & EtiquetaUnidad(d)
@@ -355,9 +355,36 @@ Public Class frmPedidoUnitario
     Private Sub ComprarMaterial(fila As DataGridViewRow)
         Dim idVariante As Integer = CInt(fila.Cells("id_variante").Value)
         If idVariante <= 0 Then Return
-        Dim frm As New frmRegistrarCompras With {.tema = tema, .idVarianteInicial = idVariante}
+
+        Dim ancho As Decimal? = MedidaONull(fila.Cells("ancho").Value)
+        Dim alto As Decimal? = MedidaONull(fila.Cells("alto").Value)
+        Dim largo As Decimal? = MedidaONull(fila.Cells("largo").Value)
+        Dim cajas As Integer? = CajasONull(fila.Cells("cajas").Value)
+
+        ' Si ya hay un formulario de compras abierto, se reutiliza y se reemplaza la entrada
+        Dim abierto As frmRegistrarCompras = Nothing
+        For Each formulario As Form In Application.OpenForms
+            If TypeOf formulario Is frmRegistrarCompras Then
+                abierto = DirectCast(formulario, frmRegistrarCompras)
+                Exit For
+            End If
+        Next
+
+        If abierto IsNot Nothing Then
+            abierto.WindowState = FormWindowState.Normal
+            abierto.Activate()
+            abierto.CargarDesdePedido(idVariante, ancho, alto, largo, cajas)
+            abierto.BringToFront()
+            Return
+        End If
+
+        Dim frm As New frmRegistrarCompras With {
+            .tema = tema,
+            .idUsuario = IdUsuarioONull(),
+            .idVarianteInicial = idVariante}
         frm.MdiParent = Me.MdiParent
         frm.Show()
+        frm.CargarDesdePedido(idVariante, ancho, alto, largo, cajas)
     End Sub
 
     ' ---------------- Utilidades ----------------
@@ -425,6 +452,14 @@ Public Class frmPedidoUnitario
         Dim v As Decimal
         If Not Decimal.TryParse(valor.ToString(), v) Then Return Nothing
         If v <= 0D Then Return Nothing
+        Return v
+    End Function
+
+    Private Function CajasONull(valor As Object) As Integer?
+        If valor Is Nothing OrElse IsDBNull(valor) Then Return Nothing
+        Dim v As Integer
+        If Not Integer.TryParse(valor.ToString(), v) Then Return Nothing
+        If v <= 0 Then Return Nothing
         Return v
     End Function
 

@@ -201,7 +201,7 @@ Public Class MenuInicio
             End If
         Next
 
-        Dim registro As New frmRegistrarCompras With {.tema = tema}
+        Dim registro As New frmRegistrarCompras With {.tema = tema, .idUsuario = Integer.Parse(txtID.Text)}
         registro.MdiParent = Me
         registro.Show()
     End Sub

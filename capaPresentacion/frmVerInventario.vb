@@ -62,8 +62,8 @@ Public Class frmVerInventario
         dgvResumen.Columns("categoria").FillWeight = 120
         dgvResumen.Columns("unidad_costo").FillWeight = 120
         dgvResumen.Columns("area_disponible_cm2").DefaultCellStyle.Format = "N0"
-        dgvResumen.Columns("largo_disponible_cm").DefaultCellStyle.Format = "N2"
-        dgvResumen.Columns("precio_unitario").DefaultCellStyle.Format = "N2"
+        dgvResumen.Columns("largo_disponible_cm").DefaultCellStyle.Format = "N3"
+        dgvResumen.Columns("precio_unitario").DefaultCellStyle.Format = "N3"
         ' Ancho minimo: si el total de columnas no cabe, aparece el scroll horizontal
         AnchoMinimoColumnas(dgvResumen, 110)
         dgvResumen.Columns("producto").MinimumWidth = 220

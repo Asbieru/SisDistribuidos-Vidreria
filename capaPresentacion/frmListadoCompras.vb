@@ -3,6 +3,7 @@
 Public Class frmListadoCompras
     Implements IFormularioTema
     Public Property tema As String = "CLARO" Implements IFormularioTema.tema
+    Public Property idUsuario As Integer? = Nothing
     Private objCompra As New Compra
     Private compras As DataTable
     Private filtrarFechas As Boolean = False
@@ -115,35 +116,51 @@ Public Class frmListadoCompras
                 Return
             End If
             Dim datos As DataTable = objCompra.ObtenerDetalleParaEditar(id)
+            Dim detalle As DataTable = datos.Copy()
+            detalle.Columns.Add("medida", GetType(String))
+
+            For Each fila As DataRow In detalle.Rows
+                Dim unidad As String = If(IsDBNull(fila("unidad")), "", fila("unidad").ToString())
+                If unidad = "CM2" OrElse unidad = "PIE2" OrElse unidad = "CM_LINEAL" Then
+                    fila("medida") = TextoMedida(fila("ancho_cm"), fila("alto_cm"), fila("largo_cm"))
+                Else
+                    fila("medida") = ""
+                End If
+            Next
+
             Using ventana As New Form With {.Text = "Detalle de compra " & id.ToString(),
-                .Size = New Size(850, 450), .MinimumSize = New Size(650, 350),
+                .Size = New Size(900, 450), .MinimumSize = New Size(650, 350),
                 .StartPosition = FormStartPosition.CenterParent, .MinimizeBox = False,
                 .Font = New Font("Microsoft Sans Serif", 9.75F)}
                 Dim encabezado As New Label With {.Dock = DockStyle.Top, .Height = 60,
                     .Padding = New Padding(10), .Text = "Proveedor: " & cabecera.Rows(0)("proveedor").ToString() &
                     vbCrLf & "Fecha: " & CDate(cabecera.Rows(0)("fecha")).ToString("dd/MM/yyyy") &
-                    "    Total: S/ " & CDec(cabecera.Rows(0)("total")).ToString("N2")}
+                    "    Total: S/ " & CDec(cabecera.Rows(0)("total")).ToString("N3")}
                 Dim tabla As New DataGridView With {.Dock = DockStyle.Fill, .ReadOnly = True,
                     .AllowUserToAddRows = False, .AllowUserToDeleteRows = False,
                     .AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill,
                     .SelectionMode = DataGridViewSelectionMode.FullRowSelect,
                     .MultiSelect = False, .AutoGenerateColumns = False}
-                Dim campos As String() = {"producto", "cantidad", "costo_unitario", "subtotal"}
-                Dim titulos As String() = {"Producto / variante", "Cantidad", "Costo unitario", "Subtotal"}
+                Dim campos As String() = {"producto", "medida", "piezas", "cantidad", "costo_unitario", "subtotal"}
+                Dim titulos As String() = {"Producto / variante", "Medida", "Piezas", "Cantidad", "Costo unitario", "Subtotal"}
                 For i As Integer = 0 To campos.Length - 1
                     tabla.Columns.Add(New DataGridViewTextBoxColumn With {
                         .Name = campos(i), .DataPropertyName = campos(i), .HeaderText = titulos(i)})
                 Next
-                tabla.DataSource = datos
+                tabla.DataSource = detalle
                 ventana.Controls.Add(tabla)
                 tabla.Columns("producto").HeaderText = "Producto / variante"
                 tabla.Columns("producto").FillWeight = 250
+                tabla.Columns("medida").HeaderText = "Medida"
+                tabla.Columns("medida").FillWeight = 100
+                tabla.Columns("piezas").HeaderText = "Piezas"
+                tabla.Columns("piezas").DefaultCellStyle.Format = "N0"
                 tabla.Columns("cantidad").HeaderText = "Cantidad"
-                tabla.Columns("cantidad").DefaultCellStyle.Format = "0.##"
+                tabla.Columns("cantidad").DefaultCellStyle.Format = "N3"
                 tabla.Columns("costo_unitario").HeaderText = "Costo unitario"
                 tabla.Columns("subtotal").HeaderText = "Subtotal"
-                tabla.Columns("costo_unitario").DefaultCellStyle.Format = "N2"
-                tabla.Columns("subtotal").DefaultCellStyle.Format = "N2"
+                tabla.Columns("costo_unitario").DefaultCellStyle.Format = "N3"
+                tabla.Columns("subtotal").DefaultCellStyle.Format = "N3"
                 Dim cerrar As New Button With {.Text = "CERRAR", .Dock = DockStyle.Bottom,
                     .Height = 35, .DialogResult = DialogResult.Cancel}
                 ventana.Controls.Add(encabezado)
@@ -170,7 +187,7 @@ Public Class frmListadoCompras
             End If
         Next
 
-        Dim registro As New frmRegistrarCompras With {.tema = tema}
+        Dim registro As New frmRegistrarCompras With {.tema = tema, .idUsuario = idUsuario}
         registro.Show()
     End Sub
 
@@ -202,7 +219,7 @@ Public Class frmListadoCompras
                 "Confirmar", MessageBoxButtons.YesNo,
                 MessageBoxIcon.Question) <> DialogResult.Yes Then Return
         Else
-            registro = New frmRegistrarCompras With {.tema = tema}
+            registro = New frmRegistrarCompras With {.tema = tema, .idUsuario = idUsuario}
             registro.Show()
         End If
 
