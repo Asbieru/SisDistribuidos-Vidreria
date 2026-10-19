@@ -68,7 +68,7 @@ Partial Class frmPedidoUnitario
         Me.btnTerminar.Margin = New System.Windows.Forms.Padding(0, 0, 8, 8)
         Me.btnTerminar.Name = "btnTerminar"
         Me.btnTerminar.Size = New System.Drawing.Size(150, 34)
-        Me.btnTerminar.TabIndex = 6
+        Me.btnTerminar.TabIndex = 7
         Me.btnTerminar.Text = "Terminar Pedido"
         Me.btnTerminar.UseVisualStyleBackColor = True
         '
@@ -79,7 +79,7 @@ Partial Class frmPedidoUnitario
         Me.btnPagar.Margin = New System.Windows.Forms.Padding(0, 0, 8, 8)
         Me.btnPagar.Name = "btnPagar"
         Me.btnPagar.Size = New System.Drawing.Size(120, 34)
-        Me.btnPagar.TabIndex = 6
+        Me.btnPagar.TabIndex = 8
         Me.btnPagar.Text = "Pagar Todo"
         Me.btnPagar.UseVisualStyleBackColor = True
         '
@@ -90,7 +90,7 @@ Partial Class frmPedidoUnitario
         Me.btnCerrar.Margin = New System.Windows.Forms.Padding(0, 0, 8, 8)
         Me.btnCerrar.Name = "btnCerrar"
         Me.btnCerrar.Size = New System.Drawing.Size(120, 34)
-        Me.btnCerrar.TabIndex = 6
+        Me.btnCerrar.TabIndex = 9
         Me.btnCerrar.Text = "Cerrar"
         Me.btnCerrar.UseVisualStyleBackColor = True
         '
@@ -103,7 +103,7 @@ Partial Class frmPedidoUnitario
         Me.lblTitulo.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.lblTitulo.Name = "lblTitulo"
         Me.lblTitulo.Size = New System.Drawing.Size(874, 30)
-        Me.lblTitulo.TabIndex = 3
+        Me.lblTitulo.TabIndex = 0
         Me.lblTitulo.Text = "Pedido"
         '
         'lblSubTitulo
@@ -167,7 +167,7 @@ Partial Class frmPedidoUnitario
         Me.btnTerminarUnitario.Location = New System.Drawing.Point(16, 370)
         Me.btnTerminarUnitario.Name = "btnTerminarUnitario"
         Me.btnTerminarUnitario.Size = New System.Drawing.Size(180, 34)
-        Me.btnTerminarUnitario.TabIndex = 7
+        Me.btnTerminarUnitario.TabIndex = 4
         Me.btnTerminarUnitario.Text = "Registrar Culminación"
         Me.btnTerminarUnitario.UseVisualStyleBackColor = True
         '
@@ -178,7 +178,7 @@ Partial Class frmPedidoUnitario
         Me.btnCancelarItems.Location = New System.Drawing.Point(739, 370)
         Me.btnCancelarItems.Name = "btnCancelarItems"
         Me.btnCancelarItems.Size = New System.Drawing.Size(145, 34)
-        Me.btnCancelarItems.TabIndex = 7
+        Me.btnCancelarItems.TabIndex = 6
         Me.btnCancelarItems.Text = "Cancelar Pedido"
         Me.btnCancelarItems.UseVisualStyleBackColor = True
         '
@@ -189,7 +189,7 @@ Partial Class frmPedidoUnitario
         Me.btnItemRoto.Location = New System.Drawing.Point(609, 370)
         Me.btnItemRoto.Name = "btnItemRoto"
         Me.btnItemRoto.Size = New System.Drawing.Size(120, 34)
-        Me.btnItemRoto.TabIndex = 7
+        Me.btnItemRoto.TabIndex = 5
         Me.btnItemRoto.Text = "Item Roto"
         Me.btnItemRoto.UseVisualStyleBackColor = True
         '
@@ -211,29 +211,29 @@ Partial Class frmPedidoUnitario
         Me.tblItems.RowHeadersWidth = 51
         Me.tblItems.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
         Me.tblItems.Size = New System.Drawing.Size(869, 290)
-        Me.tblItems.TabIndex = 4
+        Me.tblItems.TabIndex = 3
         '
         'txtPrecio
         '
-        Me.txtPrecio.Location = New System.Drawing.Point(778, 18)
+        Me.txtPrecio.Location = New System.Drawing.Point(739, 18)
         Me.txtPrecio.Name = "txtPrecio"
-        Me.txtPrecio.Size = New System.Drawing.Size(107, 22)
-        Me.txtPrecio.TabIndex = 3
+        Me.txtPrecio.Size = New System.Drawing.Size(146, 22)
+        Me.txtPrecio.TabIndex = 2
         Me.txtPrecio.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
         'Label2
         '
         Me.Label2.AutoSize = True
         Me.Label2.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!)
-        Me.Label2.Location = New System.Drawing.Point(696, 18)
+        Me.Label2.Location = New System.Drawing.Point(653, 20)
         Me.Label2.Name = "Label2"
         Me.Label2.Size = New System.Drawing.Size(76, 16)
-        Me.Label2.TabIndex = 2
+        Me.Label2.TabIndex = 0
         Me.Label2.Text = "Costo Total"
         '
         'txtTipoPedido
         '
-        Me.txtTipoPedido.Location = New System.Drawing.Point(123, 17)
+        Me.txtTipoPedido.Location = New System.Drawing.Point(123, 19)
         Me.txtTipoPedido.Name = "txtTipoPedido"
         Me.txtTipoPedido.Size = New System.Drawing.Size(496, 22)
         Me.txtTipoPedido.TabIndex = 1
@@ -243,7 +243,7 @@ Partial Class frmPedidoUnitario
         '
         Me.Label1.AutoSize = True
         Me.Label1.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!)
-        Me.Label1.Location = New System.Drawing.Point(13, 18)
+        Me.Label1.Location = New System.Drawing.Point(13, 22)
         Me.Label1.Name = "Label1"
         Me.Label1.Size = New System.Drawing.Size(100, 16)
         Me.Label1.TabIndex = 0
@@ -259,7 +259,7 @@ Partial Class frmPedidoUnitario
         Me.tabItems.SelectedIndex = 0
         Me.tabItems.ShowToolTips = True
         Me.tabItems.Size = New System.Drawing.Size(912, 450)
-        Me.tabItems.TabIndex = 5
+        Me.tabItems.TabIndex = 1
         '
         'frmPedidoUnitario
         '

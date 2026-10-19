@@ -42,7 +42,7 @@ Public Class frmRegistrarPago
 
         lblPagado.Text = "S/. 0.00"
         chbVuelto.Visible = False
-        txtCantidad.Width = CInt(191 * DeviceDpi / 96.0)
+        txtCantidad.Width = CInt(310 * DeviceDpi / 96.0)
         AjustarTamanoPago()
 
         If idPedido > 0 Then SeleccionarPedido(idPedido)
@@ -196,7 +196,7 @@ Public Class frmRegistrarPago
     Private Sub ActualizarVueltoVisible()
         Dim efectivo As Boolean = EsEfectivo()
         chbVuelto.Visible = efectivo
-        txtCantidad.Width = CInt(If(efectivo, 148, 191) * DeviceDpi / 96.0)
+        txtCantidad.Width = CInt(If(efectivo, 230, 310) * DeviceDpi / 96.0)
         If Not efectivo Then chbVuelto.Checked = False
     End Sub
 

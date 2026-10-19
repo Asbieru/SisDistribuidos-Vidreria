@@ -82,7 +82,7 @@ Partial Class frmListadoPedido
         Me.lblTitulo.Name = "lblTitulo"
         Me.lblTitulo.Size = New System.Drawing.Size(912, 25)
         Me.lblTitulo.TabIndex = 0
-        Me.lblTitulo.Text = "Listado de Pedidos"
+        Me.lblTitulo.Text = "LISTADO DE PEDIDOS"
         '
         'flpFiltros
         '
@@ -96,7 +96,7 @@ Partial Class frmListadoPedido
         Me.flpFiltros.Margin = New System.Windows.Forms.Padding(0)
         Me.flpFiltros.Name = "flpFiltros"
         Me.flpFiltros.Size = New System.Drawing.Size(912, 64)
-        Me.flpFiltros.TabIndex = 1
+        Me.flpFiltros.TabIndex = 0
         '
         'pnlFiltro0
         '
@@ -111,7 +111,7 @@ Partial Class frmListadoPedido
         'lblBuscar
         '
         Me.lblBuscar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!)
-        Me.lblBuscar.Location = New System.Drawing.Point(5, 2)
+        Me.lblBuscar.Location = New System.Drawing.Point(6, 3)
         Me.lblBuscar.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.lblBuscar.Name = "lblBuscar"
         Me.lblBuscar.Size = New System.Drawing.Size(314, 20)
@@ -122,11 +122,11 @@ Partial Class frmListadoPedido
         '
         Me.txtBuscar.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.txtBuscar.Location = New System.Drawing.Point(5, 24)
+        Me.txtBuscar.Location = New System.Drawing.Point(9, 24)
         Me.txtBuscar.Margin = New System.Windows.Forms.Padding(2)
         Me.txtBuscar.MaxLength = 150
         Me.txtBuscar.Name = "txtBuscar"
-        Me.txtBuscar.Size = New System.Drawing.Size(401, 22)
+        Me.txtBuscar.Size = New System.Drawing.Size(397, 22)
         Me.txtBuscar.TabIndex = 1
         '
         'pnlFiltro1
@@ -137,7 +137,7 @@ Partial Class frmListadoPedido
         Me.pnlFiltro1.Margin = New System.Windows.Forms.Padding(0, 0, 12, 6)
         Me.pnlFiltro1.Name = "pnlFiltro1"
         Me.pnlFiltro1.Size = New System.Drawing.Size(315, 58)
-        Me.pnlFiltro1.TabIndex = 1
+        Me.pnlFiltro1.TabIndex = 0
         '
         'Label1
         '
@@ -200,7 +200,7 @@ Partial Class frmListadoPedido
         Me.flpResumen.Margin = New System.Windows.Forms.Padding(0, 8, 0, 8)
         Me.flpResumen.Name = "flpResumen"
         Me.flpResumen.Size = New System.Drawing.Size(912, 24)
-        Me.flpResumen.TabIndex = 2
+        Me.flpResumen.TabIndex = 0
         '
         'msj
         '
@@ -227,7 +227,7 @@ Partial Class frmListadoPedido
         Me.flpAcciones.Margin = New System.Windows.Forms.Padding(0)
         Me.flpAcciones.Name = "flpAcciones"
         Me.flpAcciones.Size = New System.Drawing.Size(912, 42)
-        Me.flpAcciones.TabIndex = 3
+        Me.flpAcciones.TabIndex = 0
         '
         'btnNuevo
         '
