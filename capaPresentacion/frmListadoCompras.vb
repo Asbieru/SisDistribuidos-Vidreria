@@ -40,7 +40,7 @@ Public Class frmListadoCompras
         dgvCompras.Columns("id_pedido_origen").HeaderText = "Pedido de origen"
 
         dgvCompras.Columns("fecha").DefaultCellStyle.Format = "dd/MM/yyyy"
-        dgvCompras.Columns("total").DefaultCellStyle.Format = "N2"
+        dgvCompras.Columns("total").DefaultCellStyle.Format = "N3"
         filtrarProveedor()
     End Sub
 
@@ -53,7 +53,7 @@ Public Class frmListadoCompras
             If Not IsDBNull(fila("total")) Then total += CDec(fila("total"))
         Next
         lblResumen.Text = "Compras: " & compras.DefaultView.Count.ToString() &
-            "    Total: S/ " & total.ToString("N2")
+            "    Total: S/ " & total.ToString("N3")
         actualizarBotones()
     End Sub
 

@@ -79,6 +79,10 @@
     <Compile Include="CambiarContraseña.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="frmListadoProveedores.Designer.vb"><DependentUpon>frmListadoProveedores.vb</DependentUpon></Compile>
+    <Compile Include="frmListadoProveedores.vb"><SubType>Form</SubType></Compile>
+    <Compile Include="frmRegistrarProveedores.Designer.vb"><DependentUpon>frmRegistrarProveedores.vb</DependentUpon></Compile>
+    <Compile Include="frmRegistrarProveedores.vb"><SubType>Form</SubType></Compile>
     <Compile Include="frmListadoVentas.Designer.vb">
       <DependentUpon>frmListadoVentas.vb</DependentUpon>
     </Compile>
@@ -267,6 +271,8 @@
     <EmbeddedResource Include="CambiarContraseña.resx">
       <DependentUpon>CambiarContraseña.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="frmListadoProveedores.resx"><DependentUpon>frmListadoProveedores.vb</DependentUpon></EmbeddedResource>
+    <EmbeddedResource Include="frmRegistrarProveedores.resx"><DependentUpon>frmRegistrarProveedores.vb</DependentUpon></EmbeddedResource>
     <EmbeddedResource Include="frmListadoClientes.resx">
       <DependentUpon>frmListadoClientes.vb</DependentUpon>
     </EmbeddedResource>

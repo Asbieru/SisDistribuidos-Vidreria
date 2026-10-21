@@ -224,6 +224,27 @@ Public Class MenuInicio
         nuevoListado.Show()
     End Sub
 
+    Private Sub smnProveedores_Click(sender As Object, e As EventArgs) Handles smnProveedores.Click
+        Try
+            For Each formulario As Form In Application.OpenForms
+                If TypeOf formulario Is frmListadoProveedores Then
+                    Dim listado As frmListadoProveedores = DirectCast(formulario, frmListadoProveedores)
+                    If Not listado.modoSeleccion Then
+                        listado.WindowState = FormWindowState.Normal
+                        listado.cargarLista()
+                        listado.BringToFront()
+                        Return
+                    End If
+                End If
+            Next
+            Dim nuevoListado As New frmListadoProveedores With {.tema = tema}
+            nuevoListado.MdiParent = Me
+            nuevoListado.Show()
+        Catch ex As Exception
+            MessageBox.Show(ex.Message, "Proveedores", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
+    End Sub
+
     Private Sub smnClientes_Click(sender As Object, e As EventArgs) Handles smnClientes.Click
         Try
             For Each formulario As Form In Application.OpenForms
@@ -308,6 +329,7 @@ Public Class MenuInicio
             smnPermisos.Available = permisos.Contains("PERMISOS")
             smnClientes.Available = permisos.Contains("CLIENTES")
             smnProductos.Available = permisos.Contains("PRODUCTOS")
+            smnProveedores.Available = permisos.Contains("COMPRAS")
 
             ' Inventario
             smnVInventario.Available = permisos.Contains("INVENTARIO")
@@ -335,7 +357,7 @@ Public Class MenuInicio
             smnUsuarios.Available OrElse
             smnPermisos.Available OrElse
             smnClientes.Available OrElse
-            smnProductos.Available
+            smnProductos.Available OrElse smnProveedores.Available
 
             mnProcesos.Available =
             smnRCompra.Available OrElse

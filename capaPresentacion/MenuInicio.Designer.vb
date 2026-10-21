@@ -36,6 +36,7 @@ Partial Class MenuInicio
         Me.MantenimientosToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.smnUsuarios = New System.Windows.Forms.ToolStripMenuItem()
         Me.smnClientes = New System.Windows.Forms.ToolStripMenuItem()
+        Me.smnProveedores = New System.Windows.Forms.ToolStripMenuItem()
         Me.smnProductos = New System.Windows.Forms.ToolStripMenuItem()
         Me.smnPermisos = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnConfiguracion = New System.Windows.Forms.ToolStripMenuItem()
@@ -132,7 +133,7 @@ Partial Class MenuInicio
         '
         'MantenimientosToolStripMenuItem
         '
-        Me.MantenimientosToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.smnUsuarios, Me.smnClientes, Me.smnProductos, Me.smnPermisos})
+        Me.MantenimientosToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.smnUsuarios, Me.smnClientes, Me.smnProveedores, Me.smnProductos, Me.smnPermisos})
         Me.MantenimientosToolStripMenuItem.Name = "MantenimientosToolStripMenuItem"
         Me.MantenimientosToolStripMenuItem.Size = New System.Drawing.Size(106, 20)
         Me.MantenimientosToolStripMenuItem.Text = "Mantenimiento"
@@ -148,6 +149,8 @@ Partial Class MenuInicio
         Me.smnClientes.Name = "smnClientes"
         Me.smnClientes.Size = New System.Drawing.Size(135, 22)
         Me.smnClientes.Text = "Clientes"
+        Me.smnProveedores.Name = "smnProveedores"
+        Me.smnProveedores.Text = "Proveedores"
         '
         'smnProductos
         '
@@ -356,6 +359,7 @@ Partial Class MenuInicio
     Friend WithEvents MantenimientosToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents smnUsuarios As ToolStripMenuItem
     Friend WithEvents smnClientes As ToolStripMenuItem
+    Friend WithEvents smnProveedores As ToolStripMenuItem
     Friend WithEvents CerrarTodasLasVentanasToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents smnProductos As ToolStripMenuItem
     Friend WithEvents smnPermisos As ToolStripMenuItem

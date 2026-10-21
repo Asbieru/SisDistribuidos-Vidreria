@@ -16,10 +16,20 @@ Public Class frmRegistrarCompras
     Private idCompraActual As Integer = 0
     Private detalleEnEdicion As DataRow = Nothing
     Private estadoGuardado As String = Nothing
+    Private idProveedorSeleccionado As Integer = 0
+
+    Private Sub btnBuscarProveedor_Click(sender As Object, e As EventArgs) Handles btnBuscarProveedor.Click
+        Using formulario As New frmListadoProveedores With {.tema = tema, .modoSeleccion = True}
+            If formulario.ShowDialog(Me) = DialogResult.OK Then
+                idProveedorSeleccionado = formulario.idProveedorSeleccionado
+                txtProveedor.Text = formulario.nombreProveedorSeleccionado
+            End If
+        End Using
+    End Sub
 
     Private Function estadoCompra() As String
         Dim estado As New System.Text.StringBuilder()
-        For Each valor As String In {txtProveedor.Text, dtpFecha.Value.Date.Ticks.ToString(),
+        For Each valor As String In {idProveedorSeleccionado.ToString(), txtProveedor.Text, dtpFecha.Value.Date.Ticks.ToString(),
             cboMotivo.Text, If(nudPedidoOrigen.Enabled, nudPedidoOrigen.Value.ToString(), ""),
             If(detalle Is Nothing, "", detalle.Rows.Count.ToString())}
             estado.Append(valor.Length).Append(":"c).Append(valor)
@@ -104,19 +114,28 @@ Public Class frmRegistrarCompras
             dgvDetalle.DataSource = detalle
 
             dgvDetalle.Columns("id_variante").Visible = False
-            dgvDetalle.Columns("unidad").Visible = False
+            dgvDetalle.Columns("unidad").HeaderText = "Unidad"
             dgvDetalle.Columns("ancho_cm").Visible = False
             dgvDetalle.Columns("alto_cm").Visible = False
             dgvDetalle.Columns("largo_cm").Visible = False
             dgvDetalle.Columns("producto").HeaderText = "Producto / variante"
             dgvDetalle.Columns("medida").HeaderText = "Medida"
-            dgvDetalle.Columns("piezas").HeaderText = "Piezas"
-            dgvDetalle.Columns("cantidad").HeaderText = "Cantidad"
+            dgvDetalle.Columns("piezas").HeaderText = "Conteo"
+            dgvDetalle.Columns("piezas").ToolTipText = "Número entero de piezas, cajas o unidades compradas."
+            dgvDetalle.Columns("cantidad").ToolTipText = "Área, largo o cantidad facturada, según la unidad de costo."
+            dgvDetalle.Columns("cantidad").HeaderText = "Cantidad facturada"
             dgvDetalle.Columns("costo_unitario").HeaderText = "Costo unitario"
             dgvDetalle.Columns("subtotal").HeaderText = "Subtotal"
             dgvDetalle.Columns("producto").FillWeight = 170
             dgvDetalle.Columns("medida").FillWeight = 100
             dgvDetalle.Columns("piezas").FillWeight = 45
+            dgvDetalle.Columns("producto").MinimumWidth = 210
+            dgvDetalle.Columns("cantidad").MinimumWidth = 115
+            dgvDetalle.Columns("piezas").MinimumWidth = 70
+            dgvDetalle.Columns("costo_unitario").MinimumWidth = 105
+            dgvDetalle.Columns("subtotal").MinimumWidth = 100
+            dgvDetalle.Columns("unidad").MinimumWidth = 70
+            dgvDetalle.Columns("medida").MinimumWidth = 110
 
             For Each nombre As String In
                 New String() {"costo_unitario", "subtotal", "cantidad"}
@@ -197,6 +216,14 @@ Public Class frmRegistrarCompras
         lblCantidad.Text = If(esVidrio OrElse esAluminio, "Piezas:", "Cantidad:")
         nudCantidad.Visible = True
         lblCantidad.Visible = True
+        Select Case unidadSeleccionada
+            Case "CM2" : lblCosto.Text = "Costo / cm²:"
+            Case "PIE2" : lblCosto.Text = "Costo / pie²:"
+            Case "CM_LINEAL" : lblCosto.Text = "Costo / cm:"
+            Case "CAJA" : lblCosto.Text = "Costo / caja:"
+            Case "UNIDAD" : lblCosto.Text = "Costo / unidad:"
+            Case Else : lblCosto.Text = "Costo unitario:"
+        End Select
     End Sub
 
     ' Enfoca el primer control de entrada segun el modo activo
@@ -333,6 +360,7 @@ Public Class frmRegistrarCompras
         btnGuardar.Text = "GUARDAR"
         idCompraActual = 0
         txtProveedor.Clear()
+        idProveedorSeleccionado = 0
         dtpFecha.Value = Today
         cboMotivo.SelectedIndex = 0
         nudPedidoOrigen.Value = 1
@@ -393,25 +421,14 @@ Public Class frmRegistrarCompras
             End If
             ancho = numAncho.Value
             alto = numAlto.Value
-            Dim medidaUnitaria As Decimal = ancho.Value * alto.Value
-            If unidadSeleccionada = "PIE2" Then
-                medidaUnitaria = medidaUnitaria / 900D
-            End If
-            cantidad = Decimal.Round(medidaUnitaria * piezas, 3, MidpointRounding.AwayFromZero)
+
         ElseIf esAluminio Then
             If numAlto.Value <= 0D Then
                 MessageBox.Show("Ingrese el largo del aluminio (mayor a cero).")
                 Return
             End If
             largo = numAlto.Value
-            cantidad = Decimal.Round(largo.Value * piezas, 3, MidpointRounding.AwayFromZero)
-        Else
-            cantidad = piezas
-        End If
 
-        If cantidad <= 0D Then
-            MessageBox.Show("La cantidad resultante debe ser mayor a cero.")
-            Return
         End If
 
         Dim id As Integer = idVarianteSeleccionada
@@ -429,9 +446,15 @@ Public Class frmRegistrarCompras
             totalOtros += CDec(fila("subtotal"))
         Next
 
-        Dim subtotal As Decimal = Decimal.Round(
-        cantidad * nudCostoUnitario.Value,
-        3, MidpointRounding.AwayFromZero)
+        Dim importes As Compra.ImportesDetalle
+        Try
+            importes = Compra.CalcularImportes(unidadSeleccionada, piezas, nudCostoUnitario.Value, ancho, alto, largo)
+        Catch ex As ArgumentException
+            MessageBox.Show(Me, ex.Message, "Compra", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+            Return
+        End Try
+        cantidad = importes.Cantidad
+        Dim subtotal As Decimal = importes.Subtotal
 
         If totalOtros + subtotal > 99999999.999D Then
             MessageBox.Show("El total supera el límite de la base de datos.")
@@ -499,6 +522,11 @@ Public Class frmRegistrarCompras
 
     Private Sub btnGuardar_Click(sender As Object, e As EventArgs) Handles btnGuardar.Click
         If detalle Is Nothing Then Return
+        If idProveedorSeleccionado <= 0 Then
+            MessageBox.Show(Me, "Seleccione un proveedor registrado con BUSCAR.", "Proveedor", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+            btnBuscarProveedor.Focus()
+            Return
+        End If
 
         If detalleEnEdicion IsNot Nothing Then
             MessageBox.Show(
@@ -532,7 +560,8 @@ Public Class frmRegistrarCompras
             pedido,
             detalle,
             idCompraActual,
-            idUsuario)
+            idUsuario,
+            idProveedorSeleccionado)
 
             limpiar()
 
@@ -614,6 +643,7 @@ Public Class frmRegistrarCompras
             Dim fila As DataRow = cabecera.Rows(0)
 
             txtProveedor.Text = fila("proveedor").ToString()
+            idProveedorSeleccionado = If(IsDBNull(fila("id_proveedor")), 0, CInt(fila("id_proveedor")))
             dtpFecha.Value = CDate(fila("fecha"))
             cboMotivo.SelectedItem = fila("motivo").ToString()
 
@@ -633,6 +663,7 @@ Public Class frmRegistrarCompras
                 If productos.Columns.Contains("piezas") AndAlso Not IsDBNull(producto("piezas")) Then
                     piezas = Math.Max(1, CInt(producto("piezas")))
                 End If
+                If Not esPieza Then piezas = CInt(producto("cantidad"))
                 Dim ancho As Object = If(productos.Columns.Contains("ancho_cm"), producto("ancho_cm"), DBNull.Value)
                 Dim alto As Object = If(productos.Columns.Contains("alto_cm"), producto("alto_cm"), DBNull.Value)
                 Dim largo As Object = If(productos.Columns.Contains("largo_cm"), producto("largo_cm"), DBNull.Value)

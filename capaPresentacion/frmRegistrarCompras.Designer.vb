@@ -44,6 +44,7 @@ Partial Class frmRegistrarCompras
         Me.cboMotivo = New System.Windows.Forms.ComboBox()
         Me.dtpFecha = New System.Windows.Forms.DateTimePicker()
         Me.txtProveedor = New System.Windows.Forms.TextBox()
+        Me.btnBuscarProveedor = New System.Windows.Forms.Button()
         Me.lblPedidoOrigen = New System.Windows.Forms.Label()
         Me.lblMotivo = New System.Windows.Forms.Label()
         Me.lblFecha = New System.Windows.Forms.Label()
@@ -86,6 +87,7 @@ Partial Class frmRegistrarCompras
         Me.pnlRegistroCompra.Controls.Add(Me.cboMotivo)
         Me.pnlRegistroCompra.Controls.Add(Me.dtpFecha)
         Me.pnlRegistroCompra.Controls.Add(Me.txtProveedor)
+        Me.pnlRegistroCompra.Controls.Add(Me.btnBuscarProveedor)
         Me.pnlRegistroCompra.Controls.Add(Me.lblPedidoOrigen)
         Me.pnlRegistroCompra.Controls.Add(Me.lblMotivo)
         Me.pnlRegistroCompra.Controls.Add(Me.lblFecha)
@@ -313,8 +315,15 @@ Partial Class frmRegistrarCompras
         Me.txtProveedor.Location = New System.Drawing.Point(162, 75)
         Me.txtProveedor.MaxLength = 150
         Me.txtProveedor.Name = "txtProveedor"
-        Me.txtProveedor.Size = New System.Drawing.Size(260, 22)
+        Me.txtProveedor.Size = New System.Drawing.Size(175, 22)
         Me.txtProveedor.TabIndex = 5
+        Me.txtProveedor.ReadOnly = True
+        Me.txtProveedor.TabStop = False
+        Me.btnBuscarProveedor.Name = "btnBuscarProveedor"
+        Me.btnBuscarProveedor.Text = "BUSCAR"
+        Me.btnBuscarProveedor.Location = New System.Drawing.Point(342, 72)
+        Me.btnBuscarProveedor.Size = New System.Drawing.Size(80, 28)
+        Me.btnBuscarProveedor.TabIndex = 5
         '
         'lblPedidoOrigen
         '
@@ -415,6 +424,7 @@ Partial Class frmRegistrarCompras
     Friend WithEvents cboMotivo As ComboBox
     Friend WithEvents dtpFecha As DateTimePicker
     Friend WithEvents txtProveedor As TextBox
+    Friend WithEvents btnBuscarProveedor As Button
     Friend WithEvents btnAgregarDetalle As Button
     Friend WithEvents nudCostoUnitario As NumericUpDown
     Friend WithEvents nudCantidad As NumericUpDown
