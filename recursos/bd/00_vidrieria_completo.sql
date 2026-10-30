@@ -2,24 +2,21 @@
 -- Script UNICO y consolidado: Sistema para vidrieria
 -- Motor: Microsoft SQL Server (T-SQL)
 --
--- Generado a partir de los archivos:
---   esquema_vidrieria_sqlserver.sql  (esquema base)
---   02_modulo_inventario.sql         (modulo de inventario)
---   03_datos_prueba_inventario.sql   (datos de prueba)
---   04_modulo_clientes.sql           (modulo de clientes)
---   05_ficha_comercial_clientes.sql  (ampliacion de clientes)
---   + roles y permisos (tipo_permiso, rol_permiso, permiso)
---   + catalogo real de vidrios por pie2 y combos de registrar pedido
+-- UNICO script de instalacion/migracion de la base de datos.
+-- Incluye, integrados y en orden:
+--   esquema base, modulo de inventario, datos de prueba,
+--   modulo y ficha comercial de clientes, roles y permisos,
+--   catalogo real de vidrios/aluminio, modelos de ventana,
+--   modulo de proveedores y catalogo simulado de proveedores.
 --
 -- Orden de ejecucion:
---   1) Base de datos y TABLAS (los cambios de los modulos ya estan
---      integrados directamente en cada CREATE TABLE)
---   2) VISTAS y PROCEDIMIENTOS / FUNCIONES
---   3) INSERT de datos
+--   1) Base de datos, TABLAS y migraciones
+--   2) VISTAS, TIPOS y PROCEDIMIENTOS / FUNCIONES
+--   3) INSERT de datos y catalogos
+--   4) Modulo de proveedores y catalogo simulado
 --
 -- Es idempotente: se puede volver a ejecutar sin generar errores.
--- Cambios puntuales para aplicar sobre una BD YA creada (p. ej. somee.com):
---   ver recursos/bd/comandosTemporales.sql
+-- Version equivalente para PostgreSQL: 00_vidrieria_completo_postgresql.sql
 -- ============================================================
 
 IF DB_ID(N'vidrieria') IS NULL
@@ -806,8 +803,9 @@ BEGIN
 END
 GO
 
+-- CREATE TYPE debe ser la unica sentencia del lote: se crea con EXEC dinamico
 IF NOT EXISTS (SELECT 1 FROM sys.types WHERE name = 'TVP_PedidoItem' AND is_table_type = 1)
-CREATE TYPE dbo.TVP_PedidoItem AS TABLE (
+    EXEC(N'CREATE TYPE dbo.TVP_PedidoItem AS TABLE (
     id_temp            INT NOT NULL PRIMARY KEY,
     tipo                NVARCHAR(20) NOT NULL,   -- VENTANA / MAMPARA / VIDRIO_SUELTO / CAJA
     etiqueta            NVARCHAR(50) NULL,
@@ -818,11 +816,11 @@ CREATE TYPE dbo.TVP_PedidoItem AS TABLE (
     mano_obra           DECIMAL(10,2) NOT NULL,
     total               DECIMAL(10,2) NULL,
     id_modelo           INT NULL                 -- modelo de ventana (NULL si no aplica)
-);
+);');
 GO
 
 IF NOT EXISTS (SELECT 1 FROM sys.types WHERE name = 'TVP_PedidoDetalle' AND is_table_type = 1)
-CREATE TYPE dbo.TVP_PedidoDetalle AS TABLE (
+    EXEC(N'CREATE TYPE dbo.TVP_PedidoDetalle AS TABLE (
     id_temp         INT NOT NULL PRIMARY KEY,
     id_item_temp    INT NOT NULL,
     id_variante     INT NOT NULL,
@@ -833,15 +831,15 @@ CREATE TYPE dbo.TVP_PedidoDetalle AS TABLE (
     largo_cm        DECIMAL(10,2) NULL,
     cantidad_cajas  INT NULL,
     subtotal        DECIMAL(10,2) NOT NULL
-);
+);');
 GO
 
 IF NOT EXISTS (SELECT 1 FROM sys.types WHERE name = 'TVP_PedidoMedida' AND is_table_type = 1)
-CREATE TYPE dbo.TVP_PedidoMedida AS TABLE (
+    EXEC(N'CREATE TYPE dbo.TVP_PedidoMedida AS TABLE (
     id_detalle_temp INT NOT NULL,
     etiqueta        NVARCHAR(20) NOT NULL,   -- ANCHO_SUP, ANCHO_INF, ALTO_IZQ, ALTO_DER
     valor_cm        DECIMAL(10,2) NOT NULL
-);
+);');
 GO
 IF OBJECT_ID(N'dbo.sp_inv_ingresar_pieza', N'P') IS NOT NULL DROP PROCEDURE dbo.sp_inv_ingresar_pieza;
 GO
@@ -1231,53 +1229,33 @@ BEGIN
         VALUES (@id_cliente, @id_usuario, ISNULL(@fecha, dbo.fn_hora_peru()), 'PENDIENTE', 0);
         SET @id_pedido = CONVERT(INT, SCOPE_IDENTITY());
 
-        -- mapeo id_temp (item) -> id real generado
+        -- items en una sola sentencia; MERGE permite devolver el mapeo id_temp -> id real
         DECLARE @MapItems TABLE (id_temp INT PRIMARY KEY, id_item INT);
 
-        DECLARE @id_temp INT, @tipo NVARCHAR(20), @etiqueta NVARCHAR(50),
-                @anchoI DECIMAL(10,2), @altoI DECIMAL(10,2),
-                @precio_mat DECIMAL(10,2), @extra DECIMAL(10,2), @mano DECIMAL(10,2), @totalI DECIMAL(10,2),
-                @id_modeloI INT;
+        MERGE dbo.pedido_item AS tgt
+        USING @Items AS src
+        ON 1 = 0
+        WHEN NOT MATCHED BY TARGET THEN
+            INSERT (id_pedido, tipo, descripcion, estado,
+                    precio_materiales, costo_extra, mano_obra, total, id_modelo)
+            VALUES (@id_pedido, src.tipo, src.etiqueta, 'PENDIENTE',
+                    src.precio_materiales, src.costo_extra, src.mano_obra, src.total, src.id_modelo)
+        OUTPUT inserted.id_item, src.id_temp INTO @MapItems (id_item, id_temp);
 
-        DECLARE cur_items CURSOR LOCAL FAST_FORWARD FOR
-            SELECT id_temp, tipo, etiqueta, ancho_cm, alto_cm, precio_materiales, costo_extra, mano_obra, total, id_modelo
-            FROM @Items;
-        OPEN cur_items;
-        FETCH NEXT FROM cur_items INTO @id_temp, @tipo, @etiqueta, @anchoI, @altoI, @precio_mat, @extra, @mano, @totalI, @id_modeloI;
-        WHILE @@FETCH_STATUS = 0
-        BEGIN
-            INSERT INTO dbo.pedido_item (id_pedido, tipo, descripcion, estado,
-                                          precio_materiales, costo_extra, mano_obra, total, id_modelo)
-            VALUES (@id_pedido, @tipo, @etiqueta, 'PENDIENTE',
-                    @precio_mat, @extra, @mano, @totalI, @id_modeloI);
-
-            INSERT INTO @MapItems VALUES (@id_temp, CONVERT(INT, SCOPE_IDENTITY()));
-
-            FETCH NEXT FROM cur_items INTO @id_temp, @tipo, @etiqueta, @anchoI, @altoI, @precio_mat, @extra, @mano, @totalI, @id_modeloI;
-        END
-        CLOSE cur_items; DEALLOCATE cur_items;
-
-        -- detalles: resuelve inventario (usa existente / corta / compra nueva) e inserta
-        DECLARE @MapDetalles TABLE (id_temp INT PRIMARY KEY, id_detalle INT);
-
-        DECLARE @id_det_temp INT, @id_item_temp INT, @id_variante INT, @accion NVARCHAR(20),
-                @id_pieza INT, @anchoD DECIMAL(10,2), @altoD DECIMAL(10,2), @largoD DECIMAL(10,2),
-                @cajas INT, @subtotal DECIMAL(10,2),
-                @id_item_real INT, @id_pieza_final INT, @precio_unit DECIMAL(10,2);
+        -- inventario: solo las lineas que usan o cortan una pieza se resuelven una por una
+        DECLARE @id_pieza INT, @accion NVARCHAR(20),
+                @anchoD DECIMAL(10,2), @altoD DECIMAL(10,2), @largoD DECIMAL(10,2);
 
         DECLARE cur_det CURSOR LOCAL FAST_FORWARD FOR
-            SELECT id_temp, id_item_temp, id_variante, accion, id_pieza, ancho_cm, alto_cm, largo_cm, cantidad_cajas, subtotal
-            FROM @Detalles;
+            SELECT id_pieza, accion, ancho_cm, alto_cm, largo_cm
+            FROM @Detalles
+            WHERE accion IN ('CORTA_PIEZA','USA_EXISTENTE')
+            ORDER BY id_temp;
         OPEN cur_det;
-        FETCH NEXT FROM cur_det INTO @id_det_temp, @id_item_temp, @id_variante, @accion, @id_pieza, @anchoD, @altoD, @largoD, @cajas, @subtotal;
+        FETCH NEXT FROM cur_det INTO @id_pieza, @accion, @anchoD, @altoD, @largoD;
         WHILE @@FETCH_STATUS = 0
         BEGIN
-            SET @id_item_real = (SELECT id_item FROM @MapItems WHERE id_temp = @id_item_temp);
-            SET @id_pieza_final = @id_pieza;
-            SET @precio_unit = (SELECT precio_unitario FROM dbo.producto_variante WHERE id_variante = @id_variante);
-
             IF @accion = 'CORTA_PIEZA'
-            BEGIN
                 EXEC dbo.sp_inv_cortar_pieza
                      @id_pieza    = @id_pieza,
                      @ancho_corte = @anchoD,
@@ -1285,33 +1263,38 @@ BEGIN
                      @largo_corte = @largoD,
                      @id_usuario  = @id_usuario,
                      @id_pedido   = @id_pedido;
-                SET @id_pieza_final = @id_pieza; -- la pieza original queda CONSUMIDA; esta linea registra lo que se uso de ella
-            END
-            ELSE IF @accion = 'USA_EXISTENTE'
-            BEGIN
+            ELSE
                 EXEC dbo.sp_inv_cambiar_estado_pieza
                      @id_pieza   = @id_pieza,
                      @estado     = 'VENDIDA',
                      @id_usuario = @id_usuario,
                      @id_pedido  = @id_pedido;
-            END
-            -- COMPRA_NUEVA: @id_pieza_final queda NULL; se liga despues al registrar la compra
 
-            INSERT INTO dbo.pedido_detalle (id_item, id_variante, accion, id_pieza, estado,
-                                             cantidad_cajas, ancho_cm, alto_cm, largo_cm,
-                                             precio_unitario_aplicado, subtotal)
-            VALUES (@id_item_real, @id_variante, @accion, @id_pieza_final, 'ACTIVO',
-                    @cajas, @anchoD, @altoD, @largoD,
-                    @precio_unit, @subtotal);
-
-            INSERT INTO @MapDetalles VALUES (@id_det_temp, CONVERT(INT, SCOPE_IDENTITY()));
-
-            IF @accion = 'COMPRA_NUEVA'
-                UPDATE dbo.pedido_item SET estado = 'PENDIENTE' WHERE id_item = @id_item_real;
-
-            FETCH NEXT FROM cur_det INTO @id_det_temp, @id_item_temp, @id_variante, @accion, @id_pieza, @anchoD, @altoD, @largoD, @cajas, @subtotal;
+            FETCH NEXT FROM cur_det INTO @id_pieza, @accion, @anchoD, @altoD, @largoD;
         END
         CLOSE cur_det; DEALLOCATE cur_det;
+
+        -- detalles en una sola sentencia (COMPRA_NUEVA deja id_pieza NULL)
+        DECLARE @MapDetalles TABLE (id_temp INT PRIMARY KEY, id_detalle INT);
+
+        MERGE dbo.pedido_detalle AS tgt
+        USING (
+            SELECT src.id_temp, mi.id_item, src.id_variante, src.accion, src.id_pieza,
+                   src.cantidad_cajas, src.ancho_cm, src.alto_cm, src.largo_cm,
+                   pv.precio_unitario, src.subtotal
+            FROM @Detalles src
+            INNER JOIN @MapItems mi ON mi.id_temp = src.id_item_temp
+            LEFT JOIN dbo.producto_variante pv ON pv.id_variante = src.id_variante
+        ) AS s
+        ON 1 = 0
+        WHEN NOT MATCHED BY TARGET THEN
+            INSERT (id_item, id_variante, accion, id_pieza, estado,
+                    cantidad_cajas, ancho_cm, alto_cm, largo_cm,
+                    precio_unitario_aplicado, subtotal)
+            VALUES (s.id_item, s.id_variante, s.accion, s.id_pieza, 'ACTIVO',
+                    s.cantidad_cajas, s.ancho_cm, s.alto_cm, s.largo_cm,
+                    s.precio_unitario, s.subtotal)
+        OUTPUT inserted.id_detalle, s.id_temp INTO @MapDetalles (id_detalle, id_temp);
 
         -- medidas crudas (para el proveedor)
         INSERT INTO dbo.pedido_detalle_medida (id_detalle, etiqueta, valor_cm)
@@ -3325,3 +3308,56 @@ END;
 GO
 
 -- FIN MODULO PROVEEDORES
+
+-- ============================================================
+-- CATALOGO SIMULADO DE PROVEEDORES (antes 02_proveedores_simulados.sql)
+-- Nombres comerciales FICTICIOS. No representa empresas verificadas ni
+-- incluye RUC/DNI/telefonos inventados. Solo reemplaza los nombres
+-- provisionales indicados, conservando sus IDs. El nombre historico
+-- almacenado en cada compra no se modifica. Reejecutable.
+-- ============================================================
+SET XACT_ABORT ON;
+GO
+BEGIN TRY
+    BEGIN TRANSACTION;
+    DECLARE @catalogo TABLE(anterior NVARCHAR(150), nombre NVARCHAR(150), direccion NVARCHAR(255));
+    INSERT INTO @catalogo VALUES
+        (N'doce', N'Vidrios y Cristales Horizonte', N'Lima, zona industrial. Almacen de vidrios y espejos.'),
+        (N'los', N'Distribuidora de Aluminios Costa Central', N'Lima, zona comercial. Almacen de perfiles de aluminio.'),
+        (N'trece', N'Suministros para Vidrieria Las Palmeras', N'Lima, zona comercial. Distribucion de accesorios y fijaciones.');
+    DECLARE @anterior NVARCHAR(150), @nombre NVARCHAR(150), @direccion NVARCHAR(255), @id INT, @version BINARY(8);
+    DECLARE catalogo CURSOR LOCAL FAST_FORWARD FOR SELECT anterior,nombre,direccion FROM @catalogo;
+    OPEN catalogo;
+    FETCH NEXT FROM catalogo INTO @anterior,@nombre,@direccion;
+    WHILE @@FETCH_STATUS=0
+    BEGIN
+        -- Si ya se aplico el catalogo, no se vuelve a insertar ni se sobrescriben cambios posteriores.
+        IF NOT EXISTS(SELECT 1 FROM dbo.proveedores WITH (UPDLOCK,HOLDLOCK) WHERE nombre=@nombre)
+        BEGIN
+            SET @id=NULL;
+            SET @version=NULL;
+            SELECT @id=id_proveedor,@version=version_proveedor
+            FROM dbo.proveedores WITH (UPDLOCK,HOLDLOCK)
+            WHERE nombre COLLATE Latin1_General_100_BIN2=@anterior COLLATE Latin1_General_100_BIN2
+              AND documento IS NULL;
+            IF @id IS NULL
+                EXEC dbo.sp_prov_guardar @nombre=@nombre,@direccion=@direccion,
+                    @tipo_persona=N'NATURAL',@tipo_documento=N'SIN DOCUMENTO';
+            ELSE
+                EXEC dbo.sp_prov_guardar @id_proveedor=@id,@nombre=@nombre,@direccion=@direccion,
+                    @version_original=@version,@tipo_persona=N'NATURAL',@tipo_documento=N'SIN DOCUMENTO';
+        END;
+        FETCH NEXT FROM catalogo INTO @anterior,@nombre,@direccion;
+    END;
+    CLOSE catalogo;
+    DEALLOCATE catalogo;
+    COMMIT TRANSACTION;
+END TRY
+BEGIN CATCH
+    IF XACT_STATE()<>0 ROLLBACK TRANSACTION;
+    THROW;
+END CATCH;
+GO
+
+PRINT 'Script unico ejecutado: esquema, modulos, catalogos y proveedores listos.';
+GO

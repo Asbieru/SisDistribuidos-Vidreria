@@ -15,7 +15,43 @@ BEGIN TRANSACTION;
 SELECT id_compra,id_proveedor,proveedor,total INTO #compras_catalogo FROM dbo.compras;
 '@
     [void]$cmd.ExecuteNonQuery()
-    $cmd.CommandText=[IO.File]::ReadAllText((Join-Path $raiz 'recursos/bd/02_proveedores_simulados.sql'))
+    $cmd.CommandText=@'
+BEGIN TRY
+    DECLARE @catalogo TABLE(anterior NVARCHAR(150), nombre NVARCHAR(150), direccion NVARCHAR(255));
+    INSERT INTO @catalogo VALUES
+        (N'doce', N'Vidrios y Cristales Horizonte', N'Lima, zona industrial. Almacen de vidrios y espejos.'),
+        (N'los', N'Distribuidora de Aluminios Costa Central', N'Lima, zona comercial. Almacen de perfiles de aluminio.'),
+        (N'trece', N'Suministros para Vidrieria Las Palmeras', N'Lima, zona comercial. Distribucion de accesorios y fijaciones.');
+    DECLARE @anterior NVARCHAR(150), @nombre NVARCHAR(150), @direccion NVARCHAR(255), @id INT, @version BINARY(8);
+    DECLARE catalogo CURSOR LOCAL FAST_FORWARD FOR SELECT anterior,nombre,direccion FROM @catalogo;
+    OPEN catalogo;
+    FETCH NEXT FROM catalogo INTO @anterior,@nombre,@direccion;
+    WHILE @@FETCH_STATUS=0
+    BEGIN
+        IF NOT EXISTS(SELECT 1 FROM dbo.proveedores WITH (UPDLOCK,HOLDLOCK) WHERE nombre=@nombre)
+        BEGIN
+            SET @id=NULL;
+            SET @version=NULL;
+            SELECT @id=id_proveedor,@version=version_proveedor
+            FROM dbo.proveedores WITH (UPDLOCK,HOLDLOCK)
+            WHERE nombre COLLATE Latin1_General_100_BIN2=@anterior COLLATE Latin1_General_100_BIN2
+              AND documento IS NULL;
+            IF @id IS NULL
+                EXEC dbo.sp_prov_guardar @nombre=@nombre,@direccion=@direccion,
+                    @tipo_persona=N'NATURAL',@tipo_documento=N'SIN DOCUMENTO';
+            ELSE
+                EXEC dbo.sp_prov_guardar @id_proveedor=@id,@nombre=@nombre,@direccion=@direccion,
+                    @version_original=@version,@tipo_persona=N'NATURAL',@tipo_documento=N'SIN DOCUMENTO';
+        END;
+        FETCH NEXT FROM catalogo INTO @anterior,@nombre,@direccion;
+    END;
+    CLOSE catalogo;
+    DEALLOCATE catalogo;
+END TRY
+BEGIN CATCH
+    THROW;
+END CATCH;
+'@
     [void]$cmd.ExecuteNonQuery()
     $cmd.CommandText=@'
 IF EXISTS(SELECT id_compra,id_proveedor,proveedor,total FROM #compras_catalogo

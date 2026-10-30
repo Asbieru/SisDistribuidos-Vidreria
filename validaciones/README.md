@@ -45,7 +45,7 @@ PIE2 conserva la equivalencia **comercial** de 900 cm² utilizada por el proyect
 
 ## Catálogo simulado de proveedores
 
-`recursos/bd/02_proveedores_simulados.sql` reemplaza exclusivamente los nombres provisionales `doce`, `los` y `trece`, si no tienen documento registrado. Conserva los IDs y no reescribe los nombres históricos de las compras. Si los nombres comerciales ya existen, no los duplica ni sobrescribe sus modificaciones posteriores.
+El bloque de catálogo simulado incluido al final de `recursos/bd/00_vidrieria_completo.sql` reemplaza exclusivamente los nombres provisionales `doce`, `los` y `trece`, si no tienen documento registrado. Conserva los IDs y no reescribe los nombres históricos de las compras. Si los nombres comerciales ya existen, no los duplica ni sobrescribe sus modificaciones posteriores.
 
 Los tres nombres comerciales y sus referencias de ubicación son **ficticios**. No se inventan documentos fiscales ni teléfonos: se registran sin documento. No representan empresas verificadas.
 

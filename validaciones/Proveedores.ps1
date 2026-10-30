@@ -146,7 +146,7 @@ $residuos=Consultar "SELECT (SELECT COUNT(*) FROM dbo.proveedores WHERE nombre L
 Comprobar ($residuos.Rows[0]['n'] -eq 0) 'Quedaron registros de validación.'
 
 # El esquema y los procedimientos desplegados deben coincidir con la migración.
-$sqlMigracion=[IO.File]::ReadAllText((Join-Path $raiz 'recursos/bd/01_proveedores.sql'))
+$sqlMigracion=[IO.File]::ReadAllText((Join-Path $raiz 'recursos/bd/00_vidrieria_completo.sql'))
 $procedimientos=[regex]::Matches($sqlMigracion,'(?ms)^CREATE PROCEDURE (dbo\.sp_prov_\w+)\b.*?(?=^\s*GO\s*$)')
 Comprobar ($procedimientos.Count -eq 6) 'La migración no contiene los seis procedimientos esperados.'
 foreach($sp in $procedimientos) {
