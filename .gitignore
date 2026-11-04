@@ -374,3 +374,9 @@ capaDatos/clsConectaBD.vb
 
 # Pruebas locales
 /pruebas/
+
+# No distribuir la DLL de acceso a datos: contiene la cadena de conexion
+# con las credenciales de la BD. Se regenera al compilar capaDatos.
+capaDatos.dll
+# La DLL de negocio tambien es un artefacto de compilacion.
+capaNegocio.dll

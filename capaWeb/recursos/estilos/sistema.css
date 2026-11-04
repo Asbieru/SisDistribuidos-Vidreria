@@ -1,0 +1,715 @@
+/* ============================================================
+   SISCORP - Hoja de estilos unica para toda la capa web
+   Mantiene el estilo de la capaPresentacion: tablas, menu
+   lateral, colores negro/gris/dorado y temas de color.
+   ============================================================ */
+
+:root {
+    --fondo: #202020;
+    --panel: #2d2d30;
+    --panel-alt: #3a3a3f;
+    --texto: #ffffff;
+    --texto-suave: #d6d6d6;
+    --borde: #555555;
+    --acento: #9fd4ff;
+    --dorado: #fdbb32;
+    --dorado-claro: #f9b220;
+    --boton-fondo: #46464c;
+    --boton-texto: #ffffff;
+    --peligro: #ff8080;
+    --exito: #7bd88f;
+    --sombra: rgba(0, 0, 0, 0.45);
+}
+
+body.tema-claro {
+    --fondo: #f2f4f7;
+    --panel: #ffffff;
+    --panel-alt: #e8ecf1;
+    --texto: #111111;
+    --texto-suave: #333333;
+    --borde: #b8c0c8;
+    --acento: #0b4f8a;
+    --dorado: #9a6400;
+    --dorado-claro: #7a4f00;
+    --boton-fondo: #d9dde3;
+    --boton-texto: #111111;
+    --peligro: #a40000;
+    --exito: #126b2b;
+    --sombra: rgba(0, 0, 0, 0.18);
+}
+
+body.tema-azulclaro {
+    --fondo: #ebf4ff;
+    --panel: #ffffff;
+    --panel-alt: #cde1f5;
+    --texto: #0c2850;
+    --texto-suave: #173a66;
+    --borde: #8db4d8;
+    --acento: #005a9e;
+    --dorado: #9a6400;
+    --dorado-claro: #7a4f00;
+    --boton-fondo: #337ab7;
+    --boton-texto: #ffffff;
+    --peligro: #a40000;
+    --exito: #126b2b;
+    --sombra: rgba(0, 40, 80, 0.20);
+}
+
+body.tema-azuloscuro {
+    --fondo: #101c34;
+    --panel: #1a2a4a;
+    --panel-alt: #243a60;
+    --texto: #ffffff;
+    --texto-suave: #d7e5f7;
+    --borde: #41628c;
+    --acento: #78beff;
+    --dorado: #ffd166;
+    --dorado-claro: #ffc233;
+    --boton-fondo: #284678;
+    --boton-texto: #ffffff;
+    --peligro: #ff9b9b;
+    --exito: #8fe3a5;
+    --sombra: rgba(0, 0, 0, 0.50);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+    min-height: 100%;
+}
+
+body {
+    background: var(--fondo);
+    color: var(--texto);
+    font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande", "Lucida Sans", Arial, sans-serif;
+    font-size: 15px;
+}
+
+a {
+    color: var(--acento);
+}
+
+h1,
+h2,
+h3 {
+    margin-top: 0;
+}
+
+/* ---------------- Contenedor general de la plantilla ---------------- */
+
+.contenedor-pagina {
+    width: 100%;
+    padding: 16px 10px 28px 10px;
+}
+
+table.pagina {
+    width: 1200px;
+    max-width: 100%;
+    margin: 0 auto;
+    border-collapse: collapse;
+    background: var(--fondo);
+    box-shadow: 0 0 22px var(--sombra);
+}
+
+.cabecera {
+    height: 170px;
+    padding: 0;
+    text-align: center;
+    color: #ffffff;
+    background:
+        linear-gradient(90deg, rgba(0, 0, 0, 0.86) 0%, rgba(0, 0, 0, 0.45) 55%, rgba(0, 0, 0, 0.86) 100%),
+        url("../fondos/fondoInicioOscuro.jpg") center center / cover no-repeat;
+    border-bottom: 4px solid var(--dorado);
+}
+
+.cabecera-tabla {
+    width: 100%;
+    height: 166px;
+    border-collapse: collapse;
+}
+
+.cabecera-logo {
+    width: 210px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.cabecera-logo img {
+    width: 105px;
+    height: 105px;
+    object-fit: contain;
+    filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.8));
+}
+
+.cabecera-texto {
+    text-align: left;
+    vertical-align: middle;
+    padding-right: 26px;
+}
+
+.cabecera-texto h1 {
+    margin: 0;
+    color: var(--dorado-claro);
+    font-size: 42px;
+    letter-spacing: 2px;
+    text-shadow: 2px 2px 4px #000000;
+}
+
+.cabecera-texto p {
+    margin: 6px 0 0 0;
+    color: #f4f4f4;
+    font-size: 16px;
+    text-shadow: 1px 1px 3px #000000;
+}
+
+.menu-lateral {
+    width: 280px;
+    padding: 18px 14px;
+    vertical-align: top;
+    background: var(--panel);
+    border-right: 1px solid var(--borde);
+}
+
+.contenido {
+    padding: 24px 28px;
+    vertical-align: top;
+    background: var(--panel);
+    min-height: 540px;
+}
+
+.menu-titulo {
+    color: var(--dorado);
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+    border-bottom: 2px solid var(--dorado);
+}
+
+.menu-grupo {
+    margin: 16px 0;
+}
+
+.menu-grupo-titulo {
+    color: var(--acento);
+    font-size: 12px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin: 0 0 6px 4px;
+}
+
+.menu-opcion {
+    display: block;
+    padding: 8px 10px;
+    margin: 2px 0;
+    color: var(--texto);
+    font-size: 15px;
+    text-decoration: none;
+    border-left: 4px solid transparent;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.menu-opcion:hover {
+    background: var(--panel-alt);
+    border-left-color: var(--dorado);
+    color: var(--dorado);
+}
+
+.menu-opcion.activo {
+    background: var(--panel-alt);
+    border-left-color: var(--dorado);
+    color: var(--dorado);
+    font-weight: bold;
+}
+
+.barra-estado {
+    padding: 9px 18px;
+    background: var(--panel-alt);
+    color: var(--texto-suave);
+    border-top: 1px solid var(--borde);
+    font-size: 13px;
+}
+
+.barra-estado .dato {
+    display: inline-block;
+    margin-right: 26px;
+}
+
+.barra-estado .dato strong {
+    color: var(--texto);
+}
+
+.barra-estado .valor {
+    display: inline-block;
+    min-width: 90px;
+    padding: 2px 8px;
+    margin-left: 4px;
+    background: var(--fondo);
+    border: 1px solid var(--borde);
+    border-radius: 3px;
+    color: var(--texto);
+}
+
+.pie {
+    height: 50px;
+    padding: 15px 10px;
+    text-align: center;
+    background: #000000;
+    color: var(--dorado-claro);
+    font-size: 12px;
+    border-top: 2px solid var(--dorado);
+}
+
+/* ---------------- Titulos, paneles y mensajes ---------------- */
+
+.titulo-pagina {
+    margin: 0 0 14px 0;
+    color: var(--dorado);
+    font-size: 30px;
+    font-weight: bold;
+}
+
+.subtitulo-pagina {
+    margin: -6px 0 18px 0;
+    color: var(--texto-suave);
+    font-size: 16px;
+}
+
+.texto-intro {
+    color: var(--texto-suave);
+    font-size: 16px;
+    line-height: 1.55;
+    margin: 0 0 18px 0;
+}
+
+.panel {
+    padding: 18px;
+    margin: 16px 0;
+    background: var(--panel-alt);
+    border: 1px solid var(--borde);
+    border-radius: 4px;
+}
+
+.panel-titulo {
+    color: var(--dorado);
+    font-size: 20px;
+    font-weight: bold;
+    margin: 0 0 10px 0;
+}
+
+.panel-subtitulo {
+    color: var(--dorado-claro);
+    font-size: 17px;
+    font-weight: bold;
+    margin: 20px 0 8px 0;
+}
+
+.mensaje-error {
+    color: var(--peligro);
+    font-weight: bold;
+}
+
+.mensaje-ok {
+    color: var(--exito);
+    font-weight: bold;
+}
+
+.mensaje-info {
+    color: var(--acento);
+    font-weight: bold;
+}
+
+/* Estados de pedidos y pagos */
+.estado-pendiente {
+    color: var(--peligro);
+    font-weight: bold;
+}
+
+.estado-parcial {
+    color: var(--dorado);
+    font-weight: bold;
+}
+
+.estado-pagado {
+    color: var(--exito);
+    font-weight: bold;
+}
+
+/* ---------------- Botones y campos ---------------- */
+
+.boton,
+input.boton,
+a.boton {
+    display: inline-block;
+    padding: 9px 18px;
+    margin: 2px 4px 2px 0;
+    min-height: 36px;
+    background: var(--boton-fondo);
+    color: var(--boton-texto);
+    border: 1px solid var(--borde);
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.boton:hover,
+input.boton:hover,
+a.boton:hover {
+    background: var(--dorado);
+    border-color: var(--dorado);
+    color: #111111;
+}
+
+.boton-primario {
+    background: var(--dorado);
+    border-color: var(--dorado);
+    color: #111111;
+}
+
+.boton-primario:hover {
+    background: var(--dorado-claro);
+    border-color: var(--dorado-claro);
+}
+
+.boton-secundario {
+    background: transparent;
+    color: var(--texto);
+}
+
+.boton-peligro {
+    background: #8b1e1e;
+    border-color: #b33a3a;
+    color: #ffffff;
+}
+
+.boton-peligro:hover {
+    background: #b33a3a;
+    border-color: #d65a5a;
+    color: #ffffff;
+}
+/* Botones compactos para acciones dentro de las grillas */
+.boton-mini,
+input.boton-mini,
+a.boton-mini {
+    padding: 4px 10px;
+    min-height: 26px;
+    font-size: 12px;
+    margin: 1px 3px 1px 0;
+}
+
+.campo,
+input.campo,
+select.campo,
+textarea.campo {
+    width: 100%;
+    padding: 8px 10px;
+    background: var(--fondo);
+    color: var(--texto);
+    border: 1px solid var(--borde);
+    border-radius: 3px;
+    font-family: inherit;
+    font-size: 15px;
+}
+
+.campo:focus {
+    outline: 2px solid var(--dorado);
+    outline-offset: 1px;
+}
+
+.campo-corto {
+    max-width: 260px;
+}
+
+.campo-largo {
+    max-width: 560px;
+}
+
+.texto-ayuda {
+    display: inline-block;
+    margin-left: 8px;
+    color: var(--texto-suave);
+    font-size: 12px;
+    font-style: italic;
+}
+
+.total-compra {
+    margin: 16px 0 4px 0;
+    color: var(--dorado);
+    font-size: 20px;
+    font-weight: bold;
+    text-align: right;
+}
+
+.acciones {
+    margin-top: 18px;
+    padding-top: 14px;
+    border-top: 1px solid var(--borde);
+}
+
+/* ---------------- Tablas de datos y formularios ---------------- */
+
+table.tabla-formulario,
+table.tabla-datos {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table.tabla-formulario td {
+    padding: 8px 10px;
+    vertical-align: middle;
+    border-bottom: 1px solid var(--borde);
+}
+
+table.tabla-formulario td.etiqueta {
+    width: 210px;
+    text-align: right;
+    font-weight: bold;
+    color: var(--texto);
+}
+
+table.tabla-formulario td.dato {
+    color: var(--texto);
+}
+
+table.tabla-datos th {
+    padding: 9px 10px;
+    background: var(--panel-alt);
+    color: var(--texto);
+    border: 1px solid var(--borde);
+    font-size: 14px;
+    text-align: left;
+}
+
+table.tabla-datos td {
+    padding: 8px 10px;
+    border: 1px solid var(--borde);
+    color: var(--texto);
+    vertical-align: top;
+}
+
+table.tabla-datos tr:nth-child(even) td {
+    background: rgba(127, 127, 127, 0.08);
+}
+
+table.tabla-datos tr:hover td {
+    background: rgba(253, 187, 50, 0.10);
+}
+
+.tabla-scroll {
+    width: 100%;
+    overflow-x: auto;
+}
+
+/* ---------------- Paginas de acceso (login / cambio de clave) ---------------- */
+
+body.pagina-acceso {
+    background:
+        linear-gradient(rgba(0, 0, 0, 0.72), rgba(0, 0, 0, 0.72)),
+        url("../fondos/fondoInicioOscuro.jpg") center center / cover fixed no-repeat;
+    /* Si la imagen no carga, el fondo del acceso queda negro en lugar de blanco. */
+    background-color: #000000;
+    min-height: 100vh;
+    color: #ffffff;
+}
+
+.acceso-contenedor {
+    width: 100%;
+    padding: 30px 12px;
+}
+
+table.tabla-acceso {
+    width: 500px;
+    max-width: 100%;
+    margin: 0 auto;
+    border-collapse: collapse;
+    background: rgba(18, 18, 18, 0.88);
+    border: 1px solid #555555;
+    box-shadow: 0 10px 35px rgba(0, 0, 0, 0.75);
+}
+
+table.tabla-acceso td {
+    padding: 8px 16px;
+    vertical-align: middle;
+}
+
+.acceso-logo {
+    text-align: center;
+    padding-top: 24px !important;
+}
+
+.acceso-logo img {
+    width: 105px;
+    height: 105px;
+    object-fit: contain;
+    filter: drop-shadow(0 3px 7px #000000);
+}
+
+.acceso-titulo {
+    padding: 6px 16px 2px 16px !important;
+    text-align: center;
+    color: #ffffff;
+    font-size: 28px;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+.acceso-subtitulo {
+    padding: 0 16px 12px 16px !important;
+    text-align: center;
+    color: #fdbb32;
+    font-size: 14px;
+}
+
+.acceso-panel {
+    padding: 16px !important;
+    background: rgba(75, 75, 75, 0.92);
+    border-top: 1px solid #666666;
+    border-bottom: 1px solid #666666;
+}
+
+table.tabla-campos-acceso {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table.tabla-campos-acceso td {
+    padding: 7px 8px;
+}
+
+table.tabla-campos-acceso td.acceso-etiqueta {
+    width: 130px;
+    text-align: right;
+    color: #ffffff;
+    font-weight: bold;
+}
+
+table.tabla-campos-acceso input.campo {
+    background: #ffffff;
+    color: #111111;
+    border: 1px solid #999999;
+}
+
+.acceso-acciones {
+    padding-top: 14px !important;
+    text-align: center;
+}
+
+.acceso-acciones .boton {
+    min-width: 140px;
+}
+
+.acceso-pie {
+    padding: 14px 16px !important;
+    text-align: center;
+    color: #fdbb32;
+    font-size: 12px;
+}
+
+.acceso-mensaje {
+    min-height: 42px;
+    padding: 10px 16px !important;
+    text-align: center;
+    font-weight: bold;
+}
+
+.acceso-check {
+    padding: 4px 8px 0 8px !important;
+    text-align: center;
+    color: #ffffff;
+}
+
+.acceso-check input {
+    margin-right: 6px;
+}
+
+/* ---------------- Utilidades ---------------- */
+
+.texto-centro {
+    text-align: center;
+}
+
+.texto-derecha {
+    text-align: right;
+}
+
+.sin-margen {
+    margin: 0;
+}
+
+.oculto {
+    display: none;
+}
+
+/* ---------------- Adaptacion a pantallas pequenas ---------------- */
+
+@media (max-width: 900px) {
+    .contenedor-pagina {
+        padding: 8px 4px 20px 4px;
+    }
+
+    table.pagina {
+        width: 100%;
+    }
+
+    .menu-lateral,
+    .contenido {
+        display: block;
+        width: 100%;
+    }
+
+    .menu-lateral {
+        border-right: 0;
+        border-bottom: 1px solid var(--borde);
+    }
+
+    .contenido {
+        padding: 18px 14px;
+        min-height: 320px;
+    }
+
+    .cabecera {
+        height: auto;
+    }
+
+    .cabecera-tabla {
+        height: auto;
+    }
+
+    .cabecera-logo {
+        width: 120px;
+    }
+
+    .cabecera-logo img {
+        width: 76px;
+        height: 76px;
+    }
+
+    .cabecera-texto h1 {
+        font-size: 28px;
+    }
+
+    .cabecera-texto p {
+        font-size: 13px;
+    }
+
+    table.tabla-formulario td.etiqueta {
+        width: 120px;
+        text-align: left;
+    }
+
+    table.tabla-acceso {
+        width: 96%;
+    }
+}

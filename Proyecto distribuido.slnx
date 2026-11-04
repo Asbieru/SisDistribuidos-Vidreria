@@ -2,4 +2,26 @@
   <Project Path="capaDatos/capaDatos.vbproj" Id="59c4f2b6-92c1-47f2-b467-ffad100a57e7" />
   <Project Path="capaNegocio/capaNegocio.vbproj" Id="43da2da7-b504-41a5-910c-5479719f3267" />
   <Project Path="capaPresentacion/capaPresentacion.vbproj" Id="c97dadcc-bbd0-4304-9a03-7fcc79bb7bfa" />
+  <Project Path="capaWeb/" Type="Website" DisplayName="capaWeb">
+    <BuildType Project="Debug" />
+    <Properties Name="WebsiteProperties">
+      <Property Name="Debug.AspNetCompiler.Debug" Value="&quot;True&quot;" />
+      <Property Name="Debug.AspNetCompiler.FixedNames" Value="&quot;false&quot;" />
+      <Property Name="Debug.AspNetCompiler.ForceOverwrite" Value="&quot;true&quot;" />
+      <Property Name="Debug.AspNetCompiler.PhysicalPath" Value="&quot;capaWeb\&quot;" />
+      <Property Name="Debug.AspNetCompiler.TargetPath" Value="&quot;PrecompiledWeb\localhost_49772\&quot;" />
+      <Property Name="Debug.AspNetCompiler.Updateable" Value="&quot;true&quot;" />
+      <Property Name="Debug.AspNetCompiler.VirtualPath" Value="&quot;/localhost_49772&quot;" />
+      <Property Name="DefaultWebSiteLanguage" Value="&quot;Visual Basic&quot;" />
+      <Property Name="Release.AspNetCompiler.Debug" Value="&quot;False&quot;" />
+      <Property Name="Release.AspNetCompiler.FixedNames" Value="&quot;false&quot;" />
+      <Property Name="Release.AspNetCompiler.ForceOverwrite" Value="&quot;true&quot;" />
+      <Property Name="Release.AspNetCompiler.PhysicalPath" Value="&quot;capaWeb\&quot;" />
+      <Property Name="Release.AspNetCompiler.TargetPath" Value="&quot;PrecompiledWeb\localhost_49772\&quot;" />
+      <Property Name="Release.AspNetCompiler.Updateable" Value="&quot;true&quot;" />
+      <Property Name="Release.AspNetCompiler.VirtualPath" Value="&quot;/localhost_49772&quot;" />
+      <Property Name="TargetFrameworkMoniker" Value="&quot;.NETFramework,Version%3Dv4.7.2&quot;" />
+      <Property Name="VWDPort" Value="&quot;49772&quot;" />
+    </Properties>
+  </Project>
 </Solution>

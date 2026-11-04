@@ -1,0 +1,138 @@
+﻿<%@ Master Language="VB" CodeFile="plantilla.master.vb" Inherits="plantilla" %>
+
+<!DOCTYPE html>
+
+<html>
+<head runat="server">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title><%= Page.Title %></title>
+    <link rel="icon" href="recursos/favicon.ico" type="image/x-icon" />
+    <link href="recursos/estilos/sistema.css" rel="stylesheet" type="text/css" />
+    <asp:ContentPlaceHolder ID="head" runat="server">
+    </asp:ContentPlaceHolder>
+</head>
+<body class="<%= ClaseTema %>">
+    <form id="form1" runat="server">
+        <div class="contenedor-pagina">
+            <table class="pagina" cellpadding="0" cellspacing="0">
+                <tr>
+                    <td colspan="2" class="cabecera">
+                        <table class="cabecera-tabla" cellpadding="0" cellspacing="0">
+                            <tr>
+                                <td class="cabecera-logo">
+                                    <img src="recursos/logo.png" alt="Logo SISCORP" />
+                                </td>
+                                <td class="cabecera-texto">
+                                    <h1>SISCORP</h1>
+                                    <p>Sistema de control comercial, inventario y ventas de vidrieria</p>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="menu-lateral">
+                        <div class="menu-titulo">MENÚ DE OPCIONES</div>
+
+                        <div class="menu-grupo">
+                            <div class="menu-grupo-titulo">Principal</div>
+                            <asp:HyperLink ID="lnkInicio" runat="server" NavigateUrl="~/wfInicio.aspx"
+                                CssClass="menu-opcion">Inicio</asp:HyperLink>
+                        </div>
+
+                        <asp:Panel ID="pnlProcesos" runat="server" CssClass="menu-grupo">
+                            <div class="menu-grupo-titulo">Procesos</div>
+                            <asp:HyperLink ID="lnkRegistrarCompra" runat="server"
+                                NavigateUrl="~/wfRegistrarCompras.aspx"
+                                CssClass="menu-opcion">Registrar Compra</asp:HyperLink>
+                            <asp:HyperLink ID="lnkRegistrarPedido" runat="server"
+                                NavigateUrl="~/wfRegistrarPedido.aspx"
+                                CssClass="menu-opcion">Registrar Pedido</asp:HyperLink>
+                            <asp:HyperLink ID="lnkRegistrarPago" runat="server"
+                                NavigateUrl="~/wfRegistrarPago.aspx"
+                                CssClass="menu-opcion">Registro de Pago</asp:HyperLink>
+                            <asp:HyperLink ID="lnkRegistrarPieza" runat="server"
+                                NavigateUrl="~/wfRegistrarPieza.aspx"
+                                CssClass="menu-opcion">Registrar Pieza</asp:HyperLink>
+                        </asp:Panel>
+
+                        <asp:Panel ID="pnlListados" runat="server" CssClass="menu-grupo">
+                            <div class="menu-grupo-titulo">Mostrar Listado</div>
+                            <asp:HyperLink ID="lnkCompras" runat="server"
+                                NavigateUrl="~/wfModulo.aspx?modulo=Listado%20de%20Compras"
+                                CssClass="menu-opcion">De Compras</asp:HyperLink>
+                            <asp:HyperLink ID="lnkPedidos" runat="server"
+                                NavigateUrl="~/wfModulo.aspx?modulo=Listado%20de%20Pedidos"
+                                CssClass="menu-opcion">De Pedidos</asp:HyperLink>
+                            <asp:HyperLink ID="lnkInventario" runat="server"
+                                NavigateUrl="~/wfModulo.aspx?modulo=Inventario"
+                                CssClass="menu-opcion">De Inventario</asp:HyperLink>
+                            <asp:HyperLink ID="lnkVentas" runat="server"
+                                NavigateUrl="~/wfModulo.aspx?modulo=Listado%20de%20Ventas"
+                                CssClass="menu-opcion">De Ventas</asp:HyperLink>
+                        </asp:Panel>
+
+                        <asp:Panel ID="pnlMantenimiento" runat="server" CssClass="menu-grupo">
+                            <div class="menu-grupo-titulo">Mantenimiento</div>
+                            <asp:HyperLink ID="lnkUsuarios" runat="server"
+                                NavigateUrl="~/wfRegistrarUsuarios.aspx"
+                                CssClass="menu-opcion">Usuarios</asp:HyperLink>
+                            <asp:HyperLink ID="lnkClientes" runat="server"
+                                NavigateUrl="~/wfRegistrarClientes.aspx"
+                                CssClass="menu-opcion">Clientes</asp:HyperLink>
+                            <asp:HyperLink ID="lnkProveedores" runat="server"
+                                NavigateUrl="~/wfRegistrarProveedores.aspx"
+                                CssClass="menu-opcion">Proveedores</asp:HyperLink>
+                            <asp:HyperLink ID="lnkProductos" runat="server"
+                                NavigateUrl="~/wfRegistrarProductos.aspx"
+                                CssClass="menu-opcion">Productos</asp:HyperLink>
+                            <asp:HyperLink ID="lnkPermisos" runat="server"
+                                NavigateUrl="~/wfModulo.aspx?modulo=Permisos"
+                                CssClass="menu-opcion">Permisos</asp:HyperLink>
+                        </asp:Panel>
+
+                        <div class="menu-grupo">
+                            <div class="menu-grupo-titulo">Configuración</div>
+                            <asp:HyperLink ID="lnkCambiarContrasena" runat="server"
+                                NavigateUrl="~/wfCambiarContrasena.aspx"
+                                CssClass="menu-opcion">Modificar Contraseña</asp:HyperLink>
+                            <asp:LinkButton ID="lnkCerrarSesion" runat="server" CssClass="menu-opcion"
+                                OnClick="CerrarSesion_Click">Cerrar Sesión</asp:LinkButton>
+                        </div>
+
+                        <div class="menu-grupo">
+                            <div class="menu-grupo-titulo">Tema</div>
+                            <asp:LinkButton ID="lnkClaro" runat="server" CssClass="menu-opcion"
+                                CommandArgument="CLARO" OnCommand="CambiarTema">Claro</asp:LinkButton>
+                            <asp:LinkButton ID="lnkOscuro" runat="server" CssClass="menu-opcion"
+                                CommandArgument="OSCURO" OnCommand="CambiarTema">Oscuro</asp:LinkButton>
+                            <asp:LinkButton ID="lnkAzulClaro" runat="server" CssClass="menu-opcion"
+                                CommandArgument="AZULCLARO" OnCommand="CambiarTema">Azul Claro</asp:LinkButton>
+                            <asp:LinkButton ID="lnkAzulOscuro" runat="server" CssClass="menu-opcion"
+                                CommandArgument="AZULOSCURO" OnCommand="CambiarTema">Azul Oscuro</asp:LinkButton>
+                        </div>
+                    </td>
+                    <td class="contenido">
+                        <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server">
+                        </asp:ContentPlaceHolder>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="barra-estado">
+                        <span class="dato"><strong>ID:</strong>
+                            <asp:Label ID="lblId" runat="server" CssClass="valor"></asp:Label></span>
+                        <span class="dato"><strong>Usuario conectado:</strong>
+                            <asp:Label ID="lblUsuario" runat="server" CssClass="valor"></asp:Label></span>
+                        <span class="dato"><strong>Rol:</strong>
+                            <asp:Label ID="lblRol" runat="server" CssClass="valor"></asp:Label></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="pie">© 2026 Todos los derechos reservados USAT</td>
+                </tr>
+            </table>
+        </div>
+    </form>
+</body>
+</html>
