@@ -64,8 +64,8 @@
                     <asp:BoundField DataField="id_pago" HeaderText="Pago" />
                     <asp:BoundField DataField="fecha" HeaderText="Fecha" DataFormatString="{0:dd/MM/yyyy HH:mm}" />
                     <asp:BoundField DataField="total_pago" HeaderText="Total del pago (S/)" DataFormatString="{0:N2}" />
-                    <asp:BoundField DataField="metodo" HeaderText="Método" />
-                    <asp:BoundField DataField="monto_metodo" HeaderText="Importe del método (S/)" DataFormatString="{0:N2}" />
+                    <asp:BoundField DataField="metodo" HeaderText="M&#233;todo" />
+                    <asp:BoundField DataField="monto_metodo" HeaderText="Importe del m&#233;todo (S/)" DataFormatString="{0:N2}" />
                     <asp:BoundField DataField="comprobante" HeaderText="Comprobante" />
                 </Columns>
             </asp:GridView>
