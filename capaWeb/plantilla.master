@@ -60,7 +60,7 @@
                         <asp:Panel ID="pnlListados" runat="server" CssClass="menu-grupo">
                             <div class="menu-grupo-titulo">Mostrar Listado</div>
                             <asp:HyperLink ID="lnkCompras" runat="server"
-                                NavigateUrl="~/wfModulo.aspx?modulo=Listado%20de%20Compras"
+                                NavigateUrl="~/wfListadoCompras.aspx"
                                 CssClass="menu-opcion">De Compras</asp:HyperLink>
                             <asp:HyperLink ID="lnkPedidos" runat="server"
                                 NavigateUrl="~/wfModulo.aspx?modulo=Listado%20de%20Pedidos"
