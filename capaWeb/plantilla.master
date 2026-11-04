@@ -69,7 +69,7 @@
                                 NavigateUrl="~/wfModulo.aspx?modulo=Inventario"
                                 CssClass="menu-opcion">De Inventario</asp:HyperLink>
                             <asp:HyperLink ID="lnkVentas" runat="server"
-                                NavigateUrl="~/wfModulo.aspx?modulo=Listado%20de%20Ventas"
+                                NavigateUrl="~/wfListadoVentas.aspx"
                                 CssClass="menu-opcion">De Ventas</asp:HyperLink>
                         </asp:Panel>
 
