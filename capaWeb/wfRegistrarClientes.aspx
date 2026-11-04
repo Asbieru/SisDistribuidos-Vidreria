@@ -130,6 +130,10 @@
                                 CommandArgument='<%# Eval("id_cliente") %>'
                                 Text="Eliminar" CausesValidation="False"
                                 OnClientClick="return confirm('¿Eliminar este cliente?');" />
+                            <asp:HyperLink ID="lnkFicha" runat="server"
+                                CssClass="boton boton-mini boton-secundario"
+                                NavigateUrl='<%# Eval("id_cliente", "~/wfFichaCliente.aspx?id={0}") %>'
+                                Text="Ficha comercial" />
                         </ItemTemplate>
                     </asp:TemplateField>
                 </Columns>
