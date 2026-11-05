@@ -5,6 +5,19 @@ Partial Class wfLogin
     Inherits System.Web.UI.Page
 
     Dim objUsuario As New Usuario()
+    Dim objBit As New Bitacora()
+
+    ' Registra en la bitácora la acción del usuario escrito en el login.
+    ' bitacora_login exige id_usuario, así que solo se registra si el usuario existe.
+    ' Nunca interrumpe el inicio de sesión aunque la bitácora falle.
+    Private Sub RegistrarBitacora(usuario As String, accion As String, Optional numIntentos As Integer? = Nothing)
+        Try
+            If usuario.Length = 0 OrElse Not objUsuario.validarNombreUsuario(usuario) Then Return
+            objBit.registrarAccionSeguro(objUsuario.obtenerIDUsuario(usuario), accion, numIntentos)
+        Catch ex As Exception
+            ' La bitácora no debe cortar el inicio de sesión
+        End Try
+    End Sub
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         If Not IsPostBack Then
@@ -53,6 +66,7 @@ Partial Class wfLogin
             End If
 
             If Not objUsuario.usuarioActivo(usuario) Then
+                RegistrarBitacora(usuario, Bitacora.USUARIO_BAJA)
                 lblMensaje.Text = "Usuario dado de baja. Comuníquese con el administrador."
                 txtUsuario.Focus()
                 Return
@@ -60,6 +74,7 @@ Partial Class wfLogin
 
             If objUsuario.iniciarSesion(usuario, txtContrasena.Text) Then
                 Dim idUsuario As Integer = objUsuario.obtenerIDUsuario(usuario)
+                objBit.registrarAccionSeguro(idUsuario, Bitacora.INICIO_SESION, 3 - intentos)
                 Session("idUsuario") = idUsuario
                 Session("usuario") = usuario
                 Session("intentosLogin") = 3
@@ -93,6 +108,8 @@ Partial Class wfLogin
             Else
                 intentos -= 1
                 Session("intentosLogin") = intentos
+                RegistrarBitacora(usuario, Bitacora.CLAVE_ERRADA, 3 - intentos)
+                If intentos = 0 Then RegistrarBitacora(usuario, Bitacora.SIN_INTENTOS, 3)
                 lblMensaje.Text = "Contraseña incorrecta. Intentos restantes: " & intentos.ToString()
                 txtContrasena.Focus()
             End If
@@ -172,11 +189,13 @@ Partial Class wfLogin
             End If
 
             If objUsuario.validarRespuesta(usuario, txtRespuesta.Text.Trim()) Then
+                RegistrarBitacora(usuario, Bitacora.RECUPERA_CLAVE)
                 Session("usuarioCambio") = usuario
                 Response.Redirect("~/wfCambiarContrasena.aspx", False)
                 Context.ApplicationInstance.CompleteRequest()
                 Return
             Else
+                RegistrarBitacora(usuario, Bitacora.RESP_ERRADA)
                 lblMensaje.Text = "Respuesta incorrecta. Intente nuevamente."
                 txtRespuesta.Text = ""
                 txtRespuesta.Focus()
