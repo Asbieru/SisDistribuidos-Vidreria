@@ -92,6 +92,13 @@
                                 CssClass="menu-opcion">Permisos</asp:HyperLink>
                         </asp:Panel>
 
+                        <asp:Panel ID="pnlReportes" runat="server" CssClass="menu-grupo">
+                            <div class="menu-grupo-titulo">Reportes</div>
+                            <asp:HyperLink ID="lnkBitacora" runat="server"
+                                NavigateUrl="~/wfBitacora.aspx"
+                                CssClass="menu-opcion">Bitácora</asp:HyperLink>
+                        </asp:Panel>
+
                         <div class="menu-grupo">
                             <div class="menu-grupo-titulo">Configuración</div>
                             <asp:HyperLink ID="lnkCambiarContrasena" runat="server"

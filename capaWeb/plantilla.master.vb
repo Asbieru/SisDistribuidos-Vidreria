@@ -39,6 +39,8 @@ Partial Class plantilla
             lblRol.Text = Server.HtmlEncode(If(Session("rol") Is Nothing, "", Session("rol").ToString()))
             MarcarOpcionActiva()
             AplicarPermisos()
+            ' La bitácora solo la ve el administrador
+            pnlReportes.Visible = lblRol.Text.Equals("ADMINISTRADOR", StringComparison.OrdinalIgnoreCase)
         End If
     End Sub
 
