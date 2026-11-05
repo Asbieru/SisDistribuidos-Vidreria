@@ -86,6 +86,21 @@ Public Class Bitacora
         End Try
     End Function
 
+    ' Acciones que ya existen en la tabla (incluye las que guardaron otros sistemas),
+    ' para llenar el filtro del reporte
+    Public Function listarAcciones() As List(Of String)
+        strCon = "select distinct accion from bitacora_login order by accion"
+        Dim lista As New List(Of String)
+        Try
+            For Each fila As DataRow In objMan.consultarConParametros(strCon).Rows
+                lista.Add(fila("accion").ToString())
+            Next
+            Return lista
+        Catch ex As Exception
+            Throw New Exception("Error al listar las acciones de la bitácora!")
+        End Try
+    End Function
+
     ' Registros de una sola acción (por ejemplo, solo CLAVE_ERRADA)
     Public Function listarPorAccion(accion As String) As DataTable
         strCon = consultaBase() & "where b.accion = @accion " & orden()

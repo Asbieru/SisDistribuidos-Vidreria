@@ -10,7 +10,11 @@ Public Class frmBitacora
     Private Sub frmBitacora_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         AplicarTema(Me, tema)
         cmbAccion.Items.Add(TODOS)
-        cmbAccion.Items.AddRange(Bitacora.Acciones)
+        Try
+            cmbAccion.Items.AddRange(objBit.listarAcciones().ToArray())
+        Catch ex As Exception
+            MostrarError(ex)
+        End Try
         cmbAccion.SelectedIndex = 0
         cargarLista()
     End Sub

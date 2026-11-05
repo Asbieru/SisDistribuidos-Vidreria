@@ -1,4 +1,4 @@
-Imports System.Data
+﻿Imports System.Data
 Imports capaNegocio
 
 ' REPORTE: registros de la tabla bitacora_login (solo consulta, solo ADMINISTRADOR).
@@ -23,9 +23,13 @@ Partial Class wfBitacora
 
         If Not IsPostBack Then
             ddlAccion.Items.Add(TODAS)
-            For Each accion As String In Bitacora.Acciones
-                ddlAccion.Items.Add(accion)
-            Next
+            Try
+                For Each accion As String In objBit.listarAcciones()
+                    ddlAccion.Items.Add(accion)
+                Next
+            Catch ex As Exception
+                lblMensaje.Text = ex.Message
+            End Try
             CargarLista()
         End If
     End Sub
