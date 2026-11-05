@@ -1,7 +1,21 @@
 ﻿Imports capaNegocio
 Public Class InicioSesion
     Dim objUsu As New Usuario
+    Dim objBit As New Bitacora
     Dim intentos As Integer = 3
+
+    ' Registra en la bitácora la acción del usuario escrito en pantalla.
+    ' bitacora_login exige id_usuario, así que solo se registra si el usuario existe.
+    ' Nunca interrumpe el inicio de sesión aunque la bitácora falle.
+    Private Sub RegistrarBitacora(accion As String, Optional numIntentos As Integer? = Nothing)
+        Try
+            Dim nombre As String = txtUsuario.Text.Trim()
+            If nombre.Length = 0 OrElse Not objUsu.validarNombreUsuario(nombre) Then Return
+            objBit.registrarAccionSeguro(objUsu.obtenerIDUsuario(nombre), accion, numIntentos)
+        Catch ex As Exception
+            ' La bitácora no debe cortar el inicio de sesión
+        End Try
+    End Sub
 
     Private Sub chbMostrar_CheckedChanged(sender As Object, e As EventArgs) Handles chbMostrar.CheckedChanged
         pnlCambio.Visible = chbMostrar.Checked
@@ -41,11 +55,13 @@ Public Class InicioSesion
                 Return
             End If
             If objUsu.validarRespuesta(txtUsuario.Text, txtRespuesta.Text) Then
+                RegistrarBitacora(Bitacora.RECUPERA_CLAVE)
                 MessageBox.Show("Bienvenido al Sistema!", "MENSAJE", MessageBoxButtons.OK, MessageBoxIcon.Information)
                 objCambio.txtUsuario.Text = Me.txtUsuario.Text
                 objCambio.txtContraseña.Focus()
                 objCambio.ShowDialog()
             Else
+                RegistrarBitacora(Bitacora.RESP_ERRADA)
                 msj2.Text = "Respuesta incorrecta, intente nuevamente!"
                 txtRespuesta.Clear()
                 txtRespuesta.Focus()
@@ -73,11 +89,13 @@ Public Class InicioSesion
                 Return
             End If
             If Not objUsu.usuarioActivo(txtUsuario.Text) Then
+                RegistrarBitacora(Bitacora.USUARIO_BAJA)
                 msj.Text = "Usuario dado de baja, comuníquese con el administrador!"
                 txtUsuario.Focus()
                 Return
             End If
             If objUsu.iniciarSesion(txtUsuario.Text, txtContrasena.Text) Then
+                RegistrarBitacora(Bitacora.INICIO_SESION, 3 - intentos)
                 Dim objMn As New MenuInicio
                 objMn.txtUsuario.Text = txtUsuario.Text
                 objMn.Show()
@@ -85,7 +103,9 @@ Public Class InicioSesion
             Else
                 msj.Text = "Contraseña incorrecta!"
                 intentos -= 1
+                RegistrarBitacora(Bitacora.CLAVE_ERRADA, 3 - Math.Max(intentos, 0))
                 If intentos = 0 Then
+                    RegistrarBitacora(Bitacora.SIN_INTENTOS, 3)
                     txtContrasena.Focus()
                     txtContrasena.Clear()
                     msj.Text = "Contraseña incorrecta, intentos restantes: " & intentos
