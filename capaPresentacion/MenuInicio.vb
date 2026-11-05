@@ -4,6 +4,15 @@ Imports capaNegocio
 Public Class MenuInicio
     Dim tema As String = "CLARO"
     Dim objUsu As New Usuario
+    Dim objBit As New Bitacora
+
+    ' Deja constancia en la bitácora de que el usuario cerró su sesión (nunca bloquea el cierre)
+    Private Sub RegistrarCierreSesion()
+        Dim idUsu As Integer? = Nothing
+        Dim id As Integer
+        If Integer.TryParse(txtID.Text, id) Then idUsu = id
+        If idUsu.HasValue Then objBit.registrarAccionSeguro(idUsu.Value, Bitacora.CIERRE_SESION)
+    End Sub
 
     Private Sub temaColor()
         Dim p As Paleta = Temas.Obtener(tema)
@@ -76,6 +85,7 @@ Public Class MenuInicio
         Try
             Dim idMs As Integer = objUsu.obtenerIDMensaje(codigo)
             If objUsu.mensajeYaDescartado(Integer.Parse(txtID.Text), idMs) Then
+                RegistrarCierreSesion()
                 Dim objIncio As New InicioSesion
                 objIncio.Show()
                 Dispose()
@@ -84,6 +94,7 @@ Public Class MenuInicio
                 objMsj.llenarDatos()
                 objMsj.ShowDialog()
                 If objMsj.respuesta Then
+                    RegistrarCierreSesion()
                     Dim objIncio As New InicioSesion
                     objIncio.Show()
                     Dispose()
@@ -373,6 +384,10 @@ Public Class MenuInicio
             ToolStripSeparator1.Available =
             toolInventario.Available AndAlso toolCotizar.Available
 
+            ' Reportes: la bitácora es información de auditoría, solo la ve el administrador
+            smnBitacora.Available = txtRol.Text.Equals("ADMINISTRADOR", StringComparison.OrdinalIgnoreCase)
+            mnReportes.Available = smnBitacora.Available
+
         Catch ex As Exception
             MessageBox.Show(
             "Error al cargar permisos: " & ex.Message,
@@ -440,6 +455,24 @@ Public Class MenuInicio
             MessageBox.Show(
                 ex.Message, "Ventas",
                 MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
+    End Sub
+
+    Private Sub smnBitacora_Click(sender As Object, e As EventArgs) Handles smnBitacora.Click
+        Try
+            For Each formulario As Form In Application.OpenForms
+                If TypeOf formulario Is frmBitacora Then
+                    formulario.WindowState = FormWindowState.Normal
+                    DirectCast(formulario, frmBitacora).cargarLista()
+                    formulario.BringToFront()
+                    Return
+                End If
+            Next
+            Dim reporte As New frmBitacora With {.tema = tema}
+            reporte.MdiParent = Me
+            reporte.Show()
+        Catch ex As Exception
+            MessageBox.Show(ex.Message, "Bitácora", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
     End Sub
 

@@ -39,6 +39,8 @@ Partial Class MenuInicio
         Me.smnProveedores = New System.Windows.Forms.ToolStripMenuItem()
         Me.smnProductos = New System.Windows.Forms.ToolStripMenuItem()
         Me.smnPermisos = New System.Windows.Forms.ToolStripMenuItem()
+        Me.mnReportes = New System.Windows.Forms.ToolStripMenuItem()
+        Me.smnBitacora = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnConfiguracion = New System.Windows.Forms.ToolStripMenuItem()
         Me.TemaToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ClaroToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -67,7 +69,7 @@ Partial Class MenuInicio
         '
         Me.menu.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!)
         Me.menu.ImageScalingSize = New System.Drawing.Size(20, 20)
-        Me.menu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnProcesos, Me.mnTablas, Me.MantenimientosToolStripMenuItem, Me.mnConfiguracion, Me.mnCerrarS})
+        Me.menu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnProcesos, Me.mnTablas, Me.MantenimientosToolStripMenuItem, Me.mnReportes, Me.mnConfiguracion, Me.mnCerrarS})
         Me.menu.Location = New System.Drawing.Point(0, 0)
         Me.menu.Name = "menu"
         Me.menu.Padding = New System.Windows.Forms.Padding(4, 2, 0, 2)
@@ -210,6 +212,19 @@ Partial Class MenuInicio
         Me.CerrarTodasLasVentanasToolStripMenuItem.Size = New System.Drawing.Size(323, 22)
         Me.CerrarTodasLasVentanasToolStripMenuItem.Text = "Cerrar todas las ventanas"
         '
+        'mnReportes
+        '
+        Me.mnReportes.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.smnBitacora})
+        Me.mnReportes.Name = "mnReportes"
+        Me.mnReportes.Size = New System.Drawing.Size(65, 20)
+        Me.mnReportes.Text = "Reportes"
+        '
+        'smnBitacora
+        '
+        Me.smnBitacora.Name = "smnBitacora"
+        Me.smnBitacora.Size = New System.Drawing.Size(180, 22)
+        Me.smnBitacora.Text = "Bitácora"
+        '
         'mnCerrarS
         '
         Me.mnCerrarS.Name = "mnCerrarS"
@@ -336,6 +351,8 @@ Partial Class MenuInicio
     Friend Shadows WithEvents menu As MenuStrip
     Friend WithEvents mnProcesos As ToolStripMenuItem
     Friend WithEvents mnTablas As ToolStripMenuItem
+    Friend WithEvents mnReportes As ToolStripMenuItem
+    Friend WithEvents smnBitacora As ToolStripMenuItem
     Friend WithEvents mnConfiguracion As ToolStripMenuItem
     Friend WithEvents mnCerrarS As ToolStripMenuItem
     Friend WithEvents smnRCompra As ToolStripMenuItem

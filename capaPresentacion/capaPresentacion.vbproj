@@ -203,6 +203,12 @@
     <Compile Include="frmVerInventario.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="frmBitacora.Designer.vb">
+      <DependentUpon>frmBitacora.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmBitacora.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="frmVerKardex.Designer.vb">
       <DependentUpon>frmVerKardex.vb</DependentUpon>
     </Compile>
@@ -326,6 +332,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="frmVerInventario.resx">
       <DependentUpon>frmVerInventario.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmBitacora.resx">
+      <DependentUpon>frmBitacora.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmVerKardex.resx">
       <DependentUpon>frmVerKardex.vb</DependentUpon>
