@@ -1,4 +1,4 @@
-<%@ Page Title="Bitácora" Language="VB" MasterPageFile="~/plantilla.master" AutoEventWireup="false" CodeFile="wfBitacora.aspx.vb" Inherits="wfBitacora" %>
+﻿<%@ Page Title="Bitácora" Language="VB" MasterPageFile="~/plantilla.master" AutoEventWireup="false" CodeFile="wfBitacora.aspx.vb" Inherits="wfBitacora" %>
 
 <asp:Content ID="Contenido" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <h1 class="titulo-pagina">Reporte - Bitácora</h1>

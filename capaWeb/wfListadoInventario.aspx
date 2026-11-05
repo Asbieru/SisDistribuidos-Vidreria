@@ -1,4 +1,4 @@
-<%@ Page Title="Inventario" Language="VB" MasterPageFile="~/plantilla.master" AutoEventWireup="false" CodeFile="wfListadoInventario.aspx.vb" Inherits="wfListadoInventario" %>
+﻿<%@ Page Title="Inventario" Language="VB" MasterPageFile="~/plantilla.master" AutoEventWireup="false" CodeFile="wfListadoInventario.aspx.vb" Inherits="wfListadoInventario" %>
 
 <asp:Content ID="Contenido" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <h1 class="titulo-pagina">Inventario</h1>
