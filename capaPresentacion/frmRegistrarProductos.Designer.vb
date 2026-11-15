@@ -23,228 +23,278 @@ Partial Class frmRegistrarProductos
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Me.tlpContenido = New System.Windows.Forms.TableLayoutPanel()
-        Me.tlpCampos = New System.Windows.Forms.TableLayoutPanel()
-        Me.flpAcciones = New System.Windows.Forms.FlowLayoutPanel()
-        Me.Panel2 = New System.Windows.Forms.Panel()
-        Me.chkActivo = New System.Windows.Forms.CheckBox()
-        Me.txtNombre = New System.Windows.Forms.TextBox()
-        Me.cboCategoria = New System.Windows.Forms.ComboBox()
-        Me.Label1 = New System.Windows.Forms.Label()
-        Me.lblModo = New System.Windows.Forms.Label()
-        Me.lblId = New System.Windows.Forms.Label()
-        Me.lblNombre = New System.Windows.Forms.Label()
-        Me.lblDocumento = New System.Windows.Forms.Label()
-        Me.lblTelefono = New System.Windows.Forms.Label()
-        Me.lblDireccion = New System.Windows.Forms.Label()
         Me.lblAyuda = New System.Windows.Forms.Label()
+        Me.lblModo = New System.Windows.Forms.Label()
+        Me.tlpCampos = New System.Windows.Forms.TableLayoutPanel()
+        Me.lblId = New System.Windows.Forms.Label()
         Me.txtId = New System.Windows.Forms.TextBox()
+        Me.lblNombre = New System.Windows.Forms.Label()
+        Me.cboCategoria = New System.Windows.Forms.ComboBox()
+        Me.lblDocumento = New System.Windows.Forms.Label()
         Me.txtTipo = New System.Windows.Forms.TextBox()
+        Me.lblTelefono = New System.Windows.Forms.Label()
         Me.txtColor = New System.Windows.Forms.TextBox()
+        Me.lblDireccion = New System.Windows.Forms.Label()
+        Me.txtNombre = New System.Windows.Forms.TextBox()
+        Me.Label1 = New System.Windows.Forms.Label()
         Me.txtDescripcion = New System.Windows.Forms.TextBox()
-        Me.btnGuardar = New System.Windows.Forms.Button()
+        Me.chkActivo = New System.Windows.Forms.CheckBox()
+        Me.flpAcciones = New System.Windows.Forms.FlowLayoutPanel()
         Me.btnCancelar = New System.Windows.Forms.Button()
+        Me.btnGuardar = New System.Windows.Forms.Button()
+        Me.Panel2 = New System.Windows.Forms.Panel()
+        Me.tlpContenido.SuspendLayout()
+        Me.tlpCampos.SuspendLayout()
+        Me.flpAcciones.SuspendLayout()
         Me.Panel2.SuspendLayout()
         Me.SuspendLayout()
         '
-        'Panel2
+        'tlpContenido
         '
-        Me.Panel2.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.Panel2.Location = New System.Drawing.Point(0, 0)
-        Me.Panel2.Name = "Panel2"
-        Me.Panel2.Size = New System.Drawing.Size(733, 581)
-        Me.Panel2.TabIndex = 0
-        '
-        'chkActivo
-        '
-        Me.chkActivo.AutoSize = True
-        Me.chkActivo.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
-        Me.chkActivo.Location = New System.Drawing.Point(174, 415)
-        Me.chkActivo.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right
-        Me.chkActivo.Margin = New System.Windows.Forms.Padding(0, 4, 8, 8)
-        Me.chkActivo.Name = "chkActivo"
-        Me.chkActivo.Size = New System.Drawing.Size(77, 24)
-        Me.chkActivo.TabIndex = 33
-        Me.chkActivo.Text = "Activo"
-        Me.chkActivo.UseVisualStyleBackColor = True
-        '
-        'txtNombre
-        '
-        Me.txtNombre.Location = New System.Drawing.Point(174, 267)
-        Me.txtNombre.MaxLength = 20
-        Me.txtNombre.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right
-        Me.txtNombre.Margin = New System.Windows.Forms.Padding(0, 4, 8, 8)
-        Me.txtNombre.Name = "txtNombre"
-        Me.txtNombre.Size = New System.Drawing.Size(480, 22)
-        Me.txtNombre.TabIndex = 32
-        '
-        'cboCategoria
-        '
-        Me.cboCategoria.FormattingEnabled = True
-        Me.cboCategoria.Location = New System.Drawing.Point(171, 138)
-        Me.cboCategoria.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right
-        Me.cboCategoria.Margin = New System.Windows.Forms.Padding(0, 4, 8, 8)
-        Me.cboCategoria.Name = "cboCategoria"
-        Me.cboCategoria.Size = New System.Drawing.Size(225, 24)
-        Me.cboCategoria.TabIndex = 31
-        '
-        'Label1
-        '
-        Me.Label1.AutoSize = False
-        Me.Label1.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
-        Me.Label1.Location = New System.Drawing.Point(31, 314)
-        Me.Label1.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.Label1.Margin = New System.Windows.Forms.Padding(0, 7, 8, 0)
-        Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(99, 20)
-        Me.Label1.TabIndex = 30
-        Me.Label1.Text = "Descripción"
-        '
-        'lblModo
-        '
-        Me.lblModo.AutoSize = True
-        Me.lblModo.Font = New System.Drawing.Font("Microsoft Sans Serif", 15.75!, System.Drawing.FontStyle.Bold)
-        Me.lblModo.Location = New System.Drawing.Point(29, 33)
-        Me.lblModo.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.lblModo.Margin = System.Windows.Forms.Padding.Empty
-        Me.lblModo.Name = "lblModo"
-        Me.lblModo.Size = New System.Drawing.Size(289, 31)
-        Me.lblModo.TabIndex = 15
-        Me.lblModo.Text = "NUEVO PRODUCTO"
-        '
-        'lblId
-        '
-        Me.lblId.AutoSize = False
-        Me.lblId.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
-        Me.lblId.Location = New System.Drawing.Point(31, 95)
-        Me.lblId.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.lblId.Margin = New System.Windows.Forms.Padding(0, 7, 8, 0)
-        Me.lblId.Name = "lblId"
-        Me.lblId.Size = New System.Drawing.Size(26, 20)
-        Me.lblId.TabIndex = 16
-        Me.lblId.Text = "ID"
-        '
-        'lblNombre
-        '
-        Me.lblNombre.AutoSize = False
-        Me.lblNombre.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
-        Me.lblNombre.Location = New System.Drawing.Point(31, 138)
-        Me.lblNombre.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.lblNombre.Margin = New System.Windows.Forms.Padding(0, 7, 8, 0)
-        Me.lblNombre.Name = "lblNombre"
-        Me.lblNombre.Size = New System.Drawing.Size(92, 20)
-        Me.lblNombre.TabIndex = 18
-        Me.lblNombre.Text = "Categoría *"
-        '
-        'lblDocumento
-        '
-        Me.lblDocumento.AutoSize = False
-        Me.lblDocumento.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
-        Me.lblDocumento.Location = New System.Drawing.Point(31, 182)
-        Me.lblDocumento.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.lblDocumento.Margin = New System.Windows.Forms.Padding(0, 7, 8, 0)
-        Me.lblDocumento.Name = "lblDocumento"
-        Me.lblDocumento.Size = New System.Drawing.Size(47, 20)
-        Me.lblDocumento.TabIndex = 20
-        Me.lblDocumento.Text = "Tipo*"
-        '
-        'lblTelefono
-        '
-        Me.lblTelefono.AutoSize = False
-        Me.lblTelefono.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
-        Me.lblTelefono.Location = New System.Drawing.Point(31, 226)
-        Me.lblTelefono.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.lblTelefono.Margin = New System.Windows.Forms.Padding(0, 7, 8, 0)
-        Me.lblTelefono.Name = "lblTelefono"
-        Me.lblTelefono.Size = New System.Drawing.Size(49, 20)
-        Me.lblTelefono.TabIndex = 22
-        Me.lblTelefono.Text = "Color"
-        '
-        'lblDireccion
-        '
-        Me.lblDireccion.AutoSize = False
-        Me.lblDireccion.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
-        Me.lblDireccion.Location = New System.Drawing.Point(31, 267)
-        Me.lblDireccion.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.lblDireccion.Margin = New System.Windows.Forms.Padding(0, 7, 8, 0)
-        Me.lblDireccion.Name = "lblDireccion"
-        Me.lblDireccion.Size = New System.Drawing.Size(68, 20)
-        Me.lblDireccion.TabIndex = 24
-        Me.lblDireccion.Text = "Nombre"
+        Me.tlpContenido.ColumnCount = 1
+        Me.tlpContenido.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
+        Me.tlpContenido.Controls.Add(Me.lblAyuda, 0, 2)
+        Me.tlpContenido.Controls.Add(Me.lblModo, 0, 0)
+        Me.tlpContenido.Controls.Add(Me.tlpCampos, 0, 1)
+        Me.tlpContenido.Controls.Add(Me.flpAcciones, 0, 3)
+        Me.tlpContenido.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.tlpContenido.Location = New System.Drawing.Point(0, 0)
+        Me.tlpContenido.Margin = New System.Windows.Forms.Padding(0)
+        Me.tlpContenido.Name = "tlpContenido"
+        Me.tlpContenido.Padding = New System.Windows.Forms.Padding(24, 20, 24, 16)
+        Me.tlpContenido.RowCount = 4
+        Me.tlpContenido.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 48.0!))
+        Me.tlpContenido.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
+        Me.tlpContenido.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.tlpContenido.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.tlpContenido.Size = New System.Drawing.Size(700, 500)
+        Me.tlpContenido.TabIndex = 0
         '
         'lblAyuda
         '
         Me.lblAyuda.AutoSize = True
-        Me.lblAyuda.Location = New System.Drawing.Point(168, 461)
         Me.lblAyuda.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.lblAyuda.Location = New System.Drawing.Point(24, 410)
         Me.lblAyuda.Margin = New System.Windows.Forms.Padding(0, 8, 0, 12)
         Me.lblAyuda.Name = "lblAyuda"
-        Me.lblAyuda.Size = New System.Drawing.Size(289, 16)
+        Me.lblAyuda.Size = New System.Drawing.Size(652, 20)
         Me.lblAyuda.TabIndex = 26
         Me.lblAyuda.Text = "* Obligatorio. Los demás datos son opcionales."
         '
+        'lblModo
+        '
+        Me.lblModo.AutoSize = True
+        Me.lblModo.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.lblModo.Font = New System.Drawing.Font("Microsoft Sans Serif", 15.75!, System.Drawing.FontStyle.Bold)
+        Me.lblModo.Location = New System.Drawing.Point(24, 20)
+        Me.lblModo.Margin = New System.Windows.Forms.Padding(0)
+        Me.lblModo.Name = "lblModo"
+        Me.lblModo.Size = New System.Drawing.Size(652, 48)
+        Me.lblModo.TabIndex = 15
+        Me.lblModo.Text = "NUEVO PRODUCTO"
+        '
+        'tlpCampos
+        '
+        Me.tlpCampos.AutoSize = True
+        Me.tlpCampos.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+        Me.tlpCampos.ColumnCount = 2
+        Me.tlpCampos.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 180.0!))
+        Me.tlpCampos.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
+        Me.tlpCampos.Controls.Add(Me.lblId, 0, 0)
+        Me.tlpCampos.Controls.Add(Me.txtId, 1, 0)
+        Me.tlpCampos.Controls.Add(Me.lblNombre, 0, 1)
+        Me.tlpCampos.Controls.Add(Me.cboCategoria, 1, 1)
+        Me.tlpCampos.Controls.Add(Me.lblDocumento, 0, 2)
+        Me.tlpCampos.Controls.Add(Me.txtTipo, 1, 2)
+        Me.tlpCampos.Controls.Add(Me.lblTelefono, 0, 3)
+        Me.tlpCampos.Controls.Add(Me.txtColor, 1, 3)
+        Me.tlpCampos.Controls.Add(Me.lblDireccion, 0, 4)
+        Me.tlpCampos.Controls.Add(Me.txtNombre, 1, 4)
+        Me.tlpCampos.Controls.Add(Me.Label1, 0, 5)
+        Me.tlpCampos.Controls.Add(Me.txtDescripcion, 1, 5)
+        Me.tlpCampos.Controls.Add(Me.chkActivo, 1, 6)
+        Me.tlpCampos.Dock = System.Windows.Forms.DockStyle.Top
+        Me.tlpCampos.Location = New System.Drawing.Point(24, 68)
+        Me.tlpCampos.Margin = New System.Windows.Forms.Padding(0)
+        Me.tlpCampos.Name = "tlpCampos"
+        Me.tlpCampos.RowCount = 7
+        Me.tlpCampos.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 38.0!))
+        Me.tlpCampos.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 38.0!))
+        Me.tlpCampos.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 38.0!))
+        Me.tlpCampos.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 38.0!))
+        Me.tlpCampos.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 38.0!))
+        Me.tlpCampos.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 74.0!))
+        Me.tlpCampos.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 38.0!))
+        Me.tlpCampos.Size = New System.Drawing.Size(652, 302)
+        Me.tlpCampos.TabIndex = 27
+        '
+        'lblId
+        '
+        Me.lblId.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.lblId.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!)
+        Me.lblId.Location = New System.Drawing.Point(0, 7)
+        Me.lblId.Margin = New System.Windows.Forms.Padding(0, 7, 8, 0)
+        Me.lblId.Name = "lblId"
+        Me.lblId.Size = New System.Drawing.Size(172, 31)
+        Me.lblId.TabIndex = 16
+        Me.lblId.Text = "ID"
+        '
         'txtId
         '
-        Me.txtId.Location = New System.Drawing.Point(171, 91)
-        Me.txtId.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left
+        Me.txtId.Location = New System.Drawing.Point(180, 4)
         Me.txtId.Margin = New System.Windows.Forms.Padding(0, 4, 8, 8)
-        Me.txtId.MinimumSize = New System.Drawing.Size(130, 0)
+        Me.txtId.MinimumSize = New System.Drawing.Size(130, 4)
         Me.txtId.Name = "txtId"
         Me.txtId.ReadOnly = True
-        Me.txtId.Size = New System.Drawing.Size(130, 22)
+        Me.txtId.Size = New System.Drawing.Size(130, 26)
         Me.txtId.TabIndex = 17
         Me.txtId.TabStop = False
         '
+        'lblNombre
+        '
+        Me.lblNombre.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.lblNombre.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!)
+        Me.lblNombre.Location = New System.Drawing.Point(0, 45)
+        Me.lblNombre.Margin = New System.Windows.Forms.Padding(0, 7, 8, 0)
+        Me.lblNombre.Name = "lblNombre"
+        Me.lblNombre.Size = New System.Drawing.Size(172, 31)
+        Me.lblNombre.TabIndex = 18
+        Me.lblNombre.Text = "Categoría *"
+        '
+        'cboCategoria
+        '
+        Me.cboCategoria.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.cboCategoria.FormattingEnabled = True
+        Me.cboCategoria.Location = New System.Drawing.Point(180, 42)
+        Me.cboCategoria.Margin = New System.Windows.Forms.Padding(0, 4, 8, 8)
+        Me.cboCategoria.Name = "cboCategoria"
+        Me.cboCategoria.Size = New System.Drawing.Size(464, 28)
+        Me.cboCategoria.TabIndex = 31
+        '
+        'lblDocumento
+        '
+        Me.lblDocumento.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.lblDocumento.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!)
+        Me.lblDocumento.Location = New System.Drawing.Point(0, 83)
+        Me.lblDocumento.Margin = New System.Windows.Forms.Padding(0, 7, 8, 0)
+        Me.lblDocumento.Name = "lblDocumento"
+        Me.lblDocumento.Size = New System.Drawing.Size(172, 31)
+        Me.lblDocumento.TabIndex = 20
+        Me.lblDocumento.Text = "Tipo*"
+        '
         'txtTipo
         '
-        Me.txtTipo.Location = New System.Drawing.Point(171, 180)
-        Me.txtTipo.MaxLength = 20
-        Me.txtTipo.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right
+        Me.txtTipo.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.txtTipo.Location = New System.Drawing.Point(180, 80)
         Me.txtTipo.Margin = New System.Windows.Forms.Padding(0, 4, 8, 8)
+        Me.txtTipo.MaxLength = 20
         Me.txtTipo.Name = "txtTipo"
-        Me.txtTipo.Size = New System.Drawing.Size(225, 22)
+        Me.txtTipo.Size = New System.Drawing.Size(464, 26)
         Me.txtTipo.TabIndex = 21
+        '
+        'lblTelefono
+        '
+        Me.lblTelefono.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.lblTelefono.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!)
+        Me.lblTelefono.Location = New System.Drawing.Point(0, 121)
+        Me.lblTelefono.Margin = New System.Windows.Forms.Padding(0, 7, 8, 0)
+        Me.lblTelefono.Name = "lblTelefono"
+        Me.lblTelefono.Size = New System.Drawing.Size(172, 31)
+        Me.lblTelefono.TabIndex = 22
+        Me.lblTelefono.Text = "Color"
         '
         'txtColor
         '
-        Me.txtColor.Location = New System.Drawing.Point(171, 223)
-        Me.txtColor.MaxLength = 20
-        Me.txtColor.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right
+        Me.txtColor.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.txtColor.Location = New System.Drawing.Point(180, 118)
         Me.txtColor.Margin = New System.Windows.Forms.Padding(0, 4, 8, 8)
+        Me.txtColor.MaxLength = 20
         Me.txtColor.Name = "txtColor"
-        Me.txtColor.Size = New System.Drawing.Size(225, 22)
+        Me.txtColor.Size = New System.Drawing.Size(464, 26)
         Me.txtColor.TabIndex = 23
+        '
+        'lblDireccion
+        '
+        Me.lblDireccion.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.lblDireccion.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!)
+        Me.lblDireccion.Location = New System.Drawing.Point(0, 159)
+        Me.lblDireccion.Margin = New System.Windows.Forms.Padding(0, 7, 8, 0)
+        Me.lblDireccion.Name = "lblDireccion"
+        Me.lblDireccion.Size = New System.Drawing.Size(172, 31)
+        Me.lblDireccion.TabIndex = 24
+        Me.lblDireccion.Text = "Nombre"
+        '
+        'txtNombre
+        '
+        Me.txtNombre.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.txtNombre.Location = New System.Drawing.Point(180, 156)
+        Me.txtNombre.Margin = New System.Windows.Forms.Padding(0, 4, 8, 8)
+        Me.txtNombre.MaxLength = 20
+        Me.txtNombre.Name = "txtNombre"
+        Me.txtNombre.Size = New System.Drawing.Size(464, 26)
+        Me.txtNombre.TabIndex = 32
+        '
+        'Label1
+        '
+        Me.Label1.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.Label1.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!)
+        Me.Label1.Location = New System.Drawing.Point(0, 197)
+        Me.Label1.Margin = New System.Windows.Forms.Padding(0, 7, 8, 0)
+        Me.Label1.Name = "Label1"
+        Me.Label1.Size = New System.Drawing.Size(172, 67)
+        Me.Label1.TabIndex = 30
+        Me.Label1.Text = "Descripción"
         '
         'txtDescripcion
         '
-        Me.txtDescripcion.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right
-        Me.txtDescripcion.Location = New System.Drawing.Point(174, 318)
+        Me.txtDescripcion.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.txtDescripcion.Location = New System.Drawing.Point(180, 194)
+        Me.txtDescripcion.Margin = New System.Windows.Forms.Padding(0, 4, 8, 8)
         Me.txtDescripcion.MaxLength = 255
         Me.txtDescripcion.Multiline = True
-        Me.txtDescripcion.Margin = New System.Windows.Forms.Padding(0, 4, 8, 8)
-        Me.txtDescripcion.Height = 62
         Me.txtDescripcion.Name = "txtDescripcion"
         Me.txtDescripcion.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
-        Me.txtDescripcion.Size = New System.Drawing.Size(480, 60)
+        Me.txtDescripcion.Size = New System.Drawing.Size(464, 60)
         Me.txtDescripcion.TabIndex = 25
         '
-        'btnGuardar
+        'chkActivo
         '
-        Me.btnGuardar.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left
-        Me.btnGuardar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
-        Me.btnGuardar.Location = New System.Drawing.Point(404, 503)
-        Me.btnGuardar.Margin = New System.Windows.Forms.Padding(8, 8, 0, 0)
-        Me.btnGuardar.Name = "btnGuardar"
-        Me.btnGuardar.Size = New System.Drawing.Size(120, 34)
-        Me.btnGuardar.TabIndex = 27
-        Me.btnGuardar.Text = "GUARDAR"
-        Me.btnGuardar.UseVisualStyleBackColor = True
+        Me.chkActivo.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.chkActivo.AutoSize = True
+        Me.chkActivo.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!)
+        Me.chkActivo.Location = New System.Drawing.Point(180, 268)
+        Me.chkActivo.Margin = New System.Windows.Forms.Padding(0, 4, 8, 8)
+        Me.chkActivo.Name = "chkActivo"
+        Me.chkActivo.Size = New System.Drawing.Size(464, 24)
+        Me.chkActivo.TabIndex = 33
+        Me.chkActivo.Text = "Activo"
+        Me.chkActivo.UseVisualStyleBackColor = True
+        '
+        'flpAcciones
+        '
+        Me.flpAcciones.AutoSize = True
+        Me.flpAcciones.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+        Me.flpAcciones.Controls.Add(Me.btnCancelar)
+        Me.flpAcciones.Controls.Add(Me.btnGuardar)
+        Me.flpAcciones.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.flpAcciones.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft
+        Me.flpAcciones.Location = New System.Drawing.Point(24, 442)
+        Me.flpAcciones.Margin = New System.Windows.Forms.Padding(0)
+        Me.flpAcciones.Name = "flpAcciones"
+        Me.flpAcciones.Size = New System.Drawing.Size(652, 42)
+        Me.flpAcciones.TabIndex = 28
         '
         'btnCancelar
         '
-        Me.btnCancelar.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left
         Me.btnCancelar.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.btnCancelar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9!, System.Drawing.FontStyle.Bold)
-        Me.btnCancelar.Location = New System.Drawing.Point(534, 503)
+        Me.btnCancelar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Bold)
+        Me.btnCancelar.Location = New System.Drawing.Point(532, 8)
         Me.btnCancelar.Margin = New System.Windows.Forms.Padding(8, 8, 0, 0)
         Me.btnCancelar.Name = "btnCancelar"
         Me.btnCancelar.Size = New System.Drawing.Size(120, 34)
@@ -252,74 +302,44 @@ Partial Class frmRegistrarProductos
         Me.btnCancelar.Text = "CANCELAR"
         Me.btnCancelar.UseVisualStyleBackColor = True
         '
+        'btnGuardar
+        '
+        Me.btnGuardar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Bold)
+        Me.btnGuardar.Location = New System.Drawing.Point(404, 8)
+        Me.btnGuardar.Margin = New System.Windows.Forms.Padding(8, 8, 0, 0)
+        Me.btnGuardar.Name = "btnGuardar"
+        Me.btnGuardar.Size = New System.Drawing.Size(120, 34)
+        Me.btnGuardar.TabIndex = 27
+        Me.btnGuardar.Text = "GUARDAR"
+        Me.btnGuardar.UseVisualStyleBackColor = True
+        '
+        'Panel2
+        '
+        Me.Panel2.Controls.Add(Me.tlpContenido)
+        Me.Panel2.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.Panel2.Location = New System.Drawing.Point(0, 0)
+        Me.Panel2.Name = "Panel2"
+        Me.Panel2.Size = New System.Drawing.Size(700, 500)
+        Me.Panel2.TabIndex = 0
+        '
         'frmRegistrarProductos
         '
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(9.0!, 20.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(700, 500)
         Me.Controls.Add(Me.Panel2)
-        Me.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular)
+        Me.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog
         Me.MaximizeBox = False
         Me.Name = "frmRegistrarProductos"
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent
         Me.Text = "Registrar producto"
+        Me.tlpContenido.ResumeLayout(False)
+        Me.tlpContenido.PerformLayout()
+        Me.tlpCampos.ResumeLayout(False)
+        Me.tlpCampos.PerformLayout()
+        Me.flpAcciones.ResumeLayout(False)
         Me.Panel2.ResumeLayout(False)
-        Me.Panel2.PerformLayout()
-
-        Me.tlpContenido.Name = "tlpContenido"
-        Me.tlpContenido.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.tlpContenido.ColumnCount = 1
-        Me.tlpContenido.RowCount = 4
-        Me.tlpContenido.Margin = System.Windows.Forms.Padding.Empty
-        Me.tlpContenido.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
-        Me.tlpContenido.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 48.0!))
-        Me.tlpContenido.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
-        Me.tlpContenido.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize))
-        Me.tlpContenido.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize))
-        Me.tlpContenido.Padding = New System.Windows.Forms.Padding(24, 20, 24, 16)
-        Me.tlpCampos.Name = "tlpCampos"
-        Me.tlpCampos.Dock = System.Windows.Forms.DockStyle.Top
-        Me.tlpCampos.AutoSize = True
-        Me.tlpCampos.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-        Me.tlpCampos.ColumnCount = 2
-        Me.tlpCampos.RowCount = 7
-        Me.tlpCampos.Margin = System.Windows.Forms.Padding.Empty
-        Me.tlpCampos.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 180.0!))
-        Me.tlpCampos.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
-        Me.tlpCampos.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 38.0!))
-        Me.tlpCampos.Controls.Add(Me.lblId, 0, 0)
-        Me.tlpCampos.Controls.Add(Me.txtId, 1, 0)
-        Me.tlpCampos.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 38.0!))
-        Me.tlpCampos.Controls.Add(Me.lblNombre, 0, 1)
-        Me.tlpCampos.Controls.Add(Me.cboCategoria, 1, 1)
-        Me.tlpCampos.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 38.0!))
-        Me.tlpCampos.Controls.Add(Me.lblDocumento, 0, 2)
-        Me.tlpCampos.Controls.Add(Me.txtTipo, 1, 2)
-        Me.tlpCampos.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 38.0!))
-        Me.tlpCampos.Controls.Add(Me.lblTelefono, 0, 3)
-        Me.tlpCampos.Controls.Add(Me.txtColor, 1, 3)
-        Me.tlpCampos.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 38.0!))
-        Me.tlpCampos.Controls.Add(Me.lblDireccion, 0, 4)
-        Me.tlpCampos.Controls.Add(Me.txtNombre, 1, 4)
-        Me.tlpCampos.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 74.0!))
-        Me.tlpCampos.Controls.Add(Me.Label1, 0, 5)
-        Me.tlpCampos.Controls.Add(Me.txtDescripcion, 1, 5)
-        Me.tlpCampos.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 38.0!))
-        Me.tlpCampos.Controls.Add(Me.chkActivo, 1, 6)
-        Me.flpAcciones.Name = "flpAcciones"
-        Me.flpAcciones.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.flpAcciones.AutoSize = True
-        Me.flpAcciones.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-        Me.flpAcciones.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft
-        Me.flpAcciones.Margin = System.Windows.Forms.Padding.Empty
-        Me.flpAcciones.Controls.Add(Me.btnCancelar)
-        Me.flpAcciones.Controls.Add(Me.btnGuardar)
-        Me.tlpContenido.Controls.Add(Me.lblAyuda, 0, 2)
-        Me.tlpContenido.Controls.Add(Me.lblModo, 0, 0)
-        Me.tlpContenido.Controls.Add(Me.tlpCampos, 0, 1)
-        Me.tlpContenido.Controls.Add(Me.flpAcciones, 0, 3)
-        Me.Panel2.Controls.Add(Me.tlpContenido)
         Me.ResumeLayout(False)
 
     End Sub

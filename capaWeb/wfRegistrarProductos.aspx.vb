@@ -177,6 +177,9 @@ Partial Class wfRegistrarProductos
                 dt = filtrado
             End If
 
+            Dim totalPaginas As Integer = Math.Max(1, CInt(Math.Ceiling(dt.Rows.Count / grvProductos.PageSize)))
+            If grvProductos.PageIndex >= totalPaginas Then grvProductos.PageIndex = totalPaginas - 1
+
             grvProductos.DataSource = dt
             grvProductos.DataBind()
 
@@ -184,8 +187,11 @@ Partial Class wfRegistrarProductos
                 lblMensajeLista.CssClass = "mensaje-info"
                 lblMensajeLista.Text = "No se encontraron productos."
             Else
+                Dim desde As Integer = grvProductos.PageIndex * grvProductos.PageSize + 1
+                Dim hasta As Integer = Math.Min(desde + grvProductos.PageSize - 1, dt.Rows.Count)
                 lblMensajeLista.CssClass = ""
-                lblMensajeLista.Text = dt.Rows.Count.ToString() & " producto(s) encontrado(s)."
+                lblMensajeLista.Text = "Mostrando " & desde & " - " & hasta & " de " & dt.Rows.Count &
+                                       " producto(s). Página " & (grvProductos.PageIndex + 1) & " de " & totalPaginas & "."
             End If
         Catch ex As Exception
             lblMensajeLista.CssClass = "mensaje-error"
@@ -194,12 +200,19 @@ Partial Class wfRegistrarProductos
     End Sub
 
     Protected Sub btnBuscar_Click(sender As Object, e As EventArgs)
+        grvProductos.PageIndex = 0   ' una búsqueda nueva empieza en la página 1
         CargarListado(txtBuscar.Text)
     End Sub
 
     Protected Sub btnVerTodos_Click(sender As Object, e As EventArgs)
         txtBuscar.Text = ""
+        grvProductos.PageIndex = 0
         CargarListado("")
+    End Sub
+
+    Protected Sub grvProductos_PageIndexChanging(sender As Object, e As GridViewPageEventArgs)
+        grvProductos.PageIndex = e.NewPageIndex
+        CargarListado(txtBuscar.Text)   ' mantiene la búsqueda que estaba escrita
     End Sub
 
     Protected Sub grvProductos_RowCommand(sender As Object, e As GridViewCommandEventArgs)

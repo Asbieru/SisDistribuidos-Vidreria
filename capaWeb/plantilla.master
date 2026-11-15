@@ -88,7 +88,7 @@
                                 NavigateUrl="~/wfRegistrarProductos.aspx"
                                 CssClass="menu-opcion">Productos</asp:HyperLink>
                             <asp:HyperLink ID="lnkPermisos" runat="server"
-                                NavigateUrl="~/wfModulo.aspx?modulo=Permisos"
+                                NavigateUrl="~/wfPermisos.aspx"
                                 CssClass="menu-opcion">Permisos</asp:HyperLink>
                         </asp:Panel>
 
@@ -121,6 +121,8 @@
                         </div>
                     </td>
                     <td class="contenido">
+                        <asp:Label ID="lblAcceso" runat="server" CssClass="mensaje-error" Visible="false"
+                            Text="No tiene permiso para entrar a esa opción."></asp:Label>
                         <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server">
                         </asp:ContentPlaceHolder>
                     </td>

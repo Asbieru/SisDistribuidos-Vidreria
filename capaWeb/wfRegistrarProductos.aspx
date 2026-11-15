@@ -100,7 +100,11 @@
         <div class="tabla-scroll">
             <asp:GridView ID="grvProductos" runat="server" AutoGenerateColumns="False"
                 CssClass="tabla-datos" GridLines="None" DataKeyNames="id_producto"
-                OnRowCommand="grvProductos_RowCommand" EmptyDataText="No hay productos registrados.">
+                OnRowCommand="grvProductos_RowCommand" EmptyDataText="No hay productos registrados."
+                AllowPaging="True" PageSize="10" OnPageIndexChanging="grvProductos_PageIndexChanging">
+                <PagerSettings Mode="NumericFirstLast" PageButtonCount="5"
+                    FirstPageText="« Primera" LastPageText="Última »" Position="Bottom" />
+                <PagerStyle CssClass="paginacion" />
                 <Columns>
                     <asp:BoundField DataField="id_producto" HeaderText="ID" />
                     <asp:BoundField DataField="categoria" HeaderText="Categoría" />

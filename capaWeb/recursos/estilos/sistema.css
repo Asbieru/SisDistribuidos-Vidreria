@@ -713,3 +713,48 @@ table.tabla-campos-acceso input.campo {
         width: 96%;
     }
 }
+
+/* ---------------- Paginación de las tablas (GridView con AllowPaging) ---------------- */
+table.tabla-datos tr.paginacion td,
+table.tabla-datos tr.paginacion:hover td {
+    background: var(--panel-alt);
+    text-align: center;
+    padding: 10px;
+}
+
+table.tabla-datos tr.paginacion table {
+    margin: 0 auto;
+    border-collapse: separate;
+}
+
+    table.tabla-datos tr.paginacion table td,
+    table.tabla-datos tr.paginacion table tr:hover td {
+        border: none;
+        padding: 0 3px;
+        background: transparent;
+    }
+
+table.tabla-datos tr.paginacion a,
+table.tabla-datos tr.paginacion span {
+    display: inline-block;
+    min-width: 32px;
+    padding: 6px 10px;
+    border: 1px solid var(--borde);
+    border-radius: 4px;
+    text-decoration: none;
+    color: var(--texto);
+    background: var(--boton-fondo);
+    font-weight: bold;
+}
+
+    table.tabla-datos tr.paginacion a:hover {
+        border-color: var(--dorado);
+        color: var(--dorado);
+    }
+
+/* Página actual */
+table.tabla-datos tr.paginacion span {
+    background: var(--dorado);
+    border-color: var(--dorado);
+    color: #000000;
+}

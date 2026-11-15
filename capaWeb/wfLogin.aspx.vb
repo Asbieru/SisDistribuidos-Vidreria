@@ -79,6 +79,7 @@ Partial Class wfLogin
                 Session("usuario") = usuario
                 Session("intentosLogin") = 3
                 Session("usuarioCambio") = Nothing
+                Session("permisos") = Nothing
 
                 Try
                     Dim dtUsuario As DataTable = objUsuario.obtenerUsuario(idUsuario)

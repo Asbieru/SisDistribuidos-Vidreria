@@ -27,6 +27,21 @@ Partial Class plantilla
         End Get
     End Property
 
+    ' ---------------- ROLES Y PERMISOS ----------------
+    ' Antes de cargar cualquier página se revisa si el usuario conectado puede entrar.
+    ' Así un VENDEDOR no puede abrir una página de ADMINISTRADOR escribiendo la dirección.
+    Protected Sub Page_Init(sender As Object, e As EventArgs) Handles Me.Init
+        If Session("idUsuario") Is Nothing Then
+            Response.Redirect("~/wfLogin.aspx")
+            Return
+        End If
+
+        Dim pagina As String = IO.Path.GetFileName(Request.AppRelativeCurrentExecutionFilePath).ToLowerInvariant()
+        If Not PuedeEntrar(pagina) Then
+            Response.Redirect("~/wfInicio.aspx?denegado=1")
+        End If
+    End Sub
+
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         If Session("idUsuario") Is Nothing Then
             Response.Redirect("~/wfLogin.aspx")
@@ -36,11 +51,10 @@ Partial Class plantilla
         If Not IsPostBack Then
             lblId.Text = Session("idUsuario").ToString()
             lblUsuario.Text = Server.HtmlEncode(If(Session("usuario") Is Nothing, "", Session("usuario").ToString()))
-            lblRol.Text = Server.HtmlEncode(If(Session("rol") Is Nothing, "", Session("rol").ToString()))
+            lblRol.Text = Server.HtmlEncode(RolActual)
+            lblAcceso.Visible = (Request.QueryString("denegado") = "1")
             MarcarOpcionActiva()
             AplicarPermisos()
-            ' La bitácora solo la ve el administrador
-            pnlReportes.Visible = lblRol.Text.Equals("ADMINISTRADOR", StringComparison.OrdinalIgnoreCase)
         End If
     End Sub
 
@@ -51,52 +65,114 @@ Partial Class plantilla
         End If
     End Sub
 
-    ' Oculta las opciones que el usuario no tiene permitidas. Si la consulta
-    ' falla o el usuario aun no tiene permisos asignados, se dejan visibles
-    ' todas las opciones para no dejar la pantalla sin navegacion.
-    Private Sub AplicarPermisos()
+    Private ReadOnly Property RolActual As String
+        Get
+            Return If(Session("rol") Is Nothing, "", Session("rol").ToString())
+        End Get
+    End Property
+
+    Private Function EsAdministrador() As Boolean
+        Return RolActual.Equals("ADMINISTRADOR", StringComparison.OrdinalIgnoreCase)
+    End Function
+
+    ' Códigos de permiso del usuario conectado (COMPRAS, PEDIDOS, USUARIOS...).
+    ' Si el usuario no tiene permisos propios se usan los de su rol (ADMINISTRADOR o VENDEDOR).
+    ' Se guardan en la sesión para no consultar la base en cada página;
+    ' si se cambian, se ven al volver a iniciar sesión (igual que en escritorio).
+    Private Function PermisosUsuario() As List(Of String)
+        Dim guardados As List(Of String) = TryCast(Session("permisos"), List(Of String))
+        If guardados IsNot Nothing Then Return guardados
+
+        Dim lista As New List(Of String)
         Try
-            Dim idUsuario As Integer = Convert.ToInt32(Session("idUsuario"))
-            Dim permisos As List(Of String) = New Permiso().codigosPermisoUsuario(idUsuario)
-
-            If permisos Is Nothing OrElse permisos.Count = 0 Then Return
-
-            lnkRegistrarCompra.Visible = permisos.Contains("COMPRAS")
-            lnkCompras.Visible = permisos.Contains("COMPRAS")
-            lnkProveedores.Visible = permisos.Contains("COMPRAS")
-
-            lnkRegistrarPedido.Visible = permisos.Contains("PEDIDOS")
-            lnkPedidos.Visible = permisos.Contains("PEDIDOS")
-
-            lnkRegistrarPago.Visible = permisos.Contains("PAGOS")
-
-            lnkInventario.Visible = permisos.Contains("INVENTARIO")
-            lnkRegistrarPieza.Visible = permisos.Contains("INVENTARIO")
-            lnkUsuarios.Visible = permisos.Contains("USUARIOS")
-            lnkPermisos.Visible = permisos.Contains("PERMISOS")
-            lnkClientes.Visible = permisos.Contains("CLIENTES")
-            lnkProductos.Visible = permisos.Contains("PRODUCTOS")
-
-            lnkVentas.Visible = permisos.Contains("PEDIDOS") AndAlso permisos.Contains("PAGOS")
-
-            pnlProcesos.Visible = lnkRegistrarCompra.Visible OrElse
-                                  lnkRegistrarPedido.Visible OrElse
-                                  lnkRegistrarPago.Visible OrElse
-                                  lnkRegistrarPieza.Visible
-
-            pnlListados.Visible = lnkCompras.Visible OrElse
-                                  lnkPedidos.Visible OrElse
-                                  lnkInventario.Visible OrElse
-                                  lnkVentas.Visible
-
-            pnlMantenimiento.Visible = lnkUsuarios.Visible OrElse
-                                       lnkPermisos.Visible OrElse
-                                       lnkClientes.Visible OrElse
-                                       lnkProductos.Visible OrElse
-                                       lnkProveedores.Visible
+            Dim objPer As New Permiso()
+            lista = objPer.codigosPermisoUsuario(Convert.ToInt32(Session("idUsuario")))
+            If lista.Count = 0 AndAlso RolActual <> "" Then
+                For Each fila As System.Data.DataRow In objPer.listarPermisosRol(RolActual).Rows
+                    lista.Add(fila("codigo").ToString())
+                Next
+            End If
+            Session("permisos") = lista
         Catch ex As Exception
-            ' Se mantiene el menu completo como respaldo.
+            ' Si falla la consulta no se guarda en sesión: se vuelve a intentar en la siguiente página.
         End Try
+        Return lista
+    End Function
+
+    Private Function Tiene(codigo As String) As Boolean
+        Return PermisosUsuario().Contains(codigo)
+    End Function
+
+    ' Qué permiso pide cada página. Las que no están en la lista (Inicio,
+    ' Modificar Contraseña...) las puede abrir cualquier usuario conectado.
+    Private Function PuedeEntrar(pagina As String) As Boolean
+        Select Case pagina
+            Case "wfregistrarcompras.aspx", "wflistadocompras.aspx", "wfregistrarproveedores.aspx"
+                Return Tiene("COMPRAS")
+            Case "wfregistrarpedido.aspx"
+                Return Tiene("PEDIDOS")
+            Case "wfregistrarpago.aspx"
+                Return Tiene("PAGOS")
+            Case "wflistadoventas.aspx"
+                Return Tiene("PEDIDOS") AndAlso Tiene("PAGOS")
+            Case "wflistadoinventario.aspx", "wfregistrarpieza.aspx", "wfverpiezas.aspx",
+                 "wfmovimientocajas.aspx", "wfverkardex.aspx"
+                Return Tiene("INVENTARIO")
+            Case "wfregistrarusuarios.aspx"
+                Return Tiene("USUARIOS")
+            Case "wfpermisos.aspx"
+                Return Tiene("PERMISOS")
+            Case "wfregistrarclientes.aspx", "wffichacliente.aspx"
+                Return Tiene("CLIENTES")
+            Case "wfregistrarproductos.aspx"
+                Return Tiene("PRODUCTOS")
+            Case "wfbitacora.aspx"
+                Return EsAdministrador()
+            Case Else
+                Return True
+        End Select
+    End Function
+
+    ' Arma el menú según el usuario que ingresó: el ADMINISTRADOR ve todas las opciones
+    ' y el VENDEDOR solo las suyas. Es la misma lógica que aplicarPermisos() de MenuInicio.
+    Private Sub AplicarPermisos()
+        ' Mantenimiento
+        lnkUsuarios.Visible = Tiene("USUARIOS")
+        lnkPermisos.Visible = Tiene("PERMISOS")
+        lnkClientes.Visible = Tiene("CLIENTES")
+        lnkProductos.Visible = Tiene("PRODUCTOS")
+        lnkProveedores.Visible = Tiene("COMPRAS")
+
+        ' Inventario
+        lnkInventario.Visible = Tiene("INVENTARIO")
+        lnkRegistrarPieza.Visible = Tiene("INVENTARIO")
+
+        ' Compras
+        lnkRegistrarCompra.Visible = Tiene("COMPRAS")
+        lnkCompras.Visible = Tiene("COMPRAS")
+
+        ' Pedidos y pagos
+        lnkRegistrarPedido.Visible = Tiene("PEDIDOS")
+        lnkPedidos.Visible = Tiene("PEDIDOS")
+        lnkRegistrarPago.Visible = Tiene("PAGOS")
+
+        ' Ventas: requiere acceso a pedidos y pagos
+        lnkVentas.Visible = Tiene("PEDIDOS") AndAlso Tiene("PAGOS")
+
+        ' Solo se muestran los grupos que tienen alguna opción disponible
+        pnlProcesos.Visible = lnkRegistrarCompra.Visible OrElse lnkRegistrarPedido.Visible OrElse
+                              lnkRegistrarPago.Visible OrElse lnkRegistrarPieza.Visible
+
+        pnlListados.Visible = lnkCompras.Visible OrElse lnkPedidos.Visible OrElse
+                              lnkInventario.Visible OrElse lnkVentas.Visible
+
+        pnlMantenimiento.Visible = lnkUsuarios.Visible OrElse lnkPermisos.Visible OrElse
+                                   lnkClientes.Visible OrElse lnkProductos.Visible OrElse
+                                   lnkProveedores.Visible
+
+        ' Reportes: la bitácora es información de auditoría, solo la ve el administrador
+        lnkBitacora.Visible = EsAdministrador()
+        pnlReportes.Visible = lnkBitacora.Visible
     End Sub
 
     Protected Sub CambiarTema(sender As Object, e As CommandEventArgs)
