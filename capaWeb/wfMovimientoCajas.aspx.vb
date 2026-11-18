@@ -35,13 +35,46 @@ Partial Class wfMovimientoCajas
 
     Private Sub CargarListado()
         Try
-            grvCajas.DataSource = objCaja.Listar()
+            Dim datos As DataTable = objCaja.Listar()
+            ' Filtro por nombre de producto (lo escrito en Buscar)
+            Dim dt As DataTable = datos.Clone()
+            For Each fila As DataRow In datos.Rows
+                If fila("producto").ToString().IndexOf(txtBuscar.Text.Trim(), StringComparison.CurrentCultureIgnoreCase) >= 0 Then dt.ImportRow(fila)
+            Next
+            Dim total As Integer = dt.Rows.Count
+            Dim totalPaginas As Integer = Math.Max(1, CInt(Math.Ceiling(total / grvCajas.PageSize)))
+            If grvCajas.PageIndex >= totalPaginas Then grvCajas.PageIndex = totalPaginas - 1
+            grvCajas.DataSource = dt
             grvCajas.DataBind()
+            If total = 0 Then
+                lblResumen.Text = "Productos: 0"
+            Else
+                Dim desde As Integer = grvCajas.PageIndex * grvCajas.PageSize + 1
+                Dim hasta As Integer = Math.Min(desde + grvCajas.PageSize - 1, total)
+                lblResumen.Text = "Mostrando " & desde & " - " & hasta & " de " & total &
+                                  " producto(s). Página " & (grvCajas.PageIndex + 1) & " de " & totalPaginas & "."
+            End If
         Catch ex As Exception
             grvCajas.DataSource = Nothing
             grvCajas.DataBind()
+            lblResumen.Text = ""
             MostrarError("No se pudo cargar el stock por cajas.")
         End Try
+    End Sub
+
+    Protected Sub btnBuscar_Click(sender As Object, e As EventArgs)
+        If Not autorizado Then Return
+        lblMensaje.Text = ""
+        pnlMovimiento.Visible = False
+        grvCajas.PageIndex = 0   ' una búsqueda nueva empieza en la página 1
+        CargarListado()
+    End Sub
+
+    Protected Sub grvCajas_PageIndexChanging(sender As Object, e As GridViewPageEventArgs)
+        If Not autorizado Then Return
+        grvCajas.PageIndex = e.NewPageIndex
+        pnlMovimiento.Visible = False
+        CargarListado()   ' mantiene la búsqueda que estaba escrita
     End Sub
 
     ' "Registrar movimiento" de una fila: abre el panel

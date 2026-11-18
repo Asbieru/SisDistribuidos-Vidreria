@@ -5,13 +5,29 @@
     <p class="subtitulo-pagina">Tornillos y tarugos (por caja) y accesorios (por unidad).</p>
     <asp:Label ID="lblMensaje" runat="server" CssClass="mensaje-error" />
     <asp:Panel ID="pnlListado" runat="server" CssClass="panel">
+        <asp:Panel ID="pnlBusqueda" runat="server" DefaultButton="btnBuscar">
+            <table class="tabla-formulario">
+                <tr>
+                    <td class="etiqueta">Producto:</td>
+                    <td class="dato">
+                        <asp:TextBox ID="txtBuscar" runat="server" MaxLength="150" />
+                        <asp:Button ID="btnBuscar" runat="server" Text="Buscar" CssClass="boton boton-primario" OnClick="btnBuscar_Click" />
+                    </td>
+                </tr>
+            </table>
+        </asp:Panel>
         <div class="acciones">
             <asp:HyperLink ID="lnkInventario" runat="server" NavigateUrl="~/wfListadoInventario.aspx" CssClass="boton boton-secundario">Volver al inventario</asp:HyperLink>
         </div>
+        <p><asp:Label ID="lblResumen" runat="server" /></p>
         <div class="tabla-scroll">
             <asp:GridView ID="grvCajas" runat="server" AutoGenerateColumns="False" CssClass="tabla-datos"
                 GridLines="None" EmptyDataText="No hay productos por caja o unidad."
-                DataKeyNames="id_variante,producto,unidad_costo,stock_cajas" OnRowCommand="grvCajas_RowCommand">
+                DataKeyNames="id_variante,producto,unidad_costo,stock_cajas" OnRowCommand="grvCajas_RowCommand"
+                AllowPaging="True" PageSize="10" OnPageIndexChanging="grvCajas_PageIndexChanging">
+                <PagerSettings Mode="NumericFirstLast" PageButtonCount="5"
+                    FirstPageText="« Primera" LastPageText="Última »" Position="Bottom" />
+                <PagerStyle CssClass="paginacion" />
                 <Columns>
                     <asp:BoundField DataField="categoria" HeaderText="Categoría" />
                     <asp:BoundField DataField="producto" HeaderText="Producto" />
