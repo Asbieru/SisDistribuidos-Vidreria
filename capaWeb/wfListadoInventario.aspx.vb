@@ -44,11 +44,28 @@ Partial Class wfListadoInventario
         lblMensaje.Text = ""
         Try
             Dim categoria As String = If(ddlCategoria.SelectedIndex <= 0, Nothing, ddlCategoria.SelectedValue)
-            Dim dt As DataTable = objInv.ListarResumen(categoria, chkBajoMinimo.Checked)
+            Dim datos As DataTable = objInv.ListarResumen(categoria, chkBajoMinimo.Checked)
+            ' Filtro por nombre de producto (lo escrito en Buscar)
+            Dim texto As String = txtBuscar.Text.Trim()
+            Dim dt As DataTable = datos.Clone()
+            For Each fila As DataRow In datos.Rows
+                If fila("producto").ToString().IndexOf(texto, StringComparison.CurrentCultureIgnoreCase) >= 0 Then dt.ImportRow(fila)
+            Next
+
+            Dim total As Integer = dt.Rows.Count
+            Dim totalPaginas As Integer = Math.Max(1, CInt(Math.Ceiling(total / grvInventario.PageSize)))
+            If grvInventario.PageIndex >= totalPaginas Then grvInventario.PageIndex = totalPaginas - 1
             grvInventario.DataSource = dt
             grvInventario.DataBind()
-            lblResumen.Text = "Productos: " & dt.Rows.Count.ToString() &
-                              " | En o bajo el stock mínimo: " & objInv.ContarBajoMinimo().ToString()
+
+            Dim cantidad As String = "Productos: 0"
+            If total > 0 Then
+                Dim desde As Integer = grvInventario.PageIndex * grvInventario.PageSize + 1
+                Dim hasta As Integer = Math.Min(desde + grvInventario.PageSize - 1, total)
+                cantidad = "Mostrando " & desde & " - " & hasta & " de " & total &
+                           " producto(s). Página " & (grvInventario.PageIndex + 1) & " de " & totalPaginas & "."
+            End If
+            lblResumen.Text = cantidad & " | En o bajo el stock mínimo: " & objInv.ContarBajoMinimo().ToString()
         Catch ex As Exception
             grvInventario.DataSource = Nothing
             grvInventario.DataBind()
@@ -60,7 +77,25 @@ Partial Class wfListadoInventario
     Protected Sub btnBuscar_Click(sender As Object, e As EventArgs)
         If Not autorizado Then Return
         pnlMinimo.Visible = False
+        grvInventario.PageIndex = 0   ' una búsqueda nueva empieza en la página 1
         CargarListado()
+    End Sub
+
+    Protected Sub btnVerTodos_Click(sender As Object, e As EventArgs)
+        If Not autorizado Then Return
+        txtBuscar.Text = ""
+        ddlCategoria.SelectedIndex = 0
+        chkBajoMinimo.Checked = False
+        pnlMinimo.Visible = False
+        grvInventario.PageIndex = 0
+        CargarListado()
+    End Sub
+
+    Protected Sub grvInventario_PageIndexChanging(sender As Object, e As GridViewPageEventArgs)
+        If Not autorizado Then Return
+        grvInventario.PageIndex = e.NewPageIndex
+        pnlMinimo.Visible = False
+        CargarListado()   ' mantiene los filtros que estaban elegidos
     End Sub
 
     ' "Stock mínimo" de una fila: abre el panel para cambiarlo

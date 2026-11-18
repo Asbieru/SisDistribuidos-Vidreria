@@ -5,18 +5,25 @@
     <p class="subtitulo-pagina">Existencias por producto y stock mínimo.</p>
     <asp:Label ID="lblMensaje" runat="server" CssClass="mensaje-error" />
     <asp:Panel ID="pnlListado" runat="server" CssClass="panel">
-        <table class="tabla-formulario">
-            <tr>
-                <td class="etiqueta">Categoría:</td>
-                <td class="dato"><asp:DropDownList ID="ddlCategoria" runat="server" /></td>
-            </tr>
-            <tr>
-                <td class="etiqueta"></td>
-                <td class="dato"><asp:CheckBox ID="chkBajoMinimo" runat="server" Text="Solo los que están en o bajo el stock mínimo" /></td>
-            </tr>
-        </table>
+        <asp:Panel ID="pnlBusqueda" runat="server" DefaultButton="btnBuscar">
+            <table class="tabla-formulario">
+                <tr>
+                    <td class="etiqueta">Producto:</td>
+                    <td class="dato"><asp:TextBox ID="txtBuscar" runat="server" MaxLength="150" /></td>
+                </tr>
+                <tr>
+                    <td class="etiqueta">Categoría:</td>
+                    <td class="dato"><asp:DropDownList ID="ddlCategoria" runat="server" /></td>
+                </tr>
+                <tr>
+                    <td class="etiqueta"></td>
+                    <td class="dato"><asp:CheckBox ID="chkBajoMinimo" runat="server" Text="Solo los que están en o bajo el stock mínimo" /></td>
+                </tr>
+            </table>
+        </asp:Panel>
         <div class="acciones">
             <asp:Button ID="btnBuscar" runat="server" Text="Buscar" CssClass="boton boton-primario" OnClick="btnBuscar_Click" />
+            <asp:Button ID="btnVerTodos" runat="server" Text="Ver todos" CssClass="boton boton-secundario" OnClick="btnVerTodos_Click" />
             <asp:HyperLink ID="lnkPiezas" runat="server" NavigateUrl="~/wfVerPiezas.aspx" CssClass="boton boton-secundario">Ver piezas</asp:HyperLink>
             <asp:HyperLink ID="lnkCajas" runat="server" NavigateUrl="~/wfMovimientoCajas.aspx" CssClass="boton boton-secundario">Cajas y unidades</asp:HyperLink>
             <asp:HyperLink ID="lnkKardex" runat="server" NavigateUrl="~/wfVerKardex.aspx" CssClass="boton boton-secundario">Kardex</asp:HyperLink>
@@ -25,7 +32,11 @@
         <div class="tabla-scroll">
             <asp:GridView ID="grvInventario" runat="server" AutoGenerateColumns="False" CssClass="tabla-datos"
                 GridLines="None" EmptyDataText="No se encontraron productos."
-                DataKeyNames="id_variante,producto,stock_minimo" OnRowCommand="grvInventario_RowCommand">
+                DataKeyNames="id_variante,producto,stock_minimo" OnRowCommand="grvInventario_RowCommand"
+                AllowPaging="True" PageSize="10" OnPageIndexChanging="grvInventario_PageIndexChanging">
+                <PagerSettings Mode="NumericFirstLast" PageButtonCount="5"
+                    FirstPageText="« Primera" LastPageText="Última »" Position="Bottom" />
+                <PagerStyle CssClass="paginacion" />
                 <Columns>
                     <asp:BoundField DataField="categoria" HeaderText="Categoría" />
                     <asp:BoundField DataField="producto" HeaderText="Producto" />
