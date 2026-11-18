@@ -5,22 +5,28 @@
     <p class="subtitulo-pagina">Accesos e incidencias del inicio de sesión.</p>
     <asp:Label ID="lblMensaje" runat="server" CssClass="mensaje-error" />
     <asp:Panel ID="pnlBitacora" runat="server" CssClass="panel">
-        <table class="tabla-formulario">
-            <tr>
-                <td class="etiqueta">Acción:</td>
-                <td class="dato">
-                    <asp:DropDownList ID="ddlAccion" runat="server" />
-                    <asp:Button ID="btnFiltrar" runat="server" Text="Filtrar" CssClass="boton boton-primario" OnClick="btnFiltrar_Click" />
-                </td>
-            </tr>
-        </table>
+        <asp:Panel ID="pnlBusqueda" runat="server" DefaultButton="btnFiltrar">
+            <table class="tabla-formulario">
+                <tr>
+                    <td class="etiqueta">Acción:</td>
+                    <td class="dato">
+                        <asp:DropDownList ID="ddlAccion" runat="server" />
+                        <asp:Button ID="btnFiltrar" runat="server" Text="Filtrar" CssClass="boton boton-primario" OnClick="btnFiltrar_Click" />
+                    </td>
+                </tr>
+            </table>
+        </asp:Panel>
         <div class="acciones">
             <asp:Button ID="btnRefrescar" runat="server" Text="Refrescar" CssClass="boton boton-secundario" OnClick="btnRefrescar_Click" />
         </div>
         <p><asp:Label ID="lblResumen" runat="server" /></p>
         <div class="tabla-scroll">
             <asp:GridView ID="grvBitacora" runat="server" AutoGenerateColumns="False" CssClass="tabla-datos"
-                GridLines="None" EmptyDataText="No hay registros en la bitácora.">
+                GridLines="None" EmptyDataText="No hay registros en la bitácora."
+                AllowPaging="True" PageSize="10" OnPageIndexChanging="grvBitacora_PageIndexChanging">
+                <PagerSettings Mode="NumericFirstLast" PageButtonCount="5"
+                    FirstPageText="« Primera" LastPageText="Última »" Position="Bottom" />
+                <PagerStyle CssClass="paginacion" />
                 <Columns>
                     <asp:BoundField DataField="idRegistro" HeaderText="N°" />
                     <asp:BoundField DataField="fechaReg" HeaderText="Fecha" DataFormatString="{0:dd/MM/yyyy}" />

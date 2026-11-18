@@ -44,9 +44,19 @@ Partial Class wfBitacora
             Else
                 dt = objBit.listarPorAccion(ddlAccion.SelectedValue)
             End If
+            Dim total As Integer = dt.Rows.Count
+            Dim totalPaginas As Integer = Math.Max(1, CInt(Math.Ceiling(total / grvBitacora.PageSize)))
+            If grvBitacora.PageIndex >= totalPaginas Then grvBitacora.PageIndex = totalPaginas - 1
             grvBitacora.DataSource = dt
             grvBitacora.DataBind()
-            lblResumen.Text = "Registros: " & dt.Rows.Count.ToString()
+            If total = 0 Then
+                lblResumen.Text = "Registros: 0"
+            Else
+                Dim desde As Integer = grvBitacora.PageIndex * grvBitacora.PageSize + 1
+                Dim hasta As Integer = Math.Min(desde + grvBitacora.PageSize - 1, total)
+                lblResumen.Text = "Mostrando " & desde & " - " & hasta & " de " & total &
+                                  " registro(s). Página " & (grvBitacora.PageIndex + 1) & " de " & totalPaginas & "."
+            End If
         Catch ex As Exception
             grvBitacora.DataSource = Nothing
             grvBitacora.DataBind()
@@ -56,7 +66,13 @@ Partial Class wfBitacora
     End Sub
 
     Protected Sub btnFiltrar_Click(sender As Object, e As EventArgs)
+        grvBitacora.PageIndex = 0   ' un filtro nuevo empieza en la página 1
         CargarLista()
+    End Sub
+
+    Protected Sub grvBitacora_PageIndexChanging(sender As Object, e As GridViewPageEventArgs)
+        grvBitacora.PageIndex = e.NewPageIndex
+        CargarLista()   ' mantiene la acción elegida
     End Sub
 
     Protected Sub btnRefrescar_Click(sender As Object, e As EventArgs)
