@@ -35,7 +35,11 @@
         <div class="tabla-scroll">
             <asp:GridView ID="grvPedidos" runat="server" AutoGenerateColumns="False" CssClass="tabla-datos"
                 GridLines="None" EmptyDataText="No hay pedidos para los filtros seleccionados."
-                OnRowCommand="grvPedidos_RowCommand">
+                OnRowCommand="grvPedidos_RowCommand"
+                AllowPaging="True" PageSize="10" OnPageIndexChanging="grvPedidos_PageIndexChanging">
+                <PagerSettings Mode="NumericFirstLast" PageButtonCount="5"
+                    FirstPageText="« Primera" LastPageText="Última »" Position="Bottom" />
+                <PagerStyle CssClass="paginacion" />
                 <Columns>
                     <asp:BoundField DataField="id_pedido" HeaderText="Pedido" />
                     <asp:BoundField DataField="fecha" HeaderText="Fecha" DataFormatString="{0:dd/MM/yyyy HH:mm}" />

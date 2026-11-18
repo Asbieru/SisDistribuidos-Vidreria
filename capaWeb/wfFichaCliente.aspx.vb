@@ -35,7 +35,11 @@ Partial Class wfFichaCliente
                 Return
             End If
 
-            litCliente.Text = cliente.Rows(0)("nombre").ToString()
+            Dim filaCliente As DataRow = cliente.Rows(0)
+            litCliente.Text = filaCliente("nombre").ToString() &
+                " | " & If(filaCliente("tipo_persona").ToString() = "", "Por clasificar", filaCliente("tipo_persona").ToString()) &
+                " | " & If(filaCliente("tipo_documento").ToString() = "", "Documento", filaCliente("tipo_documento").ToString()) &
+                " " & filaCliente("documento").ToString()
             pnlFicha.Visible = True
             If Not IsPostBack Then CargarPedidos()
         Catch
@@ -61,6 +65,8 @@ Partial Class wfFichaCliente
             End If
 
             Dim pedidos As DataTable = objCliente.Historial(idCliente, ddlEstado.SelectedValue, desde, hasta)
+            Dim totalPaginas As Integer = Math.Max(1, CInt(Math.Ceiling(pedidos.Rows.Count / grvPedidos.PageSize)))
+            If grvPedidos.PageIndex >= totalPaginas Then grvPedidos.PageIndex = totalPaginas - 1
             grvPedidos.DataSource = pedidos
             grvPedidos.DataBind()
 
@@ -73,8 +79,16 @@ Partial Class wfFichaCliente
                 pagado += CDec(fila("pagado"))
                 saldo += CDec(fila("saldo"))
             Next
-            litResumen.Text = String.Format("{0} pedido(s). Resumen sin cancelados: total S/ {1:N2} | pagado S/ {2:N2} | saldo S/ {3:N2}.",
-                                            pedidos.Rows.Count, total, pagado, saldo)
+            Dim cantidad As String = pedidos.Rows.Count.ToString() & " pedido(s)."
+            If pedidos.Rows.Count > 0 Then
+                Dim primero As Integer = grvPedidos.PageIndex * grvPedidos.PageSize + 1
+                Dim ultimo As Integer = Math.Min(primero + grvPedidos.PageSize - 1, pedidos.Rows.Count)
+                cantidad = "Mostrando " & primero & " - " & ultimo & " de " & pedidos.Rows.Count &
+                           " pedido(s). Página " & (grvPedidos.PageIndex + 1) & " de " & totalPaginas & "."
+            End If
+            ' El resumen suma todos los pedidos del filtro, no solo los de la página visible.
+            litResumen.Text = String.Format("{0} Resumen sin cancelados: total S/ {1:N2} | pagado S/ {2:N2} | saldo S/ {3:N2}.",
+                                            cantidad, total, pagado, saldo)
         Catch ex As FormatException
             lblMensaje.Text = "Ingrese fechas válidas."
         Catch
@@ -88,6 +102,7 @@ Partial Class wfFichaCliente
     End Function
 
     Protected Sub btnFiltrar_Click(sender As Object, e As EventArgs)
+        grvPedidos.PageIndex = 0   ' un filtro nuevo empieza en la página 1
         CargarPedidos()
     End Sub
 
@@ -96,7 +111,14 @@ Partial Class wfFichaCliente
         ddlEstado.SelectedIndex = 0
         txtDesde.Text = ""
         txtHasta.Text = ""
+        grvPedidos.PageIndex = 0
         CargarPedidos()
+    End Sub
+
+    Protected Sub grvPedidos_PageIndexChanging(sender As Object, e As GridViewPageEventArgs)
+        If Not pnlFicha.Visible Then Return
+        grvPedidos.PageIndex = e.NewPageIndex
+        CargarPedidos()   ' mantiene los filtros que estaban escritos
     End Sub
 
     Protected Sub grvPedidos_RowCommand(sender As Object, e As GridViewCommandEventArgs)
