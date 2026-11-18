@@ -126,8 +126,6 @@ Partial Class plantilla
                 Return Tiene("CLIENTES")
             Case "wfregistrarproductos.aspx"
                 Return Tiene("PRODUCTOS")
-            Case "wfbitacora.aspx"
-                Return EsAdministrador()
             Case Else
                 Return True
         End Select
@@ -169,10 +167,6 @@ Partial Class plantilla
         pnlMantenimiento.Visible = lnkUsuarios.Visible OrElse lnkPermisos.Visible OrElse
                                    lnkClientes.Visible OrElse lnkProductos.Visible OrElse
                                    lnkProveedores.Visible
-
-        ' Reportes: la bitácora es información de auditoría, solo la ve el administrador
-        lnkBitacora.Visible = EsAdministrador()
-        pnlReportes.Visible = lnkBitacora.Visible
     End Sub
 
     Protected Sub CambiarTema(sender As Object, e As CommandEventArgs)
@@ -195,12 +189,6 @@ Partial Class plantilla
     End Sub
 
     Protected Sub CerrarSesion_Click(sender As Object, e As EventArgs)
-        ' Deja constancia del cierre de sesión en la bitácora (nunca bloquea el cierre)
-        Dim idUsuario As Integer
-        If Session("idUsuario") IsNot Nothing AndAlso Integer.TryParse(Session("idUsuario").ToString(), idUsuario) Then
-            Dim objBit As New Bitacora()
-            objBit.registrarAccionSeguro(idUsuario, Bitacora.CIERRE_SESION)
-        End If
         Session.Clear()
         Session.Abandon()
         Response.Redirect("~/wfLogin.aspx?salir=1", False)
