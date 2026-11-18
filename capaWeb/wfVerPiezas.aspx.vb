@@ -59,9 +59,19 @@ Partial Class wfVerPiezas
             If ddlVariante.SelectedValue <> "" Then idVariante = CInt(ddlVariante.SelectedValue)
             Dim estado As String = If(ddlEstado.SelectedIndex <= 0, Nothing, ddlEstado.SelectedValue)
             Dim dt As DataTable = objPieza.Listar(idVariante, estado)
+            Dim total As Integer = dt.Rows.Count
+            Dim totalPaginas As Integer = Math.Max(1, CInt(Math.Ceiling(total / grvPiezas.PageSize)))
+            If grvPiezas.PageIndex >= totalPaginas Then grvPiezas.PageIndex = totalPaginas - 1
             grvPiezas.DataSource = dt
             grvPiezas.DataBind()
-            lblResumen.Text = "Piezas: " & dt.Rows.Count.ToString()
+            If total = 0 Then
+                lblResumen.Text = "Piezas: 0"
+            Else
+                Dim desde As Integer = grvPiezas.PageIndex * grvPiezas.PageSize + 1
+                Dim hasta As Integer = Math.Min(desde + grvPiezas.PageSize - 1, total)
+                lblResumen.Text = "Mostrando " & desde & " - " & hasta & " de " & total &
+                                  " pieza(s). Página " & (grvPiezas.PageIndex + 1) & " de " & totalPaginas & "."
+            End If
         Catch ex As Exception
             grvPiezas.DataSource = Nothing
             grvPiezas.DataBind()
@@ -74,7 +84,15 @@ Partial Class wfVerPiezas
         If Not autorizado Then Return
         lblMensaje.Text = ""
         pnlEditar.Visible = False
+        grvPiezas.PageIndex = 0   ' una búsqueda nueva empieza en la página 1
         CargarListado()
+    End Sub
+
+    Protected Sub grvPiezas_PageIndexChanging(sender As Object, e As GridViewPageEventArgs)
+        If Not autorizado Then Return
+        grvPiezas.PageIndex = e.NewPageIndex
+        pnlEditar.Visible = False
+        CargarListado()   ' mantiene los filtros que estaban elegidos
     End Sub
 
     ' "Editar" de una fila: abre el panel de cambio de estado / corte

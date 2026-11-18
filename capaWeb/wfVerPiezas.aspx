@@ -5,16 +5,18 @@
     <p class="subtitulo-pagina">Consulte las piezas, cámbieles el estado o córtelas.</p>
     <asp:Label ID="lblMensaje" runat="server" CssClass="mensaje-error" />
     <asp:Panel ID="pnlListado" runat="server" CssClass="panel">
-        <table class="tabla-formulario">
-            <tr>
-                <td class="etiqueta">Producto:</td>
-                <td class="dato"><asp:DropDownList ID="ddlVariante" runat="server" /></td>
-            </tr>
-            <tr>
-                <td class="etiqueta">Estado:</td>
-                <td class="dato"><asp:DropDownList ID="ddlEstado" runat="server" /></td>
-            </tr>
-        </table>
+        <asp:Panel ID="pnlBusqueda" runat="server" DefaultButton="btnBuscar">
+            <table class="tabla-formulario">
+                <tr>
+                    <td class="etiqueta">Producto:</td>
+                    <td class="dato"><asp:DropDownList ID="ddlVariante" runat="server" /></td>
+                </tr>
+                <tr>
+                    <td class="etiqueta">Estado:</td>
+                    <td class="dato"><asp:DropDownList ID="ddlEstado" runat="server" /></td>
+                </tr>
+            </table>
+        </asp:Panel>
         <div class="acciones">
             <asp:Button ID="btnBuscar" runat="server" Text="Buscar" CssClass="boton boton-primario" OnClick="btnBuscar_Click" />
             <asp:HyperLink ID="lnkInventario" runat="server" NavigateUrl="~/wfListadoInventario.aspx" CssClass="boton boton-secundario">Volver al inventario</asp:HyperLink>
@@ -23,7 +25,11 @@
         <div class="tabla-scroll">
             <asp:GridView ID="grvPiezas" runat="server" AutoGenerateColumns="False" CssClass="tabla-datos"
                 GridLines="None" EmptyDataText="No se encontraron piezas."
-                DataKeyNames="id_pieza,producto,estado" OnRowCommand="grvPiezas_RowCommand">
+                DataKeyNames="id_pieza,producto,estado" OnRowCommand="grvPiezas_RowCommand"
+                AllowPaging="True" PageSize="10" OnPageIndexChanging="grvPiezas_PageIndexChanging">
+                <PagerSettings Mode="NumericFirstLast" PageButtonCount="5"
+                    FirstPageText="« Primera" LastPageText="Última »" Position="Bottom" />
+                <PagerStyle CssClass="paginacion" />
                 <Columns>
                     <asp:BoundField DataField="id_pieza" HeaderText="N° pieza" />
                     <asp:BoundField DataField="producto" HeaderText="Producto" />
