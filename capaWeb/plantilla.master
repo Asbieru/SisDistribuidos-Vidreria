@@ -63,7 +63,7 @@
                                 NavigateUrl="~/wfListadoCompras.aspx"
                                 CssClass="menu-opcion">De Compras</asp:HyperLink>
                             <asp:HyperLink ID="lnkPedidos" runat="server"
-                                NavigateUrl="~/wfModulo.aspx?modulo=Listado%20de%20Pedidos"
+                                NavigateUrl="~/wfListadoPedidos.aspx"
                                 CssClass="menu-opcion">De Pedidos</asp:HyperLink>
                             <asp:HyperLink ID="lnkInventario" runat="server"
                                 NavigateUrl="~/wfListadoInventario.aspx"

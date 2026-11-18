@@ -64,7 +64,7 @@
     <Import Include="System.Threading.Tasks" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="clsConectaBD %282%29.vb" />
+    <Compile Include="clsConectaBD.vb" />
     <Compile Include="clsMantenimiento.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
