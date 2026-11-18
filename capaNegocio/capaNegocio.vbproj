@@ -64,7 +64,6 @@
     <Import Include="System.Threading.Tasks" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Bitacora.vb" />
     <Compile Include="Caracteristica.vb" />
     <Compile Include="Venta.vb" />
     <Compile Include="Cliente.vb" />
