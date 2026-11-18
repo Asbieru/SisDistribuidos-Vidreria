@@ -47,7 +47,14 @@ Partial Class wfVerKardex
 
     Protected Sub btnBuscar_Click(sender As Object, e As EventArgs)
         If Not autorizado Then Return
+        grvKardex.PageIndex = 0   ' una búsqueda nueva empieza en la página 1
         CargarKardex()
+    End Sub
+
+    Protected Sub grvKardex_PageIndexChanging(sender As Object, e As GridViewPageEventArgs)
+        If Not autorizado Then Return
+        grvKardex.PageIndex = e.NewPageIndex
+        CargarKardex()   ' mantiene las fechas y el producto elegidos
     End Sub
 
     Private Sub CargarKardex()
@@ -70,9 +77,19 @@ Partial Class wfVerKardex
             ' Si "Hasta" es hoy no se pone límite superior (somee puede guardar con otra zona horaria)
             Dim limite As Date? = If(hasta >= Today, CType(Nothing, Date?), hasta)
             Dim dt As DataTable = objInv.ListarMovimientos(desde, limite, idVariante)
+            Dim total As Integer = dt.Rows.Count
+            Dim totalPaginas As Integer = Math.Max(1, CInt(Math.Ceiling(total / grvKardex.PageSize)))
+            If grvKardex.PageIndex >= totalPaginas Then grvKardex.PageIndex = totalPaginas - 1
             grvKardex.DataSource = dt
             grvKardex.DataBind()
-            lblResumen.Text = "Movimientos: " & dt.Rows.Count.ToString()
+            If total = 0 Then
+                lblResumen.Text = "Movimientos: 0"
+            Else
+                Dim primero As Integer = grvKardex.PageIndex * grvKardex.PageSize + 1
+                Dim ultimo As Integer = Math.Min(primero + grvKardex.PageSize - 1, total)
+                lblResumen.Text = "Mostrando " & primero & " - " & ultimo & " de " & total &
+                                  " movimiento(s). Página " & (grvKardex.PageIndex + 1) & " de " & totalPaginas & "."
+            End If
         Catch ex As Exception
             grvKardex.DataSource = Nothing
             grvKardex.DataBind()

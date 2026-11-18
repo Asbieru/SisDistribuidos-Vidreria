@@ -5,14 +5,16 @@
     <p class="subtitulo-pagina">Historial de entradas, salidas y ajustes del inventario.</p>
     <asp:Label ID="lblMensaje" runat="server" CssClass="mensaje-error" />
     <asp:Panel ID="pnlKardex" runat="server" CssClass="panel">
-        <table class="tabla-formulario">
-            <tr>
-                <td class="etiqueta">Producto:</td>
-                <td class="dato"><asp:DropDownList ID="ddlVariante" runat="server" /></td>
-            </tr>
-            <tr><td class="etiqueta">Desde:</td><td><asp:TextBox ID="txtDesde" runat="server" TextMode="Date" /></td></tr>
-            <tr><td class="etiqueta">Hasta:</td><td><asp:TextBox ID="txtHasta" runat="server" TextMode="Date" /></td></tr>
-        </table>
+        <asp:Panel ID="pnlBusqueda" runat="server" DefaultButton="btnBuscar">
+            <table class="tabla-formulario">
+                <tr>
+                    <td class="etiqueta">Producto:</td>
+                    <td class="dato"><asp:DropDownList ID="ddlVariante" runat="server" /></td>
+                </tr>
+                <tr><td class="etiqueta">Desde:</td><td><asp:TextBox ID="txtDesde" runat="server" TextMode="Date" /></td></tr>
+                <tr><td class="etiqueta">Hasta:</td><td><asp:TextBox ID="txtHasta" runat="server" TextMode="Date" /></td></tr>
+            </table>
+        </asp:Panel>
         <div class="acciones">
             <asp:Button ID="btnBuscar" runat="server" Text="Buscar" CssClass="boton boton-primario" OnClick="btnBuscar_Click" />
             <asp:HyperLink ID="lnkInventario" runat="server" NavigateUrl="~/wfListadoInventario.aspx" CssClass="boton boton-secundario">Volver al inventario</asp:HyperLink>
@@ -20,7 +22,11 @@
         <p><asp:Label ID="lblResumen" runat="server" /></p>
         <div class="tabla-scroll">
             <asp:GridView ID="grvKardex" runat="server" AutoGenerateColumns="False" CssClass="tabla-datos"
-                GridLines="None" EmptyDataText="No hay movimientos en ese rango.">
+                GridLines="None" EmptyDataText="No hay movimientos en ese rango."
+                AllowPaging="True" PageSize="10" OnPageIndexChanging="grvKardex_PageIndexChanging">
+                <PagerSettings Mode="NumericFirstLast" PageButtonCount="5"
+                    FirstPageText="« Primera" LastPageText="Última »" Position="Bottom" />
+                <PagerStyle CssClass="paginacion" />
                 <Columns>
                     <asp:BoundField DataField="fecha" HeaderText="Fecha" DataFormatString="{0:dd/MM/yyyy HH:mm}" />
                     <asp:BoundField DataField="categoria" HeaderText="Categoría" />
