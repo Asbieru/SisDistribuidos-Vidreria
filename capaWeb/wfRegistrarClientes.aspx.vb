@@ -211,15 +211,22 @@ Partial Class wfRegistrarClientes
                 dt = objCliente.Buscar(filtro)
             End If
 
+            Dim total As Integer = If(dt Is Nothing, 0, dt.Rows.Count)
+            Dim totalPaginas As Integer = Math.Max(1, CInt(Math.Ceiling(total / grvClientes.PageSize)))
+            If grvClientes.PageIndex >= totalPaginas Then grvClientes.PageIndex = totalPaginas - 1
+
             grvClientes.DataSource = dt
             grvClientes.DataBind()
 
-            If dt Is Nothing OrElse dt.Rows.Count = 0 Then
+            If total = 0 Then
                 lblMensajeLista.CssClass = "mensaje-info"
                 lblMensajeLista.Text = "No se encontraron clientes."
             Else
+                Dim desde As Integer = grvClientes.PageIndex * grvClientes.PageSize + 1
+                Dim hasta As Integer = Math.Min(desde + grvClientes.PageSize - 1, total)
                 lblMensajeLista.CssClass = ""
-                lblMensajeLista.Text = dt.Rows.Count.ToString() & " cliente(s) encontrado(s)."
+                lblMensajeLista.Text = "Mostrando " & desde & " - " & hasta & " de " & total &
+                                       " cliente(s). Página " & (grvClientes.PageIndex + 1) & " de " & totalPaginas & "."
             End If
         Catch ex As Exception
             lblMensajeLista.CssClass = "mensaje-error"
@@ -228,12 +235,19 @@ Partial Class wfRegistrarClientes
     End Sub
 
     Protected Sub btnBuscar_Click(sender As Object, e As EventArgs)
+        grvClientes.PageIndex = 0   ' una búsqueda nueva empieza en la página 1
         CargarListado(txtBuscar.Text)
     End Sub
 
     Protected Sub btnVerTodos_Click(sender As Object, e As EventArgs)
         txtBuscar.Text = ""
+        grvClientes.PageIndex = 0
         CargarListado("")
+    End Sub
+
+    Protected Sub grvClientes_PageIndexChanging(sender As Object, e As GridViewPageEventArgs)
+        grvClientes.PageIndex = e.NewPageIndex
+        CargarListado(txtBuscar.Text)   ' mantiene la búsqueda que estaba escrita
     End Sub
 
     Protected Sub grvClientes_RowCommand(sender As Object, e As GridViewCommandEventArgs)

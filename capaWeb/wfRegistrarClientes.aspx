@@ -91,24 +91,30 @@
     <asp:Panel ID="pnlListado" runat="server" CssClass="panel">
         <h2 class="panel-titulo">Clientes registrados</h2>
 
-        <table class="tabla-formulario" cellpadding="0" cellspacing="0">
-            <tr>
-                <td class="etiqueta">Buscar :</td>
-                <td class="dato">
-                    <asp:TextBox ID="txtBuscar" runat="server" CssClass="campo campo-corto"
-                        MaxLength="150"></asp:TextBox>
-                    <asp:Button ID="btnBuscar" runat="server" CssClass="boton boton-primario"
-                        Text="Buscar" OnClick="btnBuscar_Click" CausesValidation="False" />
-                    <asp:Button ID="btnVerTodos" runat="server" CssClass="boton boton-secundario"
-                        Text="Ver todos" OnClick="btnVerTodos_Click" CausesValidation="False" />
-                </td>
-            </tr>
-        </table>
+        <asp:Panel ID="pnlBusqueda" runat="server" DefaultButton="btnBuscar">
+            <table class="tabla-formulario" cellpadding="0" cellspacing="0">
+                <tr>
+                    <td class="etiqueta">Buscar :</td>
+                    <td class="dato">
+                        <asp:TextBox ID="txtBuscar" runat="server" CssClass="campo campo-corto"
+                            MaxLength="150"></asp:TextBox>
+                        <asp:Button ID="btnBuscar" runat="server" CssClass="boton boton-primario"
+                            Text="Buscar" OnClick="btnBuscar_Click" CausesValidation="False" />
+                        <asp:Button ID="btnVerTodos" runat="server" CssClass="boton boton-secundario"
+                            Text="Ver todos" OnClick="btnVerTodos_Click" CausesValidation="False" />
+                    </td>
+                </tr>
+            </table>
+        </asp:Panel>
 
         <div class="tabla-scroll">
             <asp:GridView ID="grvClientes" runat="server" AutoGenerateColumns="False"
                 CssClass="tabla-datos" GridLines="None" DataKeyNames="id_cliente"
-                OnRowCommand="grvClientes_RowCommand" EmptyDataText="No hay clientes registrados.">
+                OnRowCommand="grvClientes_RowCommand" EmptyDataText="No hay clientes registrados."
+                AllowPaging="True" PageSize="10" OnPageIndexChanging="grvClientes_PageIndexChanging">
+                <PagerSettings Mode="NumericFirstLast" PageButtonCount="5"
+                    FirstPageText="« Primera" LastPageText="Última »" Position="Bottom" />
+                <PagerStyle CssClass="paginacion" />
                 <Columns>
                     <asp:BoundField DataField="id_cliente" HeaderText="ID" />
                     <asp:BoundField DataField="nombre" HeaderText="Nombre / Razón social" />
