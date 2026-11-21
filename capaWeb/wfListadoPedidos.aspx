@@ -67,7 +67,7 @@
                                 CommandName="CancelarPedido"
                                 CommandArgument='<%# Eval("id_pedido") %>'
                                 Text="Cancelar" CausesValidation="False"
-                                Visible='<%# Eval("estado").ToString() <> "CANCELADO" %>'
+                                Visible='<%# Eval("estado").ToString() <> "CANCELADO" AndAlso Eval("estado").ToString() <> "PAGADO" %>'
                                 OnClientClick="return confirm('¿Está seguro de cancelar este pedido? Se liberarán las piezas reservadas.');" />
                         </ItemTemplate>
                     </asp:TemplateField>
@@ -75,58 +75,5 @@
             </asp:GridView>
         </div>
         <p><asp:Label ID="lblResumen" runat="server" /></p>
-    </asp:Panel>
-
-    <%-- Detalle del pedido elegido con "Ver Pedido" (equivale a frmPedidoUnitario de escritorio) --%>
-    <asp:Panel ID="pnlDetalle" runat="server" CssClass="panel" Visible="False">
-        <h2 class="panel-titulo">Pedido N° <asp:Label ID="lblIdPedido" runat="server" /></h2>
-        <table class="tabla-formulario">
-            <tr>
-                <td class="etiqueta">Cliente :</td>
-                <td class="dato"><asp:Label ID="lblCliente" runat="server" /></td>
-            </tr>
-            <tr>
-                <td class="etiqueta">Vendedor :</td>
-                <td class="dato"><asp:Label ID="lblUsuario" runat="server" /></td>
-            </tr>
-            <tr>
-                <td class="etiqueta">Fecha :</td>
-                <td class="dato"><asp:Label ID="lblFecha" runat="server" /></td>
-            </tr>
-            <tr>
-                <td class="etiqueta">Estado :</td>
-                <td class="dato"><asp:Label ID="lblEstado" runat="server" /></td>
-            </tr>
-            <tr>
-                <td class="etiqueta">Total :</td>
-                <td class="dato"><asp:Label ID="lblTotal" runat="server" /></td>
-            </tr>
-            <tr>
-                <td class="etiqueta">Pagado :</td>
-                <td class="dato"><asp:Label ID="lblPagado" runat="server" /></td>
-            </tr>
-        </table>
-
-        <h3 class="panel-subtitulo">Items del pedido</h3>
-        <div class="tabla-scroll">
-            <asp:GridView ID="grvItems" runat="server" AutoGenerateColumns="False"
-                CssClass="tabla-datos" GridLines="None" EmptyDataText="El pedido no tiene items activos.">
-                <Columns>
-                    <asp:BoundField DataField="id_item" HeaderText="Item" />
-                    <asp:BoundField DataField="tipo" HeaderText="Tipo" />
-                    <asp:BoundField DataField="descripcion" HeaderText="Descripción" />
-                    <asp:BoundField DataField="ancho_cm" HeaderText="Ancho (cm)" DataFormatString="{0:0.##}" />
-                    <asp:BoundField DataField="alto_cm" HeaderText="Alto (cm)" DataFormatString="{0:0.##}" />
-                    <asp:BoundField DataField="estado" HeaderText="Estado" />
-                    <asp:BoundField DataField="total" HeaderText="Total (S/.)" DataFormatString="{0:0.00}" />
-                </Columns>
-            </asp:GridView>
-        </div>
-
-        <div class="acciones">
-            <asp:HyperLink ID="lnkPagar" runat="server" CssClass="boton boton-primario">Registrar Pago</asp:HyperLink>
-            <asp:Button ID="btnCerrarDetalle" runat="server" Text="Cerrar" CssClass="boton boton-secundario"
-                OnClick="btnCerrarDetalle_Click" CausesValidation="False" />
-        </div>
     </asp:Panel>
 </asp:Content>

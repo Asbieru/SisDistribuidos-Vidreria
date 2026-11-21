@@ -69,7 +69,6 @@ Partial Class wfListadoPedidos
 
     Protected Sub btnBuscar_Click(sender As Object, e As EventArgs)
         grvPedidos.PageIndex = 0
-        pnlDetalle.Visible = False
         lblMensaje.Text = ""
         CargarLista()
     End Sub
@@ -77,7 +76,6 @@ Partial Class wfListadoPedidos
     Protected Sub btnVerTodos_Click(sender As Object, e As EventArgs)
         txtBuscar.Text = ""
         grvPedidos.PageIndex = 0
-        pnlDetalle.Visible = False
         lblMensaje.Text = ""
         CargarLista()
     End Sub
@@ -99,47 +97,25 @@ Partial Class wfListadoPedidos
         End Select
     End Sub
 
-    ' ------------------------- Ver pedido -------------------------
-
+    ' Igual que en frmListadoPedido: "Ver Pedido" abre el detalle en una
+    ' pagina propia (equivalente a frmPedidoUnitario), no dentro del listado.
     Private Sub VerPedido(id As Integer)
-        lblMensaje.Text = ""
         Try
             Dim dt As DataTable = objPedido.Obtener(id)
             If dt Is Nothing OrElse dt.Rows.Count = 0 Then
                 MostrarMensaje("El pedido ya no existe. Actualice el listado.", "mensaje-error")
                 Return
             End If
-
-            Dim fila As DataRow = dt.Rows(0)
-            If fila("estado").ToString() = "CANCELADO" Then
+            If dt.Rows(0)("estado").ToString() = "CANCELADO" Then
                 MostrarMensaje("El pedido seleccionado está cancelado y no puede abrirse.", "mensaje-info")
                 Return
             End If
 
-            lblIdPedido.Text = id.ToString()
-            lblCliente.Text = Server.HtmlEncode(fila("cliente").ToString())
-            lblUsuario.Text = Server.HtmlEncode(fila("usuario").ToString())
-            lblFecha.Text = Convert.ToDateTime(fila("fecha")).ToString("dd/MM/yyyy HH:mm")
-            lblEstado.Text = fila("estado").ToString()
-            lblEstado.CssClass = ClaseEstado(fila("estado"))
-            lblTotal.Text = "S/. " & FormatoMonto(fila("total"))
-            lblPagado.Text = "S/. " & objPago.TotalPagado(id).ToString("0.00", CultureInfo.InvariantCulture)
-
-            grvItems.DataSource = objPedido.ListarItemsDetallado(id)
-            grvItems.DataBind()
-
-            ' Lleva a Registro de Pago con este pedido ya elegido
-            lnkPagar.NavigateUrl = "~/wfRegistrarPago.aspx?idPedido=" & id
-            lnkPagar.Visible = fila("estado").ToString() <> "PAGADO"
-
-            pnlDetalle.Visible = True
+            Response.Redirect("~/wfPedidoUnitario.aspx?idPedido=" & id.ToString(), False)
+            Context.ApplicationInstance.CompleteRequest()
         Catch ex As Exception
             MostrarMensaje(ex.Message, "mensaje-error")
         End Try
-    End Sub
-
-    Protected Sub btnCerrarDetalle_Click(sender As Object, e As EventArgs)
-        pnlDetalle.Visible = False
     End Sub
 
     ' ------------------------- Cancelar pedido -------------------------
@@ -151,8 +127,13 @@ Partial Class wfListadoPedidos
                 MostrarMensaje("El pedido ya no existe. Actualice el listado.", "mensaje-error")
                 Return
             End If
-            If dt.Rows(0)("estado").ToString() = "CANCELADO" Then
+            Dim estado As String = dt.Rows(0)("estado").ToString()
+            If estado = "CANCELADO" Then
                 MostrarMensaje("El pedido seleccionado ya está cancelado.", "mensaje-info")
+                Return
+            End If
+            If estado = "PAGADO" Then
+                MostrarMensaje("Un pedido pagado no puede cancelarse desde esta opción.", "mensaje-info")
                 Return
             End If
 
@@ -165,7 +146,6 @@ Partial Class wfListadoPedidos
                 texto &= " Excedente a favor del cliente: S/. " & pagado.ToString("0.00", CultureInfo.InvariantCulture) & "."
             End If
 
-            pnlDetalle.Visible = False
             CargarLista()
             MostrarMensaje(texto, "mensaje-ok")
         Catch ex As Exception
@@ -184,14 +164,11 @@ Partial Class wfListadoPedidos
                 Return "estado-parcial"
             Case "PENDIENTE"
                 Return "estado-pendiente"
+            Case "CANCELADO"
+                Return "estado-cancelado"
             Case Else
                 Return ""
         End Select
-    End Function
-
-    Private Function FormatoMonto(valor As Object) As String
-        If valor Is Nothing OrElse IsDBNull(valor) Then Return "0.00"
-        Return Convert.ToDecimal(valor).ToString("0.00", CultureInfo.InvariantCulture)
     End Function
 
     Private Sub MostrarMensaje(texto As String, clase As String)

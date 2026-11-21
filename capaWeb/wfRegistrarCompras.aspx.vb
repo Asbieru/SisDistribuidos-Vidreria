@@ -73,6 +73,7 @@ Partial Class wfRegistrarCompras
             txtFecha.Text = Date.Today.ToString("yyyy-MM-dd")
             PrepararNuevaCompra()
             CargarListado()
+            CargarDesdeConsulta()
         End If
 
         ActualizarCamposVariante()
@@ -129,6 +130,48 @@ Partial Class wfRegistrarCompras
             MostrarMensaje(ex.Message, "mensaje-error")
         End Try
     End Sub
+
+    ' Viene de wfPedidoUnitario (botón "Comprar Ahora"): precarga la variante
+    ' y las medidas del material que debe reponerse.
+    Private Sub CargarDesdeConsulta()
+        Dim idVariante As Integer = 0
+        If Not Integer.TryParse(Request.QueryString("idVariante"), idVariante) OrElse idVariante <= 0 Then Return
+        If ddlVariante.Items.FindByValue(idVariante.ToString()) Is Nothing Then Return
+
+        ddlVariante.SelectedValue = idVariante.ToString()
+        UnidadSeleccionada = UnidadDeVariante(idVariante)
+        CargarCostoSugerido(idVariante)
+
+        Dim ancho As Decimal? = DecimalDeConsulta("ancho")
+        Dim alto As Decimal? = DecimalDeConsulta("alto")
+        Dim largo As Decimal? = DecimalDeConsulta("largo")
+        Dim cajas As Integer? = EnteroDeConsulta("cajas")
+
+        If UnidadSeleccionada = "CM2" OrElse UnidadSeleccionada = "PIE2" Then
+            If ancho.HasValue Then txtAncho.Text = ancho.Value.ToString("0.###", CultureInfo.InvariantCulture)
+            If alto.HasValue Then txtAlto.Text = alto.Value.ToString("0.###", CultureInfo.InvariantCulture)
+        ElseIf UnidadSeleccionada = "CM_LINEAL" Then
+            Dim largoLineal As Decimal? = If(largo.HasValue, largo, alto)
+            If largoLineal.HasValue Then txtAlto.Text = largoLineal.Value.ToString("0.###", CultureInfo.InvariantCulture)
+        End If
+        If cajas.HasValue Then txtPiezas.Text = cajas.Value.ToString()
+
+        ActualizarCamposVariante()
+    End Sub
+
+    Private Function DecimalDeConsulta(clave As String) As Decimal?
+        Dim valor As Decimal = 0D
+        If Decimal.TryParse(Request.QueryString(clave), NumberStyles.Any, CultureInfo.InvariantCulture, valor) AndAlso valor > 0D Then
+            Return valor
+        End If
+        Return Nothing
+    End Function
+
+    Private Function EnteroDeConsulta(clave As String) As Integer?
+        Dim valor As Integer = 0
+        If Integer.TryParse(Request.QueryString(clave), valor) AndAlso valor > 0 Then Return valor
+        Return Nothing
+    End Function
 
     ' ------------------------- Entrada de productos -------------------------
 

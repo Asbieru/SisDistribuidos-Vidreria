@@ -1,4 +1,4 @@
-/* ============================================================
+﻿/* ============================================================
    SISCORP - Hoja de estilos unica para toda la capa web
    Mantiene el estilo de la capaPresentacion: tablas, menu
    lateral, colores negro/gris/dorado y temas de color.
@@ -18,6 +18,8 @@
     --boton-texto: #ffffff;
     --peligro: #ff8080;
     --exito: #7bd88f;
+    --vuelto-fondo: rgba(210, 45, 45, 0.20);
+    --vuelto-texto: #ffb3b3;
     --sombra: rgba(0, 0, 0, 0.45);
 }
 
@@ -35,6 +37,8 @@ body.tema-claro {
     --boton-texto: #111111;
     --peligro: #a40000;
     --exito: #126b2b;
+    --vuelto-fondo: #ffe2e2;
+    --vuelto-texto: #a40000;
     --sombra: rgba(0, 0, 0, 0.18);
 }
 
@@ -52,6 +56,8 @@ body.tema-azulclaro {
     --boton-texto: #ffffff;
     --peligro: #a40000;
     --exito: #126b2b;
+    --vuelto-fondo: #ffdede;
+    --vuelto-texto: #a40000;
     --sombra: rgba(0, 40, 80, 0.20);
 }
 
@@ -69,6 +75,8 @@ body.tema-azuloscuro {
     --boton-texto: #ffffff;
     --peligro: #ff9b9b;
     --exito: #8fe3a5;
+    --vuelto-fondo: rgba(255, 90, 90, 0.18);
+    --vuelto-texto: #ffc2c2;
     --sombra: rgba(0, 0, 0, 0.50);
 }
 
@@ -343,6 +351,29 @@ table.pagina {
     font-weight: bold;
 }
 
+.estado-cancelado {
+    color: var(--peligro);
+    font-weight: bold;
+    text-decoration: line-through;
+}
+
+/* Pestañas de items del pedido unitario (wfPedidoUnitario) */
+.pestana-item {
+    margin: 2px 4px 10px 0;
+    max-width: 320px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.pestana-item-activa {
+    box-shadow: inset 0 -3px 0 var(--dorado-claro);
+}
+
+.detalle-item {
+    margin-top: 8px;
+}
+
 /* ---------------- Botones y campos ---------------- */
 
 .boton,
@@ -444,6 +475,41 @@ textarea.campo {
     font-style: italic;
 }
 
+.combo-servidor {
+    display: none;
+}
+
+.opcion-medida {
+    margin-left: 10px;
+}
+
+/* Importes del item del pedido: bloque separado y con formato monetario */
+.seccion-importes {
+    margin-top: 20px;
+}
+
+.tabla-importes td.dato {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.prefijo-importe {
+    display: inline-block;
+    margin-right: 6px;
+    color: var(--texto-suave);
+    font-weight: bold;
+}
+
+input.importe {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}
+
+input.importe-total {
+    color: var(--dorado);
+    font-weight: bold;
+}
+
 .total-compra {
     margin: 16px 0 4px 0;
     color: var(--dorado);
@@ -505,6 +571,15 @@ table.tabla-datos tr:nth-child(even) td {
 
 table.tabla-datos tr:hover td {
     background: rgba(253, 187, 50, 0.10);
+}
+
+/* Filas de vuelto (montos negativos). El color se define por tema mas arriba. */
+table.tabla-datos tr.fila-negativa td,
+table.tabla-datos tr.fila-negativa:nth-child(even) td,
+table.tabla-datos tr.fila-negativa:hover td {
+    background: var(--vuelto-fondo);
+    color: var(--vuelto-texto);
+    font-weight: bold;
 }
 
 .tabla-scroll {
