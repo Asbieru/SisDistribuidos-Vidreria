@@ -89,8 +89,6 @@
                         <div class="acceso-acciones">
                             <asp:Button ID="btnIngresar" runat="server" CssClass="boton boton-primario"
                                 Text="Ingresar" OnClick="btnIngresar_Click" />
-                            <asp:Button ID="btnSalir" runat="server" CssClass="boton boton-secundario"
-                                Text="Salir" OnClick="btnSalir_Click" CausesValidation="False" />
                         </div>
                     </td>
                 </tr>

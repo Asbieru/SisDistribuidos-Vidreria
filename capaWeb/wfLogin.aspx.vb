@@ -187,9 +187,4 @@ Partial Class wfLogin
         End Try
     End Sub
 
-    Protected Sub btnSalir_Click(sender As Object, e As EventArgs)
-        Session.Clear()
-        Session.Abandon()
-        Response.Redirect("~/wfLogin.aspx?salir=1")
-    End Sub
 End Class
