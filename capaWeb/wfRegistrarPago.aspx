@@ -97,6 +97,9 @@
                 </tr>
             </table>
 
+            <asp:Label ID="lblAvisoPagado" runat="server" CssClass="mensaje-info" Visible="False"
+                Text="El pedido ya está pagado en su totalidad. Puede editar o eliminar los pagos registrados, pero no registrar nuevos montos." />
+
             <div class="acciones">
                 <asp:Button ID="btnGuardarPago" runat="server" CssClass="boton boton-primario"
                     Text="Guardar pago" OnClick="btnGuardarPago_Click" />

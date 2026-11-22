@@ -56,10 +56,11 @@ Public Class InventarioPieza
 
     Private Function Ingresar(idVariante As Integer, anchoCm As Decimal?, altoCm As Decimal?, largoCm As Decimal?, origen As String,
                               idCompraDetalle As Integer?, idPiezaOrigen As Integer?, idUsuario As Integer?, observacion As String) As Integer
+        ' fecha NULL -> el SP usa dbo.fn_hora_peru() (hora de Lima, UTC-5).
         Dim dt As DataTable = objMan.listarProcedimiento("sp_inv_ingresar_pieza", New Dictionary(Of String, Object) From {
             {"id_variante", idVariante}, {"ancho_cm", anchoCm}, {"alto_cm", altoCm}, {"largo_cm", largoCm},
             {"origen", origen}, {"id_compra_detalle", idCompraDetalle}, {"id_pieza_origen", idPiezaOrigen},
-            {"id_usuario", idUsuario}, {"observacion", Vacio(observacion)}, {"fecha", DateTime.Now}})
+            {"id_usuario", idUsuario}, {"observacion", Vacio(observacion)}, {"fecha", Nothing}})
         Return CInt(dt.Rows(0)("id_pieza"))
     End Function
 

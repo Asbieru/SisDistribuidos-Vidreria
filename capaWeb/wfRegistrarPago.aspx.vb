@@ -1,7 +1,6 @@
 ﻿Imports System.Collections.Generic
 Imports System.Data
 Imports System.Globalization
-Imports capaNegocio
 
 Partial Class wfRegistrarPago
     Inherits System.Web.UI.Page
@@ -53,6 +52,18 @@ Partial Class wfRegistrarPago
         End Set
     End Property
 
+    ' Total pagado leido en ActualizarEstado. Se usa para decidir si el
+    ' formulario de nuevo pago debe quedar bloqueado.
+    Private Property PagadoActual As Decimal
+        Get
+            If ViewState("pagadoActual") Is Nothing Then Return 0D
+            Return Convert.ToDecimal(ViewState("pagadoActual"))
+        End Get
+        Set(value As Decimal)
+            ViewState("pagadoActual") = value
+        End Set
+    End Property
+
     ' Resultado ya filtrado/ordenado de la grilla; se conserva para paginar sin
     ' volver a consultar la base de datos en cada cambio de pagina.
     Private Property PedidosFiltrados As DataTable
@@ -96,6 +107,7 @@ Partial Class wfRegistrarPago
                 pnlBusqueda.Visible = False
                 pnlProceso.Visible = True
                 ActualizarVistaVuelto()
+                AplicarRestriccionPago()
             Else
                 pnlBusqueda.Visible = True
                 pnlProceso.Visible = False
@@ -201,6 +213,7 @@ Partial Class wfRegistrarPago
 
         IdPedidoSeleccionado = id
         TotalPedido = 0D
+        PagadoActual = 0D
         IdDetalleEditando = 0
         MontoEditando = 0D
 
@@ -230,6 +243,7 @@ Partial Class wfRegistrarPago
     Protected Sub btnCambiarPedido_Click(sender As Object, e As EventArgs)
         IdPedidoSeleccionado = 0
         TotalPedido = 0D
+        PagadoActual = 0D
         IdDetalleEditando = 0
         MontoEditando = 0D
         lblMensaje.Text = ""
@@ -288,6 +302,7 @@ Partial Class wfRegistrarPago
 
         SincronizarEstadoPedido()
         ActualizarEstado()
+        AplicarRestriccionPago()
     End Sub
 
     ' Refleja en pedidos.estado la suma de pagos (nunca toca CANCELADO)
@@ -311,12 +326,13 @@ Partial Class wfRegistrarPago
             MostrarMensaje(ex.Message, "mensaje-error")
         End Try
 
+        PagadoActual = pagado
         lblPagado.Text = "S/. " & FormatoNumero(pagado)
 
         If pagado <= 0D Then
             lblEstado.Text = "Pendiente"
             lblEstado.CssClass = "estado-pendiente"
-        ElseIf TotalPedido > 0D AndAlso pagado = TotalPedido Then
+        ElseIf TotalPedido > 0D AndAlso pagado >= TotalPedido Then
             lblEstado.Text = "Pagado"
             lblEstado.CssClass = "estado-pagado"
         Else
@@ -325,6 +341,33 @@ Partial Class wfRegistrarPago
         End If
 
         ActualizarVistaVuelto()
+    End Sub
+
+    ' El pedido ya cubrio su total. Se usa para impedir nuevos ingresos de dinero,
+    ' sin quitar las acciones de edicion/eliminacion de los pagos existentes.
+    Private Function PedidoCompletamentePagado() As Boolean
+        Return TotalPedido > 0D AndAlso PagadoActual >= TotalPedido
+    End Function
+
+    ' Con el pedido pagado solo se habilita el formulario si se esta editando
+    ' un detalle existente; nunca para registrar un pago nuevo.
+    Private Sub AplicarRestriccionPago()
+        Dim bloquearNuevoPago As Boolean = IdPedidoSeleccionado > 0 AndAlso
+                                           PedidoCompletamentePagado() AndAlso
+                                           IdDetalleEditando = 0
+
+        lblAvisoPagado.Visible = bloquearNuevoPago
+        txtCantidad.Enabled = Not bloquearNuevoPago
+        ddlMetodoPago.Enabled = Not bloquearNuevoPago
+        btnGuardarPago.Enabled = Not bloquearNuevoPago
+
+        If bloquearNuevoPago Then
+            txtCantidad.Text = ""
+            lblVuelto.Text = ""
+            filaMetodoVuelto.Style("display") = "none"
+            btnGuardarPago.Text = "Guardar pago"
+            btnCancelarEdicion.Visible = False
+        End If
     End Sub
 
     Protected Sub ddlMetodoPago_SelectedIndexChanged(sender As Object, e As EventArgs)
@@ -419,6 +462,23 @@ Partial Class wfRegistrarPago
             Return
         End If
 
+        ' Un pedido pagado no admite mas dinero. La edicion de un detalle
+        ' existente sigue permitida, pero no puede aumentar el total pagado.
+        Dim saldo As Decimal = SaldoPendiente()
+        If IdDetalleEditando = 0 Then
+            If saldo <= 0D Then
+                PagadoActual = TotalPedido - saldo
+                MostrarMensaje("El pedido ya está pagado en su totalidad. No se pueden registrar nuevos pagos; " &
+                               "puede editar o eliminar los pagos registrados.", "mensaje-error")
+                AplicarRestriccionPago()
+                Return
+            End If
+        ElseIf monto > saldo + 0.01D Then
+            MostrarMensaje("El monto supera el saldo del pago que se está editando. " &
+                           "No puede ingresar dinero adicional.", "mensaje-error")
+            Return
+        End If
+
         Dim vuelto As Decimal = VueltoDeEntrada()
         If vuelto > 0D AndAlso IdMetodoVueltoSeleccionado() <= 0 Then
             MostrarMensaje("Seleccione el método con el que se registrará el vuelto.", "mensaje-error")
@@ -482,6 +542,7 @@ Partial Class wfRegistrarPago
 
                     txtCantidad.Text = FormatoNumero(Math.Abs(MontoEditando))
                     ActualizarVistaVuelto()
+                    AplicarRestriccionPago()
 
                     btnGuardarPago.Text = "Actualizar pago"
                     btnCancelarEdicion.Visible = True
@@ -541,6 +602,7 @@ Partial Class wfRegistrarPago
 
     Protected Sub btnCancelarEdicion_Click(sender As Object, e As EventArgs)
         LimpiarEntrada()
+        AplicarRestriccionPago()
         MostrarMensaje("", "")
     End Sub
 

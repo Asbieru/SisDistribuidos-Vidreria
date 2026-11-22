@@ -1,5 +1,4 @@
 ﻿Imports System.Data
-Imports capaNegocio
 
 ' Stock de productos por caja o unidad y registro de entradas, salidas y ajustes
 ' (todo pasa por sp_inv_mover_cajas, que valida el stock y lo deja en el kardex).

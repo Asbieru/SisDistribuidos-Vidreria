@@ -7,6 +7,11 @@
                 return (texto || '').replace(/^\s+|\s+$/g, '').toLowerCase();
             }
 
+            function numero(texto) {
+                var n = parseFloat((texto || '').replace(',', '.'));
+                return isNaN(n) ? null : n;
+            }
+
             function mostrar(id, visible) {
                 var elemento = document.getElementById(id);
                 if (elemento) elemento.style.display = visible ? '' : 'none';
@@ -39,8 +44,12 @@
                     if (texto === '') return;
 
                     // Coincidencia exacta: dispara el postback para los combos en cascada.
+                    // Tambien acepta decimales con coma ("0,30" == "0.3").
+                    var n = numero(caja.value);
                     for (i = 0; i < combo.options.length; i++) {
-                        if (normalizar(combo.options[i].text) === texto) {
+                        var opcion = normalizar(combo.options[i].text);
+                        var nOpcion = numero(combo.options[i].text);
+                        if (opcion === texto || (n !== null && nOpcion !== null && n === nOpcion)) {
                             if (i !== combo.selectedIndex) {
                                 combo.selectedIndex = i;
                                 if (typeof combo.dispatchEvent === 'function') {

@@ -25,4 +25,5 @@
       <Property Name="VWDPort" Value="&quot;49772&quot;" />
     </Properties>
   </Project>
+  <Project Path="capaWSLibrerias/capaWSLibrerias.vbproj" Id="fe94236d-0263-4940-8457-e4254a42bbe3" />
 </Solution>

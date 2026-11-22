@@ -1,6 +1,5 @@
 Imports System.Data
 Imports System.Globalization
-Imports capaNegocio
 
 Partial Class wfListadoCompras
     Inherits System.Web.UI.Page

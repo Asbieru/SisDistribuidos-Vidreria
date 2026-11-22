@@ -3,7 +3,6 @@ Imports System.Data
 Imports System.Globalization
 Imports System.Text
 Imports System.Web.UI.HtmlControls
-Imports capaNegocio
 
 Partial Class wfRegistrarPedido
     Inherits System.Web.UI.Page
@@ -158,8 +157,30 @@ Partial Class wfRegistrarPedido
     Private Sub SincronizarCombos()
         SincronizarCombo(txtCliente, ddlCliente)
         SincronizarCombo(txtProducto, ddlProducto)
-        SincronizarCombo(txtEspesor, ddlEspesor)
+        SincronizarComboNumerico(txtEspesor, ddlEspesor)
         SincronizarCombo(txtColorAluminio, ddlColorAluminio)
+    End Sub
+
+    ' El espesor se escribe con punto o con coma (0.3 / 0,30).
+    Private Sub SincronizarComboNumerico(caja As TextBox, combo As DropDownList)
+        If combo.Items.Count = 0 Then Return
+        Dim texto As String = If(caja.Text, "").Trim()
+        If texto.Length = 0 Then
+            combo.SelectedIndex = 0
+            Return
+        End If
+
+        Dim valor As Decimal
+        If TryParseDecimal(texto, valor) Then
+            For i As Integer = 0 To combo.Items.Count - 1
+                Dim valorItem As Decimal
+                If TryParseDecimal(combo.Items(i).Value, valorItem) AndAlso valorItem = valor Then
+                    combo.SelectedIndex = i
+                    Return
+                End If
+            Next
+        End If
+        SincronizarCombo(caja, combo)
     End Sub
 
     Private Sub SincronizarCombo(caja As TextBox, combo As DropDownList)
@@ -378,7 +399,7 @@ Partial Class wfRegistrarPedido
     End Sub
 
     Protected Sub ddlEspesor_SelectedIndexChanged(sender As Object, e As EventArgs)
-        SincronizarCombo(txtEspesor, ddlEspesor)
+        SincronizarComboNumerico(txtEspesor, ddlEspesor)
         CalcularVistaItem(True)
     End Sub
 
@@ -408,9 +429,11 @@ Partial Class wfRegistrarPedido
 
     Private Function EspesorSeleccionado() As Decimal?
         Dim valor As Decimal
-        If Decimal.TryParse(ddlEspesor.SelectedValue, NumberStyles.Number, CultureInfo.InvariantCulture, valor) AndAlso valor > 0D Then
-            Return valor
-        End If
+        If TryParseDecimal(ddlEspesor.SelectedValue, valor) AndAlso valor > 0D Then Return valor
+
+        ' Si el usuario escribio el espesor pero aun no se disparo el postback
+        ' del combo oculto, se toma directamente del cuadro de texto.
+        If TryParseDecimal(txtEspesor.Text, valor) AndAlso valor > 0D Then Return valor
         Return Nothing
     End Function
 
@@ -916,10 +939,10 @@ Partial Class wfRegistrarPedido
 
         Dim espesorItem As Decimal? = ADecimalNulo(fila("espesor"))
         If espesorItem.HasValue Then
-            Dim textoEspesor As String = espesorItem.Value.ToString("0.####", CultureInfo.InvariantCulture)
             For Each item As ListItem In ddlEspesor.Items
-                If item.Value = textoEspesor Then
-                    ddlEspesor.SelectedValue = textoEspesor
+                Dim valorItem As Decimal
+                If TryParseDecimal(item.Value, valorItem) AndAlso valorItem = espesorItem.Value Then
+                    ddlEspesor.SelectedValue = item.Value
                     Exit For
                 End If
             Next
@@ -1282,6 +1305,7 @@ Partial Class wfRegistrarPedido
             End If
 
             AsignarSiViene("espesor", txtEspesor)
+            SincronizarComboNumerico(txtEspesor, ddlEspesor)
             AsignarSiViene("ancho", txtAncho)
             AsignarSiViene("alto", txtAlto)
             AsignarSiViene("largo", txtLargo)

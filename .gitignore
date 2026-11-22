@@ -375,8 +375,21 @@ capaDatos/clsConectaBD.vb
 # Pruebas locales
 /pruebas/
 
+# ------------------------------------------------------------
+# Servicio web capaWSLibrerias: su bin/ contiene copias de
+# capaDatos.dll y capaNegocio.dll. No se versiona ningun bin.
+# ------------------------------------------------------------
+capaWSLibrerias/bin/
+capaWSLibrerias/obj/
+
 # No distribuir la DLL de acceso a datos: contiene la cadena de conexion
 # con las credenciales de la BD. Se regenera al compilar capaDatos.
-capaDatos.dll
-# La DLL de negocio tambien es un artefacto de compilacion.
-capaNegocio.dll
+# Aplica tambien a las copias dentro de cualquier bin/ (capaWeb, WS, etc.).
+**/capaDatos.dll
+**/capaDatos.pdb
+**/capaDatos.xml
+# La DLL de negocio tambien es un artefacto de compilacion y referencia
+# a la capa de datos; tampoco se versiona.
+**/capaNegocio.dll
+**/capaNegocio.pdb
+**/capaNegocio.xml

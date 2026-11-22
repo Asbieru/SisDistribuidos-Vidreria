@@ -1,5 +1,4 @@
 ﻿Imports System.Data
-Imports capaNegocio
 
 Partial Class wfRegistrarProveedores
     Inherits System.Web.UI.Page

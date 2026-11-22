@@ -1,6 +1,5 @@
 ﻿Imports System.Data
 Imports System.Globalization
-Imports capaNegocio
 
 ' Kardex: movimientos del inventario (vw_inv_movimientos) por fechas y producto.
 Partial Class wfVerKardex

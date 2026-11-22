@@ -1,5 +1,4 @@
 ﻿Imports System.Collections.Generic
-Imports capaNegocio
 
 Partial Class plantilla
     Inherits System.Web.UI.MasterPage

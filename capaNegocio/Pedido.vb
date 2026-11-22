@@ -150,19 +150,21 @@ Public Class Pedido
 
     ' Marca el pedido como terminado (entregado/instalado), sin importar el pago
     Public Sub Terminar(idPedido As Integer, Optional idUsuario As Integer? = Nothing)
+        ' Se envia fecha NULL para que el SP use dbo.fn_hora_peru() (hora de Lima, UTC-5).
         Dim parametros As New Dictionary(Of String, Object) From {
             {"id_pedido", idPedido},
             {"id_usuario", If(idUsuario.HasValue, CObj(idUsuario.Value), Nothing)},
-            {"fecha", DateTime.Now}}
+            {"fecha", Nothing}}
         objMan.ejecutarProcedimiento("sp_ped_terminar", parametros)
     End Sub
 
     ' Termina un solo item (solo si esta EN_PROCESO, con todos sus materiales a mano)
     Public Sub TerminarItem(idItem As Integer, Optional idUsuario As Integer? = Nothing)
+        ' Se envia fecha NULL para que el SP use dbo.fn_hora_peru() (hora de Lima, UTC-5).
         Dim parametros As New Dictionary(Of String, Object) From {
             {"id_item", idItem},
             {"id_usuario", If(idUsuario.HasValue, CObj(idUsuario.Value), Nothing)},
-            {"fecha", DateTime.Now}}
+            {"fecha", Nothing}}
         objMan.ejecutarProcedimiento("sp_ped_terminar_item", parametros)
     End Sub
 
@@ -236,8 +238,9 @@ Public Class Pedido
         Dim pMedidas As New SqlParameter("@Medidas", SqlDbType.Structured) With {.TypeName = "dbo.TVP_PedidoMedida", .Value = tblMedidas}
         Dim pCliente As New SqlParameter("@id_cliente", idCliente)
         Dim pUsuario As New SqlParameter("@id_usuario", idUsuario)
-        ' La fecha del pedido la pone la aplicacion (no el servidor)
-        Dim pFecha As New SqlParameter("@fecha", SqlDbType.DateTime2) With {.Value = DateTime.Now}
+        ' NULL -> sp_ped_registrar usa dbo.fn_hora_peru() (hora de Lima, UTC-5).
+        ' DateTime.Now aqui seria la hora del servidor de hosting (somee, UTC).
+        Dim pFecha As New SqlParameter("@fecha", SqlDbType.DateTime2) With {.Value = DBNull.Value}
         Dim pIdPedido As New SqlParameter("@id_pedido", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
 
         objMan.EjecutarProcedimientoConParametros("sp_ped_registrar",

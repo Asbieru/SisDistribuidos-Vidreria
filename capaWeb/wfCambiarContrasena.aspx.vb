@@ -1,5 +1,4 @@
-﻿Imports capaNegocio
-
+﻿
 Partial Class wfCambiarContrasena
     Inherits System.Web.UI.Page
 

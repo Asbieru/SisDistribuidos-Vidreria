@@ -1,6 +1,5 @@
 ﻿Imports System.Data
 Imports System.Globalization
-Imports capaNegocio
 
 ' Piezas de vidrio y aluminio (vw_inv_piezas): consulta, cambio de estado y corte.
 Partial Class wfVerPiezas

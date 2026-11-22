@@ -1,6 +1,5 @@
 ﻿Imports System.Data
 Imports System.Globalization
-Imports capaNegocio   ' viene de capaNegocio.dll (carpeta Bin del sitio)
 
 ' LISTADO DE PEDIDOS: versión web de frmListadoPedido (capaPresentacion).
 ' Buscar por cliente / usuario / fecha, ver el detalle de un pedido y cancelarlo.

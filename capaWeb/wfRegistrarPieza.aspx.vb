@@ -1,6 +1,5 @@
 ﻿Imports System.Data
 Imports System.Globalization
-Imports capaNegocio
 
 Partial Class wfRegistrarPieza
     Inherits System.Web.UI.Page

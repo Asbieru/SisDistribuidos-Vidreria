@@ -1,5 +1,4 @@
 ﻿Imports System.Data
-Imports capaNegocio
 
 ' Existencias por variante (vw_inv_resumen) y mantenimiento del stock mínimo.
 Partial Class wfListadoInventario

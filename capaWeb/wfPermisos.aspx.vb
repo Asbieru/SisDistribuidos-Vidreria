@@ -1,6 +1,5 @@
 ﻿Imports System.Data
 Imports System.Collections.Generic
-Imports capaNegocio
 
 ' MANTENIMIENTO: permisos de cada usuario. Es la versión web de frmPermisos (capaPresentacion).
 ' Solo entra quien tiene el permiso PERMISOS (lo controla plantilla.master).

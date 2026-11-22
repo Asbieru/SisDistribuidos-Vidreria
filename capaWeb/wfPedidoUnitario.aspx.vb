@@ -1,6 +1,5 @@
 ﻿Imports System.Data
 Imports System.Globalization
-Imports capaNegocio   ' capaNegocio.dll desde la carpeta Bin del sitio
 
 ' Equivalente web de frmPedidoUnitario (capaPresentacion): cabecera del pedido,
 ' una pestaña por item, materiales de cada item y las mismas acciones.
