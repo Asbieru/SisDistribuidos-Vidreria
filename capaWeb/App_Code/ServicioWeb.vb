@@ -9,8 +9,35 @@ Public NotInheritable Class ServicioWeb
     Private Sub New()
     End Sub
 
+    Private Const UrlServicio As String = "http://www.vidrieriapercylibrerias.somee.com/WSLibrerias.asmx"
+
+    ' En somee el Web.config publicado a veces no trae system.serviceModel.
+    ' Se intenta el endpoint configurado y, si no existe, se crea por codigo
+    ' con los mismos valores para no depender del archivo de configuracion.
+    Private Shared Function CrearCliente() As libreriaVidrieria.WSLibreriasSoapClient
+        Try
+            Return New libreriaVidrieria.WSLibreriasSoapClient("WSLibreriasSoap")
+        Catch ex As System.InvalidOperationException
+            Dim binding As New System.ServiceModel.BasicHttpBinding()
+            binding.MaxReceivedMessageSize = 10485760
+            binding.MaxBufferSize = 10485760
+            binding.MaxBufferPoolSize = 10485760
+            binding.OpenTimeout = TimeSpan.FromMinutes(1)
+            binding.CloseTimeout = TimeSpan.FromMinutes(1)
+            binding.SendTimeout = TimeSpan.FromMinutes(5)
+            binding.ReceiveTimeout = TimeSpan.FromMinutes(5)
+            binding.ReaderQuotas.MaxDepth = 64
+            binding.ReaderQuotas.MaxStringContentLength = 10485760
+            binding.ReaderQuotas.MaxArrayLength = 10485760
+            binding.ReaderQuotas.MaxBytesPerRead = 10485760
+            binding.ReaderQuotas.MaxNameTableCharCount = 10485760
+            Return New libreriaVidrieria.WSLibreriasSoapClient(binding,
+                New System.ServiceModel.EndpointAddress(UrlServicio))
+        End Try
+    End Function
+
     Public Shared Function Ejecutar(clase As String, metodo As String, parametros As Object()) As String
-        Dim cliente As New libreriaVidrieria.WSLibreriasSoapClient("WSLibreriasSoap")
+        Dim cliente As libreriaVidrieria.WSLibreriasSoapClient = CrearCliente()
         Try
             Dim jsonParametros As String = "[]"
             If parametros IsNot Nothing AndAlso parametros.Length > 0 Then
