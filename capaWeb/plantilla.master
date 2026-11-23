@@ -9,6 +9,39 @@
     <title><%= Page.Title %></title>
     <link rel="icon" href="recursos/favicon.ico" type="image/x-icon" />
     <link href="recursos/estilos/sistema.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript">
+        (function () {
+            // El fondo de la cabecera depende del tema. Se aplica por JavaScript
+            // para que el cambio surja también cuando el tema viene de la sesión.
+            var fondos = {
+                'tema-claro': '<%= ResolveUrl("~/recursos/fondos/fondoInicioClaro.jpg") %>',
+                'tema-oscuro': '<%= ResolveUrl("~/recursos/fondos/fondoInicioOscuro.jpg") %>',
+                'tema-azulclaro': '<%= ResolveUrl("~/recursos/fondos/fondoInicioClaro.jpg") %>',
+                'tema-azuloscuro': '<%= ResolveUrl("~/recursos/fondos/fondoInicioOscuro.jpg") %>'
+            };
+
+            function aplicarFondoTema() {
+                var cuerpo = document.body;
+                if (!cuerpo) return;
+
+                var tema = 'tema-oscuro';
+                for (var i = 0; i < cuerpo.classList.length; i++) {
+                    if (fondos[cuerpo.classList[i]]) {
+                        tema = cuerpo.classList[i];
+                        break;
+                    }
+                }
+
+                cuerpo.style.setProperty('--imagen-cabecera', "url('" + fondos[tema] + "')");
+            }
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', aplicarFondoTema);
+            } else {
+                aplicarFondoTema();
+            }
+        })();
+    </script>
     <asp:ContentPlaceHolder ID="head" runat="server">
     </asp:ContentPlaceHolder>
 </head>
@@ -21,7 +54,10 @@
                         <table class="cabecera-tabla" cellpadding="0" cellspacing="0">
                             <tr>
                                 <td class="cabecera-logo">
-                                    <img src="recursos/logo.png" alt="Logo SISCORP" />
+                                    <asp:HyperLink ID="lnkLogo" runat="server" NavigateUrl="~/wfInicio.aspx"
+                                        CssClass="cabecera-logo-link">
+                                        <img src="recursos/logo.png" alt="Ir al inicio" />
+                                    </asp:HyperLink>
                                 </td>
                                 <td class="cabecera-texto">
                                     <h1>SISCORP</h1>
@@ -36,81 +72,125 @@
                         <div class="menu-titulo">MENÚ DE OPCIONES</div>
 
                         <div class="menu-grupo">
-                            <div class="menu-grupo-titulo">Principal</div>
-                            <asp:HyperLink ID="lnkInicio" runat="server" NavigateUrl="~/wfInicio.aspx"
-                                CssClass="menu-opcion">Inicio</asp:HyperLink>
+                            <asp:LinkButton ID="lnkGrupoPrincipal" runat="server"
+                                CssClass="menu-grupo-titulo menu-grupo-toggle" CommandArgument="principal"
+                                OnCommand="ToggleMenuGroup">Principal</asp:LinkButton>
+                            <asp:Panel ID="pnlPrincipalItems" runat="server" CssClass="menu-grupo-contenido">
+                                <asp:HyperLink ID="lnkInicio" runat="server" NavigateUrl="~/wfInicio.aspx"
+                                    CssClass="menu-opcion">Inicio</asp:HyperLink>
+                            </asp:Panel>
                         </div>
 
                         <asp:Panel ID="pnlProcesos" runat="server" CssClass="menu-grupo">
-                            <div class="menu-grupo-titulo">Procesos</div>
-                            <asp:HyperLink ID="lnkRegistrarCompra" runat="server"
-                                NavigateUrl="~/wfRegistrarCompras.aspx"
-                                CssClass="menu-opcion">Registrar Compra</asp:HyperLink>
-                            <asp:HyperLink ID="lnkRegistrarPedido" runat="server"
-                                NavigateUrl="~/wfRegistrarPedido.aspx"
-                                CssClass="menu-opcion">Registrar Pedido</asp:HyperLink>
-                            <asp:HyperLink ID="lnkRegistrarPago" runat="server"
-                                NavigateUrl="~/wfRegistrarPago.aspx"
-                                CssClass="menu-opcion">Registro de Pago</asp:HyperLink>
-                            <asp:HyperLink ID="lnkRegistrarPieza" runat="server"
-                                NavigateUrl="~/wfRegistrarPieza.aspx"
-                                CssClass="menu-opcion">Registrar Pieza</asp:HyperLink>
+                            <asp:LinkButton ID="lnkGrupoProcesos" runat="server"
+                                CssClass="menu-grupo-titulo menu-grupo-toggle" CommandArgument="procesos"
+                                OnCommand="ToggleMenuGroup">Procesos</asp:LinkButton>
+                            <asp:Panel ID="pnlProcesosItems" runat="server" CssClass="menu-grupo-contenido">
+                                <asp:HyperLink ID="lnkRegistrarCompra" runat="server"
+                                    NavigateUrl="~/wfRegistrarCompras.aspx"
+                                    CssClass="menu-opcion">Registrar Compra</asp:HyperLink>
+                                <asp:HyperLink ID="lnkRegistrarPedido" runat="server"
+                                    NavigateUrl="~/wfRegistrarPedido.aspx"
+                                    CssClass="menu-opcion">Registrar Pedido</asp:HyperLink>
+                                <asp:HyperLink ID="lnkRegistrarPago" runat="server"
+                                    NavigateUrl="~/wfRegistrarPago.aspx"
+                                    CssClass="menu-opcion">Registrar Pago</asp:HyperLink>
+                                <asp:HyperLink ID="lnkRegistrarPieza" runat="server"
+                                    NavigateUrl="~/wfRegistrarPieza.aspx"
+                                    CssClass="menu-opcion">Registrar Pieza</asp:HyperLink>
+                            </asp:Panel>
                         </asp:Panel>
 
                         <asp:Panel ID="pnlListados" runat="server" CssClass="menu-grupo">
-                            <div class="menu-grupo-titulo">Mostrar Listado</div>
-                            <asp:HyperLink ID="lnkCompras" runat="server"
-                                NavigateUrl="~/wfListadoCompras.aspx"
-                                CssClass="menu-opcion">De Compras</asp:HyperLink>
-                            <asp:HyperLink ID="lnkPedidos" runat="server"
-                                NavigateUrl="~/wfListadoPedidos.aspx"
-                                CssClass="menu-opcion">De Pedidos</asp:HyperLink>
-                            <asp:HyperLink ID="lnkInventario" runat="server"
-                                NavigateUrl="~/wfListadoInventario.aspx"
-                                CssClass="menu-opcion">De Inventario</asp:HyperLink>
-                            <asp:HyperLink ID="lnkVentas" runat="server"
-                                NavigateUrl="~/wfListadoVentas.aspx"
-                                CssClass="menu-opcion">De Ventas</asp:HyperLink>
+                            <asp:LinkButton ID="lnkGrupoListados" runat="server"
+                                CssClass="menu-grupo-titulo menu-grupo-toggle" CommandArgument="listados"
+                                OnCommand="ToggleMenuGroup">Mostrar Listado</asp:LinkButton>
+                            <asp:Panel ID="pnlListadosItems" runat="server" CssClass="menu-grupo-contenido">
+                                <asp:HyperLink ID="lnkCompras" runat="server"
+                                    NavigateUrl="~/wfListadoCompras.aspx"
+                                    CssClass="menu-opcion">De Compras</asp:HyperLink>
+                                <asp:HyperLink ID="lnkPedidos" runat="server"
+                                    NavigateUrl="~/wfListadoPedidos.aspx"
+                                    CssClass="menu-opcion">De Pedidos</asp:HyperLink>
+                                <asp:HyperLink ID="lnkInventario" runat="server"
+                                    NavigateUrl="~/wfListadoInventario.aspx"
+                                    CssClass="menu-opcion">De Inventario</asp:HyperLink>
+                                <asp:HyperLink ID="lnkVentas" runat="server"
+                                    NavigateUrl="~/wfListadoVentas.aspx"
+                                    CssClass="menu-opcion">De Ventas</asp:HyperLink>
+                            </asp:Panel>
+                        </asp:Panel>
+
+                        <asp:Panel ID="pnlReportes" runat="server" CssClass="menu-grupo">
+                            <asp:LinkButton ID="lnkGrupoReportes" runat="server"
+                                CssClass="menu-grupo-titulo menu-grupo-toggle" CommandArgument="reportes"
+                                OnCommand="ToggleMenuGroup">Reportes</asp:LinkButton>
+                            <asp:Panel ID="pnlReportesItems" runat="server" CssClass="menu-grupo-contenido">
+                                <asp:HyperLink ID="lnkReporteFlujo" runat="server"
+                                    NavigateUrl="~/wfReporteFlujoInventario.aspx"
+                                    CssClass="menu-opcion">Flujo de Inventario</asp:HyperLink>
+                                <asp:HyperLink ID="lnkReportePedidosMes" runat="server"
+                                    NavigateUrl="~/wfReportePedidosMes.aspx"
+                                    CssClass="menu-opcion">Pedidos del Mes</asp:HyperLink>
+                                <asp:HyperLink ID="lnkReporteCompras" runat="server"
+                                    NavigateUrl="~/wfReporteComprasTiempo.aspx"
+                                    CssClass="menu-opcion">Compras por Tiempo</asp:HyperLink>
+                                <asp:HyperLink ID="lnkReportePendientes" runat="server"
+                                    NavigateUrl="~/wfReportePendientes.aspx"
+                                    CssClass="menu-opcion">Pendientes y Pagos</asp:HyperLink>
+                            </asp:Panel>
                         </asp:Panel>
 
                         <asp:Panel ID="pnlMantenimiento" runat="server" CssClass="menu-grupo">
-                            <div class="menu-grupo-titulo">Mantenimiento</div>
-                            <asp:HyperLink ID="lnkUsuarios" runat="server"
-                                NavigateUrl="~/wfRegistrarUsuarios.aspx"
-                                CssClass="menu-opcion">Usuarios</asp:HyperLink>
-                            <asp:HyperLink ID="lnkClientes" runat="server"
-                                NavigateUrl="~/wfRegistrarClientes.aspx"
-                                CssClass="menu-opcion">Clientes</asp:HyperLink>
-                            <asp:HyperLink ID="lnkProveedores" runat="server"
-                                NavigateUrl="~/wfRegistrarProveedores.aspx"
-                                CssClass="menu-opcion">Proveedores</asp:HyperLink>
-                            <asp:HyperLink ID="lnkProductos" runat="server"
-                                NavigateUrl="~/wfRegistrarProductos.aspx"
-                                CssClass="menu-opcion">Productos</asp:HyperLink>
-                            <asp:HyperLink ID="lnkPermisos" runat="server"
-                                NavigateUrl="~/wfPermisos.aspx"
-                                CssClass="menu-opcion">Permisos</asp:HyperLink>
+                            <asp:LinkButton ID="lnkGrupoMantenimiento" runat="server"
+                                CssClass="menu-grupo-titulo menu-grupo-toggle" CommandArgument="mantenimiento"
+                                OnCommand="ToggleMenuGroup">Mantenimiento</asp:LinkButton>
+                            <asp:Panel ID="pnlMantenimientoItems" runat="server" CssClass="menu-grupo-contenido">
+                                <asp:HyperLink ID="lnkUsuarios" runat="server"
+                                    NavigateUrl="~/wfRegistrarUsuarios.aspx"
+                                    CssClass="menu-opcion">Usuarios</asp:HyperLink>
+                                <asp:HyperLink ID="lnkClientes" runat="server"
+                                    NavigateUrl="~/wfRegistrarClientes.aspx"
+                                    CssClass="menu-opcion">Clientes</asp:HyperLink>
+                                <asp:HyperLink ID="lnkProveedores" runat="server"
+                                    NavigateUrl="~/wfRegistrarProveedores.aspx"
+                                    CssClass="menu-opcion">Proveedores</asp:HyperLink>
+                                <asp:HyperLink ID="lnkProductos" runat="server"
+                                    NavigateUrl="~/wfRegistrarProductos.aspx"
+                                    CssClass="menu-opcion">Productos</asp:HyperLink>
+                                <asp:HyperLink ID="lnkPermisos" runat="server"
+                                    NavigateUrl="~/wfPermisos.aspx"
+                                    CssClass="menu-opcion">Permisos</asp:HyperLink>
+                            </asp:Panel>
                         </asp:Panel>
 
                         <div class="menu-grupo">
-                            <div class="menu-grupo-titulo">Configuración</div>
-                            <asp:HyperLink ID="lnkCambiarContrasena" runat="server"
-                                NavigateUrl="~/wfCambiarContrasena.aspx"
-                                CssClass="menu-opcion">Modificar Contraseña</asp:HyperLink>
-                            <asp:LinkButton ID="lnkCerrarSesion" runat="server" CssClass="menu-opcion"
-                                OnClick="CerrarSesion_Click">Cerrar Sesión</asp:LinkButton>
+                            <asp:LinkButton ID="lnkGrupoConfiguracion" runat="server"
+                                CssClass="menu-grupo-titulo menu-grupo-toggle" CommandArgument="configuracion"
+                                OnCommand="ToggleMenuGroup">Configuración</asp:LinkButton>
+                            <asp:Panel ID="pnlConfiguracionItems" runat="server" CssClass="menu-grupo-contenido">
+                                <asp:HyperLink ID="lnkCambiarContrasena" runat="server"
+                                    NavigateUrl="~/wfCambiarContrasena.aspx"
+                                    CssClass="menu-opcion">Modificar Contraseña</asp:HyperLink>
+                                <asp:LinkButton ID="lnkCerrarSesion" runat="server" CssClass="menu-opcion"
+                                    OnClick="CerrarSesion_Click">Cerrar Sesión</asp:LinkButton>
+                            </asp:Panel>
                         </div>
 
                         <div class="menu-grupo">
-                            <div class="menu-grupo-titulo">Tema</div>
-                            <asp:LinkButton ID="lnkClaro" runat="server" CssClass="menu-opcion"
-                                CommandArgument="CLARO" OnCommand="CambiarTema">Claro</asp:LinkButton>
-                            <asp:LinkButton ID="lnkOscuro" runat="server" CssClass="menu-opcion"
-                                CommandArgument="OSCURO" OnCommand="CambiarTema">Oscuro</asp:LinkButton>
-                            <asp:LinkButton ID="lnkAzulClaro" runat="server" CssClass="menu-opcion"
-                                CommandArgument="AZULCLARO" OnCommand="CambiarTema">Azul Claro</asp:LinkButton>
-                            <asp:LinkButton ID="lnkAzulOscuro" runat="server" CssClass="menu-opcion"
-                                CommandArgument="AZULOSCURO" OnCommand="CambiarTema">Azul Oscuro</asp:LinkButton>
+                            <asp:LinkButton ID="lnkGrupoTema" runat="server"
+                                CssClass="menu-grupo-titulo menu-grupo-toggle" CommandArgument="tema"
+                                OnCommand="ToggleMenuGroup">Tema</asp:LinkButton>
+                            <asp:Panel ID="pnlTemaItems" runat="server" CssClass="menu-grupo-contenido">
+                                <asp:LinkButton ID="lnkClaro" runat="server" CssClass="menu-opcion"
+                                    CommandArgument="CLARO" OnCommand="CambiarTema">Claro</asp:LinkButton>
+                                <asp:LinkButton ID="lnkOscuro" runat="server" CssClass="menu-opcion"
+                                    CommandArgument="OSCURO" OnCommand="CambiarTema">Oscuro</asp:LinkButton>
+                                <asp:LinkButton ID="lnkAzulClaro" runat="server" CssClass="menu-opcion"
+                                    CommandArgument="AZULCLARO" OnCommand="CambiarTema">Azul Claro</asp:LinkButton>
+                                <asp:LinkButton ID="lnkAzulOscuro" runat="server" CssClass="menu-opcion"
+                                    CommandArgument="AZULOSCURO" OnCommand="CambiarTema">Azul Oscuro</asp:LinkButton>
+                            </asp:Panel>
                         </div>
                     </td>
                     <td class="contenido">

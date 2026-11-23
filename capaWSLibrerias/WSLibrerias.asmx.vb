@@ -10,9 +10,9 @@ Imports capaNegocio
 ' Para permitir que se llame a este servicio web desde un script, usando ASP.NET AJAX, quite la marca de comentario de la linea siguiente.
 ' <System.Web.Script.Services.ScriptService()> _
 
-<System.Web.Services.WebService(Namespace:="http://tempuri.org/")> _
-<System.Web.Services.WebServiceBinding(ConformsTo:=WsiProfiles.BasicProfile1_1)> _
-<ToolboxItem(False)> _
+<System.Web.Services.WebService(Namespace:="http://tempuri.org/")>
+<System.Web.Services.WebServiceBinding(ConformsTo:=WsiProfiles.BasicProfile1_1)>
+<ToolboxItem(False)>
 Public Class WSLibrerias
     Inherits System.Web.Services.WebService
 
@@ -27,7 +27,7 @@ Public Class WSLibrerias
     Private ReadOnly objVariante As New ProductoVariante()
     Private ReadOnly objPermiso As New Permiso()
 
-    <WebMethod()> _
+    <WebMethod()>
     Public Function HelloWorld() As String
         Return "Hola a todos"
     End Function
@@ -36,7 +36,7 @@ Public Class WSLibrerias
     ' SESION
     ' ============================================================
 
-    <WebMethod()> _
+    <WebMethod()>
     Public Function IniciarSesion(usu As String, con As String) As String
         Dim ok As Boolean = False
         Dim idUsuario As Integer = 0
@@ -55,7 +55,7 @@ Public Class WSLibrerias
         Return JsonObjeto(datos)
     End Function
 
-    <WebMethod()> _
+    <WebMethod()>
     Public Function CambiarContrasena(usu As String, con As String) As Boolean
         Try
             objUsuario.cambiarContraseña(usu, con)
@@ -65,7 +65,7 @@ Public Class WSLibrerias
         End Try
     End Function
 
-    <WebMethod()> _
+    <WebMethod()>
     Public Function ObtenerUsuario(idUsuario As Integer) As String
         Return JsonDataTable(objUsuario.ObtenerUsuario(idUsuario))
     End Function
@@ -74,22 +74,22 @@ Public Class WSLibrerias
     ' CLIENTES
     ' ============================================================
 
-    <WebMethod()> _
+    <WebMethod()>
     Public Function ListarClientes(texto As String) As String
         Return JsonDataTable(objCliente.Buscar(texto))
     End Function
 
-    <WebMethod()> _
+    <WebMethod()>
     Public Function ObtenerCliente(idCliente As Integer) As String
         Return JsonDataTable(objCliente.Obtener(idCliente))
     End Function
 
-    <WebMethod()> _
+    <WebMethod()>
     Public Function InsertarCliente(nombre As String, documento As String, telefono As String, direccion As String, tipoPersona As String, tipoDocumento As String) As Integer
         Return objCliente.Insertar(nombre, documento, telefono, direccion, tipoPersona, tipoDocumento)
     End Function
 
-    <WebMethod()> _
+    <WebMethod()>
     Public Function ActualizarCliente(idCliente As Integer, nombre As String, documento As String, telefono As String, direccion As String, versionOriginal As Byte(), tipoPersona As String, tipoDocumento As String) As Boolean
         Try
             objCliente.Actualizar(idCliente, nombre, documento, telefono, direccion, versionOriginal, tipoPersona, tipoDocumento)
@@ -99,7 +99,7 @@ Public Class WSLibrerias
         End Try
     End Function
 
-    <WebMethod()> _
+    <WebMethod()>
     Public Function EliminarCliente(idCliente As Integer) As Boolean
         Try
             objCliente.Eliminar(idCliente)
@@ -109,7 +109,7 @@ Public Class WSLibrerias
         End Try
     End Function
 
-    <WebMethod()> _
+    <WebMethod()>
     Public Function TienePedidos(idCliente As Integer) As Boolean
         Return objCliente.TienePedidos(idCliente)
     End Function
@@ -118,22 +118,22 @@ Public Class WSLibrerias
     ' PROVEEDORES
     ' ============================================================
 
-    <WebMethod()> _
+    <WebMethod()>
     Public Function ListarProveedores(texto As String) As String
         Return JsonDataTable(objProveedor.Buscar(texto))
     End Function
 
-    <WebMethod()> _
+    <WebMethod()>
     Public Function ObtenerProveedor(idProveedor As Integer) As String
         Return JsonDataTable(objProveedor.Obtener(idProveedor))
     End Function
 
-    <WebMethod()> _
+    <WebMethod()>
     Public Function InsertarProveedor(nombre As String, documento As String, telefono As String, direccion As String, tipoPersona As String, tipoDocumento As String) As Integer
         Return objProveedor.Insertar(nombre, documento, telefono, direccion, tipoPersona, tipoDocumento)
     End Function
 
-    <WebMethod()> _
+    <WebMethod()>
     Public Function ActualizarProveedor(idProveedor As Integer, nombre As String, documento As String, telefono As String, direccion As String, versionOriginal As Byte(), tipoPersona As String, tipoDocumento As String) As Boolean
         Try
             objProveedor.Actualizar(idProveedor, nombre, documento, telefono, direccion, versionOriginal, tipoPersona, tipoDocumento)
@@ -143,7 +143,7 @@ Public Class WSLibrerias
         End Try
     End Function
 
-    <WebMethod()> _
+    <WebMethod()>
     Public Function EliminarProveedor(idProveedor As Integer) As Boolean
         Try
             objProveedor.Eliminar(idProveedor)
@@ -153,7 +153,7 @@ Public Class WSLibrerias
         End Try
     End Function
 
-    <WebMethod()> _
+    <WebMethod()>
     Public Function TieneCompras(idProveedor As Integer) As Boolean
         Return objProveedor.TieneCompras(idProveedor)
     End Function
@@ -162,22 +162,22 @@ Public Class WSLibrerias
     ' PRODUCTOS
     ' ============================================================
 
-    <WebMethod()> _
+    <WebMethod()>
     Public Function ListarProductos(categoria As String) As String
         Return JsonDataTable(objProducto.ListarPorCategoria(categoria))
     End Function
 
-    <WebMethod()> _
+    <WebMethod()>
     Public Function ObtenerProducto(idProducto As Integer) As String
         Return JsonDataTable(objProducto.Obtener(idProducto))
     End Function
 
-    <WebMethod()> _
+    <WebMethod()>
     Public Function InsertarProducto(categoria As String, tipo As String, color As String, nombre As String, descripcion As String, imagenUrl As String) As Integer
         Return objProducto.Insertar(categoria, tipo, color, nombre, descripcion, imagenUrl)
     End Function
 
-    <WebMethod()> _
+    <WebMethod()>
     Public Function ActualizarProducto(idProducto As Integer, categoria As String, tipo As String, color As String, nombre As String, descripcion As String, imagenUrl As String) As Boolean
         Try
             objProducto.Actualizar(idProducto, categoria, tipo, color, nombre, descripcion, imagenUrl)
@@ -187,7 +187,7 @@ Public Class WSLibrerias
         End Try
     End Function
 
-    <WebMethod()> _
+    <WebMethod()>
     Public Function InactivarProducto(idProducto As Integer) As Boolean
         Try
             objProducto.Inactivar(idProducto)
@@ -197,7 +197,7 @@ Public Class WSLibrerias
         End Try
     End Function
 
-    <WebMethod()> _
+    <WebMethod()>
     Public Function TieneVariantes(idProducto As Integer) As Boolean
         Return objProducto.TieneVariantes(idProducto)
     End Function
@@ -206,12 +206,12 @@ Public Class WSLibrerias
     ' USUARIOS Y PERMISOS
     ' ============================================================
 
-    <WebMethod()> _
+    <WebMethod()>
     Public Function ListarUsuarios() As String
         Return JsonDataTable(objUsuario.listarUsuarios())
     End Function
 
-    <WebMethod()> _
+    <WebMethod()>
     Public Function InsertarUsuario(nombre As String, correo As String, contrasena As String, pregunta As String, respuesta As String, rol As String, activo As Boolean) As Boolean
         Try
             objUsuario.registrarUsuario(nombre, correo, contrasena, pregunta, respuesta, rol, activo)
@@ -221,7 +221,7 @@ Public Class WSLibrerias
         End Try
     End Function
 
-    <WebMethod()> _
+    <WebMethod()>
     Public Function ActualizarUsuario(idUsuario As Integer, nombre As String, correo As String, contrasena As String, pregunta As String, respuesta As String, rol As String, activo As Boolean) As Boolean
         Try
             objUsuario.modificarUsuario(idUsuario, nombre, correo, contrasena, pregunta, respuesta, rol, activo)
@@ -231,7 +231,7 @@ Public Class WSLibrerias
         End Try
     End Function
 
-    <WebMethod()> _
+    <WebMethod()>
     Public Function CambiarEstadoUsuario(idUsuario As Integer, activo As Boolean) As Boolean
         Try
             objUsuario.cambiarEstadoUsuario(idUsuario, activo)
@@ -241,12 +241,12 @@ Public Class WSLibrerias
         End Try
     End Function
 
-    <WebMethod()> _
+    <WebMethod()>
     Public Function EsUltimoAdministrador(idUsuario As Integer) As Boolean
         Return objUsuario.esUltimoAdministrador(idUsuario)
     End Function
 
-    <WebMethod()> _
+    <WebMethod()>
     Public Function ListarPermisosRol(rol As String) As String
         Return JsonDataTable(objPermiso.listarPermisosRol(rol))
     End Function
@@ -255,17 +255,17 @@ Public Class WSLibrerias
     ' PEDIDOS Y PAGOS
     ' ============================================================
 
-    <WebMethod()> _
+    <WebMethod()>
     Public Function ObtenerPedido(idPedido As Integer) As String
         Return JsonDataTable(objPedido.Obtener(idPedido))
     End Function
 
-    <WebMethod()> _
+    <WebMethod()>
     Public Function ListarPedidos() As String
         Return JsonDataTable(objPedido.Listar())
     End Function
 
-    <WebMethod()> _
+    <WebMethod()>
     Public Function ActualizarEstadoPago(idPedido As Integer) As Boolean
         Try
             objPedido.ActualizarEstadoPago(idPedido)
@@ -275,12 +275,12 @@ Public Class WSLibrerias
         End Try
     End Function
 
-    <WebMethod()> _
+    <WebMethod()>
     Public Function ListarPagos(idPedido As Integer) As String
         Return JsonDataTable(objPago.ListarPorPedido(idPedido))
     End Function
 
-    <WebMethod()> _
+    <WebMethod()>
     Public Function RegistrarPago(idPedido As Integer, idMetodoPago As Integer, monto As Decimal) As Boolean
         Try
             objPago.RegistrarDetalle(idPedido, idMetodoPago, monto)
@@ -290,7 +290,7 @@ Public Class WSLibrerias
         End Try
     End Function
 
-    <WebMethod()> _
+    <WebMethod()>
     Public Function ActualizarPago(idDetallePago As Integer, idMetodoPago As Integer, monto As Decimal) As Boolean
         Try
             objPago.ActualizarDetalle(idDetallePago, idMetodoPago, monto)
@@ -300,7 +300,7 @@ Public Class WSLibrerias
         End Try
     End Function
 
-    <WebMethod()> _
+    <WebMethod()>
     Public Function EliminarPago(idDetallePago As Integer) As Boolean
         Try
             objPago.EliminarDetalle(idDetallePago)
@@ -310,17 +310,17 @@ Public Class WSLibrerias
         End Try
     End Function
 
-    <WebMethod()> _
+    <WebMethod()>
     Public Function TotalPagado(idPedido As Integer) As Decimal
         Return objPago.TotalPagado(idPedido)
     End Function
 
-    <WebMethod()> _
+    <WebMethod()>
     Public Function UltimoMonto(idPedido As Integer) As Decimal
         Return objPago.UltimoMonto(idPedido)
     End Function
 
-    <WebMethod()> _
+    <WebMethod()>
     Public Function ListarMetodosPago() As String
         Return JsonDataTable(objMetodoPago.Listar())
     End Function
@@ -329,12 +329,12 @@ Public Class WSLibrerias
     ' INVENTARIO
     ' ============================================================
 
-    <WebMethod()> _
+    <WebMethod()>
     Public Function ListarVariantes(porPiezas As Boolean) As String
         Return JsonDataTable(objInventario.ListarVariantes(porPiezas))
     End Function
 
-    <WebMethod()> _
+    <WebMethod()>
     Public Function ListarResumenInventario(categoria As String) As String
         Return JsonDataTable(objInventario.ListarResumen(categoria))
     End Function
@@ -385,11 +385,12 @@ Public Class WSLibrerias
         {"Permiso", "listarTiposPermiso,listarPermisosUsuario,listarPermisosRol,codigosPermisoUsuario,guardarPermisos,asignarPermisosRol,contarOtrosConPermiso"},
         {"ProductoVariante", "Listar,ListarColoresAluminio,ListarTiposAluminio,ListarColoresVidrio,ListarEspesoresVidrio,ListarEspesoresPorProducto,ObtenerPrecioUnitario,ObtenerPrecioUnitarioPorProducto,ObtenerVariantePorProducto,ResolverVariantePorProducto"},
         {"Venta", "Listar"},
+        {"Reporte", "FlujoInventario,PedidosDelMes,ComprasPorTiempo,ClientesConPendientes,DetallePendientesPorCliente"},
         {"InventarioCaja", "Listar,NombreUnidad,ObtenerStock,SumarStock,RestarStock,AjustarStock"},
         {"ModeloVentanaWS", "ListarActivos,CargarPorId,Calcular"}
     }
 
-    <WebMethod()> _
+    <WebMethod()>
     Public Function Ejecutar(clase As String, metodo As String, parametrosJson As String) As String
         Try
             If String.IsNullOrEmpty(clase) OrElse String.IsNullOrEmpty(metodo) Then

@@ -47,6 +47,16 @@ Partial Class plantilla
             Return
         End If
 
+        ' Al publicar este ajuste se descarta el estado anterior de esos dos grupos
+        ' para que vuelvan a aparecer sin necesidad de cerrar sesión.
+        If Convert.ToString(Session("versionEstadoMenu")) <> VersionEstadoMenu Then
+            Session.Remove("menuAbierto_listados")
+            Session.Remove("menuAbierto_mantenimiento")
+            Session("versionEstadoMenu") = VersionEstadoMenu
+        End If
+
+        AplicarEstadoMenu()
+
         If Not IsPostBack Then
             lblId.Text = Session("idUsuario").ToString()
             lblUsuario.Text = Server.HtmlEncode(If(Session("usuario") Is Nothing, "", Session("usuario").ToString()))
@@ -125,6 +135,9 @@ Partial Class plantilla
                 Return Tiene("CLIENTES")
             Case "wfregistrarproductos.aspx"
                 Return Tiene("PRODUCTOS")
+            Case "wfreporteflujoinventario.aspx", "wfreportepedidosmes.aspx",
+                 "wfreportecomprastiempo.aspx", "wfreportependientes.aspx"
+                Return Tiene("REPORTES")
             Case Else
                 Return True
         End Select
@@ -156,6 +169,13 @@ Partial Class plantilla
         ' Ventas: requiere acceso a pedidos y pagos
         lnkVentas.Visible = Tiene("PEDIDOS") AndAlso Tiene("PAGOS")
 
+        ' Reportes: permiso propio, actualmente solo para administradores
+        lnkReporteFlujo.Visible = Tiene("REPORTES")
+        lnkReportePedidosMes.Visible = Tiene("REPORTES")
+        lnkReporteCompras.Visible = Tiene("REPORTES")
+        lnkReportePendientes.Visible = Tiene("REPORTES")
+        pnlReportes.Visible = Tiene("REPORTES")
+
         ' Solo se muestran los grupos que tienen alguna opción disponible
         pnlProcesos.Visible = lnkRegistrarCompra.Visible OrElse lnkRegistrarPedido.Visible OrElse
                               lnkRegistrarPago.Visible OrElse lnkRegistrarPieza.Visible
@@ -166,6 +186,55 @@ Partial Class plantilla
         pnlMantenimiento.Visible = lnkUsuarios.Visible OrElse lnkPermisos.Visible OrElse
                                    lnkClientes.Visible OrElse lnkProductos.Visible OrElse
                                    lnkProveedores.Visible
+    End Sub
+
+    ' ---------------- MENÚ COLAPSABLE ----------------
+    ' Cada grupo recuerda si está abierto en la sesión, así el estado se mantiene
+    ' al navegar entre páginas. Por defecto quedan abiertos Principal,
+    ' Mostrar Listado y Mantenimiento; los demás se abren al hacer clic.
+    Private Shared ReadOnly GruposMenu As String() =
+        {"principal", "procesos", "listados", "reportes", "mantenimiento", "configuracion", "tema"}
+
+    Private Const VersionEstadoMenu As String = "20261122b"
+
+    Private Function GrupoMenuAbierto(clave As String) As Boolean
+        Dim nombreSesion As String = "menuAbierto_" & clave
+        If Session(nombreSesion) Is Nothing Then
+            Dim abiertoPorDefecto As Boolean =
+                (clave = "principal" OrElse clave = "listados" OrElse clave = "mantenimiento")
+            Session(nombreSesion) = abiertoPorDefecto
+        End If
+        Return Convert.ToBoolean(Session(nombreSesion))
+    End Function
+
+    Private Sub AplicarEstadoMenu()
+        pnlPrincipalItems.Visible = GrupoMenuAbierto("principal")
+        pnlProcesosItems.Visible = GrupoMenuAbierto("procesos")
+        pnlListadosItems.Visible = GrupoMenuAbierto("listados")
+        pnlReportesItems.Visible = GrupoMenuAbierto("reportes")
+        pnlMantenimientoItems.Visible = GrupoMenuAbierto("mantenimiento")
+        pnlConfiguracionItems.Visible = GrupoMenuAbierto("configuracion")
+        pnlTemaItems.Visible = GrupoMenuAbierto("tema")
+
+        MarcarGrupo(lnkGrupoPrincipal, pnlPrincipalItems.Visible)
+        MarcarGrupo(lnkGrupoProcesos, pnlProcesosItems.Visible)
+        MarcarGrupo(lnkGrupoListados, pnlListadosItems.Visible)
+        MarcarGrupo(lnkGrupoReportes, pnlReportesItems.Visible)
+        MarcarGrupo(lnkGrupoMantenimiento, pnlMantenimientoItems.Visible)
+        MarcarGrupo(lnkGrupoConfiguracion, pnlConfiguracionItems.Visible)
+        MarcarGrupo(lnkGrupoTema, pnlTemaItems.Visible)
+    End Sub
+
+    Private Shared Sub MarcarGrupo(enlace As LinkButton, abierto As Boolean)
+        enlace.CssClass = "menu-grupo-titulo menu-grupo-toggle " & If(abierto, "abierto", "cerrado")
+    End Sub
+
+    Protected Sub ToggleMenuGroup(sender As Object, e As CommandEventArgs)
+        Dim clave As String = e.CommandArgument.ToString().ToLowerInvariant()
+        If Array.IndexOf(GruposMenu, clave) < 0 Then Return
+
+        Session("menuAbierto_" & clave) = Not GrupoMenuAbierto(clave)
+        AplicarEstadoMenu()
     End Sub
 
     Protected Sub CambiarTema(sender As Object, e As CommandEventArgs)

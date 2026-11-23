@@ -95,6 +95,7 @@
     <Compile Include="Permiso.vb" />
     <Compile Include="Producto.vb" />
     <Compile Include="ProductoVariante.vb" />
+    <Compile Include="Reporte.vb" />
     <Compile Include="Usuario.vb" />
     <Compile Include="Utilidades.vb" />
   </ItemGroup>

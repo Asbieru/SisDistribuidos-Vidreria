@@ -663,3 +663,33 @@ Public Class InventarioCaja
     End Function
 
 End Class
+
+' Fachada del modulo de reportes. Las paginas usan esta clase, nunca capaNegocio.
+Public Class Reporte
+
+    Public Function FlujoInventario(desde As Date, hasta As Date,
+                                    categoria As String, idVariante As Integer?) As DataTable
+        Return ServicioWeb.Tabla(ServicioWeb.Ejecutar("Reporte", "FlujoInventario",
+            New Object() {desde, hasta, categoria, idVariante}))
+    End Function
+
+    Public Function PedidosDelMes(anio As Integer, mes As Integer, estadoPago As String) As DataTable
+        Return ServicioWeb.Tabla(ServicioWeb.Ejecutar("Reporte", "PedidosDelMes",
+            New Object() {anio, mes, estadoPago}))
+    End Function
+
+    Public Function ComprasPorTiempo(desde As Date, hasta As Date) As DataTable
+        Return ServicioWeb.Tabla(ServicioWeb.Ejecutar("Reporte", "ComprasPorTiempo",
+            New Object() {desde, hasta}))
+    End Function
+
+    Public Function ClientesConPendientes() As DataTable
+        Return ServicioWeb.Tabla(ServicioWeb.Ejecutar("Reporte", "ClientesConPendientes", Nothing))
+    End Function
+
+    Public Function DetallePendientesPorCliente(idCliente As Integer) As DataTable
+        Return ServicioWeb.Tabla(ServicioWeb.Ejecutar("Reporte", "DetallePendientesPorCliente",
+            New Object() {idCliente}))
+    End Function
+
+End Class

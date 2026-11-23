@@ -13,7 +13,7 @@
       <Property Name="Debug.AspNetCompiler.Updateable" Value="&quot;true&quot;" />
       <Property Name="Debug.AspNetCompiler.VirtualPath" Value="&quot;/localhost_49772&quot;" />
       <Property Name="DefaultWebSiteLanguage" Value="&quot;Visual Basic&quot;" />
-      <Property Name="ProjectReferences" Value="&quot;{59c4f2b6-92c1-47f2-b467-ffad100a57e7}|capaDatos.dll;{43da2da7-b504-41a5-910c-5479719f3267}|capaNegocio.dll;&quot;" />
+      <Property Name="ProjectReferences" Value="&quot;&quot;" />
       <Property Name="Release.AspNetCompiler.Debug" Value="&quot;False&quot;" />
       <Property Name="Release.AspNetCompiler.FixedNames" Value="&quot;false&quot;" />
       <Property Name="Release.AspNetCompiler.ForceOverwrite" Value="&quot;true&quot;" />
