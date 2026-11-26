@@ -395,8 +395,37 @@ Public Class Pago
         Return ServicioWeb.Valor(Of Decimal)(ServicioWeb.Ejecutar("Pago", "TotalPagado", New Object() {idPedido}))
     End Function
 
+    Public Function TotalDevuelto(idPedido As Integer) As Decimal
+        Return ServicioWeb.Valor(Of Decimal)(ServicioWeb.Ejecutar("Pago", "TotalDevuelto", New Object() {idPedido}))
+    End Function
+
+    Public Function TotalVuelto(idPedido As Integer) As Decimal
+        Return ServicioWeb.Valor(Of Decimal)(ServicioWeb.Ejecutar("Pago", "TotalVuelto", New Object() {idPedido}))
+    End Function
+
     Public Function UltimoMonto(idPedido As Integer) As Decimal
         Return ServicioWeb.Valor(Of Decimal)(ServicioWeb.Ejecutar("Pago", "UltimoMonto", New Object() {idPedido}))
+    End Function
+
+    Public Function RegistrarPagoConVuelto(idPedido As Integer, idMetodoPago As Integer,
+                                           monto As Decimal, idMetodoVuelto As Integer) As Decimal
+        Return ServicioWeb.Valor(Of Decimal)(ServicioWeb.Ejecutar("Pago", "RegistrarPagoConVuelto",
+            New Object() {idPedido, idMetodoPago, monto, idMetodoVuelto}))
+    End Function
+
+    Public Function ActualizarPagoConVuelto(idDetallePago As Integer, idMetodoPago As Integer,
+                                            monto As Decimal, idMetodoVuelto As Integer) As Decimal
+        Return ServicioWeb.Valor(Of Decimal)(ServicioWeb.Ejecutar("Pago", "ActualizarPagoConVuelto",
+            New Object() {idDetallePago, idMetodoPago, monto, idMetodoVuelto}))
+    End Function
+
+    Public Sub EliminarPagoConVuelto(idDetallePago As Integer)
+        ServicioWeb.Ejecutar("Pago", "EliminarPagoConVuelto", New Object() {idDetallePago})
+    End Sub
+
+    Public Function RegistrarDevolucion(idPedido As Integer, idMetodoPago As Integer, monto As Decimal) As Integer
+        Return ServicioWeb.Valor(Of Integer)(ServicioWeb.Ejecutar("Pago", "RegistrarDevolucion",
+            New Object() {idPedido, idMetodoPago, monto}))
     End Function
 
 End Class
@@ -681,6 +710,16 @@ Public Class Reporte
     Public Function ComprasPorTiempo(desde As Date, hasta As Date) As DataTable
         Return ServicioWeb.Tabla(ServicioWeb.Ejecutar("Reporte", "ComprasPorTiempo",
             New Object() {desde, hasta}))
+    End Function
+
+    Public Function IngresosDelMes(anio As Integer, mes As Integer) As DataTable
+        Return ServicioWeb.Tabla(ServicioWeb.Ejecutar("Reporte", "IngresosDelMes",
+            New Object() {anio, mes}))
+    End Function
+
+    Public Function CobrosPorMetodo(anio As Integer, mes As Integer) As DataTable
+        Return ServicioWeb.Tabla(ServicioWeb.Ejecutar("Reporte", "CobrosPorMetodo",
+            New Object() {anio, mes}))
     End Function
 
     Public Function ClientesConPendientes() As DataTable

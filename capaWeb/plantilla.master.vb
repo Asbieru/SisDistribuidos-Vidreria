@@ -171,8 +171,7 @@ Partial Class plantilla
 
         ' Reportes: permiso propio, actualmente solo para administradores
         lnkReporteFlujo.Visible = Tiene("REPORTES")
-        lnkReportePedidosMes.Visible = Tiene("REPORTES")
-        lnkReporteCompras.Visible = Tiene("REPORTES")
+        lnkReporteIngresos.Visible = Tiene("REPORTES")
         lnkReportePendientes.Visible = Tiene("REPORTES")
         pnlReportes.Visible = Tiene("REPORTES")
 

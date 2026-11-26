@@ -631,6 +631,171 @@ table.tabla-datos tr.fila-negativa:hover td {
     overflow-x: auto;
 }
 
+/* ---------------- Reporte de ingresos mensuales ---------------- */
+
+.ingresos-tarjetas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin: 18px 0;
+}
+
+.ingresos-tarjeta {
+    flex: 1 1 190px;
+    min-width: 170px;
+    padding: 14px 16px;
+    background: var(--panel);
+    border: 1px solid var(--borde);
+    border-left: 5px solid var(--borde);
+    border-radius: 4px;
+}
+
+.ingresos-tarjeta-venta {
+    border-left-color: var(--exito);
+}
+
+.ingresos-tarjeta-compra {
+    border-left-color: var(--peligro);
+}
+
+.ingresos-tarjeta-utilidad {
+    border-left-color: var(--dorado);
+}
+
+.ingresos-tarjeta-titulo {
+    display: block;
+    color: var(--texto-suave);
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.ingresos-tarjeta-valor {
+    display: block;
+    margin-top: 6px;
+    font-size: 24px;
+    font-weight: bold;
+    font-variant-numeric: tabular-nums;
+}
+
+.ingresos-tarjeta-detalle {
+    display: block;
+    margin-top: 4px;
+    color: var(--texto-suave);
+    font-size: 12px;
+}
+
+.monto-venta {
+    color: var(--exito);
+}
+
+.monto-compra {
+    color: var(--peligro);
+}
+
+.monto-utilidad-positiva {
+    color: var(--exito);
+}
+
+.monto-utilidad-negativa {
+    color: var(--peligro);
+}
+
+.grafico-leyenda {
+    margin: 0 0 10px 0;
+    color: var(--texto-suave);
+    font-size: 13px;
+}
+
+.leyenda-color {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    margin: 0 4px 0 12px;
+    vertical-align: middle;
+    border-radius: 2px;
+}
+
+.leyenda-color:first-child {
+    margin-left: 0;
+}
+
+.leyenda-venta {
+    background: var(--exito);
+}
+
+.leyenda-compra {
+    background: var(--peligro);
+}
+
+.grafico-ingresos {
+    margin: 10px 0 22px 0;
+}
+
+.grafico-fila {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 10px 0;
+}
+
+.grafico-etiqueta {
+    flex: 0 0 90px;
+    font-weight: bold;
+}
+
+.grafico-pista {
+    flex: 1 1 auto;
+    height: 26px;
+    background: var(--panel);
+    border: 1px solid var(--borde);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.grafico-barra {
+    height: 100%;
+    min-width: 0;
+    border-radius: 3px 0 0 3px;
+    transition: width 0.25s ease;
+}
+
+.grafico-barra-venta {
+    background: var(--exito);
+}
+
+.grafico-barra-compra {
+    background: var(--peligro);
+}
+
+.grafico-monto {
+    flex: 0 0 130px;
+    text-align: right;
+    font-weight: bold;
+    font-variant-numeric: tabular-nums;
+}
+
+.tabla-ingresos td,
+.tabla-ingresos th {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+@media (max-width: 760px) {
+    .grafico-fila {
+        flex-wrap: wrap;
+    }
+
+    .grafico-etiqueta {
+        flex-basis: 100%;
+    }
+
+    .grafico-monto {
+        flex-basis: 100%;
+        text-align: left;
+    }
+}
+
 /* ---------------- Paginas de acceso (login / cambio de clave) ---------------- */
 
 body.pagina-acceso {

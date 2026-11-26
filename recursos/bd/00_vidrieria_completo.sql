@@ -561,9 +561,58 @@ CREATE TABLE dbo.pagos (
     id_pedido     INT NOT NULL,
     fecha         DATETIME2 NOT NULL DEFAULT dbo.fn_hora_peru(),
     monto_total   DECIMAL(10,2) NOT NULL,
+    -- PAGO entra dinero, VUELTO es el cambio y DEVOLUCION el reembolso.
+    tipo          NVARCHAR(12) NOT NULL CONSTRAINT df_pagos_tipo DEFAULT N'PAGO'
+        CONSTRAINT ck_pagos_tipo CHECK (tipo IN (N'PAGO', N'VUELTO', N'DEVOLUCION')),
+    -- El vuelto apunta al pago que lo origino.
+    id_pago_padre INT NULL,
     CONSTRAINT fk_pago_pedido FOREIGN KEY (id_pedido)
-        REFERENCES dbo.pedidos(id_pedido) ON DELETE CASCADE
+        REFERENCES dbo.pedidos(id_pedido) ON DELETE CASCADE,
+    CONSTRAINT fk_pago_padre FOREIGN KEY (id_pago_padre)
+        REFERENCES dbo.pagos(id_pago)
 );
+GO
+
+-- Bases anteriores: agrega el tipo de movimiento y el padre del vuelto
+IF COL_LENGTH('dbo.pagos', 'tipo') IS NULL
+    ALTER TABLE dbo.pagos ADD tipo NVARCHAR(12) NOT NULL
+        CONSTRAINT df_pagos_tipo DEFAULT N'PAGO';
+GO
+IF NOT EXISTS (SELECT 1 FROM sys.check_constraints
+               WHERE name = 'ck_pagos_tipo'
+                 AND parent_object_id = OBJECT_ID('dbo.pagos'))
+    ALTER TABLE dbo.pagos ADD CONSTRAINT ck_pagos_tipo
+        CHECK (tipo IN (N'PAGO', N'VUELTO', N'DEVOLUCION'));
+GO
+IF COL_LENGTH('dbo.pagos', 'id_pago_padre') IS NULL
+    ALTER TABLE dbo.pagos ADD id_pago_padre INT NULL;
+GO
+IF NOT EXISTS (SELECT 1 FROM sys.foreign_keys
+               WHERE name = 'fk_pago_padre'
+                 AND parent_object_id = OBJECT_ID('dbo.pagos'))
+    ALTER TABLE dbo.pagos ADD CONSTRAINT fk_pago_padre
+        FOREIGN KEY (id_pago_padre) REFERENCES dbo.pagos(id_pago);
+GO
+IF NOT EXISTS (SELECT 1 FROM sys.indexes
+               WHERE name = 'ix_pagos_padre'
+                 AND object_id = OBJECT_ID('dbo.pagos'))
+    CREATE INDEX ix_pagos_padre ON dbo.pagos(id_pago_padre);
+GO
+
+-- Los vueltos historicos se grabaron como cabeceras negativas.
+UPDATE dbo.pagos SET tipo = N'VUELTO'
+WHERE monto_total < 0 AND tipo = N'PAGO';
+GO
+UPDATE v
+SET id_pago_padre = (
+        SELECT MAX(p.id_pago)
+        FROM dbo.pagos p
+        WHERE p.id_pedido = v.id_pedido
+          AND p.id_pago < v.id_pago
+          AND p.tipo = N'PAGO'
+          AND p.monto_total > 0)
+FROM dbo.pagos v
+WHERE v.tipo = N'VUELTO' AND v.id_pago_padre IS NULL;
 GO
 
 IF OBJECT_ID(N'dbo.detalle_pago', N'U') IS NULL

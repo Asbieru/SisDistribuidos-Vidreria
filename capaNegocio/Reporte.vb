@@ -119,6 +119,86 @@ Public Class Reporte
         Return objMan.consultarConParametros(sql, parametros)
     End Function
 
+    ' Flujo de caja de un mes: entradas por cobros y salidas por compras,
+    ' vueltos y devoluciones. El saldo neto es lo que quedó en caja.
+    Public Function IngresosDelMes(anio As Integer, mes As Integer) As DataTable
+        If anio < 1900 OrElse anio > 2100 Then
+            Throw New ArgumentException("El año debe estar entre 1900 y 2100.", "anio")
+        End If
+        If mes < 1 OrElse mes > 12 Then
+            Throw New ArgumentException("El mes debe estar entre 1 y 12.", "mes")
+        End If
+
+        Dim sql As String =
+            ";WITH entradas AS (" &
+            "SELECT COUNT(*) AS cantidad_cobros, " &
+            "COUNT(DISTINCT id_pedido) AS pedidos_cobrados, " &
+            "ISNULL(SUM(monto_total), 0) AS total_entradas " &
+            "FROM dbo.pagos " &
+            "WHERE tipo = N'PAGO' AND fecha >= @desde AND fecha < @hasta" &
+            "), caja AS (" &
+            "SELECT COUNT(*) AS cantidad_salidas_caja, " &
+            "ISNULL(SUM(ABS(monto_total)), 0) AS total_salidas_caja " &
+            "FROM dbo.pagos " &
+            "WHERE tipo IN (N'VUELTO', N'DEVOLUCION') AND fecha >= @desde AND fecha < @hasta" &
+            "), compras AS (" &
+            "SELECT COUNT(*) AS cantidad_compras, " &
+            "ISNULL(SUM(total), 0) AS total_compras " &
+            "FROM dbo.compras " &
+            "WHERE fecha >= @desde AND fecha < @hasta" &
+            ") " &
+            "SELECT CONVERT(char(7), @desde, 120) AS periodo, " &
+            "e.cantidad_cobros, e.pedidos_cobrados, e.total_entradas, " &
+            "c.cantidad_compras, c.total_compras, " &
+            "j.cantidad_salidas_caja, j.total_salidas_caja, " &
+            "(e.total_entradas - j.total_salidas_caja - c.total_compras) AS saldo_neto " &
+            "FROM entradas e CROSS JOIN caja j CROSS JOIN compras c"
+
+        Dim parametros As New Dictionary(Of String, Object) From {
+            {"desde", New Date(anio, mes, 1)},
+            {"hasta", New Date(anio, mes, 1).AddMonths(1)}
+        }
+        Return objMan.consultarConParametros(sql, parametros)
+    End Function
+
+    ' Entradas y salidas de caja agrupadas por método de pago.
+    Public Function CobrosPorMetodo(anio As Integer, mes As Integer) As DataTable
+        If anio < 1900 OrElse anio > 2100 Then
+            Throw New ArgumentException("El año debe estar entre 1900 y 2100.", "anio")
+        End If
+        If mes < 1 OrElse mes > 12 Then
+            Throw New ArgumentException("El mes debe estar entre 1 y 12.", "mes")
+        End If
+
+        Dim sql As String =
+            ";WITH detalle AS (" &
+            "SELECT p.tipo, ISNULL(m.nombre, N'Sin desglose') AS metodo, dp.monto AS monto " &
+            "FROM dbo.pagos p " &
+            "INNER JOIN dbo.detalle_pago dp ON dp.id_pago = p.id_pago " &
+            "LEFT JOIN dbo.metodos_pago m ON m.id_metodo_pago = dp.id_metodo_pago " &
+            "WHERE p.fecha >= @desde AND p.fecha < @hasta" &
+            "), sin_detalle AS (" &
+            "SELECT p.tipo, N'Sin desglose' AS metodo, p.monto_total AS monto " &
+            "FROM dbo.pagos p " &
+            "WHERE p.fecha >= @desde AND p.fecha < @hasta " &
+            "AND NOT EXISTS (SELECT 1 FROM dbo.detalle_pago d WHERE d.id_pago = p.id_pago)" &
+            "), movimientos AS (" &
+            "SELECT tipo, metodo, monto FROM detalle " &
+            "UNION ALL SELECT tipo, metodo, monto FROM sin_detalle" &
+            ") " &
+            "SELECT metodo, " &
+            "SUM(CASE WHEN tipo = N'PAGO' THEN monto ELSE 0 END) AS entradas, " &
+            "SUM(CASE WHEN tipo IN (N'VUELTO', N'DEVOLUCION') THEN ABS(monto) ELSE 0 END) AS salidas, " &
+            "SUM(CASE WHEN tipo = N'PAGO' THEN monto ELSE -ABS(monto) END) AS neto " &
+            "FROM movimientos GROUP BY metodo ORDER BY metodo"
+
+        Dim parametros As New Dictionary(Of String, Object) From {
+            {"desde", New Date(anio, mes, 1)},
+            {"hasta", New Date(anio, mes, 1).AddMonths(1)}
+        }
+        Return objMan.consultarConParametros(sql, parametros)
+    End Function
+
     ' Clientes con pedidos no cancelados cuyo total supera lo pagado.
     Public Function ClientesConPendientes() As DataTable
         Dim sql As String =

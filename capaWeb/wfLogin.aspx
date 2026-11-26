@@ -9,6 +9,7 @@
     <title>Iniciar sesión - SISCORP</title>
     <link rel="icon" href="recursos/favicon.ico" type="image/x-icon" />
     <link href="recursos/estilos/sistema.css" rel="stylesheet" type="text/css" />
+    <script src="https://www.google.com/recaptcha/api.js?render=<%= RecaptchaSiteKey %>" type="text/javascript"></script>
     <style type="text/css">
         /* Fondo negro propio del acceso, por si la hoja de estilos externa
            no se carga o la imagen de fondo no esta disponible. */
@@ -86,9 +87,12 @@
                             </table>
                         </asp:Panel>
 
+                        <asp:HiddenField ID="hfRecaptchaToken" runat="server" />
+
                         <div class="acceso-acciones">
                             <asp:Button ID="btnIngresar" runat="server" CssClass="boton boton-primario"
-                                Text="Ingresar" OnClick="btnIngresar_Click" />
+                                Text="Ingresar" OnClick="btnIngresar_Click"
+                                OnClientClick="return ejecutarRecaptcha();" UseSubmitBehavior="false" />
                         </div>
                     </td>
                 </tr>
@@ -102,6 +106,40 @@
                 </tr>
             </table>
         </div>
+
+        <script type="text/javascript">
+            window.ejecutarRecaptcha = function () {
+                if (window.__recaptchaEnviando) return false;
+                window.__recaptchaEnviando = true;
+
+                var oculto = document.getElementById('<%= hfRecaptchaToken.ClientID %>');
+                if (oculto) oculto.value = '';
+
+                function enviar() {
+                    if (typeof __doPostBack === 'function') {
+                        __doPostBack('<%= btnIngresar.UniqueID %>', '');
+                    } else {
+                        document.forms[0].submit();
+                    }
+                }
+
+                if (typeof grecaptcha === 'undefined' || typeof grecaptcha.execute !== 'function') {
+                    enviar();
+                    return false;
+                }
+
+                grecaptcha.ready(function () {
+                    grecaptcha.execute('<%= RecaptchaSiteKey %>', { action: 'login' })
+                        .then(function (token) {
+                            if (oculto) oculto.value = token;
+                            enviar();
+                        })
+                        .catch(function () { enviar(); });
+                });
+
+                return false;
+            };
+        </script>
     </form>
 </body>
 </html>

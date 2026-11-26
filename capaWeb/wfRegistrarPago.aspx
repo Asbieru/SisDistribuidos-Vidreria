@@ -70,7 +70,14 @@
                 </tr>
                 <tr>
                     <td class="etiqueta">Total pagado :</td>
-                    <td class="dato"><asp:Label ID="lblPagado" runat="server"></asp:Label></td>
+                    <td class="dato">
+                        <asp:Label ID="lblPagado" runat="server"></asp:Label>
+                        <span class="texto-ayuda">Dinero neto cobrado (pagos menos vueltos y devoluciones).</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="etiqueta">Total devuelto :</td>
+                    <td class="dato"><asp:Label ID="lblDevuelto" runat="server"></asp:Label></td>
                 </tr>
                 <tr>
                     <td class="etiqueta">Método de pago :</td>
@@ -100,6 +107,9 @@
             <asp:Label ID="lblAvisoPagado" runat="server" CssClass="mensaje-info" Visible="False"
                 Text="El pedido ya está pagado en su totalidad. Puede editar o eliminar los pagos registrados, pero no registrar nuevos montos." />
 
+            <asp:Label ID="lblAvisoCancelado" runat="server" CssClass="mensaje-error" Visible="False"
+                Text="Pedido cancelado: no se puede ingresar dinero. Solo puede registrar devoluciones de lo cobrado." />
+
             <div class="acciones">
                 <asp:Button ID="btnGuardarPago" runat="server" CssClass="boton boton-primario"
                     Text="Guardar pago" OnClick="btnGuardarPago_Click" />
@@ -111,6 +121,34 @@
             </div>
             <asp:Label ID="lblMensaje" runat="server"></asp:Label>
         </div>
+
+        <asp:Panel ID="pnlDevolucion" runat="server" CssClass="panel" Visible="False">
+            <h2 class="panel-titulo">Devolución de dinero</h2>
+            <p class="texto-intro">
+                Registre el dinero que se devuelve al cliente. Se descuenta de lo cobrado y queda
+                como egreso en el reporte de ingresos y egresos.
+            </p>
+            <table class="tabla-formulario" cellpadding="0" cellspacing="0">
+                <tr>
+                    <td class="etiqueta">Monto a devolver (S/.) :</td>
+                    <td class="dato">
+                        <asp:TextBox ID="txtDevolucion" runat="server" CssClass="campo campo-corto"
+                            MaxLength="20"></asp:TextBox>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="etiqueta">Método de devolución :</td>
+                    <td class="dato">
+                        <asp:DropDownList ID="ddlMetodoDevolucion" runat="server"
+                            CssClass="campo campo-corto"></asp:DropDownList>
+                    </td>
+                </tr>
+            </table>
+            <div class="acciones">
+                <asp:Button ID="btnDevolucion" runat="server" CssClass="boton boton-peligro"
+                    Text="Registrar devolución" OnClick="btnDevolucion_Click" />
+            </div>
+        </asp:Panel>
 
         <div class="panel">
             <h2 class="panel-titulo">Pagos registrados</h2>

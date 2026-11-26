@@ -75,17 +75,34 @@ Partial Class wfRegistrarPago
         End Set
     End Property
 
-    ' Detalles que no se pueden tocar: el vuelto y el pago que lo origino.
-    ' El vuelto se graba como detalle negativo justo despues de su pago, por eso
-    ' se puede reconocer sin necesitar una relacion explicita en la BD.
-    Private Property DetallesBloqueados As List(Of Integer)
+    ' Estado del pedido seleccionado (PENDIENTE, PARCIAL, PAGADO o CANCELADO).
+    Private Property EstadoPedido As String
         Get
-            Dim lista As List(Of Integer) = TryCast(ViewState("detallesBloqueados"), List(Of Integer))
-            If lista Is Nothing Then lista = New List(Of Integer)()
-            Return lista
+            Return Convert.ToString(ViewState("estadoPedido"))
         End Get
-        Set(value As List(Of Integer))
-            ViewState("detallesBloqueados") = value
+        Set(value As String)
+            ViewState("estadoPedido") = value
+        End Set
+    End Property
+
+    ' Cabecera del pago que se está editando y monto de su vuelto actual.
+    Private Property IdPagoEditando As Integer
+        Get
+            If ViewState("idPagoEditando") Is Nothing Then Return 0
+            Return Convert.ToInt32(ViewState("idPagoEditando"))
+        End Get
+        Set(value As Integer)
+            ViewState("idPagoEditando") = value
+        End Set
+    End Property
+
+    Private Property MontoVueltoEditando As Decimal
+        Get
+            If ViewState("montoVueltoEditando") Is Nothing Then Return 0D
+            Return Convert.ToDecimal(ViewState("montoVueltoEditando"))
+        End Get
+        Set(value As Decimal)
+            ViewState("montoVueltoEditando") = value
         End Set
     End Property
 
@@ -216,6 +233,9 @@ Partial Class wfRegistrarPago
         PagadoActual = 0D
         IdDetalleEditando = 0
         MontoEditando = 0D
+        IdPagoEditando = 0
+        MontoVueltoEditando = 0D
+        EstadoPedido = ""
 
         lblPedidoId.Text = id.ToString()
 
@@ -224,6 +244,7 @@ Partial Class wfRegistrarPago
             If dt IsNot Nothing AndAlso dt.Rows.Count > 0 Then
                 Dim fila As DataRow = dt.Rows(0)
                 TotalPedido = ADecimal(fila("total"))
+                EstadoPedido = fila("estado").ToString()
                 lblPedidoInfo.Text = "Cliente: " & Server.HtmlEncode(fila("cliente").ToString()) &
                                      " &nbsp;|&nbsp; Total: S/. " & FormatoNumero(TotalPedido) &
                                      " &nbsp;|&nbsp; Estado: " & Server.HtmlEncode(fila("estado").ToString())
@@ -246,6 +267,9 @@ Partial Class wfRegistrarPago
         PagadoActual = 0D
         IdDetalleEditando = 0
         MontoEditando = 0D
+        IdPagoEditando = 0
+        MontoVueltoEditando = 0D
+        EstadoPedido = ""
         lblMensaje.Text = ""
         MostrarBusqueda(True)
         CargarPedidos("")
@@ -258,6 +282,7 @@ Partial Class wfRegistrarPago
             Dim dt As DataTable = objMetodo.AsegurarPorDefecto()
             Dim pagoAnterior As String = ddlMetodoPago.SelectedValue
             Dim vueltoAnterior As String = ddlMetodoVuelto.SelectedValue
+            Dim devolucionAnterior As String = ddlMetodoDevolucion.SelectedValue
 
             ddlMetodoPago.DataSource = dt
             ddlMetodoPago.DataTextField = "nombre"
@@ -269,11 +294,21 @@ Partial Class wfRegistrarPago
             ddlMetodoVuelto.DataValueField = "id_metodo_pago"
             ddlMetodoVuelto.DataBind()
 
+            ddlMetodoDevolucion.DataSource = dt
+            ddlMetodoDevolucion.DataTextField = "nombre"
+            ddlMetodoDevolucion.DataValueField = "id_metodo_pago"
+            ddlMetodoDevolucion.DataBind()
+
             If pagoAnterior <> "" Then ddlMetodoPago.SelectedValue = pagoAnterior
             If vueltoAnterior <> "" Then
                 ddlMetodoVuelto.SelectedValue = vueltoAnterior
             Else
                 SeleccionarMetodoPorNombre(ddlMetodoVuelto, "EFECTIVO")
+            End If
+            If devolucionAnterior <> "" Then
+                ddlMetodoDevolucion.SelectedValue = devolucionAnterior
+            Else
+                SeleccionarMetodoPorNombre(ddlMetodoDevolucion, "EFECTIVO")
             End If
 
             If dt Is Nothing OrElse dt.Rows.Count = 0 Then
@@ -293,7 +328,6 @@ Partial Class wfRegistrarPago
 
         Try
             Dim dt As DataTable = objPago.ListarDetallesPorPedido(IdPedidoSeleccionado)
-            DetallesBloqueados = CalcularDetallesBloqueados(dt)
             grvPagos.DataSource = ConstruirTablaPagos(dt)
             grvPagos.DataBind()
         Catch ex As Exception
@@ -326,8 +360,16 @@ Partial Class wfRegistrarPago
             MostrarMensaje(ex.Message, "mensaje-error")
         End Try
 
+        Dim devuelto As Decimal = 0D
+        Try
+            devuelto = objPago.TotalDevuelto(IdPedidoSeleccionado)
+        Catch ex As Exception
+            MostrarMensaje(ex.Message, "mensaje-error")
+        End Try
+
         PagadoActual = pagado
         lblPagado.Text = "S/. " & FormatoNumero(pagado)
+        lblDevuelto.Text = "S/. " & FormatoNumero(devuelto)
 
         If pagado <= 0D Then
             lblEstado.Text = "Pendiente"
@@ -352,11 +394,17 @@ Partial Class wfRegistrarPago
     ' Con el pedido pagado solo se habilita el formulario si se esta editando
     ' un detalle existente; nunca para registrar un pago nuevo.
     Private Sub AplicarRestriccionPago()
+        Dim cancelado As Boolean =
+            String.Equals(EstadoPedido, "CANCELADO", StringComparison.OrdinalIgnoreCase)
+        Dim pagadoCompleto As Boolean = PedidoCompletamentePagado()
         Dim bloquearNuevoPago As Boolean = IdPedidoSeleccionado > 0 AndAlso
-                                           PedidoCompletamentePagado() AndAlso
-                                           IdDetalleEditando = 0
+                                           (cancelado OrElse
+                                            (pagadoCompleto AndAlso IdDetalleEditando = 0))
 
-        lblAvisoPagado.Visible = bloquearNuevoPago
+        lblAvisoCancelado.Visible = IdPedidoSeleccionado > 0 AndAlso cancelado
+        lblAvisoPagado.Visible = IdPedidoSeleccionado > 0 AndAlso Not cancelado AndAlso
+                                 pagadoCompleto AndAlso IdDetalleEditando = 0
+
         txtCantidad.Enabled = Not bloquearNuevoPago
         ddlMetodoPago.Enabled = Not bloquearNuevoPago
         btnGuardarPago.Enabled = Not bloquearNuevoPago
@@ -368,6 +416,13 @@ Partial Class wfRegistrarPago
             btnGuardarPago.Text = "Guardar pago"
             btnCancelarEdicion.Visible = False
         End If
+
+        ' Solo se puede devolver si hay dinero cobrado pendiente de devolución.
+        Dim puedeDevolver As Boolean = IdPedidoSeleccionado > 0 AndAlso PagadoActual > 0D
+        pnlDevolucion.Visible = puedeDevolver
+        txtDevolucion.Enabled = puedeDevolver
+        ddlMetodoDevolucion.Enabled = puedeDevolver
+        btnDevolucion.Enabled = puedeDevolver
     End Sub
 
     Protected Sub ddlMetodoPago_SelectedIndexChanged(sender As Object, e As EventArgs)
@@ -388,7 +443,9 @@ Partial Class wfRegistrarPago
             pagado = objPago.TotalPagado(IdPedidoSeleccionado)
         Catch
         End Try
-        If IdDetalleEditando > 0 Then pagado -= MontoEditando
+
+        ' Al editar se excluye el pago y el vuelto que se están editando.
+        If IdDetalleEditando > 0 Then pagado -= MontoEditando + MontoVueltoEditando
 
         Dim saldo As Decimal = TotalPedido - pagado
         If saldo < 0D Then saldo = 0D
@@ -400,7 +457,7 @@ Partial Class wfRegistrarPago
         If Not TryParseMonto(txtCantidad.Text, monto) OrElse monto <= 0D Then Return 0D
 
         Dim saldo As Decimal = SaldoPendiente()
-        If IdDetalleEditando > 0 OrElse monto <= saldo Then Return 0D
+        If monto <= saldo Then Return 0D
         Return monto - saldo
     End Function
 
@@ -408,14 +465,11 @@ Partial Class wfRegistrarPago
     ' solo elige con que metodo se registra la devolucion.
     Private Sub ActualizarVistaVuelto()
         Dim vuelto As Decimal = VueltoDeEntrada()
-        Dim esDetalleVuelto As Boolean = IdDetalleEditando > 0 AndAlso MontoEditando < 0D
 
-        lblVuelto.Text = If(vuelto > 0D,
-                            "Vuelto: S/. " & FormatoNumero(vuelto),
-                            If(esDetalleVuelto, "Detalle de vuelto", ""))
-        filaMetodoVuelto.Style("display") = If(vuelto > 0D OrElse esDetalleVuelto, "", "none")
+        lblVuelto.Text = If(vuelto > 0D, "Vuelto: S/. " & FormatoNumero(vuelto), "")
+        filaMetodoVuelto.Style("display") = If(vuelto > 0D, "", "none")
 
-        If vuelto <= 0D AndAlso Not esDetalleVuelto AndAlso ddlMetodoVuelto.Items.Count > 0 Then
+        If vuelto <= 0D AndAlso ddlMetodoVuelto.Items.Count > 0 Then
             ddlMetodoVuelto.SelectedIndex = 0
             SeleccionarMetodoPorNombre(ddlMetodoVuelto, "EFECTIVO")
         End If
@@ -450,6 +504,13 @@ Partial Class wfRegistrarPago
             Return
         End If
 
+        If String.Equals(EstadoPedido, "CANCELADO", StringComparison.OrdinalIgnoreCase) Then
+            MostrarMensaje("El pedido está cancelado: no se puede ingresar dinero. " &
+                           "Si corresponde, registre una devolución.", "mensaje-error")
+            AplicarRestriccionPago()
+            Return
+        End If
+
         Dim monto As Decimal
         If Not TryParseMonto(txtCantidad.Text, monto) OrElse monto <= 0D Then
             MostrarMensaje("Ingrese una cantidad válida mayor a cero.", "mensaje-error")
@@ -462,50 +523,44 @@ Partial Class wfRegistrarPago
             Return
         End If
 
-        ' Un pedido pagado no admite mas dinero. La edicion de un detalle
-        ' existente sigue permitida, pero no puede aumentar el total pagado.
-        Dim saldo As Decimal = SaldoPendiente()
-        If IdDetalleEditando = 0 Then
-            If saldo <= 0D Then
-                PagadoActual = TotalPedido - saldo
-                MostrarMensaje("El pedido ya está pagado en su totalidad. No se pueden registrar nuevos pagos; " &
-                               "puede editar o eliminar los pagos registrados.", "mensaje-error")
-                AplicarRestriccionPago()
-                Return
-            End If
-        ElseIf monto > saldo + 0.01D Then
-            MostrarMensaje("El monto supera el saldo del pago que se está editando. " &
-                           "No puede ingresar dinero adicional.", "mensaje-error")
+        ' Un pedido pagado no admite mas dinero. La edicion de un pago
+        ' existente sigue permitida.
+        If IdDetalleEditando = 0 AndAlso SaldoPendiente() <= 0D Then
+            PagadoActual = TotalPedido
+            MostrarMensaje("El pedido ya está pagado en su totalidad. No se pueden registrar nuevos pagos; " &
+                           "puede editar o eliminar los pagos registrados.", "mensaje-error")
+            AplicarRestriccionPago()
             Return
         End If
 
-        Dim vuelto As Decimal = VueltoDeEntrada()
-        If vuelto > 0D AndAlso IdMetodoVueltoSeleccionado() <= 0 Then
-            MostrarMensaje("Seleccione el método con el que se registrará el vuelto.", "mensaje-error")
-            Return
+        Dim idMetodoVuelto As Integer = 0
+        If VueltoDeEntrada() > 0D Then
+            idMetodoVuelto = IdMetodoVueltoSeleccionado()
+            If idMetodoVuelto <= 0 Then
+                MostrarMensaje("Seleccione el método con el que se registrará el vuelto.", "mensaje-error")
+                Return
+            End If
         End If
 
         Try
+            Dim vueltoFinal As Decimal
             If IdDetalleEditando > 0 Then
-                ' Al editar se conserva el signo original del detalle.
-                Dim esDetalleVuelto As Boolean = MontoEditando < 0D
-                Dim idMetodoDestino As Integer = If(esDetalleVuelto, IdMetodoVueltoSeleccionado(), idMetodo)
-                Dim montoGuardar As Decimal = If(esDetalleVuelto, -monto, monto)
-                objPago.ActualizarDetalle(IdDetalleEditando, idMetodoDestino, montoGuardar)
+                vueltoFinal = objPago.ActualizarPagoConVuelto(IdDetalleEditando, idMetodo, monto, idMetodoVuelto)
                 CargarDetalles()
-                MostrarMensaje("Pago actualizado correctamente.", "mensaje-ok")
+                If vueltoFinal > 0D Then
+                    MostrarMensaje("Pago actualizado. Vuelto ajustado a S/. " &
+                                   FormatoNumero(vueltoFinal) & ".", "mensaje-ok")
+                Else
+                    MostrarMensaje("Pago actualizado correctamente.", "mensaje-ok")
+                End If
             Else
-                objPago.RegistrarDetalle(IdPedidoSeleccionado, idMetodo, monto)
-
-                If vuelto > 0D Then
-                    Dim idMetodoVuelto As Integer = IdMetodoVueltoSeleccionado()
-                    objPago.RegistrarDetalle(IdPedidoSeleccionado, idMetodoVuelto, -vuelto)
-                    CargarDetalles()
+                vueltoFinal = objPago.RegistrarPagoConVuelto(IdPedidoSeleccionado, idMetodo, monto, idMetodoVuelto)
+                CargarDetalles()
+                If vueltoFinal > 0D Then
                     Dim nombreVuelto As String = NombreMetodo(ddlMetodoVuelto, idMetodoVuelto)
-                    MostrarMensaje("Pago registrado. Vuelto de S/. " & FormatoNumero(vuelto) &
+                    MostrarMensaje("Pago registrado. Vuelto de S/. " & FormatoNumero(vueltoFinal) &
                                    " registrado con " & nombreVuelto & " / vuelto.", "mensaje-ok")
                 Else
-                    CargarDetalles()
                     MostrarMensaje("Pago registrado correctamente.", "mensaje-ok")
                 End If
             End If
@@ -530,23 +585,42 @@ Partial Class wfRegistrarPago
             Dim dt As DataTable = objPago.ListarDetallesPorPedido(IdPedidoSeleccionado)
             For Each fila As DataRow In dt.Rows
                 If Convert.ToInt32(fila("id_detalle_pago")) = idDetalle Then
-                    IdDetalleEditando = idDetalle
-                    MontoEditando = ADecimal(fila("monto"))
-
-                    Dim idMetodo As Integer = Convert.ToInt32(fila("id_metodo_pago"))
-                    If MontoEditando < 0D Then
-                        ddlMetodoVuelto.SelectedValue = idMetodo.ToString()
-                    Else
-                        ddlMetodoPago.SelectedValue = idMetodo.ToString()
+                    Dim tipo As String = Convert.ToString(fila("tipo"))
+                    If tipo <> "PAGO" Then
+                        MostrarMensaje("El vuelto y las devoluciones se ajustan automáticamente desde su pago. " &
+                                       "Edite el pago que los originó.", "mensaje-error")
+                        Return
+                    End If
+                    If String.Equals(EstadoPedido, "CANCELADO", StringComparison.OrdinalIgnoreCase) Then
+                        MostrarMensaje("El pedido está cancelado: no se pueden modificar sus pagos. " &
+                                       "Registre una devolución si corresponde.", "mensaje-error")
+                        Return
                     End If
 
-                    txtCantidad.Text = FormatoNumero(Math.Abs(MontoEditando))
+                    IdDetalleEditando = idDetalle
+                    MontoEditando = ADecimal(fila("monto"))
+                    IdPagoEditando = Convert.ToInt32(fila("id_pago"))
+                    MontoVueltoEditando = MontoVueltoDe(dt, IdPagoEditando)
+
+                    ddlMetodoPago.SelectedValue = fila("id_metodo_pago").ToString()
+                    If MontoVueltoEditando < 0D Then
+                        For Each otra As DataRow In dt.Rows
+                            If Convert.ToString(otra("tipo")) = "VUELTO" AndAlso
+                               Not IsDBNull(otra("id_pago_padre")) AndAlso
+                               Convert.ToInt32(otra("id_pago_padre")) = IdPagoEditando Then
+                                ddlMetodoVuelto.SelectedValue = otra("id_metodo_pago").ToString()
+                                Exit For
+                            End If
+                        Next
+                    End If
+
+                    txtCantidad.Text = FormatoNumero(MontoEditando)
                     ActualizarVistaVuelto()
                     AplicarRestriccionPago()
 
                     btnGuardarPago.Text = "Actualizar pago"
                     btnCancelarEdicion.Visible = True
-                    MostrarMensaje("Editando el pago seleccionado.", "mensaje-info")
+                    MostrarMensaje("Editando el pago seleccionado. El vuelto se ajusta automáticamente.", "mensaje-info")
                     Return
                 End If
             Next
@@ -555,46 +629,52 @@ Partial Class wfRegistrarPago
         End Try
     End Sub
 
-    ' Un vuelto siempre se escribe justo despues de su pago, dentro del mismo
-    ' guardado. Recorriendo el listado en su orden original (ascendente) se
-    ' reconoce la pareja: el detalle negativo y el positivo inmediato anterior.
-    Private Function CalcularDetallesBloqueados(dt As DataTable) As List(Of Integer)
-        Dim bloqueados As New List(Of Integer)()
-        If dt Is Nothing OrElse dt.Rows.Count = 0 Then Return bloqueados
-
-        Dim anteriorPositivo As Integer = 0
-        Dim vista As New DataView(dt)
-        vista.Sort = "id_detalle_pago ASC"
-        For Each fila As DataRowView In vista
-            Dim id As Integer = Convert.ToInt32(fila("id_detalle_pago"))
-            Dim monto As Decimal = ADecimal(fila("monto"))
-            If monto < 0D Then
-                If Not bloqueados.Contains(id) Then bloqueados.Add(id)
-                If anteriorPositivo > 0 AndAlso Not bloqueados.Contains(anteriorPositivo) Then
-                    bloqueados.Add(anteriorPositivo)
-                End If
-                anteriorPositivo = 0
-            Else
-                anteriorPositivo = id
+    ' Monto (negativo) del vuelto asociado a una cabecera de pago.
+    Private Function MontoVueltoDe(dt As DataTable, idPago As Integer) As Decimal
+        If dt Is Nothing Then Return 0D
+        For Each fila As DataRow In dt.Rows
+            If Convert.ToString(fila("tipo")) = "VUELTO" AndAlso
+               Not IsDBNull(fila("id_pago_padre")) AndAlso
+               Convert.ToInt32(fila("id_pago_padre")) = idPago Then
+                Return ADecimal(fila("monto"))
             End If
         Next
-        Return bloqueados
+        Return 0D
     End Function
 
     Private Sub EliminarDetalle(idDetalle As Integer)
         Try
-            ' Se vuelve a consultar para no depender solo del ViewState: un
-            ' postback manipulado tampoco debe poder romper la pareja.
-            Dim actual As DataTable = objPago.ListarDetallesPorPedido(IdPedidoSeleccionado)
-            If CalcularDetallesBloqueados(actual).Contains(idDetalle) Then
-                MostrarMensaje("Este pago forma parte de una operación con vuelto y no se puede eliminar. " &
-                               "El pago y su vuelto se registran juntos.", "mensaje-error")
-                Return
-            End If
-
-            objPago.EliminarDetalle(idDetalle)
+            objPago.EliminarPagoConVuelto(idDetalle)
             CargarDetalles()
             MostrarMensaje("Pago eliminado correctamente.", "mensaje-ok")
+        Catch ex As Exception
+            MostrarMensaje(ex.Message, "mensaje-error")
+        End Try
+    End Sub
+
+    Protected Sub btnDevolucion_Click(sender As Object, e As EventArgs)
+        If IdPedidoSeleccionado <= 0 Then
+            MostrarMensaje("Seleccione un pedido.", "mensaje-error")
+            Return
+        End If
+
+        Dim monto As Decimal
+        If Not TryParseMonto(txtDevolucion.Text, monto) OrElse monto <= 0D Then
+            MostrarMensaje("Ingrese un monto de devolución mayor a cero.", "mensaje-error")
+            Return
+        End If
+
+        Dim idMetodo As Integer
+        If Not Integer.TryParse(ddlMetodoDevolucion.SelectedValue, idMetodo) OrElse idMetodo <= 0 Then
+            MostrarMensaje("Seleccione el método de la devolución.", "mensaje-error")
+            Return
+        End If
+
+        Try
+            objPago.RegistrarDevolucion(IdPedidoSeleccionado, idMetodo, monto)
+            txtDevolucion.Text = ""
+            CargarDetalles()
+            MostrarMensaje("Devolución de S/. " & FormatoNumero(monto) & " registrada correctamente.", "mensaje-ok")
         Catch ex As Exception
             MostrarMensaje(ex.Message, "mensaje-error")
         End Try
@@ -610,6 +690,8 @@ Partial Class wfRegistrarPago
     Private Sub LimpiarEntrada()
         IdDetalleEditando = 0
         MontoEditando = 0D
+        IdPagoEditando = 0
+        MontoVueltoEditando = 0D
         txtCantidad.Text = ""
         lblVuelto.Text = ""
         btnCancelarEdicion.Visible = False
@@ -623,6 +705,7 @@ Partial Class wfRegistrarPago
     Private Function ConstruirTablaPagos(dt As DataTable) As DataTable
         Dim salida As New DataTable()
         salida.Columns.Add("id_detalle_pago", GetType(Integer))
+        salida.Columns.Add("tipo", GetType(String))
         salida.Columns.Add("fecha", GetType(DateTime))
         salida.Columns.Add("metodo", GetType(String))
         salida.Columns.Add("monto", GetType(Decimal))
@@ -633,12 +716,24 @@ Partial Class wfRegistrarPago
             Dim monto As Decimal = ADecimal(fila("monto"))
             Dim metodo As String = If(fila("metodo") Is Nothing OrElse IsDBNull(fila("metodo")),
                                       "", fila("metodo").ToString())
+            Dim tipo As String = If(fila("tipo") Is Nothing OrElse IsDBNull(fila("tipo")),
+                                    "PAGO", fila("tipo").ToString())
+
+            Dim etiquetaMetodo As String = metodo
+            Select Case tipo
+                Case "VUELTO"
+                    etiquetaMetodo = metodo & " / vuelto"
+                Case "DEVOLUCION"
+                    etiquetaMetodo = metodo & " / devolución"
+            End Select
+
             Dim nueva As DataRow = salida.NewRow()
             nueva("id_detalle_pago") = Convert.ToInt32(fila("id_detalle_pago"))
+            nueva("tipo") = tipo
             nueva("fecha") = If(fila("fecha") Is DBNull.Value,
                                 DateTime.MinValue,
                                 Convert.ToDateTime(fila("fecha")))
-            nueva("metodo") = If(monto < 0D, metodo & " / vuelto", metodo)
+            nueva("metodo") = etiquetaMetodo
             nueva("monto") = monto
             nueva("monto_mostrar") = FormatoNumero(Math.Abs(monto))
             salida.Rows.Add(nueva)
@@ -657,24 +752,30 @@ Partial Class wfRegistrarPago
         Dim fila As DataRowView = TryCast(e.Row.DataItem, DataRowView)
         If fila Is Nothing Then Return
 
-        Dim esVuelto As Boolean = ADecimal(fila("monto")) < 0D
-        If esVuelto Then e.Row.CssClass = (e.Row.CssClass & " fila-negativa").Trim()
+        Dim tipo As String = Convert.ToString(fila("tipo"))
+        Dim esNegativo As Boolean = ADecimal(fila("monto")) < 0D
+        If esNegativo Then e.Row.CssClass = (e.Row.CssClass & " fila-negativa").Trim()
 
-        Dim id As Integer = Convert.ToInt32(fila("id_detalle_pago"))
+        Dim editar As LinkButton = TryCast(e.Row.FindControl("lnkEditarPago"), LinkButton)
+        Dim eliminar As LinkButton = TryCast(e.Row.FindControl("lnkEliminarPago"), LinkButton)
         Dim etiqueta As Label = TryCast(e.Row.FindControl("lblBloqueado"), Label)
-        If DetallesBloqueados.Contains(id) Then
-            ' Editar el monto de cualquiera de las dos filas dejaría el vuelto
-            ' descuadrado, así que se bloquean las dos acciones.
-            Dim editar As LinkButton = TryCast(e.Row.FindControl("lnkEditarPago"), LinkButton)
-            Dim eliminar As LinkButton = TryCast(e.Row.FindControl("lnkEliminarPago"), LinkButton)
+        Dim cancelado As Boolean = String.Equals(EstadoPedido, "CANCELADO", StringComparison.OrdinalIgnoreCase)
+
+        ' El vuelto es automático. Una devolución se puede eliminar para corregirla.
+        If tipo = "VUELTO" OrElse cancelado Then
             If editar IsNot Nothing Then editar.Visible = False
             If eliminar IsNot Nothing Then eliminar.Visible = False
-            If etiqueta IsNot Nothing Then
-                etiqueta.Text = If(esVuelto, "Vuelto", "Con vuelto")
+        ElseIf tipo = "DEVOLUCION" Then
+            If editar IsNot Nothing Then editar.Visible = False
+        End If
+
+        If etiqueta IsNot Nothing Then
+            If tipo = "PAGO" Then
+                etiqueta.Visible = False
+            Else
+                etiqueta.Text = If(tipo = "DEVOLUCION", "Devolución", "Vuelto")
                 etiqueta.Visible = True
             End If
-        ElseIf etiqueta IsNot Nothing Then
-            etiqueta.Visible = False
         End If
     End Sub
 

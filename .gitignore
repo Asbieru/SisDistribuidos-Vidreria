@@ -393,3 +393,9 @@ capaWSLibrerias/obj/
 **/capaNegocio.dll
 **/capaNegocio.pdb
 **/capaNegocio.xml
+
+# ------------------------------------------------------------
+# Secreto de reCAPTCHA v3 del login. Solo debe existir en el servidor.
+# La Site Key si esta en Web.config porque es publica.
+# ------------------------------------------------------------
+capaWeb/recaptcha.config

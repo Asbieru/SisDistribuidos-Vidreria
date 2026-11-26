@@ -1,7 +1,27 @@
-﻿Imports System.Data
+﻿Imports System.Collections.Generic
+Imports System.Configuration
+Imports System.Data
+Imports System.Globalization
+Imports System.IO
+Imports System.Net
+Imports System.Text
+Imports System.Web.Script.Serialization
 
 Partial Class wfLogin
     Inherits System.Web.UI.Page
+
+    ' La Site Key se usa desde el markup para cargar el script de reCAPTCHA.
+    Protected ReadOnly Property RecaptchaSiteKey As String
+        Get
+            Return ValorConfig("Recaptcha.SiteKey")
+        End Get
+    End Property
+
+    Private Function ValorConfig(clave As String, Optional porDefecto As String = "") As String
+        Dim valor As String = ConfigurationManager.AppSettings(clave)
+        If valor Is Nothing Then Return porDefecto
+        Return valor
+    End Function
 
     Dim objUsuario As New Usuario()
 
@@ -19,9 +39,123 @@ Partial Class wfLogin
         End If
     End Sub
 
+    Private Function ValidarRecaptcha(ByRef mensajeError As String) As Boolean
+        mensajeError = ""
+
+        If Not String.Equals(ValorConfig("Recaptcha.Enabled", "true"), "true", StringComparison.OrdinalIgnoreCase) Then
+            Return True
+        End If
+
+        Dim token As String = ""
+        If hfRecaptchaToken IsNot Nothing Then
+            token = If(hfRecaptchaToken.Value, "").Trim()
+            hfRecaptchaToken.Value = ""
+        End If
+
+        If token.Length = 0 Then
+            mensajeError = "No se pudo validar la solicitud. Intente nuevamente."
+            Return False
+        End If
+
+        Dim secreto As String = ValorConfig("Recaptcha.SecretKey")
+        If secreto.Length = 0 Then
+            mensajeError = "No se pudo validar la solicitud. Intente nuevamente."
+            Return False
+        End If
+
+        Try
+            Dim url As String = ValorConfig("Recaptcha.VerifyUrl", "https://www.google.com/recaptcha/api/siteverify")
+            Dim cuerpo As String = "secret=" & Uri.EscapeDataString(secreto) &
+                                   "&response=" & Uri.EscapeDataString(token) &
+                                   "&remoteip=" & Uri.EscapeDataString(If(Request.UserHostAddress, ""))
+
+            ServicePointManager.SecurityProtocol = ServicePointManager.SecurityProtocol Or SecurityProtocolType.Tls12
+
+            Dim solicitud As HttpWebRequest = DirectCast(WebRequest.Create(url), HttpWebRequest)
+            solicitud.Method = "POST"
+            solicitud.ContentType = "application/x-www-form-urlencoded"
+            solicitud.Timeout = 5000
+            solicitud.ReadWriteTimeout = 5000
+
+            Using flujo As Stream = solicitud.GetRequestStream()
+                Dim datosBytes As Byte() = Encoding.UTF8.GetBytes(cuerpo)
+                flujo.Write(datosBytes, 0, datosBytes.Length)
+            End Using
+
+            Dim contenido As String = ""
+            Using respuesta As HttpWebResponse = DirectCast(solicitud.GetResponse(), HttpWebResponse)
+                Using lector As New StreamReader(respuesta.GetResponseStream(), Encoding.UTF8)
+                    contenido = lector.ReadToEnd()
+                End Using
+            End Using
+
+            Dim datos As Dictionary(Of String, Object) =
+                New JavaScriptSerializer().Deserialize(Of Dictionary(Of String, Object))(contenido)
+
+            Dim exito As Boolean = False
+            If datos.ContainsKey("success") AndAlso datos("success") IsNot Nothing Then
+                Boolean.TryParse(datos("success").ToString(), exito)
+            End If
+            If Not exito Then
+                mensajeError = "No se pudo validar la solicitud. Intente nuevamente."
+                Return False
+            End If
+
+            Dim accionEsperada As String = ValorConfig("Recaptcha.Action", "login")
+            Dim accion As String = ""
+            If datos.ContainsKey("action") AndAlso datos("action") IsNot Nothing Then accion = datos("action").ToString()
+            If Not String.Equals(accion, accionEsperada, StringComparison.OrdinalIgnoreCase) Then
+                mensajeError = "No se pudo validar la solicitud. Intente nuevamente."
+                Return False
+            End If
+
+            Dim puntajeMinimo As Decimal = 0.5D
+            Decimal.TryParse(ValorConfig("Recaptcha.MinScore", "0.5"), NumberStyles.Any,
+                             CultureInfo.InvariantCulture, puntajeMinimo)
+            Dim puntaje As Decimal = 0D
+            If datos.ContainsKey("score") AndAlso datos("score") IsNot Nothing Then
+                Decimal.TryParse(datos("score").ToString(), NumberStyles.Any,
+                                 CultureInfo.InvariantCulture, puntaje)
+            End If
+            If puntaje < puntajeMinimo Then
+                mensajeError = "No se pudo validar la solicitud. Intente nuevamente."
+                Return False
+            End If
+
+            Dim hostnames As String() = ValorConfig("Recaptcha.Hostnames").Split(","c)
+            Dim hostname As String = ""
+            If datos.ContainsKey("hostname") AndAlso datos("hostname") IsNot Nothing Then hostname = datos("hostname").ToString()
+            Dim hostnameValido As Boolean = False
+            For Each permitido As String In hostnames
+                If String.Equals(permitido.Trim(), hostname, StringComparison.OrdinalIgnoreCase) Then
+                    hostnameValido = True
+                    Exit For
+                End If
+            Next
+            If Not hostnameValido Then
+                mensajeError = "No se pudo validar la solicitud. Intente nuevamente."
+                Return False
+            End If
+
+            Return True
+        Catch ex As Exception
+            ' No se expone el mensaje de error ni el secreto al usuario.
+            System.Diagnostics.Trace.TraceWarning("reCAPTCHA: error al verificar (" & ex.GetType().Name & ")")
+            mensajeError = "No se pudo validar la solicitud. Intente nuevamente."
+            Return False
+        End Try
+    End Function
+
     Protected Sub btnIngresar_Click(sender As Object, e As EventArgs)
         Try
             lblMensaje.CssClass = "mensaje-error"
+
+            Dim mensajeCaptcha As String = ""
+            If Not ValidarRecaptcha(mensajeCaptcha) Then
+                lblMensaje.Text = mensajeCaptcha
+                Return
+            End If
+
             Dim usuario As String = txtUsuario.Text.Trim()
 
             If usuario.Length = 0 Then

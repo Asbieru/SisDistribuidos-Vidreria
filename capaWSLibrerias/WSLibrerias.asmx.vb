@@ -377,7 +377,7 @@ Public Class WSLibrerias
         {"Proveedor", "Listar,Buscar,Obtener,Insertar,Actualizar,DocumentoCoincidente,TieneCompras,Eliminar,ValidarDatos"},
         {"Producto", "Listar,ListarPorCategoria,ListarTodos,Obtener,ObtenerIdPorTipoColor,ExisteProducto,Insertar,Actualizar,Eliminar,CambiarEstado,Inactivar,TieneVariantes,TarifaSugerida"},
         {"Pedido", "Obtener,Listar,ListarDetallado,CambiarEstado,ActualizarEstadoPago,ListarItems,ListarDetalles,ListarItemsDetallado,ListarDetallesDeItem,ResolverDetalle,MarcarItemRoto,CancelarItem,Cancelar,Terminar,TerminarItem,RecalcularEstados,TarifaSugerida,Registrar"},
-        {"Pago", "ListarPorPedido,ListarPorPago,ListarDetallesPorPedido,RegistrarDetalle,TotalPagado,UltimoMonto,ActualizarDetalle,EliminarDetalle,Insertar,InsertarDetallePago"},
+        {"Pago", "ListarPorPedido,ListarPorPago,ListarDetallesPorPedido,RegistrarDetalle,TotalPagado,TotalDevuelto,TotalVuelto,UltimoMonto,ActualizarDetalle,EliminarDetalle,Insertar,InsertarDetallePago,RegistrarPagoConVuelto,ActualizarPagoConVuelto,EliminarPagoConVuelto,RegistrarDevolucion"},
         {"Compra", "Listar,ListarPorFecha,ObtenerCompra,ObtenerDetalleParaEditar,GuardarCompra,EliminarCompra,CalcularImportes"},
         {"Inventario", "ListarResumen,ContarBajoMinimo,ListarVariantes,ListarTodasLasVariantes,ActualizarStockMinimo,ListarMovimientos,EsVidrio"},
         {"InventarioPieza", "Listar,Obtener,BuscarDisponibles,InsertarInicial,MarcarEstado,Cortar,MarcarVendida"},
@@ -385,7 +385,7 @@ Public Class WSLibrerias
         {"Permiso", "listarTiposPermiso,listarPermisosUsuario,listarPermisosRol,codigosPermisoUsuario,guardarPermisos,asignarPermisosRol,contarOtrosConPermiso"},
         {"ProductoVariante", "Listar,ListarColoresAluminio,ListarTiposAluminio,ListarColoresVidrio,ListarEspesoresVidrio,ListarEspesoresPorProducto,ObtenerPrecioUnitario,ObtenerPrecioUnitarioPorProducto,ObtenerVariantePorProducto,ResolverVariantePorProducto"},
         {"Venta", "Listar"},
-        {"Reporte", "FlujoInventario,PedidosDelMes,ComprasPorTiempo,ClientesConPendientes,DetallePendientesPorCliente"},
+        {"Reporte", "FlujoInventario,PedidosDelMes,ComprasPorTiempo,IngresosDelMes,CobrosPorMetodo,ClientesConPendientes,DetallePendientesPorCliente"},
         {"InventarioCaja", "Listar,NombreUnidad,ObtenerStock,SumarStock,RestarStock,AjustarStock"},
         {"ModeloVentanaWS", "ListarActivos,CargarPorId,Calcular"}
     }

@@ -129,12 +129,9 @@
                                 <asp:HyperLink ID="lnkReporteFlujo" runat="server"
                                     NavigateUrl="~/wfReporteFlujoInventario.aspx"
                                     CssClass="menu-opcion">Flujo de Inventario</asp:HyperLink>
-                                <asp:HyperLink ID="lnkReportePedidosMes" runat="server"
-                                    NavigateUrl="~/wfReportePedidosMes.aspx"
-                                    CssClass="menu-opcion">Pedidos del Mes</asp:HyperLink>
-                                <asp:HyperLink ID="lnkReporteCompras" runat="server"
-                                    NavigateUrl="~/wfReporteComprasTiempo.aspx"
-                                    CssClass="menu-opcion">Compras por Tiempo</asp:HyperLink>
+                                <asp:HyperLink ID="lnkReporteIngresos" runat="server"
+                                    NavigateUrl="~/wfReporteIngresosMes.aspx"
+                                    CssClass="menu-opcion">Ingresos y Egresos</asp:HyperLink>
                                 <asp:HyperLink ID="lnkReportePendientes" runat="server"
                                     NavigateUrl="~/wfReportePendientes.aspx"
                                     CssClass="menu-opcion">Pendientes y Pagos</asp:HyperLink>
