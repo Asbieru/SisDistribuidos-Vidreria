@@ -124,6 +124,7 @@ Partial Class wfPedidoUnitario
                 grvDetalles.DataSource = Detalles
                 grvDetalles.DataBind()
             End If
+            ActualizarAccionesItem()
         End If
     End Sub
 
@@ -216,7 +217,7 @@ Partial Class wfPedidoUnitario
             End If
 
             BindItems()
-            ActualizarBotonTerminar()
+            ActualizarAccionesItem()
 
             If IdItemSeleccionado > 0 Then
                 SeleccionarItem(IdItemSeleccionado)
@@ -315,6 +316,7 @@ Partial Class wfPedidoUnitario
 
         ' Actualiza el resaltado de la pestaña activa dentro de la pagina actual.
         BindItems()
+        ActualizarAccionesItem()
     End Sub
 
     ' ------------------------- Materiales del item -------------------------
@@ -413,9 +415,10 @@ Partial Class wfPedidoUnitario
         End If
 
         ' Item roto es una accion por fila: solo tiene sentido sobre el material
-        ' de esa fila y solo si ya tiene una pieza en inventario.
+        ' de esa fila y solo si ya tiene una pieza en inventario. Con el pedido
+        ' completo terminado ya no se permite romper materiales.
         If roto IsNot Nothing Then
-            If sinPieza Then
+            If sinPieza OrElse PedidoCompletado Then
                 roto.Visible = False
             Else
                 roto.CommandName = "ItemRoto"
@@ -653,6 +656,49 @@ Partial Class wfPedidoUnitario
         End Try
     End Sub
 
+    ' Un pedido esta completo cuando todos sus items activos quedaron COMPLETADO.
+    ' No se usa fecha_termino: al marcar un item roto, el pedido vuelve a tener
+    ' trabajo pendiente y esa fecha anterior queda desactualizada.
+    Private ReadOnly Property PedidoCompletado As Boolean
+        Get
+            If ItemsDelPedido Is Nothing OrElse ItemsDelPedido.Rows.Count = 0 Then Return False
+            If Not ItemsDelPedido.Columns.Contains("estado") Then Return False
+
+            For Each fila As DataRow In ItemsDelPedido.Rows
+                If Not String.Equals(TextoDe(fila("estado")), "COMPLETADO",
+                                     StringComparison.OrdinalIgnoreCase) Then
+                    Return False
+                End If
+            Next
+            Return True
+        End Get
+    End Property
+
+    Private Function EstadoItemSeleccionado() As String
+        If ItemsDelPedido Is Nothing OrElse IdItemSeleccionado <= 0 Then Return ""
+        For Each fila As DataRow In ItemsDelPedido.Rows
+            If Convert.ToInt32(fila("id_item")) = IdItemSeleccionado Then
+                Return TextoDe(fila("estado"))
+            End If
+        Next
+        Return ""
+    End Function
+
+    ' Con el pedido completo terminado no se permite ninguna accion. Si solo el
+    ' item abierto esta COMPLETADO, se ocultan Terminar/Cancelar item, pero se
+    ' mantiene Item roto: al romperlo el item vuelve a quedar pendiente y los
+    ' botones reaparecen.
+    Private Sub ActualizarAccionesItem()
+        Dim pedidoCompleto As Boolean = PedidoCompletado
+        Dim itemCompletado As Boolean =
+            String.Equals(EstadoItemSeleccionado(), "COMPLETADO", StringComparison.OrdinalIgnoreCase)
+
+        btnTerminarItem.Visible = Not pedidoCompleto AndAlso Not itemCompletado
+        btnCancelarItem.Visible = Not pedidoCompleto AndAlso Not itemCompletado
+
+        ActualizarBotonTerminar()
+    End Sub
+
     ' El boton solo aparece cuando ningun item sigue PENDIENTE, es decir cuando
     ' todos sus materiales fueron comprados/registrados o estan en inventario.
     Private Sub ActualizarBotonTerminar()
@@ -660,6 +706,11 @@ Partial Class wfPedidoUnitario
         btnTerminarPedido.ToolTip = "Todos los ítems deben estar comprados y registrados como suyos."
         If ItemsDelPedido Is Nothing OrElse ItemsDelPedido.Rows.Count = 0 Then Return
         If Not ItemsDelPedido.Columns.Contains("estado") Then Return
+
+        If PedidoCompletado Then
+            btnTerminarPedido.ToolTip = "El pedido ya está terminado."
+            Return
+        End If
 
         For Each fila As DataRow In ItemsDelPedido.Rows
             If TextoDe(fila("estado")) = "PENDIENTE" Then Return

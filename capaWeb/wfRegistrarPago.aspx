@@ -1,11 +1,15 @@
-﻿<%@ Page Title="Registrar Pago" Language="VB" MasterPageFile="~/plantilla.master" AutoEventWireup="false" CodeFile="wfRegistrarPago.aspx.vb" Inherits="wfRegistrarPago" %>
+﻿<%@ Page Title="Registrar Pago" Language="VB" MasterPageFile="~/plantilla.master" AutoEventWireup="false" CodeFile="wfRegistrarPago.aspx.vb" Inherits="wfRegistrarPago" MaintainScrollPositionOnPostBack="true" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" Runat="Server">
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
     <h1 class="titulo-pagina">Registrar Pago</h1>
-    <p class="subtitulo-pagina">Seleccione un pedido y registre sus pagos parciales o el pago total.</p>
+    <p class="subtitulo-pagina">
+        Seleccione un pedido y registre sus pagos parciales o el pago total. Si la cantidad
+        supera el saldo, el vuelto se calcula automáticamente y se registra con el método
+        que usted elija.
+    </p>
 
     <asp:Panel ID="pnlBusqueda" runat="server" CssClass="panel">
         <h2 class="panel-titulo">Seleccionar pedido</h2>
@@ -76,7 +80,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td class="etiqueta">Total devuelto :</td>
+                    <td class="etiqueta">Devoluciones registradas :</td>
                     <td class="dato"><asp:Label ID="lblDevuelto" runat="server"></asp:Label></td>
                 </tr>
                 <tr>
@@ -98,8 +102,10 @@
                 <tr id="filaMetodoVuelto" runat="server" Style="display: none;">
                     <td class="etiqueta">Método del vuelto :</td>
                     <td class="dato">
-                        <asp:DropDownList ID="ddlMetodoVuelto" runat="server" CssClass="campo campo-corto"></asp:DropDownList>
-                        <span class="texto-ayuda">El vuelto se calcula y se registra automáticamente si la cantidad supera el saldo.</span>
+                        <asp:DropDownList ID="ddlMetodoVuelto" runat="server" CssClass="campo campo-corto"
+                            AutoPostBack="True" OnSelectedIndexChanged="ddlMetodoVuelto_SelectedIndexChanged">
+                        </asp:DropDownList>
+                        <span class="texto-ayuda">Elija con qué método se entregará el vuelto. Si no lo elige, el pago no se registra.</span>
                     </td>
                 </tr>
             </table>
@@ -108,7 +114,7 @@
                 Text="El pedido ya está pagado en su totalidad. Puede editar o eliminar los pagos registrados, pero no registrar nuevos montos." />
 
             <asp:Label ID="lblAvisoCancelado" runat="server" CssClass="mensaje-error" Visible="False"
-                Text="Pedido cancelado: no se puede ingresar dinero. Solo puede registrar devoluciones de lo cobrado." />
+                Text="Pedido cancelado: no se puede ingresar dinero ni modificar sus pagos." />
 
             <div class="acciones">
                 <asp:Button ID="btnGuardarPago" runat="server" CssClass="boton boton-primario"
@@ -121,34 +127,6 @@
             </div>
             <asp:Label ID="lblMensaje" runat="server"></asp:Label>
         </div>
-
-        <asp:Panel ID="pnlDevolucion" runat="server" CssClass="panel" Visible="False">
-            <h2 class="panel-titulo">Devolución de dinero</h2>
-            <p class="texto-intro">
-                Registre el dinero que se devuelve al cliente. Se descuenta de lo cobrado y queda
-                como egreso en el reporte de ingresos y egresos.
-            </p>
-            <table class="tabla-formulario" cellpadding="0" cellspacing="0">
-                <tr>
-                    <td class="etiqueta">Monto a devolver (S/.) :</td>
-                    <td class="dato">
-                        <asp:TextBox ID="txtDevolucion" runat="server" CssClass="campo campo-corto"
-                            MaxLength="20"></asp:TextBox>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="etiqueta">Método de devolución :</td>
-                    <td class="dato">
-                        <asp:DropDownList ID="ddlMetodoDevolucion" runat="server"
-                            CssClass="campo campo-corto"></asp:DropDownList>
-                    </td>
-                </tr>
-            </table>
-            <div class="acciones">
-                <asp:Button ID="btnDevolucion" runat="server" CssClass="boton boton-peligro"
-                    Text="Registrar devolución" OnClick="btnDevolucion_Click" />
-            </div>
-        </asp:Panel>
 
         <div class="panel">
             <h2 class="panel-titulo">Pagos registrados</h2>

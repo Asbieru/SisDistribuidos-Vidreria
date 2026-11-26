@@ -3,7 +3,8 @@
 <asp:Content ID="Contenido" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <h1 class="titulo-pagina">Reporte de Ingresos y Egresos</h1>
     <p class="subtitulo-pagina">
-        Entradas por cobros y salidas por compras, vueltos y devoluciones del mes seleccionado.
+        Entradas por cobros (incluye pagos parciales) y salidas por compras, vueltos y
+        devoluciones del mes seleccionado.
     </p>
 
     <asp:Label ID="lblMensaje" runat="server" CssClass="mensaje-error" />

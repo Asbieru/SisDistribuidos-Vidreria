@@ -31,7 +31,7 @@ Public Class Pago
             "inner join pagos p on p.id_pago = dp.id_pago " &
             "inner join metodos_pago mp on mp.id_metodo_pago = dp.id_metodo_pago " &
             "where p.id_pedido = " & idPedido & " " &
-            "order by p.fecha, dp.id_detalle_pago")
+            "order by p.fecha desc, dp.id_detalle_pago desc")
     End Function
 
     ' ------------------------- Totales -------------------------
@@ -94,6 +94,21 @@ Public Class Pago
     End Function
 
     Public Function InsertarDetallePago(idPago As Integer, idMetodoPago As Integer, monto As Decimal) As Integer
+        ' El metodo es publico: un pedido cancelado solo admite movimientos de devolucion.
+        Dim dtTipo As DataTable = objMan.listarComando(
+            "select p.tipo, pe.estado from pagos p " &
+            "inner join pedidos pe on pe.id_pedido = p.id_pedido " &
+            "where p.id_pago = " & idPago)
+        If dtTipo IsNot Nothing AndAlso dtTipo.Rows.Count > 0 Then
+            Dim tipo As String = Convert.ToString(dtTipo.Rows(0)("tipo"))
+            Dim estado As String = Convert.ToString(dtTipo.Rows(0)("estado"))
+            If String.Equals(estado, "CANCELADO", StringComparison.OrdinalIgnoreCase) AndAlso
+               tipo <> "DEVOLUCION" Then
+                Throw New Exception("El pedido está cancelado: no se puede ingresar dinero. " &
+                                    "Solo se permiten devoluciones.")
+            End If
+        End If
+
         Dim sql As String = "insert into detalle_pago (id_pago, id_metodo_pago, monto) values (" &
             idPago & "," & idMetodoPago & "," & Num(monto) & "); select scope_identity() as id"
         Dim dt As DataTable = objMan.listarComando(sql)
@@ -108,17 +123,17 @@ Public Class Pago
         If monto <= 0D Then Throw New Exception("Ingrese una cantidad válida mayor a cero.")
         If idMetodoPago <= 0 Then Throw New Exception("Seleccione un método de pago.")
 
-        Dim totalPedido As Decimal = TotalPedido(idPedido)
-        Dim saldo As Decimal = totalPedido - TotalPagado(idPedido)
+        Dim totalDelPedido As Decimal = TotalPedido(idPedido)
+        Dim saldo As Decimal = totalDelPedido - TotalPagado(idPedido)
         If saldo < 0D Then saldo = 0D
 
-        If totalPedido > 0D AndAlso saldo <= 0.005D Then
+        If totalDelPedido > 0D AndAlso saldo <= 0.005D Then
             Throw New Exception("El pedido ya está pagado en su totalidad. " &
-                                "No se pueden registrar nuevos pagos; puede editar o eliminar los pagos existentes.")
+                        "No se pueden registrar nuevos pagos; puede editar o eliminar los pagos existentes.")
         End If
 
         Dim vuelto As Decimal = 0D
-        If totalPedido > 0D AndAlso monto > saldo Then vuelto = monto - saldo
+        If totalDelPedido > 0D AndAlso monto > saldo Then vuelto = monto - saldo
 
         If vuelto > 0D AndAlso idMetodoVuelto <= 0 Then
             Throw New Exception("Seleccione el método con el que se registrará el vuelto.")
@@ -218,6 +233,13 @@ Public Class Pago
 
         Dim idPago As Integer = CInt(movimiento("id_pago"))
         If tipo = "PAGO" Then
+            Dim dtDev As DataTable = objMan.listarComando(
+                "select count(*) as n from pagos where tipo = N'DEVOLUCION' and id_pago_padre = " & idPago)
+            If dtDev IsNot Nothing AndAlso dtDev.Rows.Count > 0 AndAlso CInt(dtDev.Rows(0)("n")) > 0 Then
+                Throw New Exception("Este pago tiene devoluciones registradas. " &
+                                    "Elimine primero las devoluciones y vuelva a intentarlo.")
+            End If
+
             Dim hijo As DataRow = VueltoDePago(idPago)
             If hijo IsNot Nothing Then EliminarPagoInterno(CInt(hijo("id_pago")))
         End If
@@ -341,8 +363,7 @@ Public Class Pago
 
     Private Sub ValidarPedidoNoCancelado(idPedido As Integer)
         If String.Equals(EstadoPedido(idPedido), "CANCELADO", StringComparison.OrdinalIgnoreCase) Then
-            Throw New Exception("El pedido está cancelado: no se puede ingresar dinero. " &
-                                "Si corresponde, registre una devolución.")
+            Throw New Exception("El pedido está cancelado: no se puede ingresar dinero.")
         End If
     End Sub
 End Class

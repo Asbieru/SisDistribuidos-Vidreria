@@ -282,7 +282,6 @@ Partial Class wfRegistrarPago
             Dim dt As DataTable = objMetodo.AsegurarPorDefecto()
             Dim pagoAnterior As String = ddlMetodoPago.SelectedValue
             Dim vueltoAnterior As String = ddlMetodoVuelto.SelectedValue
-            Dim devolucionAnterior As String = ddlMetodoDevolucion.SelectedValue
 
             ddlMetodoPago.DataSource = dt
             ddlMetodoPago.DataTextField = "nombre"
@@ -294,21 +293,17 @@ Partial Class wfRegistrarPago
             ddlMetodoVuelto.DataValueField = "id_metodo_pago"
             ddlMetodoVuelto.DataBind()
 
-            ddlMetodoDevolucion.DataSource = dt
-            ddlMetodoDevolucion.DataTextField = "nombre"
-            ddlMetodoDevolucion.DataValueField = "id_metodo_pago"
-            ddlMetodoDevolucion.DataBind()
+            ' El vuelto no se asume en efectivo: el usuario debe elegir con qué
+            ' método se entrega. Sin esa elección no se registra el pago.
+            ddlMetodoVuelto.Items.Insert(0, New ListItem("-- Seleccione el método del vuelto --", ""))
 
             If pagoAnterior <> "" Then ddlMetodoPago.SelectedValue = pagoAnterior
+
+            ddlMetodoVuelto.ClearSelection()
+            ddlMetodoVuelto.SelectedIndex = 0
             If vueltoAnterior <> "" Then
-                ddlMetodoVuelto.SelectedValue = vueltoAnterior
-            Else
-                SeleccionarMetodoPorNombre(ddlMetodoVuelto, "EFECTIVO")
-            End If
-            If devolucionAnterior <> "" Then
-                ddlMetodoDevolucion.SelectedValue = devolucionAnterior
-            Else
-                SeleccionarMetodoPorNombre(ddlMetodoDevolucion, "EFECTIVO")
+                Dim itemVuelto As ListItem = ddlMetodoVuelto.Items.FindByValue(vueltoAnterior)
+                If itemVuelto IsNot Nothing Then itemVuelto.Selected = True
             End If
 
             If dt Is Nothing OrElse dt.Rows.Count = 0 Then
@@ -407,6 +402,7 @@ Partial Class wfRegistrarPago
 
         txtCantidad.Enabled = Not bloquearNuevoPago
         ddlMetodoPago.Enabled = Not bloquearNuevoPago
+        ddlMetodoVuelto.Enabled = Not bloquearNuevoPago
         btnGuardarPago.Enabled = Not bloquearNuevoPago
 
         If bloquearNuevoPago Then
@@ -416,16 +412,13 @@ Partial Class wfRegistrarPago
             btnGuardarPago.Text = "Guardar pago"
             btnCancelarEdicion.Visible = False
         End If
-
-        ' Solo se puede devolver si hay dinero cobrado pendiente de devolución.
-        Dim puedeDevolver As Boolean = IdPedidoSeleccionado > 0 AndAlso PagadoActual > 0D
-        pnlDevolucion.Visible = puedeDevolver
-        txtDevolucion.Enabled = puedeDevolver
-        ddlMetodoDevolucion.Enabled = puedeDevolver
-        btnDevolucion.Enabled = puedeDevolver
     End Sub
 
     Protected Sub ddlMetodoPago_SelectedIndexChanged(sender As Object, e As EventArgs)
+        ActualizarVistaVuelto()
+    End Sub
+
+    Protected Sub ddlMetodoVuelto_SelectedIndexChanged(sender As Object, e As EventArgs)
         ActualizarVistaVuelto()
     End Sub
 
@@ -453,6 +446,9 @@ Partial Class wfRegistrarPago
     End Function
 
     Private Function VueltoDeEntrada() As Decimal
+        ' Igual que la capa de negocio: un pedido sin total no genera vuelto.
+        If TotalPedido <= 0D Then Return 0D
+
         Dim monto As Decimal
         If Not TryParseMonto(txtCantidad.Text, monto) OrElse monto <= 0D Then Return 0D
 
@@ -461,28 +457,37 @@ Partial Class wfRegistrarPago
         Return monto - saldo
     End Function
 
-    ' El vuelto ya no se escribe: se calcula al superar el saldo y el usuario
-    ' solo elige con que metodo se registra la devolucion.
+    ' El vuelto es automático, pero el método con el que se entrega no: lo elige
+    ' el usuario. Mientras no lo elija se le avisa y el pago no se registra.
     Private Sub ActualizarVistaVuelto()
         Dim vuelto As Decimal = VueltoDeEntrada()
 
-        lblVuelto.Text = If(vuelto > 0D, "Vuelto: S/. " & FormatoNumero(vuelto), "")
-        filaMetodoVuelto.Style("display") = If(vuelto > 0D, "", "none")
-
-        If vuelto <= 0D AndAlso ddlMetodoVuelto.Items.Count > 0 Then
-            ddlMetodoVuelto.SelectedIndex = 0
-            SeleccionarMetodoPorNombre(ddlMetodoVuelto, "EFECTIVO")
+        If vuelto > 0D Then
+            filaMetodoVuelto.Style("display") = ""
+            Dim nombre As String = NombreMetodoSeleccionado(ddlMetodoVuelto)
+            lblVuelto.CssClass = "mensaje-info"
+            If nombre = "" Then
+                lblVuelto.Text = "Vuelto: S/. " & FormatoNumero(vuelto) &
+                                 ". Seleccione el método con el que se entregará el vuelto; " &
+                                 "mientras no lo elija, el pago no se registrará."
+            Else
+                lblVuelto.Text = "Vuelto: S/. " & FormatoNumero(vuelto) &
+                                 " y se registrará con " & nombre & " / vuelto."
+            End If
+        Else
+            lblVuelto.CssClass = "texto-ayuda"
+            lblVuelto.Text = ""
+            filaMetodoVuelto.Style("display") = "none"
+            ddlMetodoVuelto.ClearSelection()
+            If ddlMetodoVuelto.Items.Count > 0 Then ddlMetodoVuelto.SelectedIndex = 0
         End If
     End Sub
 
-    Private Sub SeleccionarMetodoPorNombre(combo As DropDownList, nombre As String)
-        For Each item As ListItem In combo.Items
-            If item.Text.Trim().Equals(nombre, StringComparison.OrdinalIgnoreCase) Then
-                combo.SelectedValue = item.Value
-                Return
-            End If
-        Next
-    End Sub
+    Private Function NombreMetodoSeleccionado(combo As DropDownList) As String
+        If combo.SelectedItem Is Nothing Then Return ""
+        If String.IsNullOrEmpty(combo.SelectedValue) Then Return ""
+        Return combo.SelectedItem.Text.Trim()
+    End Function
 
     Private Function IdMetodoSeleccionado() As Integer
         Dim id As Integer
@@ -505,8 +510,8 @@ Partial Class wfRegistrarPago
         End If
 
         If String.Equals(EstadoPedido, "CANCELADO", StringComparison.OrdinalIgnoreCase) Then
-            MostrarMensaje("El pedido está cancelado: no se puede ingresar dinero. " &
-                           "Si corresponde, registre una devolución.", "mensaje-error")
+            MostrarMensaje("El pedido está cancelado: no se puede ingresar dinero ni modificar sus pagos.",
+                           "mensaje-error")
             AplicarRestriccionPago()
             Return
         End If
@@ -533,11 +538,16 @@ Partial Class wfRegistrarPago
             Return
         End If
 
+        Dim vueltoPendiente As Decimal = VueltoDeEntrada()
         Dim idMetodoVuelto As Integer = 0
-        If VueltoDeEntrada() > 0D Then
+        If vueltoPendiente > 0D Then
             idMetodoVuelto = IdMetodoVueltoSeleccionado()
             If idMetodoVuelto <= 0 Then
-                MostrarMensaje("Seleccione el método con el que se registrará el vuelto.", "mensaje-error")
+                ActualizarVistaVuelto()
+                MostrarMensaje("El pago genera un vuelto de S/ " & FormatoNumero(vueltoPendiente) &
+                               ". Elija con qué método se entregará el vuelto; " &
+                               "mientras no lo seleccione, el pago no se registra.",
+                               "mensaje-error")
                 Return
             End If
         End If
@@ -548,8 +558,9 @@ Partial Class wfRegistrarPago
                 vueltoFinal = objPago.ActualizarPagoConVuelto(IdDetalleEditando, idMetodo, monto, idMetodoVuelto)
                 CargarDetalles()
                 If vueltoFinal > 0D Then
-                    MostrarMensaje("Pago actualizado. Vuelto ajustado a S/. " &
-                                   FormatoNumero(vueltoFinal) & ".", "mensaje-ok")
+                    Dim nombreVuelto As String = NombreMetodo(ddlMetodoVuelto, idMetodoVuelto)
+                    MostrarMensaje("Pago actualizado. Vuelto de S/. " & FormatoNumero(vueltoFinal) &
+                                   " registrado con " & nombreVuelto & " / vuelto.", "mensaje-ok")
                 Else
                     MostrarMensaje("Pago actualizado correctamente.", "mensaje-ok")
                 End If
@@ -592,8 +603,8 @@ Partial Class wfRegistrarPago
                         Return
                     End If
                     If String.Equals(EstadoPedido, "CANCELADO", StringComparison.OrdinalIgnoreCase) Then
-                        MostrarMensaje("El pedido está cancelado: no se pueden modificar sus pagos. " &
-                                       "Registre una devolución si corresponde.", "mensaje-error")
+                        MostrarMensaje("El pedido está cancelado: no se pueden ingresar ni modificar sus pagos.",
+                                       "mensaje-error")
                         Return
                     End If
 
@@ -647,34 +658,6 @@ Partial Class wfRegistrarPago
             objPago.EliminarPagoConVuelto(idDetalle)
             CargarDetalles()
             MostrarMensaje("Pago eliminado correctamente.", "mensaje-ok")
-        Catch ex As Exception
-            MostrarMensaje(ex.Message, "mensaje-error")
-        End Try
-    End Sub
-
-    Protected Sub btnDevolucion_Click(sender As Object, e As EventArgs)
-        If IdPedidoSeleccionado <= 0 Then
-            MostrarMensaje("Seleccione un pedido.", "mensaje-error")
-            Return
-        End If
-
-        Dim monto As Decimal
-        If Not TryParseMonto(txtDevolucion.Text, monto) OrElse monto <= 0D Then
-            MostrarMensaje("Ingrese un monto de devolución mayor a cero.", "mensaje-error")
-            Return
-        End If
-
-        Dim idMetodo As Integer
-        If Not Integer.TryParse(ddlMetodoDevolucion.SelectedValue, idMetodo) OrElse idMetodo <= 0 Then
-            MostrarMensaje("Seleccione el método de la devolución.", "mensaje-error")
-            Return
-        End If
-
-        Try
-            objPago.RegistrarDevolucion(IdPedidoSeleccionado, idMetodo, monto)
-            txtDevolucion.Text = ""
-            CargarDetalles()
-            MostrarMensaje("Devolución de S/. " & FormatoNumero(monto) & " registrada correctamente.", "mensaje-ok")
         Catch ex As Exception
             MostrarMensaje(ex.Message, "mensaje-error")
         End Try
@@ -739,8 +722,8 @@ Partial Class wfRegistrarPago
             salida.Rows.Add(nueva)
         Next
 
-        ' El listado de negocio viene ascendente; aqui se ordena por fecha con
-        ' resolución de segundos y se desempata por id (más actual primero).
+        ' La tabla muestra siempre el movimiento más reciente primero, con
+        ' resolución de segundos y desempate por id.
         Dim vista As New DataView(salida)
         vista.Sort = "fecha DESC, id_detalle_pago DESC"
         Return vista.ToTable()
@@ -761,12 +744,16 @@ Partial Class wfRegistrarPago
         Dim etiqueta As Label = TryCast(e.Row.FindControl("lblBloqueado"), Label)
         Dim cancelado As Boolean = String.Equals(EstadoPedido, "CANCELADO", StringComparison.OrdinalIgnoreCase)
 
-        ' El vuelto es automático. Una devolución se puede eliminar para corregirla.
-        If tipo = "VUELTO" OrElse cancelado Then
+        ' El vuelto es automático. Una devolución se puede eliminar para corregirla,
+        ' incluso si el pedido está cancelado.
+        If tipo = "VUELTO" Then
             If editar IsNot Nothing Then editar.Visible = False
             If eliminar IsNot Nothing Then eliminar.Visible = False
         ElseIf tipo = "DEVOLUCION" Then
             If editar IsNot Nothing Then editar.Visible = False
+        ElseIf cancelado Then
+            If editar IsNot Nothing Then editar.Visible = False
+            If eliminar IsNot Nothing Then eliminar.Visible = False
         End If
 
         If etiqueta IsNot Nothing Then

@@ -425,9 +425,47 @@ CREATE TABLE IF NOT EXISTS pagos (
     id_pedido     integer NOT NULL,
     fecha         timestamp NOT NULL DEFAULT fn_hora_peru(),
     monto_total   numeric(10,2) NOT NULL,
+    -- PAGO entra dinero, VUELTO es el cambio y DEVOLUCION el reembolso.
+    tipo          varchar(12) NOT NULL DEFAULT 'PAGO'
+        CHECK (tipo IN ('PAGO','VUELTO','DEVOLUCION')),
+    -- El vuelto apunta al pago que lo origino.
+    id_pago_padre integer NULL,
     CONSTRAINT fk_pago_pedido FOREIGN KEY (id_pedido)
-        REFERENCES pedidos(id_pedido) ON DELETE CASCADE
+        REFERENCES pedidos(id_pedido) ON DELETE CASCADE,
+    CONSTRAINT fk_pago_padre FOREIGN KEY (id_pago_padre)
+        REFERENCES pagos(id_pago)
 );
+
+-- Bases anteriores: agrega el tipo de movimiento y el padre del vuelto.
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns
+                   WHERE table_name = 'pagos' AND column_name = 'tipo') THEN
+        ALTER TABLE pagos ADD COLUMN tipo varchar(12) NOT NULL DEFAULT 'PAGO';
+        ALTER TABLE pagos ADD CONSTRAINT ck_pagos_tipo
+            CHECK (tipo IN ('PAGO','VUELTO','DEVOLUCION'));
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns
+                   WHERE table_name = 'pagos' AND column_name = 'id_pago_padre') THEN
+        ALTER TABLE pagos ADD COLUMN id_pago_padre integer NULL;
+        ALTER TABLE pagos ADD CONSTRAINT fk_pago_padre
+            FOREIGN KEY (id_pago_padre) REFERENCES pagos(id_pago);
+    END IF;
+END $$;
+
+CREATE INDEX IF NOT EXISTS ix_pagos_padre ON pagos(id_pago_padre);
+
+UPDATE pagos SET tipo = 'VUELTO'
+WHERE monto_total < 0 AND tipo = 'PAGO';
+
+UPDATE pagos v
+SET id_pago_padre = (
+        SELECT MAX(p.id_pago) FROM pagos p
+        WHERE p.id_pedido = v.id_pedido
+          AND p.id_pago < v.id_pago
+          AND p.tipo = 'PAGO'
+          AND p.monto_total > 0)
+WHERE v.tipo = 'VUELTO' AND v.id_pago_padre IS NULL;
 
 CREATE TABLE IF NOT EXISTS detalle_pago (
     id_detalle_pago  serial PRIMARY KEY,
@@ -1806,7 +1844,10 @@ BEGIN
 
     RETURN QUERY
     SELECT p.id_pago, p.fecha, p.monto_total AS total_pago,
-           COALESCE(m.nombre, 'Sin desglose') AS metodo,
+           CASE p.tipo
+                WHEN 'VUELTO' THEN COALESCE(m.nombre, 'Sin desglose') || ' / vuelto'
+                WHEN 'DEVOLUCION' THEN COALESCE(m.nombre, 'Sin desglose') || ' / devolución'
+                ELSE COALESCE(m.nombre, 'Sin desglose') END AS metodo,
            COALESCE(d.monto, p.monto_total) AS monto_metodo,
            CASE WHEN c.id_comprobante IS NULL THEN 'Sin comprobante'
                 ELSE c.tipo_comprobante || ' ' || c.serie || '-' || c.numero END AS comprobante

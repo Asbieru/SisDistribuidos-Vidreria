@@ -90,7 +90,40 @@ WHERE v.tipo = N'VUELTO'
 GO
 
 /* ------------------------------------------------------------
-   4) Verificacion
+   4) Etiqueta los movimientos en el historial de pagos del cliente
+   ------------------------------------------------------------ */
+IF OBJECT_ID(N'dbo.sp_cli_pagos_pedido', N'P') IS NOT NULL
+    DROP PROCEDURE dbo.sp_cli_pagos_pedido;
+GO
+CREATE PROCEDURE dbo.sp_cli_pagos_pedido
+    @id_cliente INT,
+    @id_pedido INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    IF @id_cliente IS NULL OR @id_cliente <= 0 OR @id_pedido IS NULL OR @id_pedido <= 0
+        THROW 50101, 'Seleccione un cliente y un pedido validos.', 1;
+    IF NOT EXISTS (SELECT 1 FROM dbo.pedidos WHERE id_pedido = @id_pedido AND id_cliente = @id_cliente)
+        THROW 50112, 'El pedido no pertenece al cliente seleccionado o ya no existe.', 1;
+    SELECT p.id_pago, p.fecha, p.monto_total AS total_pago,
+           CASE p.tipo
+                WHEN N'VUELTO' THEN COALESCE(m.nombre, N'Sin desglose') + N' / vuelto'
+                WHEN N'DEVOLUCION' THEN COALESCE(m.nombre, N'Sin desglose') + N' / devolución'
+                ELSE COALESCE(m.nombre, N'Sin desglose') END AS metodo,
+           COALESCE(d.monto, p.monto_total) AS monto_metodo,
+           CASE WHEN c.id_comprobante IS NULL THEN N'Sin comprobante'
+                ELSE c.tipo_comprobante + N' ' + c.serie + N'-' + c.numero END AS comprobante
+    FROM dbo.pagos p
+    LEFT JOIN dbo.detalle_pago d ON d.id_pago = p.id_pago
+    LEFT JOIN dbo.metodos_pago m ON m.id_metodo_pago = d.id_metodo_pago
+    LEFT JOIN dbo.comprobante_pago c ON c.id_pago = p.id_pago
+    WHERE p.id_pedido = @id_pedido
+    ORDER BY p.fecha DESC, p.id_pago DESC, d.id_detalle_pago;
+END;
+GO
+
+/* ------------------------------------------------------------
+   5) Verificacion
    ------------------------------------------------------------ */
 SELECT
     SUM(CASE WHEN tipo = N'PAGO' THEN 1 ELSE 0 END)       AS pagos,

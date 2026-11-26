@@ -2186,7 +2186,10 @@ BEGIN
     IF NOT EXISTS (SELECT 1 FROM dbo.pedidos WHERE id_pedido = @id_pedido AND id_cliente = @id_cliente)
         THROW 50112, 'El pedido no pertenece al cliente seleccionado o ya no existe.', 1;
     SELECT p.id_pago, p.fecha, p.monto_total AS total_pago,
-           COALESCE(m.nombre, N'Sin desglose') AS metodo,
+           CASE p.tipo
+                WHEN N'VUELTO' THEN COALESCE(m.nombre, N'Sin desglose') + N' / vuelto'
+                WHEN N'DEVOLUCION' THEN COALESCE(m.nombre, N'Sin desglose') + N' / devolución'
+                ELSE COALESCE(m.nombre, N'Sin desglose') END AS metodo,
            COALESCE(d.monto, p.monto_total) AS monto_metodo,
            CASE WHEN c.id_comprobante IS NULL THEN N'Sin comprobante'
                 ELSE c.tipo_comprobante + N' ' + c.serie + N'-' + c.numero END AS comprobante

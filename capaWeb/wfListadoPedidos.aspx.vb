@@ -142,7 +142,10 @@ Partial Class wfListadoPedidos
             Dim texto As String = "Pedido N° " & id & " cancelado correctamente."
             Dim pagado As Decimal = objPago.TotalPagado(id)
             If pagado > 0D Then
-                texto &= " Excedente a favor del cliente: S/. " & pagado.ToString("0.00", CultureInfo.InvariantCulture) & "."
+                texto &= " Dinero cobrado por devolver al cliente: S/. " &
+                         pagado.ToString("0.00", CultureInfo.InvariantCulture) &
+                         ". <a href=""wfRegistrarPago.aspx?idPedido=" & id.ToString() &
+                         """>Ver los pagos del pedido</a>."
             End If
 
             CargarLista()

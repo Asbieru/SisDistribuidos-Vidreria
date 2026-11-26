@@ -158,7 +158,8 @@ Partial Class wfReporteIngresosMes
         ElseIf monto < 0D Then
             clase = "monto-utilidad-negativa"
         End If
-        valor.CssClass = clase
+        ' Conserva el tamaño de la tarjeta y solo agrega el color del saldo.
+        valor.CssClass = ("ingresos-tarjeta-valor " & clase).Trim()
         valorTabla.CssClass = clase
     End Sub
 
@@ -192,9 +193,9 @@ Partial Class wfReporteIngresosMes
         lblTablaSaldo.Text = "S/ 0.00"
         lblTablaFlujo.Text = "—"
 
-        lblSaldo.CssClass = ""
+        lblSaldo.CssClass = "ingresos-tarjeta-valor"
         lblTablaSaldo.CssClass = ""
-        lblFlujo.CssClass = ""
+        lblFlujo.CssClass = "ingresos-tarjeta-valor"
         lblTablaFlujo.CssClass = ""
 
         barraVentas.Style("width") = "0%"
