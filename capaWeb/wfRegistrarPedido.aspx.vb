@@ -315,7 +315,6 @@ Partial Class wfRegistrarPedido
         Dim dt As DataTable = Productos
         If dt Is Nothing Then dt = New DataTable()
 
-        Dim anterior As String = ddlProducto.SelectedValue
         Dim filtrado As DataTable = dt.Clone()
         Dim texto As String = If(filtro, "").Trim()
         For Each fila As DataRow In dt.Rows
@@ -331,19 +330,12 @@ Partial Class wfRegistrarPedido
         ddlProducto.DataBind()
         ddlProducto.Items.Insert(0, New ListItem("(Seleccione un producto)", ""))
 
-        If anterior <> "" Then
-            For Each item As ListItem In ddlProducto.Items
-                If item.Value = anterior Then
-                    ddlProducto.SelectedValue = anterior
-                    Exit For
-                End If
-            Next
-        End If
-        ' Conserva siempre lo escrito por el usuario; el placeholder solo vive
-        ' en el DropDownList oculto y no debe copiarse al cuadro de busqueda.
-        If String.IsNullOrWhiteSpace(txtProducto.Text) AndAlso ddlProducto.SelectedIndex > 0 Then
-            txtProducto.Text = ddlProducto.SelectedItem.Text
-        End If
+        ' El producto/variante lo elige siempre el usuario. Nunca se deja una
+        ' opcion preseleccionada ni se copia su texto al cuadro de busqueda:
+        ' antes, al cambiar el tipo de pedido, se autocompletaba el primer
+        ' producto y el espesor quedaba sin opciones.
+        ddlProducto.ClearSelection()
+        ddlProducto.SelectedIndex = 0
     End Sub
 
     Private Sub CargarEspesores(idProducto As Integer)
@@ -1110,6 +1102,7 @@ Partial Class wfRegistrarPedido
         EnlazarTiposDePedido()
         ddlTipoItem.SelectedValue = "VIDRIO"
 
+        txtProducto.Text = ""
         CargarProductos("VIDRIO", "")
         CargarEspesores(0)
         If ddlColorAluminio.Items.Count > 0 Then ddlColorAluminio.SelectedIndex = 0
