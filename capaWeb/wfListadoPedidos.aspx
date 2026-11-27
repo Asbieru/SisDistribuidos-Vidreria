@@ -48,6 +48,7 @@
                 CssClass="boton boton-primario">Nuevo +</asp:HyperLink>
         </div>
 
+        <p><asp:Label ID="lblResumen" runat="server" /></p>
         <div class="tabla-scroll">
             <asp:GridView ID="grvPedidos" runat="server" AutoGenerateColumns="False"
                 CssClass="tabla-datos" GridLines="None" DataKeyNames="id_pedido"
@@ -86,6 +87,5 @@
                 </Columns>
             </asp:GridView>
         </div>
-        <p><asp:Label ID="lblResumen" runat="server" /></p>
     </asp:Panel>
 </asp:Content>
