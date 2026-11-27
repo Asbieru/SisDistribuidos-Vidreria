@@ -47,9 +47,10 @@ Partial Class plantilla
             Return
         End If
 
-        ' Al publicar este ajuste se descarta el estado anterior de esos dos grupos
+        ' Al publicar este ajuste se descarta el estado anterior de esos grupos
         ' para que vuelvan a aparecer sin necesidad de cerrar sesión.
         If Convert.ToString(Session("versionEstadoMenu")) <> VersionEstadoMenu Then
+            Session.Remove("menuAbierto_procesos")
             Session.Remove("menuAbierto_listados")
             Session.Remove("menuAbierto_mantenimiento")
             Session("versionEstadoMenu") = VersionEstadoMenu
@@ -189,18 +190,19 @@ Partial Class plantilla
 
     ' ---------------- MENÚ COLAPSABLE ----------------
     ' Cada grupo recuerda si está abierto en la sesión, así el estado se mantiene
-    ' al navegar entre páginas. Por defecto quedan abiertos Principal,
+    ' al navegar entre páginas. Por defecto quedan abiertos Principal, Procesos,
     ' Mostrar Listado y Mantenimiento; los demás se abren al hacer clic.
     Private Shared ReadOnly GruposMenu As String() =
         {"principal", "procesos", "listados", "reportes", "mantenimiento", "configuracion", "tema"}
 
-    Private Const VersionEstadoMenu As String = "20261122b"
+    Private Const VersionEstadoMenu As String = "20261125a"
 
     Private Function GrupoMenuAbierto(clave As String) As Boolean
         Dim nombreSesion As String = "menuAbierto_" & clave
         If Session(nombreSesion) Is Nothing Then
             Dim abiertoPorDefecto As Boolean =
-                (clave = "principal" OrElse clave = "listados" OrElse clave = "mantenimiento")
+                (clave = "principal" OrElse clave = "procesos" OrElse
+                 clave = "listados" OrElse clave = "mantenimiento")
             Session(nombreSesion) = abiertoPorDefecto
         End If
         Return Convert.ToBoolean(Session(nombreSesion))
