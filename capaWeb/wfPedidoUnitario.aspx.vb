@@ -621,12 +621,24 @@ Partial Class wfPedidoUnitario
             objPedido.CancelarItem(IdItemSeleccionado, IdUsuarioONull())
             RecargarTodo()
 
-            If ItemsDelPedido Is Nothing OrElse ItemsDelPedido.Rows.Count = 0 Then
-                pnlPedido.Visible = False
-                MostrarMensaje("Se cancelaron todos los ítems: el pedido quedó CANCELADO.", "mensaje-info")
-                Return
+            ' Se consulta el listado activo directamente: RecargarTodo deja de
+            ' cargar items cuando el pedido completo queda CANCELADO.
+            Dim restantes As DataTable = objPedido.ListarItemsDetallado(IdPedido)
+            Dim texto As String
+            Dim clase As String
+            If restantes Is Nothing OrElse restantes.Rows.Count = 0 Then
+                texto = "Se cancelaron todos los ítems: el pedido quedó CANCELADO."
+                clase = "mensaje-info"
+            Else
+                texto = "Ítem cancelado." & ExcedenteTexto()
+                clase = "mensaje-ok"
             End If
-            MostrarMensaje("Ítem cancelado." & ExcedenteTexto(), "mensaje-ok")
+
+            ' Al cancelar un item se vuelve al listado y el aviso se muestra alli.
+            Session("mensajeListadoPedidos") = texto
+            Session("claseListadoPedidos") = clase
+            Response.Redirect("~/wfListadoPedidos.aspx", False)
+            Context.ApplicationInstance.CompleteRequest()
         Catch ex As Exception
             MostrarMensaje(ex.Message, "mensaje-error")
         End Try

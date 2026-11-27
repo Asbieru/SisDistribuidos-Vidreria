@@ -24,8 +24,23 @@ Partial Class wfListadoPedidos
         End If
 
         If Not IsPostBack Then
+            MostrarMensajePendiente()
             CargarLista()
         End If
+    End Sub
+
+    ' Avisos que dejan otras paginas (por ejemplo al cancelar un item) antes de
+    ' volver al listado. Se muestran una sola vez.
+    Private Sub MostrarMensajePendiente()
+        If Session("mensajeListadoPedidos") Is Nothing Then Return
+        Dim texto As String = Session("mensajeListadoPedidos").ToString()
+        Dim clase As String = "mensaje-info"
+        If Session("claseListadoPedidos") IsNot Nothing Then
+            clase = Session("claseListadoPedidos").ToString()
+        End If
+        Session.Remove("mensajeListadoPedidos")
+        Session.Remove("claseListadoPedidos")
+        MostrarMensaje(texto, clase)
     End Sub
 
     ' ------------------------- Listado -------------------------
