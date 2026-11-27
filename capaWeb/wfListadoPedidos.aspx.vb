@@ -52,11 +52,18 @@ Partial Class wfListadoPedidos
             If dt Is Nothing Then dt = New DataTable()
 
             Dim texto As String = txtBuscar.Text.Trim()
+            Dim filtro As String = ""
             If texto <> "" Then
                 ' Se escapan los caracteres especiales del filtro (igual que en escritorio)
                 texto = texto.Replace("'", "''").Replace("[", "[[]").Replace("%", "[%]").Replace("*", "[*]")
-                dt.DefaultView.RowFilter = ddlCategoria.SelectedValue & " LIKE '%" & texto & "%'"
+                filtro = ddlCategoria.SelectedValue & " LIKE '%" & texto & "%'"
             End If
+            Dim estado As String = ddlEstado.SelectedValue
+            If estado <> "" Then
+                If filtro <> "" Then filtro &= " AND "
+                filtro &= "estado = '" & estado.Replace("'", "''") & "'"
+            End If
+            If filtro <> "" Then dt.DefaultView.RowFilter = filtro
             Dim vista As DataTable = dt.DefaultView.ToTable()
 
             ' Paginación: si la página actual ya no existe (por ejemplo tras una búsqueda), se ajusta
@@ -89,6 +96,7 @@ Partial Class wfListadoPedidos
 
     Protected Sub btnVerTodos_Click(sender As Object, e As EventArgs)
         txtBuscar.Text = ""
+        ddlEstado.SelectedIndex = 0
         grvPedidos.PageIndex = 0
         lblMensaje.Text = ""
         CargarLista()

@@ -22,6 +22,18 @@
                             <asp:ListItem Text="Usuario" Value="usuario" Selected="True" />
                             <asp:ListItem Text="Fecha de Registro" Value="fecha_registro" />
                         </asp:DropDownList>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="etiqueta">Estado :</td>
+                    <td class="dato">
+                        <asp:DropDownList ID="ddlEstado" runat="server" CssClass="campo">
+                            <asp:ListItem Text="(Todos)" Value="" Selected="True" />
+                            <asp:ListItem Text="Pagado" Value="PAGADO" />
+                            <asp:ListItem Text="Cancelado" Value="CANCELADO" />
+                            <asp:ListItem Text="Pendiente" Value="PENDIENTE" />
+                            <asp:ListItem Text="Parcial" Value="PARCIAL" />
+                        </asp:DropDownList>
                         <asp:Button ID="btnBuscar" runat="server" Text="Buscar" CssClass="boton boton-primario"
                             OnClick="btnBuscar_Click" CausesValidation="False" />
                         <asp:Button ID="btnVerTodos" runat="server" Text="Mostrar Todos" CssClass="boton boton-secundario"
