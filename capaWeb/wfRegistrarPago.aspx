@@ -64,6 +64,9 @@
 
     <asp:Panel ID="pnlProceso" runat="server" Visible="False">
         <div class="panel">
+            <asp:Button ID="btnCambiarPedido" runat="server" CssClass="boton boton-secundario"
+                Text="&lt;-" ToolTip="Cambiar pedido" aria-label="Cambiar pedido"
+                OnClick="btnCambiarPedido_Click" CausesValidation="False" />
             <h2 class="panel-titulo">Pago del pedido <asp:Label ID="lblPedidoId" runat="server"></asp:Label></h2>
             <p class="texto-intro"><asp:Label ID="lblPedidoInfo" runat="server"></asp:Label></p>
 
@@ -122,8 +125,6 @@
                 <asp:Button ID="btnCancelarEdicion" runat="server" CssClass="boton boton-secundario"
                     Text="Cancelar edición" OnClick="btnCancelarEdicion_Click"
                     CausesValidation="False" Visible="False" />
-                <asp:Button ID="btnCambiarPedido" runat="server" CssClass="boton boton-secundario"
-                    Text="Cambiar pedido" OnClick="btnCambiarPedido_Click" CausesValidation="False" />
             </div>
             <asp:Label ID="lblMensaje" runat="server"></asp:Label>
         </div>
